@@ -1,0 +1,2 @@
+supabase/seeds/*.sql filter=lfs diff=lfs merge=lfs -text
+frontend/scripts/*.csv filter=lfs diff=lfs merge=lfs -text

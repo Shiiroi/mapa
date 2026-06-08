@@ -53,7 +53,8 @@ export async function fetchProvinces(): Promise<ProvinceGeoJSON[]> {
 }
 
 export async function fetchMunicities(): Promise<MunicityGeoJSON[]> {
-    const BATCH_SIZE = 200;
+    // Fetch all in one request — removes sequential pagination overhead
+    const BATCH_SIZE = 2000;
     let all: MunicityGeoJSON[] = [];
     let from = 0;
     let chunk: RawMunicity[];

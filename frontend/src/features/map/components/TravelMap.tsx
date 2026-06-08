@@ -38,9 +38,10 @@ interface TravelMapProps {
     regions?: GeoEntity[];
     municities?: GeoEntity[];
     defaultMode?: MapMode;
+    onModeChange?: (mode: MapMode) => void;
 }
 
-export function TravelMap({ provinces = [], regions = [], municities = [], defaultMode = "province" }: TravelMapProps) {
+export function TravelMap({ provinces = [], regions = [], municities = [], defaultMode = "province", onModeChange }: TravelMapProps) {
     const [mode, setMode] = useState<MapMode>(defaultMode);
 
     const currentData = useMemo(() => {
@@ -101,7 +102,10 @@ export function TravelMap({ provinces = [], regions = [], municities = [], defau
                 {modes.map((m) => (
                     <button
                         key={m}
-                        onClick={() => setMode(m)}
+                        onClick={() => {
+                            setMode(m);
+                            onModeChange?.(m);
+                        }}
                         style={{
                             padding: "4px 12px",
                             cursor: "pointer",

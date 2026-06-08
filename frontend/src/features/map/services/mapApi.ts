@@ -1,6 +1,6 @@
 import { supabase } from "../../../config/supabase";
 import type { GeoJSON } from "geojson";
-import type { ProvinceGeoJSON, MunicityGeoJSON, Region } from "../types";
+import type { ProvinceGeoJSON, MunicityGeoJSON, MunicityMeta, Region } from "../types";
 
 interface RawRegion {
     id: number;
@@ -52,9 +52,18 @@ export async function fetchProvinces(): Promise<ProvinceGeoJSON[]> {
     })) as ProvinceGeoJSON[];
 }
 
-export async function fetchMunicities(): Promise<MunicityGeoJSON[]> {
+/** Quick metadata-only fetch (no geometry) — guaranteed to be fast */
+export async function fetchMunicitiesMeta(): Promise<MunicityMeta[]> {
+    const { data, error } = await supabase.from("municities").select("id, name, code, province_id, region_id, type").order("name");
+
+    if (error) throw error;
+    return (data ?? []) as MunicityMeta[];
+}
+
+/** Fetch full geometry for all municities using paginated range queries */
+export async function fetchMunicitiesGeometry(): Promise<MunicityGeoJSON[]> {
     const BATCH_SIZE = 200;
-    let all: MunicityGeoJSON[] = [];
+    const all: MunicityGeoJSON[] = [];
     let from = 0;
     let chunk: RawMunicity[];
 
@@ -75,10 +84,11 @@ export async function fetchMunicities(): Promise<MunicityGeoJSON[]> {
             type: m.type,
             geometry: m.geojson,
         })) as MunicityGeoJSON[];
-        all = all.concat(mapped);
+        all.push(...mapped);
         from += BATCH_SIZE;
     } while (chunk.length === BATCH_SIZE);
 
+    console.info(`[fetchMunicitiesGeometry] Loaded ${all.length} municities with geometry`);
     return all;
 }
 

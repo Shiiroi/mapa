@@ -18,6 +18,16 @@ export interface MunicityGeoJSON {
     geometry: GeoJSON.Geometry;
 }
 
+/** Municity metadata only (no geometry) — fast to load */
+export interface MunicityMeta {
+    id: number;
+    name: string;
+    code: string;
+    province_id: number | null;
+    region_id: number | null;
+    type: "city" | "municipality";
+}
+
 export interface Region {
     id: number;
     code: string;
