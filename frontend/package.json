@@ -7,6 +7,8 @@
         "dev": "vite",
         "dev:docker": "vite --mode docker",
         "build": "tsc -b && vite build",
+        "export:geo": "tsx scripts/export-geo-layers.ts",
+        "upload:geo": "tsx --env-file=.env scripts/upload-geo-storage.ts",
         "lint": "eslint .",
         "preview": "vite preview"
     },
@@ -14,6 +16,7 @@
         "@supabase/supabase-js": "^2.106.2",
         "@tanstack/react-query": "^5.100.14",
         "@types/geojson": "^7946.0.16",
+        "clsx": "^2.1.1",
         "csv-parse": "^6.2.1",
         "csv-stringify": "^6.7.0",
         "fast-csv": "^5.0.7",
@@ -23,10 +26,12 @@
         "react": "^19.2.6",
         "react-dom": "^19.2.6",
         "react-leaflet": "^5.0.0",
-        "react-router-dom": "^7.15.1"
+        "react-router-dom": "^7.15.1",
+        "tailwind-merge": "^3.6.0"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
+        "@tailwindcss/vite": "^4.3.1",
         "@types/leaflet": "^1.9.21",
         "@types/node": "^24.12.3",
         "@types/pg": "^8.20.0",
@@ -37,6 +42,7 @@
         "eslint-plugin-react-hooks": "^7.1.1",
         "eslint-plugin-react-refresh": "^0.5.2",
         "globals": "^17.6.0",
+        "tailwindcss": "^4.3.1",
         "tsx": "^4.22.4",
         "typescript": "~6.0.2",
         "typescript-eslint": "^8.59.2",

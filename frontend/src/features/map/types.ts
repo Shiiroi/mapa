@@ -1,11 +1,13 @@
-import type { GeoJSON } from "geojson";
+// TypeScript types for regions, provinces, and municipalities.
+
+import type { Geometry } from "geojson";
 
 export interface ProvinceGeoJSON {
     id: number;
     code: string;
     name: string;
     region_id: number;
-    geometry: GeoJSON.Geometry;
+    geometry: Geometry;
 }
 
 export interface MunicityGeoJSON {
@@ -15,10 +17,9 @@ export interface MunicityGeoJSON {
     province_id: number | null;
     region_id: number | null;
     type: "city" | "municipality";
-    geometry: GeoJSON.Geometry;
+    geometry: Geometry;
 }
 
-/** Municity metadata only (no geometry) — fast to load */
 export interface MunicityMeta {
     id: number;
     name: string;
@@ -32,5 +33,5 @@ export interface Region {
     id: number;
     code: string;
     name: string;
-    geometry: GeoJSON.Geometry;
+    geometry: Geometry;
 }

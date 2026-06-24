@@ -1,3 +1,5 @@
+// React Query loader for regions, provinces, municity metadata, and geometries.
+
 import { useQuery } from "@tanstack/react-query";
 import { fetchProvinces, fetchMunicitiesMeta, fetchMunicitiesGeometry, fetchRegions } from "../services/mapApi";
 import type { ProvinceGeoJSON, MunicityGeoJSON, MunicityMeta, Region } from "../types";
@@ -18,20 +20,18 @@ export function useMapLayers(): UseMapLayersReturn {
         staleTime: 15 * 60 * 1000,
     });
 
-    // Load lightweight metadata first (no geometry) — fast, won't timeout
     const municityMetaQuery = useQuery<MunicityMeta[]>({
         queryKey: ["municities", "meta"],
         queryFn: fetchMunicitiesMeta,
         staleTime: 20 * 60 * 1000,
     });
 
-    // Full geometry — loaded on mount alongside everything else, cached for fast tab switching
     const municitiesGeometryQuery = useQuery<MunicityGeoJSON[]>({
         queryKey: ["municities", "geometry"],
         queryFn: fetchMunicitiesGeometry,
         staleTime: 20 * 60 * 1000,
         gcTime: 30 * 60 * 1000,
-        retry: false, // don't retry — if geometry fails, user can retry manually
+        retry: false,
     });
 
     const regionsQuery = useQuery<Region[]>({
@@ -40,8 +40,13 @@ export function useMapLayers(): UseMapLayersReturn {
         staleTime: 15 * 60 * 1000,
     });
 
-    const loading = provincesQuery.isLoading || municityMetaQuery.isLoading || regionsQuery.isLoading || municitiesGeometryQuery.isFetching;
-    const error = provincesQuery.error ?? municityMetaQuery.error ?? regionsQuery.error ?? municitiesGeometryQuery.error;
+    const loading =
+        provincesQuery.isLoading ||
+        municityMetaQuery.isLoading ||
+        regionsQuery.isLoading ||
+        municitiesGeometryQuery.isFetching;
+    const error =
+        provincesQuery.error ?? municityMetaQuery.error ?? regionsQuery.error ?? municitiesGeometryQuery.error;
 
     return {
         provinces: provincesQuery.data ?? [],
@@ -51,18 +56,4 @@ export function useMapLayers(): UseMapLayersReturn {
         loading,
         error: error as Error | null,
     };
-}
-
-export function useProvinces() {
-    return useQuery<ProvinceGeoJSON[]>({
-        queryKey: ["provinces"],
-        queryFn: fetchProvinces,
-    });
-}
-
-export function useMunicities() {
-    return useQuery<MunicityGeoJSON[]>({
-        queryKey: ["municities"],
-        queryFn: fetchMunicitiesGeometry,
-    });
 }
