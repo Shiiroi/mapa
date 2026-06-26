@@ -87,5 +87,8 @@ export function pickStatsFields(row: DivisionStatsFields): DivisionStatsFields {
         density_2024: row.density_2024,
         pct_change_2020_2024: row.pct_change_2020_2024,
         assets_2024: row.assets_2024,
+        gdp_2022: row.gdp_2022,
+        gdp_2023: row.gdp_2023,
+        gdp_2024: row.gdp_2024,
     };
 }

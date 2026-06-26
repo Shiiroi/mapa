@@ -10,8 +10,10 @@ import {
     formatAreaKm2,
     formatAssets,
     formatDensity,
+    formatGdp,
     formatGrowthRate,
     formatPctChange,
+    formatPesoPerCapita,
     formatPopulation,
 } from "../utils/formatStats";
 import { mergePlaceStats } from "../utils/mergePlaceStats";
@@ -27,12 +29,19 @@ const PSA_AGESEX_URL =
     "https://psa.gov.ph/content/age-and-sex-distribution-philippine-population-2020-census-population-and-housing";
 const PSA_AGESEX_FILE_URL =
     "https://psa.gov.ph/system/files/phcd/2022-12/4_Household%2520Population%2520by%2520Age%2520Group%2520and%2520Sex_Philippines_2020%2520CPH_rev.xlsx";
+const PSA_GDP_URL = "https://openstat.psa.gov.ph/Database/Gross-Regional-Domestic-Product";
 
 const POP_HISTORY: { year: number; key: "pop_2010" | "pop_2015" | "pop_2020" | "pop_2024" }[] = [
     { year: 2010, key: "pop_2010" },
     { year: 2015, key: "pop_2015" },
     { year: 2020, key: "pop_2020" },
     { year: 2024, key: "pop_2024" },
+];
+
+const GDP_HISTORY: { year: number; key: "gdp_2022" | "gdp_2023" | "gdp_2024" }[] = [
+    { year: 2022, key: "gdp_2022" },
+    { year: 2023, key: "gdp_2023" },
+    { year: 2024, key: "gdp_2024" },
 ];
 
 // Gives the plain total percent change between two census figures.
@@ -53,6 +62,12 @@ function formatCompactNumber(n: number): string {
         return `${Number.isInteger(k) ? k : k.toFixed(0)}K`;
     }
     return String(Math.round(n));
+}
+
+// Shortens the open-ended PSA top band ("80 years and over", i.e. age >= 80) to "80+".
+function formatAgeBand(age: string): string {
+    const m = age.match(/(\d+)\s*(?:years\s*and\s*over|and\s*over|\+)/i);
+    return m ? `${m[1]}+` : age;
 }
 
 // Reads the lower-bound age from a PSA band label, e.g. "65 - 69" gives 65.
@@ -82,17 +97,26 @@ function broadAgeGroups(bands: AgeSexBand[]): BroadAgeGroups {
     return { young, working, senior, total: young + working + senior };
 }
 
-// Rounds up to a visually tidy axis maximum (1, 2, 2.5, 5, or 10 times a power of ten).
-function niceAxisMax(value: number): number {
-    if (value <= 0) return 1;
-    const pow = Math.pow(10, Math.floor(Math.log10(value)));
-    const norm = value / pow;
+// Picks a tidy tick step (1, 2, 2.5, or 5 times a power of ten) so every gridline lands on a round number.
+function niceAxisStep(maxValue: number, tickCount: number): number {
+    if (maxValue <= 0) return 1;
+    const rough = maxValue / tickCount;
+    const pow = Math.pow(10, Math.floor(Math.log10(rough)));
+    const norm = rough / pow;
     const niceNorm = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 2.5 ? 2.5 : norm <= 5 ? 5 : 10;
     return niceNorm * pow;
 }
 
-// Draws an inline SVG line chart of population across census years, with axes and gridlines.
-function PopulationTrendChart({ points }: { points: { year: number; value: number }[] }) {
+// Draws an inline SVG line chart with axes and gridlines; accepts a custom value formatter.
+function PopulationTrendChart({
+    points,
+    formatValue = formatCompactNumber,
+    ariaLabel = "Population over time",
+}: {
+    points: { year: number; value: number }[];
+    formatValue?: (n: number) => string;
+    ariaLabel?: string;
+}) {
     if (points.length < 2) return null;
     const W = 340;
     const H = 180;
@@ -106,9 +130,10 @@ function PopulationTrendChart({ points }: { points: { year: number; value: numbe
     const minYear = points[0].year;
     const maxYear = points[points.length - 1].year;
     const maxValue = Math.max(...points.map((p) => p.value));
-    const yMax = niceAxisMax(maxValue);
     const tickCount = 4;
-    const yTicks = Array.from({ length: tickCount + 1 }, (_, i) => (yMax / tickCount) * i);
+    const step = niceAxisStep(maxValue, tickCount);
+    const yMax = step * tickCount;
+    const yTicks = Array.from({ length: tickCount + 1 }, (_, i) => step * i);
 
     const x = (year: number) =>
         maxYear === minYear ? padLeft + plotW / 2 : padLeft + ((year - minYear) / (maxYear - minYear)) * plotW;
@@ -119,7 +144,7 @@ function PopulationTrendChart({ points }: { points: { year: number; value: numbe
 
     return (
         <div className="text-accent">
-            <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Population over time">
+            <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={ariaLabel}>
                 {yTicks.map((t) => (
                     <g key={t}>
                         <line
@@ -132,7 +157,7 @@ function PopulationTrendChart({ points }: { points: { year: number; value: numbe
                             strokeDasharray={t === 0 ? undefined : "3 3"}
                         />
                         <text x={padLeft - 5} y={y(t) + 3} textAnchor="end" className="fill-muted text-[9px]">
-                            {formatCompactNumber(t)}
+                            {formatValue(t)}
                         </text>
                     </g>
                 ))}
@@ -150,14 +175,6 @@ function PopulationTrendChart({ points }: { points: { year: number; value: numbe
                             strokeOpacity={0.3}
                         />
                         <circle cx={x(p.year)} cy={y(p.value)} r={3.5} fill="currentColor" />
-                        <text
-                            x={x(p.year)}
-                            y={y(p.value) - 6}
-                            textAnchor="middle"
-                            className="fill-primary text-[9px] font-medium"
-                        >
-                            {formatCompactNumber(p.value)}
-                        </text>
                         <text x={x(p.year)} y={H - 8} textAnchor="middle" className="fill-muted text-[9px]">
                             {p.year}
                         </text>
@@ -260,7 +277,7 @@ function AgeSexPyramid({ bands }: { bands: AgeSexBand[] }) {
                                 title={`Male: ${band.male.toLocaleString()}`}
                             />
                         </div>
-                        <span className="shrink-0 text-center text-muted">{band.age}</span>
+                        <span className="shrink-0 text-center text-muted">{formatAgeBand(band.age)}</span>
                         <div className="flex justify-start">
                             <div
                                 className="h-3 rounded-r bg-rose-500/80"
@@ -278,11 +295,27 @@ function AgeSexPyramid({ bands }: { bands: AgeSexBand[] }) {
     );
 }
 
-function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
+// Tints a signed value green when rising, red when falling, muted when flat or missing.
+function changeToneClass(n: number | null | undefined): string {
+    if (n == null || n === 0) return "text-muted";
+    return n > 0 ? "text-emerald-600" : "text-rose-600";
+}
+
+function StatCard({
+    label,
+    value,
+    sub,
+    valueClassName,
+}: {
+    label: string;
+    value: string;
+    sub?: string;
+    valueClassName?: string;
+}) {
     return (
         <div className="rounded-lg border border-border-light bg-white px-3 py-2.5">
             <p className="text-xs text-muted">{label}</p>
-            <p className="mt-0.5 text-lg font-semibold text-primary">{value}</p>
+            <p className={cn("mt-0.5 text-lg font-semibold text-primary", valueClassName)}>{value}</p>
             {sub && <p className="mt-0.5 text-xs text-muted">{sub}</p>}
         </div>
     );
@@ -312,6 +345,10 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
         2024,
     );
     const annualChange = formatAnnualizedChange(growth2020to2024);
+    const gdpPerCapita =
+        displayPlace.gdp_2024 != null && displayPlace.pop_2024 != null && displayPlace.pop_2024 > 0
+            ? displayPlace.gdp_2024 / displayPlace.pop_2024
+            : null;
 
     function handleDownloadJson() {
         const date = new Date().toISOString().slice(0, 10);
@@ -332,12 +369,18 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
             density_2024_per_km2: displayPlace!.density_2024,
             pct_change_2020_2024: displayPlace!.pct_change_2020_2024,
             assets_2024: displayPlace!.assets_2024,
+            gdp_2022: displayPlace!.gdp_2022,
+            gdp_2023: displayPlace!.gdp_2023,
+            gdp_2024: displayPlace!.gdp_2024,
+            gdp_per_capita_2024: gdpPerCapita,
             source:
-                "Population from the Philippine Statistics Authority (PSA) PSGC and 2010/2015/2020/2024 census tables; 2020 household age/sex from PSA 2020 CPH; area and derived metrics (density, % change) computed by Mapa from PSA boundaries. Total assets from COA CY2024 Annual Financial Report (Local Government), Part III Financial Profile.",
+                "Population from the Philippine Statistics Authority (PSA) PSGC and 2010/2015/2020/2024 census tables; 2020 household age/sex and GDP (current prices) from PSA; area and derived metrics (density, % change) computed by Mapa from PSA boundaries. Total assets from COA CY2024 Annual Financial Report (Local Government), Part III Financial Profile.",
             source_url: PSA_PSGC_URL,
             age_sex_source: "PSA 2020 Census of Population and Housing — Age and Sex Distribution",
             age_sex_source_url: PSA_AGESEX_URL,
             age_sex_file_url: PSA_AGESEX_FILE_URL,
+            gdp_source: "PSA Gross Domestic Product by Province and HUCs (current prices)",
+            gdp_source_url: PSA_GDP_URL,
             assets_source: "COA CY2024 AFR",
         };
         downloadJsonFile(payload, `mapa-info-${slugifyFilename(displayPlace!.name)}-${date}.json`);
@@ -360,11 +403,17 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
             ["density_2024", String(displayPlace!.density_2024 ?? "")],
             ["pct_change_2020_2024", String(displayPlace!.pct_change_2020_2024 ?? "")],
             ["assets_2024", String(displayPlace!.assets_2024 ?? "")],
-            ["source", "Philippine Statistics Authority (PSA) PSGC and 2010–2024 censuses; 2020 CPH age/sex; area/density/change derived by Mapa; assets from COA CY2024 AFR"],
+            ["gdp_2022", String(displayPlace!.gdp_2022 ?? "")],
+            ["gdp_2023", String(displayPlace!.gdp_2023 ?? "")],
+            ["gdp_2024", String(displayPlace!.gdp_2024 ?? "")],
+            ["gdp_per_capita_2024", String(gdpPerCapita ?? "")],
+            ["source", "Philippine Statistics Authority (PSA) PSGC and 2010–2024 censuses; 2020 CPH age/sex; GDP current prices; area/density/change derived by Mapa; assets from COA CY2024 AFR"],
             ["source_url", PSA_PSGC_URL],
             ["age_sex_source", "PSA 2020 Census of Population and Housing — Age and Sex Distribution"],
             ["age_sex_source_url", PSA_AGESEX_URL],
             ["age_sex_file_url", PSA_AGESEX_FILE_URL],
+            ["gdp_source", "PSA Gross Domestic Product by Province and HUCs (current prices)"],
+            ["gdp_source_url", PSA_GDP_URL],
         ];
         const csv = rows.map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
         downloadTextFile(csv, `mapa-info-${slugifyFilename(displayPlace!.name)}-${date}.csv`, "text/csv");
@@ -402,6 +451,7 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
                 <StatCard
                     label="Change [2020 → 2024]"
                     value={formatPctChange(displayPlace.pct_change_2020_2024)}
+                    valueClassName={changeToneClass(displayPlace.pct_change_2020_2024)}
                     sub={
                         displayPlace.pop_2020 == null
                             ? "No comparable 2020 figure (boundary or code change)"
@@ -459,7 +509,13 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
                                         ? totalPctChange(displayPlace[prev.key], displayPlace[row.key])
                                         : null;
                                     return (
-                                        <td key={row.year} className="py-1.5 px-2 text-right text-muted">
+                                        <td
+                                            key={row.year}
+                                            className={cn(
+                                                "py-1.5 px-2 text-right italic",
+                                                i === 0 ? "text-muted" : changeToneClass(change),
+                                            )}
+                                        >
                                             {i === 0 ? "—" : formatPctChange(change)}
                                         </td>
                                     );
@@ -478,7 +534,13 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
                                           )
                                         : null;
                                     return (
-                                        <td key={row.year} className="py-1.5 px-2 text-right text-muted">
+                                        <td
+                                            key={row.year}
+                                            className={cn(
+                                                "py-1.5 px-2 text-right font-medium",
+                                                i === 0 ? "text-muted" : changeToneClass(pgr),
+                                            )}
+                                        >
                                             {i === 0 ? "—" : formatGrowthRate(pgr)}
                                         </td>
                                     );
@@ -489,16 +551,7 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
                     <p className="mt-1.5 text-xs text-muted">
                         Change is the total percent change since the previous census; Growth/yr is the
                         average annual growth rate (compound) over the exact period between census
-                        reference dates, matching PSA’s published rate. Source:{" "}
-                        <a
-                            href={PSA_PSGC_URL}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-accent underline"
-                        >
-                            PSA — 2010, 2015, 2020 &amp; 2024 censuses
-                        </a>
-                        .
+                        reference dates, matching PSA’s published rate.
                     </p>
                     <div className="mt-3">
                         <PopulationTrendChart
@@ -506,6 +559,79 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
                                 .filter((p): p is { year: number; value: number } => p.value != null)}
                         />
                     </div>
+                </section>
+            )}
+
+            {displayPlace.gdp_2024 != null && (
+                <section>
+                    <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-muted">Economy</p>
+                    <div className="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        <StatCard
+                            label="GDP [2024]"
+                            value={formatGdp(displayPlace.gdp_2024)}
+                            sub="PSA current prices"
+                        />
+                        <StatCard
+                            label="GDP per capita [2024]"
+                            value={formatPesoPerCapita(gdpPerCapita)}
+                            sub={
+                                displayPlace.pop_2024 != null
+                                    ? "GDP ÷ population 2024"
+                                    : "No population figure for ratio"
+                            }
+                        />
+                    </div>
+                    <table className="mb-2 w-full border-collapse text-sm">
+                        <thead>
+                            <tr className="text-xs text-muted">
+                                <th className="py-1 pr-2 text-left font-medium"></th>
+                                {GDP_HISTORY.map((row) => (
+                                    <th key={row.year} className="py-1 px-2 text-right font-medium">
+                                        {row.year}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr className="border-t border-border-light">
+                                <td className="py-1.5 pr-2 text-left text-muted">GDP</td>
+                                {GDP_HISTORY.map((row) => (
+                                    <td
+                                        key={row.year}
+                                        className="py-1.5 px-2 text-right font-medium text-primary"
+                                    >
+                                        {formatGdp(displayPlace[row.key])}
+                                    </td>
+                                ))}
+                            </tr>
+                            <tr className="border-t border-border-light">
+                                <td className="py-1.5 pr-2 text-left text-muted">Change</td>
+                                {GDP_HISTORY.map((row, i) => {
+                                    const prev = i > 0 ? GDP_HISTORY[i - 1] : null;
+                                    const change = prev
+                                        ? totalPctChange(displayPlace[prev.key], displayPlace[row.key])
+                                        : null;
+                                    return (
+                                        <td
+                                            key={row.year}
+                                            className={cn(
+                                                "py-1.5 px-2 text-right italic",
+                                                i === 0 ? "text-muted" : changeToneClass(change),
+                                            )}
+                                        >
+                                            {i === 0 ? "—" : formatPctChange(change)}
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        </tbody>
+                    </table>
+                    <PopulationTrendChart
+                        points={GDP_HISTORY.map((row) => ({ year: row.year, value: displayPlace[row.key] }))
+                            .filter((p): p is { year: number; value: number } => p.value != null)}
+                        formatValue={formatGdp}
+                        ariaLabel="GDP over time"
+                    />
                 </section>
             )}
 
@@ -543,29 +669,75 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
                         Age distribution
                     </p>
                     <AgeSexPyramid bands={displayPlace.age_sex_2020} />
-                    <p className="mt-2 text-xs text-muted">
-                        Source:{" "}
-                        <a
-                            href={PSA_AGESEX_URL}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-accent underline"
-                        >
-                            PSA — Age and Sex Distribution, 2020 Census of Population and Housing
-                        </a>{" "}
-                        (
-                        <a
-                            href={PSA_AGESEX_FILE_URL}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-accent underline"
-                        >
-                            household population by age group and sex, .xlsx
-                        </a>
-                        ).
-                    </p>
                 </section>
             )}
+
+            <section className="border-t border-border-light pt-3">
+                <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-muted">Sources</p>
+                <ul className="space-y-1 text-xs text-muted">
+                    <li>
+                        Population &amp; census history:{" "}
+                        <a
+                            href={PSA_PSGC_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent underline"
+                        >
+                            PSA — 2010, 2015, 2020 &amp; 2024 censuses
+                        </a>
+                    </li>
+                    {displayPlace.gdp_2024 != null && (
+                        <li>
+                            GDP (current prices):{" "}
+                            <a
+                                href={PSA_GDP_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-accent underline"
+                            >
+                                PSA — Gross Regional Domestic Product (OpenSTAT)
+                            </a>
+                        </li>
+                    )}
+                    {displayPlace.age_sex_2020 != null && displayPlace.age_sex_2020.length > 0 && (
+                        <li>
+                            Age &amp; sex distribution:{" "}
+                            <a
+                                href={PSA_AGESEX_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-accent underline"
+                            >
+                                PSA — 2020 Census of Population and Housing
+                            </a>{" "}
+                            (
+                            <a
+                                href={PSA_AGESEX_FILE_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-accent underline"
+                            >
+                                .xlsx
+                            </a>
+                            )
+                        </li>
+                    )}
+                    {displayPlace.assets_2024 != null && (
+                        <li>
+                            Total assets:{" "}
+                            <a
+                                href="https://www.coa.gov.ph/reports/annual-financial-reports/afr-local-government-units/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-accent underline"
+                            >
+                                COA — CY2024 Annual Financial Report (Local Government)
+                            </a>
+                        </li>
+                    )}
+                    <li>Area &amp; density: derived by Mapa from PSA boundary geometry (approximate).</li>
+                </ul>
+            </section>
 
             <div className="flex gap-2">
                 <button

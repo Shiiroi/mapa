@@ -1,0 +1,32 @@
+[
+  {
+    "level": "province",
+    "region": "National Capital Region (NCR)",
+    "province": "",
+    "name": "Pateros",
+    "gdp_2022": 9789310340,
+    "gdp_2023": 10663917920,
+    "gdp_2024": 11536591140,
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "region",
+    "region": "Negros Island Region (NIR)",
+    "province": "",
+    "name": "Negros Island Region (NIR)",
+    "gdp_2022": 643184669190,
+    "gdp_2023": 737669188430,
+    "gdp_2024": 806010141930,
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "province",
+    "region": "Region XII (SOCCSKSARGEN)",
+    "province": "",
+    "name": "Cotabato",
+    "gdp_2022": 135225546380,
+    "gdp_2023": 153975620020,
+    "gdp_2024": 164660174850,
+    "reason": "no PSGC match"
+  }
+]

@@ -51,6 +51,16 @@ export function compoundAnnualGrowthRate(
     return (Math.pow(to / from, 1 / t) - 1) * 100;
 }
 
+// Compound annual growth rate for a whole-year gap (for annual series like GDP).
+export function annualGrowthRate(
+    from: number | null | undefined,
+    to: number | null | undefined,
+    years: number,
+): number | null {
+    if (from == null || to == null || from <= 0 || to <= 0 || years <= 0) return null;
+    return (Math.pow(to / from, 1 / years) - 1) * 100;
+}
+
 export function formatGrowthRate(pgr: number | null): string {
     if (pgr == null) return "—";
     const sign = pgr > 0 ? "+" : "";
@@ -73,4 +83,15 @@ export function formatAssets(n: number | null | undefined): string {
     if (abs >= 1_000_000) return `${sign}₱${(abs / 1_000_000).toFixed(2)}M`;
     if (abs >= 1_000) return `${sign}₱${(abs / 1_000).toFixed(0)}K`;
     return `${sign}₱${abs.toLocaleString("en-PH")}`;
+}
+
+// Formats PSA GDP totals (same compact peso style as assets).
+export function formatGdp(n: number | null | undefined): string {
+    return formatAssets(n);
+}
+
+// Formats a per-capita peso figure with grouped digits, e.g. ₱608,500.
+export function formatPesoPerCapita(n: number | null | undefined): string {
+    if (n == null) return "—";
+    return `₱${Math.round(n).toLocaleString("en-PH")}`;
 }

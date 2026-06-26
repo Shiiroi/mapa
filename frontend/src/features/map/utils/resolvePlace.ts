@@ -47,6 +47,9 @@ function mergeStats<T extends DivisionStatsFields>(row: T): DivisionStatsFields 
         density_2024: row.density_2024 ?? null,
         pct_change_2020_2024: row.pct_change_2020_2024 ?? null,
         assets_2024: row.assets_2024 ?? null,
+        gdp_2022: row.gdp_2022 ?? null,
+        gdp_2023: row.gdp_2023 ?? null,
+        gdp_2024: row.gdp_2024 ?? null,
     };
 }
 

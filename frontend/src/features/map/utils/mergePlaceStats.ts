@@ -21,5 +21,8 @@ export function mergePlaceStats(
         density_2024: dbStats.density_2024 ?? place.density_2024,
         pct_change_2020_2024: dbStats.pct_change_2020_2024 ?? place.pct_change_2020_2024,
         assets_2024: dbStats.assets_2024 ?? place.assets_2024,
+        gdp_2022: dbStats.gdp_2022 ?? place.gdp_2022,
+        gdp_2023: dbStats.gdp_2023 ?? place.gdp_2023,
+        gdp_2024: dbStats.gdp_2024 ?? place.gdp_2024,
     };
 }

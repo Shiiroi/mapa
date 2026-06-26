@@ -171,6 +171,17 @@ export function MpaSidebar(props: MpaSidebarProps) {
                         </a>
                     </p>
                     <p>
+                        GDP:{" "}
+                        <a
+                            href="https://psa.gov.ph/statistics/nap-account"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent underline"
+                        >
+                            PSA Subnational Economic Accounts (current prices)
+                        </a>
+                    </p>
+                    <p>
                         Total assets:{" "}
                         <a
                             href="https://www.coa.gov.ph/reports/annual-financial-reports/afr-local-government-units/"

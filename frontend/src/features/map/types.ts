@@ -26,6 +26,9 @@ export interface DivisionStatsFields {
     density_2024: number | null;
     pct_change_2020_2024: number | null;
     assets_2024: number | null;
+    gdp_2022: number | null;
+    gdp_2023: number | null;
+    gdp_2024: number | null;
 }
 
 export interface DivisionStats extends DivisionStatsFields {

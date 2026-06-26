@@ -31,7 +31,7 @@ export default function MainPage() {
     );
 
     return (
-        <div className="flex h-dvh flex-col lg:grid lg:grid-cols-[3fr_2fr]">
+        <div className="flex h-dvh flex-col lg:grid lg:grid-cols-2">
             <div className="min-h-[55dvh] flex-1 lg:min-h-0">
                 <MpaMapPanel
                     country={country}
