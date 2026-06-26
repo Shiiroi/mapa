@@ -1,4 +1,5 @@
-// Sidebar: view switcher, scope pickers, download trigger, and attribution.
+// Sidebar: scope pickers, download trigger, and attribution. View level is
+// chosen on the map overlay (MpaMapPanel).
 
 import { cn } from "../../../lib/cn";
 import type { MpaLevel } from "../constants";
@@ -7,7 +8,6 @@ import type { BarangayGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../
 
 interface MpaDownloadPanelProps {
     level: MpaLevel;
-    onLevelChange: (level: MpaLevel) => void;
     regions: Region[];
     provinces: ProvinceGeoJSON[];
     municityMeta: MunicityMeta[];
@@ -32,16 +32,6 @@ interface MpaDownloadPanelProps {
     error: string | null;
 }
 
-const BASE_LEVELS: MpaLevel[] = ["country", "region", "province", "municipality"];
-
-const LEVEL_LABELS: Record<MpaLevel, string> = {
-    country: "Whole Philippines",
-    region: "Region",
-    province: "Province",
-    municipality: "Municipality",
-    barangay: "Barangay",
-};
-
 // Per level: the single sub-level a download can target ("self" = the unit's own
 // boundary). Barangays are only exportable within a single municipality.
 const EXPORT_OPTIONS: Partial<Record<MpaLevel, { kind: ExportKind; label: string }[]>> = {
@@ -62,7 +52,6 @@ const EXPORT_OPTIONS: Partial<Record<MpaLevel, { kind: ExportKind; label: string
 
 export function MpaDownloadPanel({
     level,
-    onLevelChange,
     regions,
     provinces,
     municityMeta,
@@ -86,10 +75,6 @@ export function MpaDownloadPanel({
     downloading,
     error,
 }: MpaDownloadPanelProps) {
-    const levels: MpaLevel[] = selectedMunicityPsgc
-        ? [...BASE_LEVELS, "barangay"]
-        : BASE_LEVELS;
-
     const filteredProvinces = regionFilterPsgc
         ? provinces.filter((p) => p.region_psgc === regionFilterPsgc)
         : provinces;
@@ -101,43 +86,11 @@ export function MpaDownloadPanel({
     return (
         <div className="flex min-h-0 flex-1 flex-col">
             <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
-                <section>
-                    <label className="mb-2 block text-xs font-medium uppercase tracking-wide text-muted">
-                        View level
-                    </label>
-                    <div className="space-y-0.5 rounded-lg border border-border-light bg-surface p-1">
-                        {levels.map((l, i) => (
-                            <button
-                                key={l}
-                                type="button"
-                                onClick={() => onLevelChange(l)}
-                                style={{ paddingLeft: `${10 + i * 14}px` }}
-                                className={cn(
-                                    "flex w-full items-center gap-1.5 rounded-md py-2 pr-3 text-left text-sm transition-colors",
-                                    level === l
-                                        ? "bg-accent font-medium text-white"
-                                        : "text-primary hover:bg-white",
-                                )}
-                            >
-                                {i > 0 && (
-                                    <span
-                                        aria-hidden
-                                        className={cn(
-                                            "font-mono text-xs leading-none",
-                                            level === l ? "text-white/70" : "text-muted",
-                                        )}
-                                    >
-                                        └
-                                    </span>
-                                )}
-                                {LEVEL_LABELS[l]}
-                            </button>
-                        ))}
-                    </div>
-                </section>
-
                 <section className="space-y-3">
                     <label className="block text-xs font-medium uppercase tracking-wide text-muted">Scope</label>
+                    <p className="text-xs text-muted">
+                        Switch the view level using the control on the map.
+                    </p>
 
                     {level === "country" && (
                         <p className="text-sm text-primary">Whole Philippines outline (single shape)</p>
@@ -231,14 +184,14 @@ export function MpaDownloadPanel({
                     {EXPORT_OPTIONS[level] && (
                         <div>
                             <label className="mb-1 block text-sm text-primary">Download as</label>
-                            <div className="space-y-0.5 rounded-lg border border-border-light bg-surface p-1">
+                            <div className="flex gap-1 rounded-lg border border-border-light bg-surface p-1">
                                 {EXPORT_OPTIONS[level]!.map((opt) => (
                                     <button
                                         key={opt.kind}
                                         type="button"
                                         onClick={() => onExportKindChange(opt.kind)}
                                         className={cn(
-                                            "w-full rounded-md px-3 py-1.5 text-left text-sm transition-colors",
+                                            "flex-1 rounded-md px-3 py-1.5 text-center text-sm transition-colors",
                                             exportKind === opt.kind
                                                 ? "bg-accent font-medium text-white"
                                                 : "text-primary hover:bg-white",

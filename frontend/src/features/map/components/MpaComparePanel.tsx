@@ -7,8 +7,6 @@ import { useDivisionStats } from "../hooks/useDivisionStats";
 import { fetchBarangaysByMunicity } from "../services/mapApi";
 import type { MpaLevel } from "../constants";
 import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
-import type { DensityBenchmarks } from "../utils/densityInsights";
-import { buildDensityInsight } from "../utils/densityInsights";
 import { formatAreaKm2, formatDensity, formatPctChange, formatPopulation } from "../utils/formatStats";
 import { mergePlaceStats } from "../utils/mergePlaceStats";
 import { resolveSelectedPlace, type ResolvedPlace } from "../utils/resolvePlace";
@@ -35,7 +33,6 @@ interface MpaComparePanelProps {
     provinces: ProvinceGeoJSON[];
     municities: MunicityGeoJSON[];
     municityMeta: MunicityMeta[];
-    benchmarks: DensityBenchmarks;
     /** Snapshot of the place currently selected on the map (null if none). */
     currentSelection: CompareSelection | null;
     /** Name of the currently selected place, for the button label. */
@@ -48,7 +45,9 @@ function emptySelection(level: MpaLevel): CompareSelection {
 
 function resolveComparePlace(
     sel: CompareSelection,
-    ctx: Omit<MpaComparePanelProps, "benchmarks" | "barangaysByMunicity"> & { barangays: BarangayGeoJSON[] },
+    ctx: Omit<MpaComparePanelProps, "currentSelection" | "currentSelectionName"> & {
+        barangays: BarangayGeoJSON[];
+    },
 ): ResolvedPlace | null {
     return resolveSelectedPlace({
         level: sel.level,
@@ -197,7 +196,6 @@ export function MpaComparePanel({
     provinces,
     municities,
     municityMeta,
-    benchmarks,
     currentSelection,
     currentSelectionName,
 }: MpaComparePanelProps) {
@@ -242,9 +240,6 @@ export function MpaComparePanel({
         [placeB, statsBQuery.data],
     );
 
-    const insightA = displayA ? buildDensityInsight(displayA.density_2024, displayA.level, benchmarks) : null;
-    const insightB = displayB ? buildDensityInsight(displayB.density_2024, displayB.level, benchmarks) : null;
-
     return (
         <div className="space-y-4">
             <p className="text-sm text-muted">Pick two places and compare population, area, and density side by side.</p>
@@ -285,6 +280,8 @@ export function MpaComparePanel({
                             </tr>
                         </thead>
                         <tbody>
+                            <MetricRow label="Population [2015]" a={formatPopulation(displayA.pop_2015)} b={formatPopulation(displayB.pop_2015)} />
+                            <MetricRow label="Population [2020]" a={formatPopulation(displayA.pop_2020)} b={formatPopulation(displayB.pop_2020)} />
                             <MetricRow label="Population [2024]" a={formatPopulation(displayA.pop_2024)} b={formatPopulation(displayB.pop_2024)} />
                             <MetricRow label="Area (km²)" a={formatAreaKm2(displayA.area_km2)} b={formatAreaKm2(displayB.area_km2)} />
                             <MetricRow
@@ -299,21 +296,6 @@ export function MpaComparePanel({
                             />
                         </tbody>
                     </table>
-
-                    {(insightA || insightB) && (
-                        <div className="grid grid-cols-1 gap-2">
-                            {insightA && (
-                                <div className="rounded-lg border border-accent/20 bg-accent/5 px-3 py-2 text-xs text-primary">
-                                    <span className="font-medium text-accent">{displayA.name}:</span> {insightA}
-                                </div>
-                            )}
-                            {insightB && (
-                                <div className="rounded-lg border border-accent/20 bg-accent/5 px-3 py-2 text-xs text-primary">
-                                    <span className="font-medium text-accent">{displayB.name}:</span> {insightB}
-                                </div>
-                            )}
-                        </div>
-                    )}
                 </>
             ) : (
                 <p className={cn("text-sm text-muted")}>Select both places to see the comparison table.</p>

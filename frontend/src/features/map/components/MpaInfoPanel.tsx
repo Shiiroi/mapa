@@ -4,8 +4,6 @@ import { useMemo } from "react";
 import { cn } from "../../../lib/cn";
 import { downloadJsonFile, downloadTextFile, slugifyFilename } from "../../../lib/downloadFile";
 import { useDivisionStats } from "../hooks/useDivisionStats";
-import type { DensityBenchmarks } from "../utils/densityInsights";
-import { buildDensityInsight } from "../utils/densityInsights";
 import {
     formatAnnualizedChange,
     formatAreaKm2,
@@ -18,7 +16,17 @@ import type { ResolvedPlace } from "../utils/resolvePlace";
 
 interface MpaInfoPanelProps {
     place: ResolvedPlace | null;
-    benchmarks: DensityBenchmarks;
+}
+
+const POP_HISTORY: { year: number; key: "pop_2015" | "pop_2020" | "pop_2024" }[] = [
+    { year: 2015, key: "pop_2015" },
+    { year: 2020, key: "pop_2020" },
+    { year: 2024, key: "pop_2024" },
+];
+
+function pctChange(from: number | null, to: number | null): number | null {
+    if (from == null || to == null || from === 0) return null;
+    return ((to - from) / from) * 100;
 }
 
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
@@ -31,16 +39,11 @@ function StatCard({ label, value, sub }: { label: string; value: string; sub?: s
     );
 }
 
-export function MpaInfoPanel({ place, benchmarks }: MpaInfoPanelProps) {
+export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
     const statsQuery = useDivisionStats(place?.psgc ?? null);
     const displayPlace = useMemo(
         () => (place ? mergePlaceStats(place, statsQuery.data) : null),
         [place, statsQuery.data],
-    );
-
-    const insight = useMemo(
-        () => (displayPlace ? buildDensityInsight(displayPlace.density_2024, displayPlace.level, benchmarks) : null),
-        [displayPlace, benchmarks],
     );
 
     if (!place) {
@@ -128,15 +131,46 @@ export function MpaInfoPanel({ place, benchmarks }: MpaInfoPanelProps) {
                 />
             </div>
 
-            {displayPlace.pop_2015 != null && (
-                <p className="text-xs text-muted">2015 population: {formatPopulation(displayPlace.pop_2015)}</p>
-            )}
+            <p className="text-xs text-muted">
+                Area is computed from the boundary geometry (geodesic), not an official figure, so
+                it is approximate; density is derived from it.
+            </p>
 
-            {insight && (
-                <div className="rounded-lg border border-accent/20 bg-accent/5 px-3 py-2.5 text-sm text-primary">
-                    <p className="text-xs font-medium uppercase tracking-wide text-accent">Density insight</p>
-                    <p className="mt-1 leading-relaxed">{insight}</p>
-                </div>
+            {(displayPlace.pop_2015 != null ||
+                displayPlace.pop_2020 != null ||
+                displayPlace.pop_2024 != null) && (
+                <section>
+                    <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-muted">
+                        Population history (census)
+                    </p>
+                    <table className="w-full border-collapse text-sm">
+                        <thead>
+                            <tr className="text-xs text-muted">
+                                <th className="py-1 pr-2 text-left font-medium">Census</th>
+                                <th className="py-1 px-2 text-right font-medium">Population</th>
+                                <th className="py-1 pl-2 text-right font-medium">Change</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {POP_HISTORY.map((row, i) => {
+                                const value = displayPlace[row.key];
+                                const prev = i > 0 ? displayPlace[POP_HISTORY[i - 1].key] : null;
+                                const change = i > 0 ? pctChange(prev, value) : null;
+                                return (
+                                    <tr key={row.year} className="border-t border-border-light">
+                                        <td className="py-1.5 pr-2 text-left text-muted">{row.year}</td>
+                                        <td className="py-1.5 px-2 text-right font-medium text-primary">
+                                            {formatPopulation(value)}
+                                        </td>
+                                        <td className="py-1.5 pl-2 text-right text-muted">
+                                            {i === 0 ? "—" : formatPctChange(change)}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </section>
             )}
 
             <div className="flex gap-2">

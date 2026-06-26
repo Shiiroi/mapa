@@ -5,7 +5,6 @@ import { cn } from "../../../lib/cn";
 import type { MpaLevel } from "../constants";
 import type { ExportKind } from "../hooks/useMpaDownload";
 import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
-import type { DensityBenchmarks } from "../utils/densityInsights";
 import { resolveSelectedPlace } from "../utils/resolvePlace";
 import { MpaComparePanel, type CompareSelection } from "./MpaComparePanel";
 import { MpaDownloadPanel } from "./MpaDownloadPanel";
@@ -15,7 +14,6 @@ export type SidebarTab = "geojson" | "info" | "compare";
 
 interface MpaSidebarProps {
     level: MpaLevel;
-    onLevelChange: (level: MpaLevel) => void;
     regions: Region[];
     provinces: ProvinceGeoJSON[];
     municities: MunicityGeoJSON[];
@@ -40,7 +38,6 @@ interface MpaSidebarProps {
     onDownload: () => void;
     downloading: boolean;
     error: string | null;
-    benchmarks: DensityBenchmarks;
 }
 
 const TABS: { id: SidebarTab; label: string }[] = [
@@ -103,7 +100,6 @@ export function MpaSidebar(props: MpaSidebarProps) {
                 {tab === "geojson" && (
                     <MpaDownloadPanel
                         level={props.level}
-                        onLevelChange={props.onLevelChange}
                         regions={props.regions}
                         provinces={props.provinces}
                         municityMeta={props.municityMeta}
@@ -131,7 +127,7 @@ export function MpaSidebar(props: MpaSidebarProps) {
 
                 {tab === "info" && (
                     <div className="flex-1 overflow-y-auto px-5 py-5">
-                        <MpaInfoPanel place={selectedPlace} benchmarks={props.benchmarks} />
+                        <MpaInfoPanel place={selectedPlace} />
                     </div>
                 )}
 
@@ -143,7 +139,6 @@ export function MpaSidebar(props: MpaSidebarProps) {
                             provinces={props.provinces}
                             municities={props.municities}
                             municityMeta={props.municityMeta}
-                            benchmarks={props.benchmarks}
                             currentSelection={currentSelection}
                             currentSelectionName={selectedPlace?.name ?? null}
                         />

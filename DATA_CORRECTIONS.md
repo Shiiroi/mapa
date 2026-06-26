@@ -63,6 +63,15 @@ PSGC publications:
 Pipeline: `pnpm build:geo` attaches stats to geo JSON; `pnpm seed:stats` upserts
 `division_stats` in Supabase for API fallback.
 
+> **Area is computed from geospatial shapes.** Population counts come from PSA
+> PSGC publications, but `area_km2` is **not** an official figure — it is
+> calculated directly from each boundary polygon (geodesic area on WGS84 via
+> `@turf/area` for region/province/municipality and `pyproj` for barangay/
+> country in `shape_to_geojson.py`). Because boundary geometry is simplified and
+> generalized, these areas are **approximate** and may differ slightly from
+> official land-area statistics. Any value derived from area — notably
+> `density_2024` (`pop_2024 / area_km2`) — inherits the same approximation.
+
 ---
 
 ## Barangay shapefile join corrections
