@@ -32,6 +32,38 @@ export const AFR_REGION_TO_PSGC: Record<string, string> = {
     "REGION XIII": "1600000000",
 };
 
+/** Census / household xlsx region labels -> AFR region key. */
+export const CENSUS_REGION_LABEL_TO_AFR: Record<string, string> = {
+    PHILIPPINES: "PHILIPPINES",
+    "NATIONAL CAPITAL REGION (NCR)": "NCR",
+    "NATIONAL CAPITAL REGION": "NCR",
+    "CORDILLERA ADMINISTRATIVE REGION (CAR)": "CAR",
+    "CORDILLERA ADMINISTRATIVE REGION": "CAR",
+    "REGION I (ILOCOS REGION)": "REGION I",
+    "REGION II (CAGAYAN VALLEY)": "REGION II",
+    "REGION III (CENTRAL LUZON)": "REGION III",
+    "REGION IV-A (CALABARZON)": "REGION IV-A",
+    CALABARZON: "REGION IV-A",
+    "REGION IV-B (MIMAROPA)": "REGION IV-B",
+    "MIMAROPA REGION": "REGION IV-B",
+    MIMAROPA: "REGION IV-B",
+    "REGION V (BICOL REGION)": "REGION V",
+    "REGION VI (WESTERN VISAYAS)": "REGION VI",
+    "REGION VII (CENTRAL VISAYAS)": "REGION VII",
+    "NEGROS ISLAND REGION (NIR)": "NIR",
+    "NEGROS ISLAND REGION": "NIR",
+    "REGION VIII (EASTERN VISAYAS)": "REGION VIII",
+    "REGION IX (ZAMBOANGA PENINSULA)": "REGION IX",
+    "REGION X (NORTHERN MINDANAO)": "REGION X",
+    "REGION XI (DAVAO REGION)": "REGION XI",
+    "REGION XII (SOCCSKSARGEN)": "REGION XII",
+    "REGION XIII (CARAGA)": "REGION XIII",
+    CARAGA: "REGION XIII",
+    "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)": "BARMM",
+    "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO": "BARMM",
+    BARMM: "BARMM",
+};
+
 /** Scoped aliases: "province|name" -> canonical normalized PSGC name. */
 const SCOPED_ALIASES: Record<string, string> = {
     "lanao del norte|r. magsaysay": "MAGSAYSAY",
@@ -220,6 +252,66 @@ export function normalizePsgcName(name: string): string {
 export function regionPsgcFromAfrLabel(label: string): string | null {
     const key = normalizeAfrRegion(label);
     return AFR_REGION_TO_PSGC[key] ?? null;
+}
+
+export function normalizeCensusRegionLabel(label: string): string {
+    return stripDiacritics(label).trim().toUpperCase().replace(/\s+/g, " ");
+}
+
+export function regionPsgcFromCensusLabel(label: string): string | null {
+    const norm = normalizeCensusRegionLabel(label);
+    const afrKey = CENSUS_REGION_LABEL_TO_AFR[norm];
+    if (afrKey && afrKey !== "PHILIPPINES" && afrKey !== "NIR") {
+        return AFR_REGION_TO_PSGC[afrKey] ?? null;
+    }
+    return regionPsgcFromAfrLabel(label);
+}
+
+export interface PlaceRow {
+    level: string;
+    region: string;
+    province: string;
+    name: string;
+}
+
+const EMPTY_AFR_FIN: Pick<
+    AfrRawRow,
+    | "assets"
+    | "liabilities"
+    | "equity"
+    | "revenue"
+    | "expenses"
+    | "net_assistance_subsidy"
+    | "surplus_deficit"
+    | "cash_begin"
+    | "net_cash"
+    | "cash_end"
+> = {
+    assets: null,
+    liabilities: null,
+    equity: null,
+    revenue: null,
+    expenses: null,
+    net_assistance_subsidy: null,
+    surplus_deficit: null,
+    cash_begin: null,
+    net_cash: null,
+    cash_end: null,
+};
+
+export function censusRegionToAfrLabel(region: string): string {
+    if (!region.trim()) return region;
+    const norm = normalizeCensusRegionLabel(region);
+    return CENSUS_REGION_LABEL_TO_AFR[norm] ?? region;
+}
+
+export function matchPlace(row: PlaceRow, indexes: PsgcIndexes): string | null {
+    if (row.level === "country") return "0000000000";
+    if (row.level === "region") {
+        return regionPsgcFromCensusLabel(row.name);
+    }
+    const afrRegion = censusRegionToAfrLabel(row.region);
+    return matchAfrRow({ ...EMPTY_AFR_FIN, ...row, region: afrRegion }, indexes);
 }
 
 export function loadPsgcIndexes(publicDir: string): PsgcIndexes {

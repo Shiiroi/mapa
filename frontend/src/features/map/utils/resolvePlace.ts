@@ -36,9 +36,13 @@ interface ResolvePlaceInput {
 
 function mergeStats<T extends DivisionStatsFields>(row: T): DivisionStatsFields {
     return {
+        pop_2010: row.pop_2010 ?? null,
         pop_2015: row.pop_2015 ?? null,
         pop_2020: row.pop_2020 ?? null,
         pop_2024: row.pop_2024 ?? null,
+        pop_male_2020: row.pop_male_2020 ?? null,
+        pop_female_2020: row.pop_female_2020 ?? null,
+        age_sex_2020: row.age_sex_2020 ?? null,
         area_km2: row.area_km2 ?? null,
         density_2024: row.density_2024 ?? null,
         pct_change_2020_2024: row.pct_change_2020_2024 ?? null,

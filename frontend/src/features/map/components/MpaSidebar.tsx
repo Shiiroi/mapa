@@ -156,13 +156,24 @@ export function MpaSidebar(props: MpaSidebarProps) {
                             rel="noopener noreferrer"
                             className="text-accent underline"
                         >
-                            Philippine Statistics Authority (PSGC)
+                            Philippine Statistics Authority (PSGC &amp; 2010–2024 censuses)
+                        </a>
+                    </p>
+                    <p>
+                        Age &amp; sex distribution:{" "}
+                        <a
+                            href="https://psa.gov.ph/content/age-and-sex-distribution-philippine-population-2020-census-population-and-housing"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent underline"
+                        >
+                            PSA 2020 Census of Population and Housing
                         </a>
                     </p>
                     <p>
                         Total assets:{" "}
                         <a
-                            href="https://www.coa.gov.ph/reports/annual-financial-reports/"
+                            href="https://www.coa.gov.ph/reports/annual-financial-reports/afr-local-government-units/"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-accent underline"

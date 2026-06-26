@@ -1,0 +1,7686 @@
+[
+  {
+    "level": "region",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "",
+    "name": "CORDILLERA ADMINISTRATIVE REGION",
+    "pop_male_2020": 917431,
+    "pop_female_2020": 873690,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 158412,
+        "male": 81950,
+        "female": 76462
+      },
+      {
+        "age": "5 - 9",
+        "both": 171000,
+        "male": 89241,
+        "female": 81759
+      },
+      {
+        "age": "10 - 14",
+        "both": 175745,
+        "male": 90577,
+        "female": 85168
+      },
+      {
+        "age": "15 - 19",
+        "both": 178302,
+        "male": 90959,
+        "female": 87343
+      },
+      {
+        "age": "20 - 24",
+        "both": 174000,
+        "male": 89131,
+        "female": 84869
+      },
+      {
+        "age": "25 - 29",
+        "both": 159256,
+        "male": 82705,
+        "female": 76551
+      },
+      {
+        "age": "30 - 34",
+        "both": 140033,
+        "male": 73366,
+        "female": 66667
+      },
+      {
+        "age": "35 - 39",
+        "both": 121818,
+        "male": 64290,
+        "female": 57528
+      },
+      {
+        "age": "40 - 44",
+        "both": 104424,
+        "male": 54819,
+        "female": 49605
+      },
+      {
+        "age": "45 - 49",
+        "both": 88546,
+        "male": 46262,
+        "female": 42284
+      },
+      {
+        "age": "50 - 54",
+        "both": 81832,
+        "male": 41978,
+        "female": 39854
+      },
+      {
+        "age": "55 - 59",
+        "both": 71075,
+        "male": 36101,
+        "female": 34974
+      },
+      {
+        "age": "60 - 64",
+        "both": 58858,
+        "male": 29029,
+        "female": 29829
+      },
+      {
+        "age": "65 - 69",
+        "both": 42484,
+        "male": 20297,
+        "female": 22187
+      },
+      {
+        "age": "70 - 74",
+        "both": 27216,
+        "male": 12257,
+        "female": 14959
+      },
+      {
+        "age": "75 - 79",
+        "both": 16714,
+        "male": 6853,
+        "female": 9861
+      },
+      {
+        "age": "80 years and over",
+        "both": 21406,
+        "male": 7616,
+        "female": 13790
+      }
+    ],
+    "reason": "duplicate PSGC 1400000000"
+  },
+  {
+    "level": "city",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "ABRA",
+    "name": "BENGUET (excluding CITY OF BAGUIO)",
+    "pop_male_2020": 238436,
+    "pop_female_2020": 221032,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 44600,
+        "male": 22964,
+        "female": 21636
+      },
+      {
+        "age": "5 - 9",
+        "both": 44600,
+        "male": 23231,
+        "female": 21369
+      },
+      {
+        "age": "10 - 14",
+        "both": 43730,
+        "male": 22403,
+        "female": 21327
+      },
+      {
+        "age": "15 - 19",
+        "both": 43789,
+        "male": 22330,
+        "female": 21459
+      },
+      {
+        "age": "20 - 24",
+        "both": 44984,
+        "male": 23155,
+        "female": 21829
+      },
+      {
+        "age": "25 - 29",
+        "both": 42441,
+        "male": 22401,
+        "female": 20040
+      },
+      {
+        "age": "30 - 34",
+        "both": 38230,
+        "male": 20432,
+        "female": 17798
+      },
+      {
+        "age": "35 - 39",
+        "both": 32625,
+        "male": 17559,
+        "female": 15066
+      },
+      {
+        "age": "40 - 44",
+        "both": 26865,
+        "male": 14382,
+        "female": 12483
+      },
+      {
+        "age": "45 - 49",
+        "both": 21946,
+        "male": 11778,
+        "female": 10168
+      },
+      {
+        "age": "50 - 54",
+        "both": 20356,
+        "male": 10639,
+        "female": 9717
+      },
+      {
+        "age": "55 - 59",
+        "both": 17733,
+        "male": 9350,
+        "female": 8383
+      },
+      {
+        "age": "60 - 64",
+        "both": 14108,
+        "male": 7211,
+        "female": 6897
+      },
+      {
+        "age": "65 - 69",
+        "both": 9629,
+        "male": 4759,
+        "female": 4870
+      },
+      {
+        "age": "70 - 74",
+        "both": 5953,
+        "male": 2746,
+        "female": 3207
+      },
+      {
+        "age": "75 - 79",
+        "both": 3695,
+        "male": 1573,
+        "female": 2122
+      },
+      {
+        "age": "80 years and over",
+        "both": 4184,
+        "male": 1523,
+        "female": 2661
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION II (CAGAYAN VALLEY)",
+    "province": "CAGAYAN",
+    "name": "PEÑABLANCA",
+    "pop_male_2020": 25657,
+    "pop_female_2020": 24584,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 4596,
+        "male": 2398,
+        "female": 2198
+      },
+      {
+        "age": "5 - 9",
+        "both": 5152,
+        "male": 2666,
+        "female": 2486
+      },
+      {
+        "age": "10 - 14",
+        "both": 5030,
+        "male": 2572,
+        "female": 2458
+      },
+      {
+        "age": "15 - 19",
+        "both": 4716,
+        "male": 2454,
+        "female": 2262
+      },
+      {
+        "age": "20 - 24",
+        "both": 4658,
+        "male": 2440,
+        "female": 2218
+      },
+      {
+        "age": "25 - 29",
+        "both": 4234,
+        "male": 2190,
+        "female": 2044
+      },
+      {
+        "age": "30 - 34",
+        "both": 3863,
+        "male": 1981,
+        "female": 1882
+      },
+      {
+        "age": "35 - 39",
+        "both": 3262,
+        "male": 1664,
+        "female": 1598
+      },
+      {
+        "age": "40 - 44",
+        "both": 3101,
+        "male": 1634,
+        "female": 1467
+      },
+      {
+        "age": "45 - 49",
+        "both": 2666,
+        "male": 1382,
+        "female": 1284
+      },
+      {
+        "age": "50 - 54",
+        "both": 2227,
+        "male": 1142,
+        "female": 1085
+      },
+      {
+        "age": "55 - 59",
+        "both": 2078,
+        "male": 1011,
+        "female": 1067
+      },
+      {
+        "age": "60 - 64",
+        "both": 1814,
+        "male": 878,
+        "female": 936
+      },
+      {
+        "age": "65 - 69",
+        "both": 1261,
+        "male": 594,
+        "female": 667
+      },
+      {
+        "age": "70 - 74",
+        "both": 694,
+        "male": 313,
+        "female": 381
+      },
+      {
+        "age": "75 - 79",
+        "both": 361,
+        "male": 142,
+        "female": 219
+      },
+      {
+        "age": "80 years and over",
+        "both": 528,
+        "male": 196,
+        "female": 332
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "city",
+    "region": "REGION II (CAGAYAN VALLEY)",
+    "province": "RIZAL",
+    "name": "TUGUEGARAO CITY (Capital)",
+    "pop_male_2020": 81558,
+    "pop_female_2020": 83686,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 12858,
+        "male": 6632,
+        "female": 6226
+      },
+      {
+        "age": "5 - 9",
+        "both": 14434,
+        "male": 7582,
+        "female": 6852
+      },
+      {
+        "age": "10 - 14",
+        "both": 14798,
+        "male": 7629,
+        "female": 7169
+      },
+      {
+        "age": "15 - 19",
+        "both": 14815,
+        "male": 7463,
+        "female": 7352
+      },
+      {
+        "age": "20 - 24",
+        "both": 16168,
+        "male": 8032,
+        "female": 8136
+      },
+      {
+        "age": "25 - 29",
+        "both": 14633,
+        "male": 7152,
+        "female": 7481
+      },
+      {
+        "age": "30 - 34",
+        "both": 13161,
+        "male": 6647,
+        "female": 6514
+      },
+      {
+        "age": "35 - 39",
+        "both": 11942,
+        "male": 6070,
+        "female": 5872
+      },
+      {
+        "age": "40 - 44",
+        "both": 10747,
+        "male": 5254,
+        "female": 5493
+      },
+      {
+        "age": "45 - 49",
+        "both": 8899,
+        "male": 4421,
+        "female": 4478
+      },
+      {
+        "age": "50 - 54",
+        "both": 8064,
+        "male": 3904,
+        "female": 4160
+      },
+      {
+        "age": "55 - 59",
+        "both": 7447,
+        "male": 3519,
+        "female": 3928
+      },
+      {
+        "age": "60 - 64",
+        "both": 6531,
+        "male": 3010,
+        "female": 3521
+      },
+      {
+        "age": "65 - 69",
+        "both": 4731,
+        "male": 2074,
+        "female": 2657
+      },
+      {
+        "age": "70 - 74",
+        "both": 2760,
+        "male": 1111,
+        "female": 1649
+      },
+      {
+        "age": "75 - 79",
+        "both": 1409,
+        "male": 489,
+        "female": 920
+      },
+      {
+        "age": "80 years and over",
+        "both": 1847,
+        "male": 569,
+        "female": 1278
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "province",
+    "region": "REGION II (CAGAYAN VALLEY)",
+    "province": "",
+    "name": "QUEZON",
+    "pop_male_2020": 13931,
+    "pop_female_2020": 13106,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 2471,
+        "male": 1276,
+        "female": 1195
+      },
+      {
+        "age": "5 - 9",
+        "both": 2845,
+        "male": 1482,
+        "female": 1363
+      },
+      {
+        "age": "10 - 14",
+        "both": 3000,
+        "male": 1594,
+        "female": 1406
+      },
+      {
+        "age": "15 - 19",
+        "both": 2552,
+        "male": 1321,
+        "female": 1231
+      },
+      {
+        "age": "20 - 24",
+        "both": 2195,
+        "male": 1128,
+        "female": 1067
+      },
+      {
+        "age": "25 - 29",
+        "both": 2237,
+        "male": 1121,
+        "female": 1116
+      },
+      {
+        "age": "30 - 34",
+        "both": 2088,
+        "male": 1108,
+        "female": 980
+      },
+      {
+        "age": "35 - 39",
+        "both": 1693,
+        "male": 884,
+        "female": 809
+      },
+      {
+        "age": "40 - 44",
+        "both": 1624,
+        "male": 824,
+        "female": 800
+      },
+      {
+        "age": "45 - 49",
+        "both": 1433,
+        "male": 767,
+        "female": 666
+      },
+      {
+        "age": "50 - 54",
+        "both": 1323,
+        "male": 651,
+        "female": 672
+      },
+      {
+        "age": "55 - 59",
+        "both": 1115,
+        "male": 571,
+        "female": 544
+      },
+      {
+        "age": "60 - 64",
+        "both": 962,
+        "male": 498,
+        "female": 464
+      },
+      {
+        "age": "65 - 69",
+        "both": 636,
+        "male": 330,
+        "female": 306
+      },
+      {
+        "age": "70 - 74",
+        "both": 373,
+        "male": 166,
+        "female": 207
+      },
+      {
+        "age": "75 - 79",
+        "both": 226,
+        "male": 98,
+        "female": 128
+      },
+      {
+        "age": "80 years and over",
+        "both": 264,
+        "male": 112,
+        "female": 152
+      }
+    ],
+    "reason": "duplicate PSGC 0405600000"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION III (CENTRAL LUZON)",
+    "province": "BULACAN",
+    "name": "BALIUAG",
+    "pop_male_2020": 84677,
+    "pop_female_2020": 83236,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 15693,
+        "male": 8139,
+        "female": 7554
+      },
+      {
+        "age": "5 - 9",
+        "both": 15842,
+        "male": 8190,
+        "female": 7652
+      },
+      {
+        "age": "10 - 14",
+        "both": 15809,
+        "male": 8197,
+        "female": 7612
+      },
+      {
+        "age": "15 - 19",
+        "both": 15295,
+        "male": 7835,
+        "female": 7460
+      },
+      {
+        "age": "20 - 24",
+        "both": 15646,
+        "male": 7962,
+        "female": 7684
+      },
+      {
+        "age": "25 - 29",
+        "both": 14715,
+        "male": 7585,
+        "female": 7130
+      },
+      {
+        "age": "30 - 34",
+        "both": 12640,
+        "male": 6524,
+        "female": 6116
+      },
+      {
+        "age": "35 - 39",
+        "both": 11872,
+        "male": 6013,
+        "female": 5859
+      },
+      {
+        "age": "40 - 44",
+        "both": 11083,
+        "male": 5640,
+        "female": 5443
+      },
+      {
+        "age": "45 - 49",
+        "both": 9187,
+        "male": 4689,
+        "female": 4498
+      },
+      {
+        "age": "50 - 54",
+        "both": 8260,
+        "male": 4086,
+        "female": 4174
+      },
+      {
+        "age": "55 - 59",
+        "both": 6793,
+        "male": 3312,
+        "female": 3481
+      },
+      {
+        "age": "60 - 64",
+        "both": 5480,
+        "male": 2594,
+        "female": 2886
+      },
+      {
+        "age": "65 - 69",
+        "both": 3858,
+        "male": 1794,
+        "female": 2064
+      },
+      {
+        "age": "70 - 74",
+        "both": 2721,
+        "male": 1138,
+        "female": 1583
+      },
+      {
+        "age": "75 - 79",
+        "both": 1449,
+        "male": 502,
+        "female": 947
+      },
+      {
+        "age": "80 years and over",
+        "both": 1570,
+        "male": 477,
+        "female": 1093
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION III (CENTRAL LUZON)",
+    "province": "NUEVA ECIJA",
+    "name": "PEÑARANDA",
+    "pop_male_2020": 16337,
+    "pop_female_2020": 15809,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 2969,
+        "male": 1515,
+        "female": 1454
+      },
+      {
+        "age": "5 - 9",
+        "both": 3176,
+        "male": 1682,
+        "female": 1494
+      },
+      {
+        "age": "10 - 14",
+        "both": 3132,
+        "male": 1615,
+        "female": 1517
+      },
+      {
+        "age": "15 - 19",
+        "both": 3064,
+        "male": 1616,
+        "female": 1448
+      },
+      {
+        "age": "20 - 24",
+        "both": 2880,
+        "male": 1510,
+        "female": 1370
+      },
+      {
+        "age": "25 - 29",
+        "both": 2604,
+        "male": 1306,
+        "female": 1298
+      },
+      {
+        "age": "30 - 34",
+        "both": 2188,
+        "male": 1119,
+        "female": 1069
+      },
+      {
+        "age": "35 - 39",
+        "both": 2029,
+        "male": 1027,
+        "female": 1002
+      },
+      {
+        "age": "40 - 44",
+        "both": 2040,
+        "male": 1033,
+        "female": 1007
+      },
+      {
+        "age": "45 - 49",
+        "both": 1775,
+        "male": 881,
+        "female": 894
+      },
+      {
+        "age": "50 - 54",
+        "both": 1589,
+        "male": 821,
+        "female": 768
+      },
+      {
+        "age": "55 - 59",
+        "both": 1373,
+        "male": 716,
+        "female": 657
+      },
+      {
+        "age": "60 - 64",
+        "both": 1170,
+        "male": 581,
+        "female": 589
+      },
+      {
+        "age": "65 - 69",
+        "both": 852,
+        "male": 396,
+        "female": 456
+      },
+      {
+        "age": "70 - 74",
+        "both": 592,
+        "male": 253,
+        "female": 339
+      },
+      {
+        "age": "75 - 79",
+        "both": 334,
+        "male": 146,
+        "female": 188
+      },
+      {
+        "age": "80 years and over",
+        "both": 379,
+        "male": 120,
+        "female": 259
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "province",
+    "region": "REGION III (CENTRAL LUZON)",
+    "province": "",
+    "name": "QUEZON",
+    "pop_male_2020": 21322,
+    "pop_female_2020": 20519,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 4038,
+        "male": 2067,
+        "female": 1971
+      },
+      {
+        "age": "5 - 9",
+        "both": 4314,
+        "male": 2225,
+        "female": 2089
+      },
+      {
+        "age": "10 - 14",
+        "both": 4322,
+        "male": 2277,
+        "female": 2045
+      },
+      {
+        "age": "15 - 19",
+        "both": 3717,
+        "male": 1884,
+        "female": 1833
+      },
+      {
+        "age": "20 - 24",
+        "both": 3470,
+        "male": 1787,
+        "female": 1683
+      },
+      {
+        "age": "25 - 29",
+        "both": 3434,
+        "male": 1795,
+        "female": 1639
+      },
+      {
+        "age": "30 - 34",
+        "both": 2988,
+        "male": 1504,
+        "female": 1484
+      },
+      {
+        "age": "35 - 39",
+        "both": 2954,
+        "male": 1522,
+        "female": 1432
+      },
+      {
+        "age": "40 - 44",
+        "both": 2543,
+        "male": 1337,
+        "female": 1206
+      },
+      {
+        "age": "45 - 49",
+        "both": 2110,
+        "male": 1074,
+        "female": 1036
+      },
+      {
+        "age": "50 - 54",
+        "both": 2140,
+        "male": 1096,
+        "female": 1044
+      },
+      {
+        "age": "55 - 59",
+        "both": 1743,
+        "male": 864,
+        "female": 879
+      },
+      {
+        "age": "60 - 64",
+        "both": 1443,
+        "male": 712,
+        "female": 731
+      },
+      {
+        "age": "65 - 69",
+        "both": 1070,
+        "male": 529,
+        "female": 541
+      },
+      {
+        "age": "70 - 74",
+        "both": 676,
+        "male": 308,
+        "female": 368
+      },
+      {
+        "age": "75 - 79",
+        "both": 460,
+        "male": 190,
+        "female": 270
+      },
+      {
+        "age": "80 years and over",
+        "both": 419,
+        "male": 151,
+        "female": 268
+      }
+    ],
+    "reason": "duplicate PSGC 0405600000"
+  },
+  {
+    "level": "province",
+    "region": "REGION III (CENTRAL LUZON)",
+    "province": "",
+    "name": "RIZAL",
+    "pop_male_2020": 35611,
+    "pop_female_2020": 34575,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 6681,
+        "male": 3445,
+        "female": 3236
+      },
+      {
+        "age": "5 - 9",
+        "both": 6727,
+        "male": 3504,
+        "female": 3223
+      },
+      {
+        "age": "10 - 14",
+        "both": 6829,
+        "male": 3460,
+        "female": 3369
+      },
+      {
+        "age": "15 - 19",
+        "both": 6358,
+        "male": 3290,
+        "female": 3068
+      },
+      {
+        "age": "20 - 24",
+        "both": 6231,
+        "male": 3218,
+        "female": 3013
+      },
+      {
+        "age": "25 - 29",
+        "both": 5795,
+        "male": 2942,
+        "female": 2853
+      },
+      {
+        "age": "30 - 34",
+        "both": 5257,
+        "male": 2689,
+        "female": 2568
+      },
+      {
+        "age": "35 - 39",
+        "both": 4745,
+        "male": 2473,
+        "female": 2272
+      },
+      {
+        "age": "40 - 44",
+        "both": 4372,
+        "male": 2209,
+        "female": 2163
+      },
+      {
+        "age": "45 - 49",
+        "both": 3833,
+        "male": 1989,
+        "female": 1844
+      },
+      {
+        "age": "50 - 54",
+        "both": 3577,
+        "male": 1824,
+        "female": 1753
+      },
+      {
+        "age": "55 - 59",
+        "both": 3026,
+        "male": 1523,
+        "female": 1503
+      },
+      {
+        "age": "60 - 64",
+        "both": 2430,
+        "male": 1210,
+        "female": 1220
+      },
+      {
+        "age": "65 - 69",
+        "both": 1733,
+        "male": 800,
+        "female": 933
+      },
+      {
+        "age": "70 - 74",
+        "both": 1078,
+        "male": 492,
+        "female": 586
+      },
+      {
+        "age": "75 - 79",
+        "both": 724,
+        "male": 280,
+        "female": 444
+      },
+      {
+        "age": "80 years and over",
+        "both": 790,
+        "male": 263,
+        "female": 527
+      }
+    ],
+    "reason": "duplicate PSGC 0405800000"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION III (CENTRAL LUZON)",
+    "province": "RIZAL",
+    "name": "SAN ANTONIO",
+    "pop_male_2020": 42184,
+    "pop_female_2020": 40827,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 8022,
+        "male": 4150,
+        "female": 3872
+      },
+      {
+        "age": "5 - 9",
+        "both": 8107,
+        "male": 4217,
+        "female": 3890
+      },
+      {
+        "age": "10 - 14",
+        "both": 8257,
+        "male": 4340,
+        "female": 3917
+      },
+      {
+        "age": "15 - 19",
+        "both": 7703,
+        "male": 3999,
+        "female": 3704
+      },
+      {
+        "age": "20 - 24",
+        "both": 7101,
+        "male": 3644,
+        "female": 3457
+      },
+      {
+        "age": "25 - 29",
+        "both": 6525,
+        "male": 3320,
+        "female": 3205
+      },
+      {
+        "age": "30 - 34",
+        "both": 5808,
+        "male": 2997,
+        "female": 2811
+      },
+      {
+        "age": "35 - 39",
+        "both": 5534,
+        "male": 2772,
+        "female": 2762
+      },
+      {
+        "age": "40 - 44",
+        "both": 5160,
+        "male": 2622,
+        "female": 2538
+      },
+      {
+        "age": "45 - 49",
+        "both": 4640,
+        "male": 2391,
+        "female": 2249
+      },
+      {
+        "age": "50 - 54",
+        "both": 4331,
+        "male": 2181,
+        "female": 2150
+      },
+      {
+        "age": "55 - 59",
+        "both": 3580,
+        "male": 1818,
+        "female": 1762
+      },
+      {
+        "age": "60 - 64",
+        "both": 2924,
+        "male": 1432,
+        "female": 1492
+      },
+      {
+        "age": "65 - 69",
+        "both": 2085,
+        "male": 1023,
+        "female": 1062
+      },
+      {
+        "age": "70 - 74",
+        "both": 1397,
+        "male": 610,
+        "female": 787
+      },
+      {
+        "age": "75 - 79",
+        "both": 917,
+        "male": 370,
+        "female": 547
+      },
+      {
+        "age": "80 years and over",
+        "both": 920,
+        "male": 298,
+        "female": 622
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "city",
+    "region": "REGION III (CENTRAL LUZON)",
+    "province": "RIZAL",
+    "name": "PAMPANGA (excluding CITY OF ANGELES)",
+    "pop_male_2020": 1236783,
+    "pop_female_2020": 1196361,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 230638,
+        "male": 119058,
+        "female": 111580
+      },
+      {
+        "age": "5 - 9",
+        "both": 229762,
+        "male": 119038,
+        "female": 110724
+      },
+      {
+        "age": "10 - 14",
+        "both": 234412,
+        "male": 121748,
+        "female": 112664
+      },
+      {
+        "age": "15 - 19",
+        "both": 230387,
+        "male": 118602,
+        "female": 111785
+      },
+      {
+        "age": "20 - 24",
+        "both": 233850,
+        "male": 119986,
+        "female": 113864
+      },
+      {
+        "age": "25 - 29",
+        "both": 210423,
+        "male": 107589,
+        "female": 102834
+      },
+      {
+        "age": "30 - 34",
+        "both": 185378,
+        "male": 94647,
+        "female": 90731
+      },
+      {
+        "age": "35 - 39",
+        "both": 165452,
+        "male": 84027,
+        "female": 81425
+      },
+      {
+        "age": "40 - 44",
+        "both": 154501,
+        "male": 78839,
+        "female": 75662
+      },
+      {
+        "age": "45 - 49",
+        "both": 131028,
+        "male": 67221,
+        "female": 63807
+      },
+      {
+        "age": "50 - 54",
+        "both": 120030,
+        "male": 60872,
+        "female": 59158
+      },
+      {
+        "age": "55 - 59",
+        "both": 95329,
+        "male": 48170,
+        "female": 47159
+      },
+      {
+        "age": "60 - 64",
+        "both": 77035,
+        "male": 38086,
+        "female": 38949
+      },
+      {
+        "age": "65 - 69",
+        "both": 53968,
+        "male": 25662,
+        "female": 28306
+      },
+      {
+        "age": "70 - 74",
+        "both": 38718,
+        "male": 17391,
+        "female": 21327
+      },
+      {
+        "age": "75 - 79",
+        "both": 20771,
+        "male": 8486,
+        "female": 12285
+      },
+      {
+        "age": "80 years and over",
+        "both": 21462,
+        "male": 7361,
+        "female": 14101
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION III (CENTRAL LUZON)",
+    "province": "RIZAL",
+    "name": "SAN LUIS",
+    "pop_male_2020": 29723,
+    "pop_female_2020": 28828,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 5271,
+        "male": 2758,
+        "female": 2513
+      },
+      {
+        "age": "5 - 9",
+        "both": 5493,
+        "male": 2862,
+        "female": 2631
+      },
+      {
+        "age": "10 - 14",
+        "both": 5561,
+        "male": 2875,
+        "female": 2686
+      },
+      {
+        "age": "15 - 19",
+        "both": 5691,
+        "male": 2904,
+        "female": 2787
+      },
+      {
+        "age": "20 - 24",
+        "both": 5657,
+        "male": 2830,
+        "female": 2827
+      },
+      {
+        "age": "25 - 29",
+        "both": 4990,
+        "male": 2541,
+        "female": 2449
+      },
+      {
+        "age": "30 - 34",
+        "both": 4319,
+        "male": 2195,
+        "female": 2124
+      },
+      {
+        "age": "35 - 39",
+        "both": 3991,
+        "male": 2040,
+        "female": 1951
+      },
+      {
+        "age": "40 - 44",
+        "both": 3688,
+        "male": 1867,
+        "female": 1821
+      },
+      {
+        "age": "45 - 49",
+        "both": 3299,
+        "male": 1725,
+        "female": 1574
+      },
+      {
+        "age": "50 - 54",
+        "both": 2955,
+        "male": 1553,
+        "female": 1402
+      },
+      {
+        "age": "55 - 59",
+        "both": 2323,
+        "male": 1183,
+        "female": 1140
+      },
+      {
+        "age": "60 - 64",
+        "both": 1854,
+        "male": 911,
+        "female": 943
+      },
+      {
+        "age": "65 - 69",
+        "both": 1269,
+        "male": 624,
+        "female": 645
+      },
+      {
+        "age": "70 - 74",
+        "both": 962,
+        "male": 419,
+        "female": 543
+      },
+      {
+        "age": "75 - 79",
+        "both": 604,
+        "male": 235,
+        "female": 369
+      },
+      {
+        "age": "80 years and over",
+        "both": 624,
+        "male": 201,
+        "female": 423
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "city",
+    "region": "REGION III (CENTRAL LUZON)",
+    "province": "TARLAC",
+    "name": "ZAMBALES (excluding CITY OF OLONGAPO)",
+    "pop_male_2020": 327966,
+    "pop_female_2020": 319579,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 59897,
+        "male": 31191,
+        "female": 28706
+      },
+      {
+        "age": "5 - 9",
+        "both": 65340,
+        "male": 34052,
+        "female": 31288
+      },
+      {
+        "age": "10 - 14",
+        "both": 65403,
+        "male": 33629,
+        "female": 31774
+      },
+      {
+        "age": "15 - 19",
+        "both": 61389,
+        "male": 31751,
+        "female": 29638
+      },
+      {
+        "age": "20 - 24",
+        "both": 56788,
+        "male": 28970,
+        "female": 27818
+      },
+      {
+        "age": "25 - 29",
+        "both": 50893,
+        "male": 26033,
+        "female": 24860
+      },
+      {
+        "age": "30 - 34",
+        "both": 48043,
+        "male": 24559,
+        "female": 23484
+      },
+      {
+        "age": "35 - 39",
+        "both": 43145,
+        "male": 21827,
+        "female": 21318
+      },
+      {
+        "age": "40 - 44",
+        "both": 38306,
+        "male": 19515,
+        "female": 18791
+      },
+      {
+        "age": "45 - 49",
+        "both": 34124,
+        "male": 17518,
+        "female": 16606
+      },
+      {
+        "age": "50 - 54",
+        "both": 32426,
+        "male": 16435,
+        "female": 15991
+      },
+      {
+        "age": "55 - 59",
+        "both": 27534,
+        "male": 13852,
+        "female": 13682
+      },
+      {
+        "age": "60 - 64",
+        "both": 22819,
+        "male": 11235,
+        "female": 11584
+      },
+      {
+        "age": "65 - 69",
+        "both": 16451,
+        "male": 7661,
+        "female": 8790
+      },
+      {
+        "age": "70 - 74",
+        "both": 11761,
+        "male": 5184,
+        "female": 6577
+      },
+      {
+        "age": "75 - 79",
+        "both": 6276,
+        "male": 2419,
+        "female": 3857
+      },
+      {
+        "age": "80 years and over",
+        "both": 6950,
+        "male": 2135,
+        "female": 4815
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION III (CENTRAL LUZON)",
+    "province": "TARLAC",
+    "name": "SAN ANTONIO",
+    "pop_male_2020": 18669,
+    "pop_female_2020": 18700,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 3006,
+        "male": 1560,
+        "female": 1446
+      },
+      {
+        "age": "5 - 9",
+        "both": 3496,
+        "male": 1817,
+        "female": 1679
+      },
+      {
+        "age": "10 - 14",
+        "both": 3574,
+        "male": 1823,
+        "female": 1751
+      },
+      {
+        "age": "15 - 19",
+        "both": 3332,
+        "male": 1689,
+        "female": 1643
+      },
+      {
+        "age": "20 - 24",
+        "both": 3107,
+        "male": 1565,
+        "female": 1542
+      },
+      {
+        "age": "25 - 29",
+        "both": 2783,
+        "male": 1450,
+        "female": 1333
+      },
+      {
+        "age": "30 - 34",
+        "both": 2716,
+        "male": 1385,
+        "female": 1331
+      },
+      {
+        "age": "35 - 39",
+        "both": 2508,
+        "male": 1223,
+        "female": 1285
+      },
+      {
+        "age": "40 - 44",
+        "both": 2199,
+        "male": 1113,
+        "female": 1086
+      },
+      {
+        "age": "45 - 49",
+        "both": 2130,
+        "male": 1038,
+        "female": 1092
+      },
+      {
+        "age": "50 - 54",
+        "both": 2157,
+        "male": 1062,
+        "female": 1095
+      },
+      {
+        "age": "55 - 59",
+        "both": 1793,
+        "male": 921,
+        "female": 872
+      },
+      {
+        "age": "60 - 64",
+        "both": 1550,
+        "male": 770,
+        "female": 780
+      },
+      {
+        "age": "65 - 69",
+        "both": 1146,
+        "male": 542,
+        "female": 604
+      },
+      {
+        "age": "70 - 74",
+        "both": 829,
+        "male": 356,
+        "female": 473
+      },
+      {
+        "age": "75 - 79",
+        "both": 467,
+        "male": 171,
+        "female": 296
+      },
+      {
+        "age": "80 years and over",
+        "both": 576,
+        "male": 184,
+        "female": 392
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "province",
+    "region": "REGION III (CENTRAL LUZON)",
+    "province": "",
+    "name": "AURORA",
+    "pop_male_2020": 120266,
+    "pop_female_2020": 114725,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 23603,
+        "male": 12135,
+        "female": 11468
+      },
+      {
+        "age": "5 - 9",
+        "both": 25017,
+        "male": 13004,
+        "female": 12013
+      },
+      {
+        "age": "10 - 14",
+        "both": 25458,
+        "male": 13198,
+        "female": 12260
+      },
+      {
+        "age": "15 - 19",
+        "both": 23791,
+        "male": 12155,
+        "female": 11636
+      },
+      {
+        "age": "20 - 24",
+        "both": 21160,
+        "male": 10847,
+        "female": 10313
+      },
+      {
+        "age": "25 - 29",
+        "both": 18575,
+        "male": 9500,
+        "female": 9075
+      },
+      {
+        "age": "30 - 34",
+        "both": 16728,
+        "male": 8663,
+        "female": 8065
+      },
+      {
+        "age": "35 - 39",
+        "both": 14440,
+        "male": 7497,
+        "female": 6943
+      },
+      {
+        "age": "40 - 44",
+        "both": 13266,
+        "male": 6846,
+        "female": 6420
+      },
+      {
+        "age": "45 - 49",
+        "both": 12419,
+        "male": 6415,
+        "female": 6004
+      },
+      {
+        "age": "50 - 54",
+        "both": 11026,
+        "male": 5754,
+        "female": 5272
+      },
+      {
+        "age": "55 - 59",
+        "both": 9218,
+        "male": 4883,
+        "female": 4335
+      },
+      {
+        "age": "60 - 64",
+        "both": 7510,
+        "male": 3749,
+        "female": 3761
+      },
+      {
+        "age": "65 - 69",
+        "both": 5300,
+        "male": 2567,
+        "female": 2733
+      },
+      {
+        "age": "70 - 74",
+        "both": 3441,
+        "male": 1545,
+        "female": 1896
+      },
+      {
+        "age": "75 - 79",
+        "both": 2039,
+        "male": 832,
+        "female": 1207
+      },
+      {
+        "age": "80 years and over",
+        "both": 2000,
+        "male": 676,
+        "female": 1324
+      }
+    ],
+    "reason": "duplicate PSGC 0307700000"
+  },
+  {
+    "level": "city",
+    "region": "REGION IV-A (CALABARZON)",
+    "province": "BATANGAS",
+    "name": "BATANGAS CITY (Capital)",
+    "pop_male_2020": 175122,
+    "pop_female_2020": 174827,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 32100,
+        "male": 16623,
+        "female": 15477
+      },
+      {
+        "age": "5 - 9",
+        "both": 31858,
+        "male": 16724,
+        "female": 15134
+      },
+      {
+        "age": "10 - 14",
+        "both": 32566,
+        "male": 16730,
+        "female": 15836
+      },
+      {
+        "age": "15 - 19",
+        "both": 33005,
+        "male": 17129,
+        "female": 15876
+      },
+      {
+        "age": "20 - 24",
+        "both": 33806,
+        "male": 17091,
+        "female": 16715
+      },
+      {
+        "age": "25 - 29",
+        "both": 30831,
+        "male": 15726,
+        "female": 15105
+      },
+      {
+        "age": "30 - 34",
+        "both": 26149,
+        "male": 13238,
+        "female": 12911
+      },
+      {
+        "age": "35 - 39",
+        "both": 24517,
+        "male": 12119,
+        "female": 12398
+      },
+      {
+        "age": "40 - 44",
+        "both": 22666,
+        "male": 11248,
+        "female": 11418
+      },
+      {
+        "age": "45 - 49",
+        "both": 19585,
+        "male": 9782,
+        "female": 9803
+      },
+      {
+        "age": "50 - 54",
+        "both": 17132,
+        "male": 8449,
+        "female": 8683
+      },
+      {
+        "age": "55 - 59",
+        "both": 14086,
+        "male": 6890,
+        "female": 7196
+      },
+      {
+        "age": "60 - 64",
+        "both": 11301,
+        "male": 5412,
+        "female": 5889
+      },
+      {
+        "age": "65 - 69",
+        "both": 8068,
+        "male": 3613,
+        "female": 4455
+      },
+      {
+        "age": "70 - 74",
+        "both": 5766,
+        "male": 2315,
+        "female": 3451
+      },
+      {
+        "age": "75 - 79",
+        "both": 3128,
+        "male": 1071,
+        "female": 2057
+      },
+      {
+        "age": "80 years and over",
+        "both": 3385,
+        "male": 962,
+        "female": 2423
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION IV-A (CALABARZON)",
+    "province": "BATANGAS",
+    "name": "CALACA",
+    "pop_male_2020": 44195,
+    "pop_female_2020": 43033,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 8474,
+        "male": 4432,
+        "female": 4042
+      },
+      {
+        "age": "5 - 9",
+        "both": 8434,
+        "male": 4340,
+        "female": 4094
+      },
+      {
+        "age": "10 - 14",
+        "both": 8607,
+        "male": 4420,
+        "female": 4187
+      },
+      {
+        "age": "15 - 19",
+        "both": 8109,
+        "male": 4202,
+        "female": 3907
+      },
+      {
+        "age": "20 - 24",
+        "both": 7934,
+        "male": 4130,
+        "female": 3804
+      },
+      {
+        "age": "25 - 29",
+        "both": 7430,
+        "male": 3858,
+        "female": 3572
+      },
+      {
+        "age": "30 - 34",
+        "both": 6473,
+        "male": 3244,
+        "female": 3229
+      },
+      {
+        "age": "35 - 39",
+        "both": 6277,
+        "male": 3249,
+        "female": 3028
+      },
+      {
+        "age": "40 - 44",
+        "both": 5631,
+        "male": 2814,
+        "female": 2817
+      },
+      {
+        "age": "45 - 49",
+        "both": 4724,
+        "male": 2474,
+        "female": 2250
+      },
+      {
+        "age": "50 - 54",
+        "both": 4037,
+        "male": 2038,
+        "female": 1999
+      },
+      {
+        "age": "55 - 59",
+        "both": 3221,
+        "male": 1614,
+        "female": 1607
+      },
+      {
+        "age": "60 - 64",
+        "both": 2664,
+        "male": 1292,
+        "female": 1372
+      },
+      {
+        "age": "65 - 69",
+        "both": 2038,
+        "male": 927,
+        "female": 1111
+      },
+      {
+        "age": "70 - 74",
+        "both": 1483,
+        "male": 588,
+        "female": 895
+      },
+      {
+        "age": "75 - 79",
+        "both": 886,
+        "male": 325,
+        "female": 561
+      },
+      {
+        "age": "80 years and over",
+        "both": 806,
+        "male": 248,
+        "female": 558
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION IV-A (CALABARZON)",
+    "province": "CAVITE",
+    "name": "CARMONA",
+    "pop_male_2020": 52981,
+    "pop_female_2020": 52954,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 10219,
+        "male": 5250,
+        "female": 4969
+      },
+      {
+        "age": "5 - 9",
+        "both": 10358,
+        "male": 5372,
+        "female": 4986
+      },
+      {
+        "age": "10 - 14",
+        "both": 9801,
+        "male": 5120,
+        "female": 4681
+      },
+      {
+        "age": "15 - 19",
+        "both": 8926,
+        "male": 4558,
+        "female": 4368
+      },
+      {
+        "age": "20 - 24",
+        "both": 9775,
+        "male": 4955,
+        "female": 4820
+      },
+      {
+        "age": "25 - 29",
+        "both": 9651,
+        "male": 4809,
+        "female": 4842
+      },
+      {
+        "age": "30 - 34",
+        "both": 9348,
+        "male": 4788,
+        "female": 4560
+      },
+      {
+        "age": "35 - 39",
+        "both": 9051,
+        "male": 4529,
+        "female": 4522
+      },
+      {
+        "age": "40 - 44",
+        "both": 8005,
+        "male": 3974,
+        "female": 4031
+      },
+      {
+        "age": "45 - 49",
+        "both": 5799,
+        "male": 2877,
+        "female": 2922
+      },
+      {
+        "age": "50 - 54",
+        "both": 4616,
+        "male": 2241,
+        "female": 2375
+      },
+      {
+        "age": "55 - 59",
+        "both": 3538,
+        "male": 1712,
+        "female": 1826
+      },
+      {
+        "age": "60 - 64",
+        "both": 2809,
+        "male": 1212,
+        "female": 1597
+      },
+      {
+        "age": "65 - 69",
+        "both": 1849,
+        "male": 772,
+        "female": 1077
+      },
+      {
+        "age": "70 - 74",
+        "both": 1100,
+        "male": 442,
+        "female": 658
+      },
+      {
+        "age": "75 - 79",
+        "both": 578,
+        "male": 219,
+        "female": 359
+      },
+      {
+        "age": "80 years and over",
+        "both": 512,
+        "male": 151,
+        "female": 361
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "province",
+    "region": "REGION IV-A (CALABARZON)",
+    "province": "",
+    "name": "RIZAL",
+    "pop_male_2020": 9204,
+    "pop_female_2020": 9085,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 1565,
+        "male": 799,
+        "female": 766
+      },
+      {
+        "age": "5 - 9",
+        "both": 1641,
+        "male": 842,
+        "female": 799
+      },
+      {
+        "age": "10 - 14",
+        "both": 1631,
+        "male": 840,
+        "female": 791
+      },
+      {
+        "age": "15 - 19",
+        "both": 1593,
+        "male": 823,
+        "female": 770
+      },
+      {
+        "age": "20 - 24",
+        "both": 1523,
+        "male": 802,
+        "female": 721
+      },
+      {
+        "age": "25 - 29",
+        "both": 1572,
+        "male": 805,
+        "female": 767
+      },
+      {
+        "age": "30 - 34",
+        "both": 1362,
+        "male": 697,
+        "female": 665
+      },
+      {
+        "age": "35 - 39",
+        "both": 1281,
+        "male": 651,
+        "female": 630
+      },
+      {
+        "age": "40 - 44",
+        "both": 1286,
+        "male": 654,
+        "female": 632
+      },
+      {
+        "age": "45 - 49",
+        "both": 1021,
+        "male": 512,
+        "female": 509
+      },
+      {
+        "age": "50 - 54",
+        "both": 872,
+        "male": 437,
+        "female": 435
+      },
+      {
+        "age": "55 - 59",
+        "both": 910,
+        "male": 442,
+        "female": 468
+      },
+      {
+        "age": "60 - 64",
+        "both": 733,
+        "male": 356,
+        "female": 377
+      },
+      {
+        "age": "65 - 69",
+        "both": 572,
+        "male": 266,
+        "female": 306
+      },
+      {
+        "age": "70 - 74",
+        "both": 358,
+        "male": 154,
+        "female": 204
+      },
+      {
+        "age": "75 - 79",
+        "both": 199,
+        "male": 72,
+        "female": 127
+      },
+      {
+        "age": "80 years and over",
+        "both": 170,
+        "male": 52,
+        "female": 118
+      }
+    ],
+    "reason": "duplicate PSGC 0405800000"
+  },
+  {
+    "level": "province",
+    "region": "REGION IV-A (CALABARZON)",
+    "province": "",
+    "name": "QUEZON",
+    "pop_male_2020": 8204,
+    "pop_female_2020": 7672,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 1401,
+        "male": 719,
+        "female": 682
+      },
+      {
+        "age": "5 - 9",
+        "both": 1800,
+        "male": 951,
+        "female": 849
+      },
+      {
+        "age": "10 - 14",
+        "both": 1717,
+        "male": 897,
+        "female": 820
+      },
+      {
+        "age": "15 - 19",
+        "both": 1608,
+        "male": 833,
+        "female": 775
+      },
+      {
+        "age": "20 - 24",
+        "both": 1268,
+        "male": 650,
+        "female": 618
+      },
+      {
+        "age": "25 - 29",
+        "both": 1062,
+        "male": 533,
+        "female": 529
+      },
+      {
+        "age": "30 - 34",
+        "both": 980,
+        "male": 527,
+        "female": 453
+      },
+      {
+        "age": "35 - 39",
+        "both": 892,
+        "male": 480,
+        "female": 412
+      },
+      {
+        "age": "40 - 44",
+        "both": 861,
+        "male": 453,
+        "female": 408
+      },
+      {
+        "age": "45 - 49",
+        "both": 812,
+        "male": 423,
+        "female": 389
+      },
+      {
+        "age": "50 - 54",
+        "both": 838,
+        "male": 445,
+        "female": 393
+      },
+      {
+        "age": "55 - 59",
+        "both": 728,
+        "male": 395,
+        "female": 333
+      },
+      {
+        "age": "60 - 64",
+        "both": 684,
+        "male": 356,
+        "female": 328
+      },
+      {
+        "age": "65 - 69",
+        "both": 509,
+        "male": 256,
+        "female": 253
+      },
+      {
+        "age": "70 - 74",
+        "both": 328,
+        "male": 151,
+        "female": 177
+      },
+      {
+        "age": "75 - 79",
+        "both": 208,
+        "male": 74,
+        "female": 134
+      },
+      {
+        "age": "80 years and over",
+        "both": 180,
+        "male": 61,
+        "female": 119
+      }
+    ],
+    "reason": "duplicate PSGC 0405600000"
+  },
+  {
+    "level": "province",
+    "region": "MIMAROPA REGION",
+    "province": "",
+    "name": "RIZAL",
+    "pop_male_2020": 20911,
+    "pop_female_2020": 19505,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 4585,
+        "male": 2381,
+        "female": 2204
+      },
+      {
+        "age": "5 - 9",
+        "both": 4702,
+        "male": 2394,
+        "female": 2308
+      },
+      {
+        "age": "10 - 14",
+        "both": 4768,
+        "male": 2473,
+        "female": 2295
+      },
+      {
+        "age": "15 - 19",
+        "both": 4424,
+        "male": 2295,
+        "female": 2129
+      },
+      {
+        "age": "20 - 24",
+        "both": 3616,
+        "male": 1864,
+        "female": 1752
+      },
+      {
+        "age": "25 - 29",
+        "both": 2903,
+        "male": 1506,
+        "female": 1397
+      },
+      {
+        "age": "30 - 34",
+        "both": 2572,
+        "male": 1389,
+        "female": 1183
+      },
+      {
+        "age": "35 - 39",
+        "both": 2310,
+        "male": 1230,
+        "female": 1080
+      },
+      {
+        "age": "40 - 44",
+        "both": 2248,
+        "male": 1166,
+        "female": 1082
+      },
+      {
+        "age": "45 - 49",
+        "both": 2027,
+        "male": 1076,
+        "female": 951
+      },
+      {
+        "age": "50 - 54",
+        "both": 1812,
+        "male": 964,
+        "female": 848
+      },
+      {
+        "age": "55 - 59",
+        "both": 1353,
+        "male": 716,
+        "female": 637
+      },
+      {
+        "age": "60 - 64",
+        "both": 1050,
+        "male": 530,
+        "female": 520
+      },
+      {
+        "age": "65 - 69",
+        "both": 812,
+        "male": 386,
+        "female": 426
+      },
+      {
+        "age": "70 - 74",
+        "both": 610,
+        "male": 296,
+        "female": 314
+      },
+      {
+        "age": "75 - 79",
+        "both": 340,
+        "male": 153,
+        "female": 187
+      },
+      {
+        "age": "80 years and over",
+        "both": 284,
+        "male": 92,
+        "female": 192
+      }
+    ],
+    "reason": "duplicate PSGC 0405800000"
+  },
+  {
+    "level": "municipality",
+    "region": "MIMAROPA REGION",
+    "province": "RIZAL",
+    "name": "SAN JOSE",
+    "pop_male_2020": 77874,
+    "pop_female_2020": 74911,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 16560,
+        "male": 8547,
+        "female": 8013
+      },
+      {
+        "age": "5 - 9",
+        "both": 17016,
+        "male": 8858,
+        "female": 8158
+      },
+      {
+        "age": "10 - 14",
+        "both": 17531,
+        "male": 9090,
+        "female": 8441
+      },
+      {
+        "age": "15 - 19",
+        "both": 16905,
+        "male": 8595,
+        "female": 8310
+      },
+      {
+        "age": "20 - 24",
+        "both": 13747,
+        "male": 7079,
+        "female": 6668
+      },
+      {
+        "age": "25 - 29",
+        "both": 11437,
+        "male": 5839,
+        "female": 5598
+      },
+      {
+        "age": "30 - 34",
+        "both": 9992,
+        "male": 5105,
+        "female": 4887
+      },
+      {
+        "age": "35 - 39",
+        "both": 9420,
+        "male": 4856,
+        "female": 4564
+      },
+      {
+        "age": "40 - 44",
+        "both": 8511,
+        "male": 4447,
+        "female": 4064
+      },
+      {
+        "age": "45 - 49",
+        "both": 7826,
+        "male": 4005,
+        "female": 3821
+      },
+      {
+        "age": "50 - 54",
+        "both": 6716,
+        "male": 3357,
+        "female": 3359
+      },
+      {
+        "age": "55 - 59",
+        "both": 5528,
+        "male": 2784,
+        "female": 2744
+      },
+      {
+        "age": "60 - 64",
+        "both": 4431,
+        "male": 2189,
+        "female": 2242
+      },
+      {
+        "age": "65 - 69",
+        "both": 2868,
+        "male": 1353,
+        "female": 1515
+      },
+      {
+        "age": "70 - 74",
+        "both": 2112,
+        "male": 927,
+        "female": 1185
+      },
+      {
+        "age": "75 - 79",
+        "both": 1080,
+        "male": 475,
+        "female": 605
+      },
+      {
+        "age": "80 years and over",
+        "both": 1105,
+        "male": 368,
+        "female": 737
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "MIMAROPA REGION",
+    "province": "RIZAL",
+    "name": "SANTA CRUZ",
+    "pop_male_2020": 21908,
+    "pop_female_2020": 20476,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 4820,
+        "male": 2541,
+        "female": 2279
+      },
+      {
+        "age": "5 - 9",
+        "both": 5180,
+        "male": 2682,
+        "female": 2498
+      },
+      {
+        "age": "10 - 14",
+        "both": 4783,
+        "male": 2568,
+        "female": 2215
+      },
+      {
+        "age": "15 - 19",
+        "both": 4258,
+        "male": 2110,
+        "female": 2148
+      },
+      {
+        "age": "20 - 24",
+        "both": 3706,
+        "male": 1899,
+        "female": 1807
+      },
+      {
+        "age": "25 - 29",
+        "both": 3477,
+        "male": 1751,
+        "female": 1726
+      },
+      {
+        "age": "30 - 34",
+        "both": 3046,
+        "male": 1595,
+        "female": 1451
+      },
+      {
+        "age": "35 - 39",
+        "both": 2700,
+        "male": 1397,
+        "female": 1303
+      },
+      {
+        "age": "40 - 44",
+        "both": 2417,
+        "male": 1277,
+        "female": 1140
+      },
+      {
+        "age": "45 - 49",
+        "both": 2025,
+        "male": 1085,
+        "female": 940
+      },
+      {
+        "age": "50 - 54",
+        "both": 1648,
+        "male": 869,
+        "female": 779
+      },
+      {
+        "age": "55 - 59",
+        "both": 1300,
+        "male": 686,
+        "female": 614
+      },
+      {
+        "age": "60 - 64",
+        "both": 1078,
+        "male": 547,
+        "female": 531
+      },
+      {
+        "age": "65 - 69",
+        "both": 751,
+        "male": 353,
+        "female": 398
+      },
+      {
+        "age": "70 - 74",
+        "both": 541,
+        "male": 251,
+        "female": 290
+      },
+      {
+        "age": "75 - 79",
+        "both": 296,
+        "male": 132,
+        "female": 164
+      },
+      {
+        "age": "80 years and over",
+        "both": 358,
+        "male": 165,
+        "female": 193
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "city",
+    "region": "MIMAROPA REGION",
+    "province": "ORIENTAL MINDORO",
+    "name": "PALAWAN (excluding CITY OF PUERTO PRINCESA)",
+    "pop_male_2020": 484231,
+    "pop_female_2020": 450438,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 102307,
+        "male": 52977,
+        "female": 49330
+      },
+      {
+        "age": "5 - 9",
+        "both": 111213,
+        "male": 57247,
+        "female": 53966
+      },
+      {
+        "age": "10 - 14",
+        "both": 107457,
+        "male": 55567,
+        "female": 51890
+      },
+      {
+        "age": "15 - 19",
+        "both": 99910,
+        "male": 51098,
+        "female": 48812
+      },
+      {
+        "age": "20 - 24",
+        "both": 88012,
+        "male": 45641,
+        "female": 42371
+      },
+      {
+        "age": "25 - 29",
+        "both": 75837,
+        "male": 39098,
+        "female": 36739
+      },
+      {
+        "age": "30 - 34",
+        "both": 64074,
+        "male": 33355,
+        "female": 30719
+      },
+      {
+        "age": "35 - 39",
+        "both": 57520,
+        "male": 30378,
+        "female": 27142
+      },
+      {
+        "age": "40 - 44",
+        "both": 49952,
+        "male": 26672,
+        "female": 23280
+      },
+      {
+        "age": "45 - 49",
+        "both": 43381,
+        "male": 23225,
+        "female": 20156
+      },
+      {
+        "age": "50 - 54",
+        "both": 36303,
+        "male": 19342,
+        "female": 16961
+      },
+      {
+        "age": "55 - 59",
+        "both": 30864,
+        "male": 16420,
+        "female": 14444
+      },
+      {
+        "age": "60 - 64",
+        "both": 24549,
+        "male": 12645,
+        "female": 11904
+      },
+      {
+        "age": "65 - 69",
+        "both": 17559,
+        "male": 8864,
+        "female": 8695
+      },
+      {
+        "age": "70 - 74",
+        "both": 11716,
+        "male": 5741,
+        "female": 5975
+      },
+      {
+        "age": "75 - 79",
+        "both": 7201,
+        "male": 3295,
+        "female": 3906
+      },
+      {
+        "age": "80 years and over",
+        "both": 6814,
+        "male": 2666,
+        "female": 4148
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "MIMAROPA REGION",
+    "province": "ORIENTAL MINDORO",
+    "name": "MAGSAYSAY",
+    "pop_male_2020": 6422,
+    "pop_female_2020": 6155,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 1036,
+        "male": 547,
+        "female": 489
+      },
+      {
+        "age": "5 - 9",
+        "both": 1186,
+        "male": 627,
+        "female": 559
+      },
+      {
+        "age": "10 - 14",
+        "both": 1345,
+        "male": 736,
+        "female": 609
+      },
+      {
+        "age": "15 - 19",
+        "both": 1316,
+        "male": 689,
+        "female": 627
+      },
+      {
+        "age": "20 - 24",
+        "both": 1067,
+        "male": 575,
+        "female": 492
+      },
+      {
+        "age": "25 - 29",
+        "both": 883,
+        "male": 451,
+        "female": 432
+      },
+      {
+        "age": "30 - 34",
+        "both": 811,
+        "male": 398,
+        "female": 413
+      },
+      {
+        "age": "35 - 39",
+        "both": 778,
+        "male": 397,
+        "female": 381
+      },
+      {
+        "age": "40 - 44",
+        "both": 758,
+        "male": 412,
+        "female": 346
+      },
+      {
+        "age": "45 - 49",
+        "both": 675,
+        "male": 344,
+        "female": 331
+      },
+      {
+        "age": "50 - 54",
+        "both": 583,
+        "male": 313,
+        "female": 270
+      },
+      {
+        "age": "55 - 59",
+        "both": 553,
+        "male": 264,
+        "female": 289
+      },
+      {
+        "age": "60 - 64",
+        "both": 474,
+        "male": 230,
+        "female": 244
+      },
+      {
+        "age": "65 - 69",
+        "both": 394,
+        "male": 169,
+        "female": 225
+      },
+      {
+        "age": "70 - 74",
+        "both": 302,
+        "male": 125,
+        "female": 177
+      },
+      {
+        "age": "75 - 79",
+        "both": 200,
+        "male": 72,
+        "female": 128
+      },
+      {
+        "age": "80 years and over",
+        "both": 216,
+        "male": 73,
+        "female": 143
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "province",
+    "region": "MIMAROPA REGION",
+    "province": "",
+    "name": "QUEZON",
+    "pop_male_2020": 33885,
+    "pop_female_2020": 31160,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 7436,
+        "male": 3832,
+        "female": 3604
+      },
+      {
+        "age": "5 - 9",
+        "both": 7744,
+        "male": 4014,
+        "female": 3730
+      },
+      {
+        "age": "10 - 14",
+        "both": 7772,
+        "male": 4118,
+        "female": 3654
+      },
+      {
+        "age": "15 - 19",
+        "both": 6982,
+        "male": 3524,
+        "female": 3458
+      },
+      {
+        "age": "20 - 24",
+        "both": 5813,
+        "male": 3039,
+        "female": 2774
+      },
+      {
+        "age": "25 - 29",
+        "both": 4970,
+        "male": 2599,
+        "female": 2371
+      },
+      {
+        "age": "30 - 34",
+        "both": 4282,
+        "male": 2232,
+        "female": 2050
+      },
+      {
+        "age": "35 - 39",
+        "both": 3870,
+        "male": 2041,
+        "female": 1829
+      },
+      {
+        "age": "40 - 44",
+        "both": 3440,
+        "male": 1802,
+        "female": 1638
+      },
+      {
+        "age": "45 - 49",
+        "both": 2982,
+        "male": 1598,
+        "female": 1384
+      },
+      {
+        "age": "50 - 54",
+        "both": 2578,
+        "male": 1373,
+        "female": 1205
+      },
+      {
+        "age": "55 - 59",
+        "both": 2271,
+        "male": 1211,
+        "female": 1060
+      },
+      {
+        "age": "60 - 64",
+        "both": 1829,
+        "male": 951,
+        "female": 878
+      },
+      {
+        "age": "65 - 69",
+        "both": 1294,
+        "male": 684,
+        "female": 610
+      },
+      {
+        "age": "70 - 74",
+        "both": 765,
+        "male": 406,
+        "female": 359
+      },
+      {
+        "age": "75 - 79",
+        "both": 513,
+        "male": 239,
+        "female": 274
+      },
+      {
+        "age": "80 years and over",
+        "both": 504,
+        "male": 222,
+        "female": 282
+      }
+    ],
+    "reason": "duplicate PSGC 0405600000"
+  },
+  {
+    "level": "municipality",
+    "region": "MIMAROPA REGION",
+    "province": "QUEZON",
+    "name": "ROXAS",
+    "pop_male_2020": 35779,
+    "pop_female_2020": 33730,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 6776,
+        "male": 3554,
+        "female": 3222
+      },
+      {
+        "age": "5 - 9",
+        "both": 7728,
+        "male": 3949,
+        "female": 3779
+      },
+      {
+        "age": "10 - 14",
+        "both": 7773,
+        "male": 4044,
+        "female": 3729
+      },
+      {
+        "age": "15 - 19",
+        "both": 7457,
+        "male": 3810,
+        "female": 3647
+      },
+      {
+        "age": "20 - 24",
+        "both": 6062,
+        "male": 3085,
+        "female": 2977
+      },
+      {
+        "age": "25 - 29",
+        "both": 5416,
+        "male": 2786,
+        "female": 2630
+      },
+      {
+        "age": "30 - 34",
+        "both": 4815,
+        "male": 2457,
+        "female": 2358
+      },
+      {
+        "age": "35 - 39",
+        "both": 4507,
+        "male": 2395,
+        "female": 2112
+      },
+      {
+        "age": "40 - 44",
+        "both": 3889,
+        "male": 2046,
+        "female": 1843
+      },
+      {
+        "age": "45 - 49",
+        "both": 3427,
+        "male": 1856,
+        "female": 1571
+      },
+      {
+        "age": "50 - 54",
+        "both": 3086,
+        "male": 1631,
+        "female": 1455
+      },
+      {
+        "age": "55 - 59",
+        "both": 2618,
+        "male": 1332,
+        "female": 1286
+      },
+      {
+        "age": "60 - 64",
+        "both": 2116,
+        "male": 1057,
+        "female": 1059
+      },
+      {
+        "age": "65 - 69",
+        "both": 1568,
+        "male": 770,
+        "female": 798
+      },
+      {
+        "age": "70 - 74",
+        "both": 1056,
+        "male": 514,
+        "female": 542
+      },
+      {
+        "age": "75 - 79",
+        "both": 642,
+        "male": 293,
+        "female": 349
+      },
+      {
+        "age": "80 years and over",
+        "both": 573,
+        "male": 200,
+        "female": 373
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "MIMAROPA REGION",
+    "province": "QUEZON",
+    "name": "RIZAL (MARCOS)",
+    "pop_male_2020": 29110,
+    "pop_female_2020": 26922,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 7282,
+        "male": 3733,
+        "female": 3549
+      },
+      {
+        "age": "5 - 9",
+        "both": 7652,
+        "male": 3877,
+        "female": 3775
+      },
+      {
+        "age": "10 - 14",
+        "both": 6952,
+        "male": 3588,
+        "female": 3364
+      },
+      {
+        "age": "15 - 19",
+        "both": 5851,
+        "male": 2953,
+        "female": 2898
+      },
+      {
+        "age": "20 - 24",
+        "both": 4931,
+        "male": 2521,
+        "female": 2410
+      },
+      {
+        "age": "25 - 29",
+        "both": 4320,
+        "male": 2205,
+        "female": 2115
+      },
+      {
+        "age": "30 - 34",
+        "both": 3545,
+        "male": 1865,
+        "female": 1680
+      },
+      {
+        "age": "35 - 39",
+        "both": 3405,
+        "male": 1804,
+        "female": 1601
+      },
+      {
+        "age": "40 - 44",
+        "both": 2547,
+        "male": 1373,
+        "female": 1174
+      },
+      {
+        "age": "45 - 49",
+        "both": 2397,
+        "male": 1340,
+        "female": 1057
+      },
+      {
+        "age": "50 - 54",
+        "both": 1834,
+        "male": 1006,
+        "female": 828
+      },
+      {
+        "age": "55 - 59",
+        "both": 1568,
+        "male": 854,
+        "female": 714
+      },
+      {
+        "age": "60 - 64",
+        "both": 1365,
+        "male": 717,
+        "female": 648
+      },
+      {
+        "age": "65 - 69",
+        "both": 1043,
+        "male": 579,
+        "female": 464
+      },
+      {
+        "age": "70 - 74",
+        "both": 582,
+        "male": 322,
+        "female": 260
+      },
+      {
+        "age": "75 - 79",
+        "both": 410,
+        "male": 209,
+        "female": 201
+      },
+      {
+        "age": "80 years and over",
+        "both": 348,
+        "male": 164,
+        "female": 184
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION VI (WESTERN VISAYAS)",
+    "province": "CAPIZ",
+    "name": "SAN ENRIQUE",
+    "pop_male_2020": 18797,
+    "pop_female_2020": 18083,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 3925,
+        "male": 1977,
+        "female": 1948
+      },
+      {
+        "age": "5 - 9",
+        "both": 3890,
+        "male": 2005,
+        "female": 1885
+      },
+      {
+        "age": "10 - 14",
+        "both": 3647,
+        "male": 1846,
+        "female": 1801
+      },
+      {
+        "age": "15 - 19",
+        "both": 3413,
+        "male": 1763,
+        "female": 1650
+      },
+      {
+        "age": "20 - 24",
+        "both": 3177,
+        "male": 1636,
+        "female": 1541
+      },
+      {
+        "age": "25 - 29",
+        "both": 2898,
+        "male": 1529,
+        "female": 1369
+      },
+      {
+        "age": "30 - 34",
+        "both": 2668,
+        "male": 1387,
+        "female": 1281
+      },
+      {
+        "age": "35 - 39",
+        "both": 2174,
+        "male": 1168,
+        "female": 1006
+      },
+      {
+        "age": "40 - 44",
+        "both": 2041,
+        "male": 1131,
+        "female": 910
+      },
+      {
+        "age": "45 - 49",
+        "both": 1842,
+        "male": 969,
+        "female": 873
+      },
+      {
+        "age": "50 - 54",
+        "both": 1664,
+        "male": 837,
+        "female": 827
+      },
+      {
+        "age": "55 - 59",
+        "both": 1510,
+        "male": 770,
+        "female": 740
+      },
+      {
+        "age": "60 - 64",
+        "both": 1316,
+        "male": 647,
+        "female": 669
+      },
+      {
+        "age": "65 - 69",
+        "both": 1016,
+        "male": 453,
+        "female": 563
+      },
+      {
+        "age": "70 - 74",
+        "both": 701,
+        "male": 314,
+        "female": 387
+      },
+      {
+        "age": "75 - 79",
+        "both": 463,
+        "male": 186,
+        "female": 277
+      },
+      {
+        "age": "80 years and over",
+        "both": 535,
+        "male": 179,
+        "female": 356
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "city",
+    "region": "REGION VI (WESTERN VISAYAS)",
+    "province": "CAPIZ",
+    "name": "CITY OF ILOILO (Capital)",
+    "pop_male_2020": 225582,
+    "pop_female_2020": 229705,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 44702,
+        "male": 22877,
+        "female": 21825
+      },
+      {
+        "age": "5 - 9",
+        "both": 42530,
+        "male": 21952,
+        "female": 20578
+      },
+      {
+        "age": "10 - 14",
+        "both": 40026,
+        "male": 20643,
+        "female": 19383
+      },
+      {
+        "age": "15 - 19",
+        "both": 38277,
+        "male": 19372,
+        "female": 18905
+      },
+      {
+        "age": "20 - 24",
+        "both": 42349,
+        "male": 21143,
+        "female": 21206
+      },
+      {
+        "age": "25 - 29",
+        "both": 39169,
+        "male": 19714,
+        "female": 19455
+      },
+      {
+        "age": "30 - 34",
+        "both": 34973,
+        "male": 17911,
+        "female": 17062
+      },
+      {
+        "age": "35 - 39",
+        "both": 31784,
+        "male": 16140,
+        "female": 15644
+      },
+      {
+        "age": "40 - 44",
+        "both": 28523,
+        "male": 14547,
+        "female": 13976
+      },
+      {
+        "age": "45 - 49",
+        "both": 23992,
+        "male": 12033,
+        "female": 11959
+      },
+      {
+        "age": "50 - 54",
+        "both": 22214,
+        "male": 10758,
+        "female": 11456
+      },
+      {
+        "age": "55 - 59",
+        "both": 19583,
+        "male": 9228,
+        "female": 10355
+      },
+      {
+        "age": "60 - 64",
+        "both": 16511,
+        "male": 7488,
+        "female": 9023
+      },
+      {
+        "age": "65 - 69",
+        "both": 12229,
+        "male": 5309,
+        "female": 6920
+      },
+      {
+        "age": "70 - 74",
+        "both": 8099,
+        "male": 3226,
+        "female": 4873
+      },
+      {
+        "age": "75 - 79",
+        "both": 4806,
+        "male": 1683,
+        "female": 3123
+      },
+      {
+        "age": "80 years and over",
+        "both": 5520,
+        "male": 1558,
+        "female": 3962
+      }
+    ],
+    "reason": "duplicate PSGC 0631000000"
+  },
+  {
+    "level": "city",
+    "region": "REGION VI (WESTERN VISAYAS)",
+    "province": "CAPIZ",
+    "name": "NEGROS OCCIDENTAL (excluding CITY OF BACOLOD)",
+    "pop_male_2020": 1337724,
+    "pop_female_2020": 1280948,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 265646,
+        "male": 137171,
+        "female": 128475
+      },
+      {
+        "age": "5 - 9",
+        "both": 279529,
+        "male": 145269,
+        "female": 134260
+      },
+      {
+        "age": "10 - 14",
+        "both": 277991,
+        "male": 143664,
+        "female": 134327
+      },
+      {
+        "age": "15 - 19",
+        "both": 260072,
+        "male": 133621,
+        "female": 126451
+      },
+      {
+        "age": "20 - 24",
+        "both": 224217,
+        "male": 115738,
+        "female": 108479
+      },
+      {
+        "age": "25 - 29",
+        "both": 206392,
+        "male": 106624,
+        "female": 99768
+      },
+      {
+        "age": "30 - 34",
+        "both": 181446,
+        "male": 95787,
+        "female": 85659
+      },
+      {
+        "age": "35 - 39",
+        "both": 159528,
+        "male": 84600,
+        "female": 74928
+      },
+      {
+        "age": "40 - 44",
+        "both": 145139,
+        "male": 76610,
+        "female": 68529
+      },
+      {
+        "age": "45 - 49",
+        "both": 132853,
+        "male": 68336,
+        "female": 64517
+      },
+      {
+        "age": "50 - 54",
+        "both": 122452,
+        "male": 62281,
+        "female": 60171
+      },
+      {
+        "age": "55 - 59",
+        "both": 108995,
+        "male": 54750,
+        "female": 54245
+      },
+      {
+        "age": "60 - 64",
+        "both": 90307,
+        "male": 43740,
+        "female": 46567
+      },
+      {
+        "age": "65 - 69",
+        "both": 66304,
+        "male": 31060,
+        "female": 35244
+      },
+      {
+        "age": "70 - 74",
+        "both": 41579,
+        "male": 18174,
+        "female": 23405
+      },
+      {
+        "age": "75 - 79",
+        "both": 28036,
+        "male": 10850,
+        "female": 17186
+      },
+      {
+        "age": "80 years and over",
+        "both": 28186,
+        "male": 9449,
+        "female": 18737
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "province",
+    "region": "REGION VI (WESTERN VISAYAS)",
+    "province": "",
+    "name": "ISABELA",
+    "pop_male_2020": 33107,
+    "pop_female_2020": 31157,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 6895,
+        "male": 3544,
+        "female": 3351
+      },
+      {
+        "age": "5 - 9",
+        "both": 7259,
+        "male": 3728,
+        "female": 3531
+      },
+      {
+        "age": "10 - 14",
+        "both": 7271,
+        "male": 3755,
+        "female": 3516
+      },
+      {
+        "age": "15 - 19",
+        "both": 6502,
+        "male": 3376,
+        "female": 3126
+      },
+      {
+        "age": "20 - 24",
+        "both": 5547,
+        "male": 2902,
+        "female": 2645
+      },
+      {
+        "age": "25 - 29",
+        "both": 5059,
+        "male": 2706,
+        "female": 2353
+      },
+      {
+        "age": "30 - 34",
+        "both": 4245,
+        "male": 2287,
+        "female": 1958
+      },
+      {
+        "age": "35 - 39",
+        "both": 3709,
+        "male": 2019,
+        "female": 1690
+      },
+      {
+        "age": "40 - 44",
+        "both": 3358,
+        "male": 1801,
+        "female": 1557
+      },
+      {
+        "age": "45 - 49",
+        "both": 3040,
+        "male": 1634,
+        "female": 1406
+      },
+      {
+        "age": "50 - 54",
+        "both": 2903,
+        "male": 1492,
+        "female": 1411
+      },
+      {
+        "age": "55 - 59",
+        "both": 2597,
+        "male": 1253,
+        "female": 1344
+      },
+      {
+        "age": "60 - 64",
+        "both": 2083,
+        "male": 1012,
+        "female": 1071
+      },
+      {
+        "age": "65 - 69",
+        "both": 1533,
+        "male": 698,
+        "female": 835
+      },
+      {
+        "age": "70 - 74",
+        "both": 955,
+        "male": 417,
+        "female": 538
+      },
+      {
+        "age": "75 - 79",
+        "both": 678,
+        "male": 256,
+        "female": 422
+      },
+      {
+        "age": "80 years and over",
+        "both": 630,
+        "male": 227,
+        "female": 403
+      }
+    ],
+    "reason": "duplicate PSGC 0203100000"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION VI (WESTERN VISAYAS)",
+    "province": "ISABELA",
+    "name": "PONTEVEDRA",
+    "pop_male_2020": 27876,
+    "pop_female_2020": 26618,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 5286,
+        "male": 2731,
+        "female": 2555
+      },
+      {
+        "age": "5 - 9",
+        "both": 5630,
+        "male": 2967,
+        "female": 2663
+      },
+      {
+        "age": "10 - 14",
+        "both": 5595,
+        "male": 2897,
+        "female": 2698
+      },
+      {
+        "age": "15 - 19",
+        "both": 5081,
+        "male": 2609,
+        "female": 2472
+      },
+      {
+        "age": "20 - 24",
+        "both": 4272,
+        "male": 2173,
+        "female": 2099
+      },
+      {
+        "age": "25 - 29",
+        "both": 4096,
+        "male": 2102,
+        "female": 1994
+      },
+      {
+        "age": "30 - 34",
+        "both": 3902,
+        "male": 2060,
+        "female": 1842
+      },
+      {
+        "age": "35 - 39",
+        "both": 3457,
+        "male": 1817,
+        "female": 1640
+      },
+      {
+        "age": "40 - 44",
+        "both": 3283,
+        "male": 1747,
+        "female": 1536
+      },
+      {
+        "age": "45 - 49",
+        "both": 2966,
+        "male": 1542,
+        "female": 1424
+      },
+      {
+        "age": "50 - 54",
+        "both": 2754,
+        "male": 1431,
+        "female": 1323
+      },
+      {
+        "age": "55 - 59",
+        "both": 2314,
+        "male": 1158,
+        "female": 1156
+      },
+      {
+        "age": "60 - 64",
+        "both": 2031,
+        "male": 981,
+        "female": 1050
+      },
+      {
+        "age": "65 - 69",
+        "both": 1553,
+        "male": 749,
+        "female": 804
+      },
+      {
+        "age": "70 - 74",
+        "both": 1030,
+        "male": 466,
+        "female": 564
+      },
+      {
+        "age": "75 - 79",
+        "both": 612,
+        "male": 249,
+        "female": 363
+      },
+      {
+        "age": "80 years and over",
+        "both": 632,
+        "male": 197,
+        "female": 435
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION VI (WESTERN VISAYAS)",
+    "province": "ISABELA",
+    "name": "SAN ENRIQUE",
+    "pop_male_2020": 12258,
+    "pop_female_2020": 11919,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 2202,
+        "male": 1112,
+        "female": 1090
+      },
+      {
+        "age": "5 - 9",
+        "both": 2337,
+        "male": 1201,
+        "female": 1136
+      },
+      {
+        "age": "10 - 14",
+        "both": 2375,
+        "male": 1249,
+        "female": 1126
+      },
+      {
+        "age": "15 - 19",
+        "both": 2108,
+        "male": 1094,
+        "female": 1014
+      },
+      {
+        "age": "20 - 24",
+        "both": 1895,
+        "male": 993,
+        "female": 902
+      },
+      {
+        "age": "25 - 29",
+        "both": 1911,
+        "male": 974,
+        "female": 937
+      },
+      {
+        "age": "30 - 34",
+        "both": 1761,
+        "male": 943,
+        "female": 818
+      },
+      {
+        "age": "35 - 39",
+        "both": 1567,
+        "male": 851,
+        "female": 716
+      },
+      {
+        "age": "40 - 44",
+        "both": 1422,
+        "male": 736,
+        "female": 686
+      },
+      {
+        "age": "45 - 49",
+        "both": 1365,
+        "male": 690,
+        "female": 675
+      },
+      {
+        "age": "50 - 54",
+        "both": 1270,
+        "male": 632,
+        "female": 638
+      },
+      {
+        "age": "55 - 59",
+        "both": 1187,
+        "male": 596,
+        "female": 591
+      },
+      {
+        "age": "60 - 64",
+        "both": 928,
+        "male": 465,
+        "female": 463
+      },
+      {
+        "age": "65 - 69",
+        "both": 712,
+        "male": 322,
+        "female": 390
+      },
+      {
+        "age": "70 - 74",
+        "both": 465,
+        "male": 191,
+        "female": 274
+      },
+      {
+        "age": "75 - 79",
+        "both": 329,
+        "male": 113,
+        "female": 216
+      },
+      {
+        "age": "80 years and over",
+        "both": 343,
+        "male": 96,
+        "female": 247
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION VII (CENTRAL VISAYAS)",
+    "province": "BOHOL",
+    "name": "CEBU (excluding CITIES OF CEBU, LAPU-LAPU, and MANDAUE)",
+    "pop_male_2020": 1685185,
+    "pop_female_2020": 1624665,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 354932,
+        "male": 183887,
+        "female": 171045
+      },
+      {
+        "age": "5 - 9",
+        "both": 361115,
+        "male": 187788,
+        "female": 173327
+      },
+      {
+        "age": "10 - 14",
+        "both": 343828,
+        "male": 178283,
+        "female": 165545
+      },
+      {
+        "age": "15 - 19",
+        "both": 320928,
+        "male": 165001,
+        "female": 155927
+      },
+      {
+        "age": "20 - 24",
+        "both": 297879,
+        "male": 152643,
+        "female": 145236
+      },
+      {
+        "age": "25 - 29",
+        "both": 277627,
+        "male": 141582,
+        "female": 136045
+      },
+      {
+        "age": "30 - 34",
+        "both": 241615,
+        "male": 124679,
+        "female": 116936
+      },
+      {
+        "age": "35 - 39",
+        "both": 212166,
+        "male": 109710,
+        "female": 102456
+      },
+      {
+        "age": "40 - 44",
+        "both": 187429,
+        "male": 96621,
+        "female": 90808
+      },
+      {
+        "age": "45 - 49",
+        "both": 162226,
+        "male": 83046,
+        "female": 79180
+      },
+      {
+        "age": "50 - 54",
+        "both": 141235,
+        "male": 71498,
+        "female": 69737
+      },
+      {
+        "age": "55 - 59",
+        "both": 122830,
+        "male": 61746,
+        "female": 61084
+      },
+      {
+        "age": "60 - 64",
+        "both": 100023,
+        "male": 48753,
+        "female": 51270
+      },
+      {
+        "age": "65 - 69",
+        "both": 75654,
+        "male": 35221,
+        "female": 40433
+      },
+      {
+        "age": "70 - 74",
+        "both": 49055,
+        "male": 21781,
+        "female": 27274
+      },
+      {
+        "age": "75 - 79",
+        "both": 31204,
+        "male": 12579,
+        "female": 18625
+      },
+      {
+        "age": "80 years and over",
+        "both": 30104,
+        "male": 10367,
+        "female": 19737
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "city",
+    "region": "REGION VIII (EASTERN VISAYAS)",
+    "province": "EASTERN SAMAR",
+    "name": "LEYTE (excluding CITY OF TACLOBAN)",
+    "pop_male_2020": 907015,
+    "pop_female_2020": 863996,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 186812,
+        "male": 96417,
+        "female": 90395
+      },
+      {
+        "age": "5 - 9",
+        "both": 192954,
+        "male": 100273,
+        "female": 92681
+      },
+      {
+        "age": "10 - 14",
+        "both": 191067,
+        "male": 99122,
+        "female": 91945
+      },
+      {
+        "age": "15 - 19",
+        "both": 177421,
+        "male": 90802,
+        "female": 86619
+      },
+      {
+        "age": "20 - 24",
+        "both": 150924,
+        "male": 77982,
+        "female": 72942
+      },
+      {
+        "age": "25 - 29",
+        "both": 133575,
+        "male": 68811,
+        "female": 64764
+      },
+      {
+        "age": "30 - 34",
+        "both": 117942,
+        "male": 61664,
+        "female": 56278
+      },
+      {
+        "age": "35 - 39",
+        "both": 104739,
+        "male": 55407,
+        "female": 49332
+      },
+      {
+        "age": "40 - 44",
+        "both": 97533,
+        "male": 51410,
+        "female": 46123
+      },
+      {
+        "age": "45 - 49",
+        "both": 86880,
+        "male": 45308,
+        "female": 41572
+      },
+      {
+        "age": "50 - 54",
+        "both": 80595,
+        "male": 41255,
+        "female": 39340
+      },
+      {
+        "age": "55 - 59",
+        "both": 71729,
+        "male": 36860,
+        "female": 34869
+      },
+      {
+        "age": "60 - 64",
+        "both": 61925,
+        "male": 30963,
+        "female": 30962
+      },
+      {
+        "age": "65 - 69",
+        "both": 45664,
+        "male": 21858,
+        "female": 23806
+      },
+      {
+        "age": "70 - 74",
+        "both": 31940,
+        "male": 14249,
+        "female": 17691
+      },
+      {
+        "age": "75 - 79",
+        "both": 20163,
+        "male": 8121,
+        "female": 12042
+      },
+      {
+        "age": "80 years and over",
+        "both": 19148,
+        "male": 6513,
+        "female": 12635
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION VIII (EASTERN VISAYAS)",
+    "province": "NORTHERN SAMAR",
+    "name": "SAMAR (WESTERN SAMAR)",
+    "pop_male_2020": 406789,
+    "pop_female_2020": 384256,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 85393,
+        "male": 44028,
+        "female": 41365
+      },
+      {
+        "age": "5 - 9",
+        "both": 90700,
+        "male": 47145,
+        "female": 43555
+      },
+      {
+        "age": "10 - 14",
+        "both": 89209,
+        "male": 45907,
+        "female": 43302
+      },
+      {
+        "age": "15 - 19",
+        "both": 89008,
+        "male": 45527,
+        "female": 43481
+      },
+      {
+        "age": "20 - 24",
+        "both": 73724,
+        "male": 38132,
+        "female": 35592
+      },
+      {
+        "age": "25 - 29",
+        "both": 58912,
+        "male": 30755,
+        "female": 28157
+      },
+      {
+        "age": "30 - 34",
+        "both": 47203,
+        "male": 24949,
+        "female": 22254
+      },
+      {
+        "age": "35 - 39",
+        "both": 42464,
+        "male": 22226,
+        "female": 20238
+      },
+      {
+        "age": "40 - 44",
+        "both": 40929,
+        "male": 21538,
+        "female": 19391
+      },
+      {
+        "age": "45 - 49",
+        "both": 39075,
+        "male": 20518,
+        "female": 18557
+      },
+      {
+        "age": "50 - 54",
+        "both": 35089,
+        "male": 18306,
+        "female": 16783
+      },
+      {
+        "age": "55 - 59",
+        "both": 28929,
+        "male": 15026,
+        "female": 13903
+      },
+      {
+        "age": "60 - 64",
+        "both": 23899,
+        "male": 12129,
+        "female": 11770
+      },
+      {
+        "age": "65 - 69",
+        "both": 17154,
+        "male": 8336,
+        "female": 8818
+      },
+      {
+        "age": "70 - 74",
+        "both": 12744,
+        "male": 5580,
+        "female": 7164
+      },
+      {
+        "age": "75 - 79",
+        "both": 8753,
+        "male": 3708,
+        "female": 5045
+      },
+      {
+        "age": "80 years and over",
+        "both": 7860,
+        "male": 2979,
+        "female": 4881
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "province",
+    "region": "REGION IX (ZAMBOANGA PENINSULA)",
+    "province": "",
+    "name": "RIZAL",
+    "pop_male_2020": 7601,
+    "pop_female_2020": 7433,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 1517,
+        "male": 784,
+        "female": 733
+      },
+      {
+        "age": "5 - 9",
+        "both": 1471,
+        "male": 759,
+        "female": 712
+      },
+      {
+        "age": "10 - 14",
+        "both": 1455,
+        "male": 747,
+        "female": 708
+      },
+      {
+        "age": "15 - 19",
+        "both": 1347,
+        "male": 686,
+        "female": 661
+      },
+      {
+        "age": "20 - 24",
+        "both": 1183,
+        "male": 627,
+        "female": 556
+      },
+      {
+        "age": "25 - 29",
+        "both": 1078,
+        "male": 569,
+        "female": 509
+      },
+      {
+        "age": "30 - 34",
+        "both": 881,
+        "male": 449,
+        "female": 432
+      },
+      {
+        "age": "35 - 39",
+        "both": 837,
+        "male": 440,
+        "female": 397
+      },
+      {
+        "age": "40 - 44",
+        "both": 892,
+        "male": 454,
+        "female": 438
+      },
+      {
+        "age": "45 - 49",
+        "both": 820,
+        "male": 418,
+        "female": 402
+      },
+      {
+        "age": "50 - 54",
+        "both": 788,
+        "male": 405,
+        "female": 383
+      },
+      {
+        "age": "55 - 59",
+        "both": 719,
+        "male": 369,
+        "female": 350
+      },
+      {
+        "age": "60 - 64",
+        "both": 642,
+        "male": 314,
+        "female": 328
+      },
+      {
+        "age": "65 - 69",
+        "both": 520,
+        "male": 222,
+        "female": 298
+      },
+      {
+        "age": "70 - 74",
+        "both": 390,
+        "male": 186,
+        "female": 204
+      },
+      {
+        "age": "75 - 79",
+        "both": 277,
+        "male": 107,
+        "female": 170
+      },
+      {
+        "age": "80 years and over",
+        "both": 217,
+        "male": 65,
+        "female": 152
+      }
+    ],
+    "reason": "duplicate PSGC 0405800000"
+  },
+  {
+    "level": "city",
+    "region": "REGION IX (ZAMBOANGA PENINSULA)",
+    "province": "RIZAL",
+    "name": "ZAMBOANGA DEL SUR (excluding CITY OF ZAMBOANGA)",
+    "pop_male_2020": 535265,
+    "pop_female_2020": 513137,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 117601,
+        "male": 60137,
+        "female": 57464
+      },
+      {
+        "age": "5 - 9",
+        "both": 120193,
+        "male": 61990,
+        "female": 58203
+      },
+      {
+        "age": "10 - 14",
+        "both": 117276,
+        "male": 60014,
+        "female": 57262
+      },
+      {
+        "age": "15 - 19",
+        "both": 108809,
+        "male": 55408,
+        "female": 53401
+      },
+      {
+        "age": "20 - 24",
+        "both": 93857,
+        "male": 47830,
+        "female": 46027
+      },
+      {
+        "age": "25 - 29",
+        "both": 83996,
+        "male": 43069,
+        "female": 40927
+      },
+      {
+        "age": "30 - 34",
+        "both": 71213,
+        "male": 37246,
+        "female": 33967
+      },
+      {
+        "age": "35 - 39",
+        "both": 59692,
+        "male": 31475,
+        "female": 28217
+      },
+      {
+        "age": "40 - 44",
+        "both": 56239,
+        "male": 29799,
+        "female": 26440
+      },
+      {
+        "age": "45 - 49",
+        "both": 49795,
+        "male": 25818,
+        "female": 23977
+      },
+      {
+        "age": "50 - 54",
+        "both": 44595,
+        "male": 22663,
+        "female": 21932
+      },
+      {
+        "age": "55 - 59",
+        "both": 38565,
+        "male": 19589,
+        "female": 18976
+      },
+      {
+        "age": "60 - 64",
+        "both": 31652,
+        "male": 15673,
+        "female": 15979
+      },
+      {
+        "age": "65 - 69",
+        "both": 22713,
+        "male": 10865,
+        "female": 11848
+      },
+      {
+        "age": "70 - 74",
+        "both": 14221,
+        "male": 6419,
+        "female": 7802
+      },
+      {
+        "age": "75 - 79",
+        "both": 8814,
+        "male": 3733,
+        "female": 5081
+      },
+      {
+        "age": "80 years and over",
+        "both": 9171,
+        "male": 3537,
+        "female": 5634
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "province",
+    "region": "REGION IX (ZAMBOANGA PENINSULA)",
+    "province": "",
+    "name": "AURORA",
+    "pop_male_2020": 27099,
+    "pop_female_2020": 25887,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 5968,
+        "male": 3006,
+        "female": 2962
+      },
+      {
+        "age": "5 - 9",
+        "both": 6048,
+        "male": 3157,
+        "female": 2891
+      },
+      {
+        "age": "10 - 14",
+        "both": 6015,
+        "male": 3083,
+        "female": 2932
+      },
+      {
+        "age": "15 - 19",
+        "both": 5518,
+        "male": 2789,
+        "female": 2729
+      },
+      {
+        "age": "20 - 24",
+        "both": 4562,
+        "male": 2340,
+        "female": 2222
+      },
+      {
+        "age": "25 - 29",
+        "both": 4247,
+        "male": 2215,
+        "female": 2032
+      },
+      {
+        "age": "30 - 34",
+        "both": 3670,
+        "male": 1866,
+        "female": 1804
+      },
+      {
+        "age": "35 - 39",
+        "both": 3055,
+        "male": 1607,
+        "female": 1448
+      },
+      {
+        "age": "40 - 44",
+        "both": 2832,
+        "male": 1510,
+        "female": 1322
+      },
+      {
+        "age": "45 - 49",
+        "both": 2457,
+        "male": 1304,
+        "female": 1153
+      },
+      {
+        "age": "50 - 54",
+        "both": 2168,
+        "male": 1118,
+        "female": 1050
+      },
+      {
+        "age": "55 - 59",
+        "both": 1938,
+        "male": 993,
+        "female": 945
+      },
+      {
+        "age": "60 - 64",
+        "both": 1564,
+        "male": 803,
+        "female": 761
+      },
+      {
+        "age": "65 - 69",
+        "both": 1254,
+        "male": 626,
+        "female": 628
+      },
+      {
+        "age": "70 - 74",
+        "both": 707,
+        "male": 303,
+        "female": 404
+      },
+      {
+        "age": "75 - 79",
+        "both": 489,
+        "male": 194,
+        "female": 295
+      },
+      {
+        "age": "80 years and over",
+        "both": 494,
+        "male": 185,
+        "female": 309
+      }
+    ],
+    "reason": "duplicate PSGC 0307700000"
+  },
+  {
+    "level": "province",
+    "region": "REGION X (NORTHERN MINDANAO)",
+    "province": "",
+    "name": "QUEZON",
+    "pop_male_2020": 56809,
+    "pop_female_2020": 52731,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 12185,
+        "male": 6216,
+        "female": 5969
+      },
+      {
+        "age": "5 - 9",
+        "both": 13301,
+        "male": 6943,
+        "female": 6358
+      },
+      {
+        "age": "10 - 14",
+        "both": 12702,
+        "male": 6511,
+        "female": 6191
+      },
+      {
+        "age": "15 - 19",
+        "both": 11458,
+        "male": 5829,
+        "female": 5629
+      },
+      {
+        "age": "20 - 24",
+        "both": 9470,
+        "male": 4894,
+        "female": 4576
+      },
+      {
+        "age": "25 - 29",
+        "both": 8657,
+        "male": 4591,
+        "female": 4066
+      },
+      {
+        "age": "30 - 34",
+        "both": 7684,
+        "male": 4106,
+        "female": 3578
+      },
+      {
+        "age": "35 - 39",
+        "both": 6437,
+        "male": 3450,
+        "female": 2987
+      },
+      {
+        "age": "40 - 44",
+        "both": 5676,
+        "male": 3001,
+        "female": 2675
+      },
+      {
+        "age": "45 - 49",
+        "both": 5191,
+        "male": 2727,
+        "female": 2464
+      },
+      {
+        "age": "50 - 54",
+        "both": 4636,
+        "male": 2380,
+        "female": 2256
+      },
+      {
+        "age": "55 - 59",
+        "both": 3799,
+        "male": 1990,
+        "female": 1809
+      },
+      {
+        "age": "60 - 64",
+        "both": 3087,
+        "male": 1585,
+        "female": 1502
+      },
+      {
+        "age": "65 - 69",
+        "both": 2245,
+        "male": 1180,
+        "female": 1065
+      },
+      {
+        "age": "70 - 74",
+        "both": 1319,
+        "male": 669,
+        "female": 650
+      },
+      {
+        "age": "75 - 79",
+        "both": 825,
+        "male": 375,
+        "female": 450
+      },
+      {
+        "age": "80 years and over",
+        "both": 868,
+        "male": 362,
+        "female": 506
+      }
+    ],
+    "reason": "duplicate PSGC 0405600000"
+  },
+  {
+    "level": "city",
+    "region": "REGION X (NORTHERN MINDANAO)",
+    "province": "CAMIGUIN",
+    "name": "LANAO DEL NORTE (excluding CITY OF ILIGAN)",
+    "pop_male_2020": 362139,
+    "pop_female_2020": 359577,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 89818,
+        "male": 45841,
+        "female": 43977
+      },
+      {
+        "age": "5 - 9",
+        "both": 92406,
+        "male": 46758,
+        "female": 45648
+      },
+      {
+        "age": "10 - 14",
+        "both": 86380,
+        "male": 43577,
+        "female": 42803
+      },
+      {
+        "age": "15 - 19",
+        "both": 77378,
+        "male": 38426,
+        "female": 38952
+      },
+      {
+        "age": "20 - 24",
+        "both": 67926,
+        "male": 33622,
+        "female": 34304
+      },
+      {
+        "age": "25 - 29",
+        "both": 59936,
+        "male": 29444,
+        "female": 30492
+      },
+      {
+        "age": "30 - 34",
+        "both": 49458,
+        "male": 25147,
+        "female": 24311
+      },
+      {
+        "age": "35 - 39",
+        "both": 41258,
+        "male": 21005,
+        "female": 20253
+      },
+      {
+        "age": "40 - 44",
+        "both": 36459,
+        "male": 18650,
+        "female": 17809
+      },
+      {
+        "age": "45 - 49",
+        "both": 30494,
+        "male": 15587,
+        "female": 14907
+      },
+      {
+        "age": "50 - 54",
+        "both": 26039,
+        "male": 13066,
+        "female": 12973
+      },
+      {
+        "age": "55 - 59",
+        "both": 20413,
+        "male": 10434,
+        "female": 9979
+      },
+      {
+        "age": "60 - 64",
+        "both": 16474,
+        "male": 8224,
+        "female": 8250
+      },
+      {
+        "age": "65 - 69",
+        "both": 11709,
+        "male": 5645,
+        "female": 6064
+      },
+      {
+        "age": "70 - 74",
+        "both": 7443,
+        "male": 3439,
+        "female": 4004
+      },
+      {
+        "age": "75 - 79",
+        "both": 3997,
+        "male": 1716,
+        "female": 2281
+      },
+      {
+        "age": "80 years and over",
+        "both": 4128,
+        "male": 1558,
+        "female": 2570
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION X (NORTHERN MINDANAO)",
+    "province": "CAMIGUIN",
+    "name": "MAGSAYSAY",
+    "pop_male_2020": 10330,
+    "pop_female_2020": 10123,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 2729,
+        "male": 1402,
+        "female": 1327
+      },
+      {
+        "age": "5 - 9",
+        "both": 2780,
+        "male": 1420,
+        "female": 1360
+      },
+      {
+        "age": "10 - 14",
+        "both": 2753,
+        "male": 1403,
+        "female": 1350
+      },
+      {
+        "age": "15 - 19",
+        "both": 2146,
+        "male": 1065,
+        "female": 1081
+      },
+      {
+        "age": "20 - 24",
+        "both": 1848,
+        "male": 905,
+        "female": 943
+      },
+      {
+        "age": "25 - 29",
+        "both": 1671,
+        "male": 815,
+        "female": 856
+      },
+      {
+        "age": "30 - 34",
+        "both": 1331,
+        "male": 674,
+        "female": 657
+      },
+      {
+        "age": "35 - 39",
+        "both": 1292,
+        "male": 617,
+        "female": 675
+      },
+      {
+        "age": "40 - 44",
+        "both": 1059,
+        "male": 547,
+        "female": 512
+      },
+      {
+        "age": "45 - 49",
+        "both": 917,
+        "male": 482,
+        "female": 435
+      },
+      {
+        "age": "50 - 54",
+        "both": 625,
+        "male": 341,
+        "female": 284
+      },
+      {
+        "age": "55 - 59",
+        "both": 427,
+        "male": 237,
+        "female": 190
+      },
+      {
+        "age": "60 - 64",
+        "both": 352,
+        "male": 187,
+        "female": 165
+      },
+      {
+        "age": "65 - 69",
+        "both": 226,
+        "male": 110,
+        "female": 116
+      },
+      {
+        "age": "70 - 74",
+        "both": 126,
+        "male": 48,
+        "female": 78
+      },
+      {
+        "age": "75 - 79",
+        "both": 89,
+        "male": 40,
+        "female": 49
+      },
+      {
+        "age": "80 years and over",
+        "both": 82,
+        "male": 37,
+        "female": 45
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION X (NORTHERN MINDANAO)",
+    "province": "CAMIGUIN",
+    "name": "TAGOLOAN",
+    "pop_male_2020": 7669,
+    "pop_female_2020": 7422,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 2226,
+        "male": 1120,
+        "female": 1106
+      },
+      {
+        "age": "5 - 9",
+        "both": 2097,
+        "male": 1049,
+        "female": 1048
+      },
+      {
+        "age": "10 - 14",
+        "both": 1821,
+        "male": 960,
+        "female": 861
+      },
+      {
+        "age": "15 - 19",
+        "both": 1592,
+        "male": 772,
+        "female": 820
+      },
+      {
+        "age": "20 - 24",
+        "both": 1487,
+        "male": 738,
+        "female": 749
+      },
+      {
+        "age": "25 - 29",
+        "both": 1286,
+        "male": 612,
+        "female": 674
+      },
+      {
+        "age": "30 - 34",
+        "both": 1099,
+        "male": 583,
+        "female": 516
+      },
+      {
+        "age": "35 - 39",
+        "both": 855,
+        "male": 455,
+        "female": 400
+      },
+      {
+        "age": "40 - 44",
+        "both": 666,
+        "male": 355,
+        "female": 311
+      },
+      {
+        "age": "45 - 49",
+        "both": 551,
+        "male": 284,
+        "female": 267
+      },
+      {
+        "age": "50 - 54",
+        "both": 462,
+        "male": 249,
+        "female": 213
+      },
+      {
+        "age": "55 - 59",
+        "both": 301,
+        "male": 147,
+        "female": 154
+      },
+      {
+        "age": "60 - 64",
+        "both": 255,
+        "male": 138,
+        "female": 117
+      },
+      {
+        "age": "65 - 69",
+        "both": 191,
+        "male": 101,
+        "female": 90
+      },
+      {
+        "age": "70 - 74",
+        "both": 110,
+        "male": 53,
+        "female": 57
+      },
+      {
+        "age": "75 - 79",
+        "both": 46,
+        "male": 26,
+        "female": 20
+      },
+      {
+        "age": "80 years and over",
+        "both": 46,
+        "male": 27,
+        "female": 19
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "city",
+    "region": "REGION X (NORTHERN MINDANAO)",
+    "province": "MISAMIS OCCIDENTAL",
+    "name": "MISAMIS ORIENTAL (excluding CITY OF CAGAYAN DE ORO)",
+    "pop_male_2020": 489483,
+    "pop_female_2020": 465470,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 106534,
+        "male": 54814,
+        "female": 51720
+      },
+      {
+        "age": "5 - 9",
+        "both": 107947,
+        "male": 56462,
+        "female": 51485
+      },
+      {
+        "age": "10 - 14",
+        "both": 102942,
+        "male": 53314,
+        "female": 49628
+      },
+      {
+        "age": "15 - 19",
+        "both": 94822,
+        "male": 48807,
+        "female": 46015
+      },
+      {
+        "age": "20 - 24",
+        "both": 82854,
+        "male": 42849,
+        "female": 40005
+      },
+      {
+        "age": "25 - 29",
+        "both": 76091,
+        "male": 39396,
+        "female": 36695
+      },
+      {
+        "age": "30 - 34",
+        "both": 68842,
+        "male": 36056,
+        "female": 32786
+      },
+      {
+        "age": "35 - 39",
+        "both": 57613,
+        "male": 30202,
+        "female": 27411
+      },
+      {
+        "age": "40 - 44",
+        "both": 52678,
+        "male": 27341,
+        "female": 25337
+      },
+      {
+        "age": "45 - 49",
+        "both": 45763,
+        "male": 23551,
+        "female": 22212
+      },
+      {
+        "age": "50 - 54",
+        "both": 41970,
+        "male": 21117,
+        "female": 20853
+      },
+      {
+        "age": "55 - 59",
+        "both": 36784,
+        "male": 18466,
+        "female": 18318
+      },
+      {
+        "age": "60 - 64",
+        "both": 29590,
+        "male": 14589,
+        "female": 15001
+      },
+      {
+        "age": "65 - 69",
+        "both": 21384,
+        "male": 10426,
+        "female": 10958
+      },
+      {
+        "age": "70 - 74",
+        "both": 13159,
+        "male": 5959,
+        "female": 7200
+      },
+      {
+        "age": "75 - 79",
+        "both": 7850,
+        "male": 3239,
+        "female": 4611
+      },
+      {
+        "age": "80 years and over",
+        "both": 8130,
+        "male": 2895,
+        "female": 5235
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION X (NORTHERN MINDANAO)",
+    "province": "MISAMIS OCCIDENTAL",
+    "name": "MAGSAYSAY (LINUGOS)",
+    "pop_male_2020": 18965,
+    "pop_female_2020": 17776,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 4555,
+        "male": 2349,
+        "female": 2206
+      },
+      {
+        "age": "5 - 9",
+        "both": 4561,
+        "male": 2418,
+        "female": 2143
+      },
+      {
+        "age": "10 - 14",
+        "both": 4276,
+        "male": 2163,
+        "female": 2113
+      },
+      {
+        "age": "15 - 19",
+        "both": 3946,
+        "male": 1970,
+        "female": 1976
+      },
+      {
+        "age": "20 - 24",
+        "both": 3119,
+        "male": 1662,
+        "female": 1457
+      },
+      {
+        "age": "25 - 29",
+        "both": 2523,
+        "male": 1339,
+        "female": 1184
+      },
+      {
+        "age": "30 - 34",
+        "both": 2310,
+        "male": 1205,
+        "female": 1105
+      },
+      {
+        "age": "35 - 39",
+        "both": 1876,
+        "male": 1023,
+        "female": 853
+      },
+      {
+        "age": "40 - 44",
+        "both": 1806,
+        "male": 985,
+        "female": 821
+      },
+      {
+        "age": "45 - 49",
+        "both": 1624,
+        "male": 858,
+        "female": 766
+      },
+      {
+        "age": "50 - 54",
+        "both": 1603,
+        "male": 813,
+        "female": 790
+      },
+      {
+        "age": "55 - 59",
+        "both": 1305,
+        "male": 655,
+        "female": 650
+      },
+      {
+        "age": "60 - 64",
+        "both": 1140,
+        "male": 553,
+        "female": 587
+      },
+      {
+        "age": "65 - 69",
+        "both": 888,
+        "male": 449,
+        "female": 439
+      },
+      {
+        "age": "70 - 74",
+        "both": 527,
+        "male": 246,
+        "female": 281
+      },
+      {
+        "age": "75 - 79",
+        "both": 342,
+        "male": 143,
+        "female": 199
+      },
+      {
+        "age": "80 years and over",
+        "both": 340,
+        "male": 134,
+        "female": 206
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION X (NORTHERN MINDANAO)",
+    "province": "MISAMIS OCCIDENTAL",
+    "name": "TAGOLOAN",
+    "pop_male_2020": 40874,
+    "pop_female_2020": 39177,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 8758,
+        "male": 4471,
+        "female": 4287
+      },
+      {
+        "age": "5 - 9",
+        "both": 8819,
+        "male": 4575,
+        "female": 4244
+      },
+      {
+        "age": "10 - 14",
+        "both": 8291,
+        "male": 4268,
+        "female": 4023
+      },
+      {
+        "age": "15 - 19",
+        "both": 7894,
+        "male": 4017,
+        "female": 3877
+      },
+      {
+        "age": "20 - 24",
+        "both": 7525,
+        "male": 3842,
+        "female": 3683
+      },
+      {
+        "age": "25 - 29",
+        "both": 7322,
+        "male": 3816,
+        "female": 3506
+      },
+      {
+        "age": "30 - 34",
+        "both": 6410,
+        "male": 3402,
+        "female": 3008
+      },
+      {
+        "age": "35 - 39",
+        "both": 5334,
+        "male": 2763,
+        "female": 2571
+      },
+      {
+        "age": "40 - 44",
+        "both": 4600,
+        "male": 2344,
+        "female": 2256
+      },
+      {
+        "age": "45 - 49",
+        "both": 3792,
+        "male": 1987,
+        "female": 1805
+      },
+      {
+        "age": "50 - 54",
+        "both": 3169,
+        "male": 1530,
+        "female": 1639
+      },
+      {
+        "age": "55 - 59",
+        "both": 2695,
+        "male": 1346,
+        "female": 1349
+      },
+      {
+        "age": "60 - 64",
+        "both": 2177,
+        "male": 1055,
+        "female": 1122
+      },
+      {
+        "age": "65 - 69",
+        "both": 1529,
+        "male": 741,
+        "female": 788
+      },
+      {
+        "age": "70 - 74",
+        "both": 925,
+        "male": 432,
+        "female": 493
+      },
+      {
+        "age": "75 - 79",
+        "both": 410,
+        "male": 159,
+        "female": 251
+      },
+      {
+        "age": "80 years and over",
+        "both": 401,
+        "male": 126,
+        "female": 275
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "city",
+    "region": "REGION XI (DAVAO REGION)",
+    "province": "DAVAO DEL NORTE",
+    "name": "DAVAO DEL SUR (excluding CITY OF DAVAO)",
+    "pop_male_2020": 348739,
+    "pop_female_2020": 330718,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 70489,
+        "male": 36320,
+        "female": 34169
+      },
+      {
+        "age": "5 - 9",
+        "both": 69219,
+        "male": 36051,
+        "female": 33168
+      },
+      {
+        "age": "10 - 14",
+        "both": 70279,
+        "male": 36156,
+        "female": 34123
+      },
+      {
+        "age": "15 - 19",
+        "both": 62235,
+        "male": 31833,
+        "female": 30402
+      },
+      {
+        "age": "20 - 24",
+        "both": 59195,
+        "male": 30305,
+        "female": 28890
+      },
+      {
+        "age": "25 - 29",
+        "both": 55537,
+        "male": 28615,
+        "female": 26922
+      },
+      {
+        "age": "30 - 34",
+        "both": 52399,
+        "male": 27619,
+        "female": 24780
+      },
+      {
+        "age": "35 - 39",
+        "both": 44248,
+        "male": 23275,
+        "female": 20973
+      },
+      {
+        "age": "40 - 44",
+        "both": 40310,
+        "male": 21380,
+        "female": 18930
+      },
+      {
+        "age": "45 - 49",
+        "both": 35193,
+        "male": 18496,
+        "female": 16697
+      },
+      {
+        "age": "50 - 54",
+        "both": 31235,
+        "male": 15818,
+        "female": 15417
+      },
+      {
+        "age": "55 - 59",
+        "both": 27087,
+        "male": 13635,
+        "female": 13452
+      },
+      {
+        "age": "60 - 64",
+        "both": 23463,
+        "male": 11694,
+        "female": 11769
+      },
+      {
+        "age": "65 - 69",
+        "both": 16638,
+        "male": 7938,
+        "female": 8700
+      },
+      {
+        "age": "70 - 74",
+        "both": 10398,
+        "male": 4830,
+        "female": 5568
+      },
+      {
+        "age": "75 - 79",
+        "both": 5729,
+        "male": 2532,
+        "female": 3197
+      },
+      {
+        "age": "80 years and over",
+        "both": 5803,
+        "male": 2242,
+        "female": 3561
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION XI (DAVAO REGION)",
+    "province": "DAVAO ORIENTAL",
+    "name": "DAVAO DE ORO (COMPOSTELA VALLEY)",
+    "pop_male_2020": 400687,
+    "pop_female_2020": 365612,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 78742,
+        "male": 40754,
+        "female": 37988
+      },
+      {
+        "age": "5 - 9",
+        "both": 84120,
+        "male": 43504,
+        "female": 40616
+      },
+      {
+        "age": "10 - 14",
+        "both": 83387,
+        "male": 43374,
+        "female": 40013
+      },
+      {
+        "age": "15 - 19",
+        "both": 78995,
+        "male": 40818,
+        "female": 38177
+      },
+      {
+        "age": "20 - 24",
+        "both": 65437,
+        "male": 33833,
+        "female": 31604
+      },
+      {
+        "age": "25 - 29",
+        "both": 62856,
+        "male": 33023,
+        "female": 29833
+      },
+      {
+        "age": "30 - 34",
+        "both": 57963,
+        "male": 31301,
+        "female": 26662
+      },
+      {
+        "age": "35 - 39",
+        "both": 47953,
+        "male": 25967,
+        "female": 21986
+      },
+      {
+        "age": "40 - 44",
+        "both": 42570,
+        "male": 23222,
+        "female": 19348
+      },
+      {
+        "age": "45 - 49",
+        "both": 38446,
+        "male": 20503,
+        "female": 17943
+      },
+      {
+        "age": "50 - 54",
+        "both": 35369,
+        "male": 18874,
+        "female": 16495
+      },
+      {
+        "age": "55 - 59",
+        "both": 28834,
+        "male": 15142,
+        "female": 13692
+      },
+      {
+        "age": "60 - 64",
+        "both": 23467,
+        "male": 12251,
+        "female": 11216
+      },
+      {
+        "age": "65 - 69",
+        "both": 16025,
+        "male": 8015,
+        "female": 8010
+      },
+      {
+        "age": "70 - 74",
+        "both": 9962,
+        "male": 4833,
+        "female": 5129
+      },
+      {
+        "age": "75 - 79",
+        "both": 6154,
+        "male": 2823,
+        "female": 3331
+      },
+      {
+        "age": "80 years and over",
+        "both": 6019,
+        "male": 2450,
+        "female": 3569
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION XII (SOCCSKSARGEN)",
+    "province": "",
+    "name": "COTABATO (NORTH COTABATO) (excluding 63 barangays now part of BARMM)",
+    "pop_male_2020": 652626,
+    "pop_female_2020": 620968,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 133770,
+        "male": 69113,
+        "female": 64657
+      },
+      {
+        "age": "5 - 9",
+        "both": 145175,
+        "male": 75024,
+        "female": 70151
+      },
+      {
+        "age": "10 - 14",
+        "both": 141983,
+        "male": 73264,
+        "female": 68719
+      },
+      {
+        "age": "15 - 19",
+        "both": 129362,
+        "male": 66001,
+        "female": 63361
+      },
+      {
+        "age": "20 - 24",
+        "both": 111947,
+        "male": 57587,
+        "female": 54360
+      },
+      {
+        "age": "25 - 29",
+        "both": 103607,
+        "male": 52997,
+        "female": 50610
+      },
+      {
+        "age": "30 - 34",
+        "both": 93164,
+        "male": 48829,
+        "female": 44335
+      },
+      {
+        "age": "35 - 39",
+        "both": 80130,
+        "male": 41702,
+        "female": 38428
+      },
+      {
+        "age": "40 - 44",
+        "both": 72339,
+        "male": 37919,
+        "female": 34420
+      },
+      {
+        "age": "45 - 49",
+        "both": 63413,
+        "male": 33067,
+        "female": 30346
+      },
+      {
+        "age": "50 - 54",
+        "both": 55740,
+        "male": 28740,
+        "female": 27000
+      },
+      {
+        "age": "55 - 59",
+        "both": 44849,
+        "male": 22791,
+        "female": 22058
+      },
+      {
+        "age": "60 - 64",
+        "both": 36238,
+        "male": 17956,
+        "female": 18282
+      },
+      {
+        "age": "65 - 69",
+        "both": 25874,
+        "male": 12433,
+        "female": 13441
+      },
+      {
+        "age": "70 - 74",
+        "both": 16176,
+        "male": 7324,
+        "female": 8852
+      },
+      {
+        "age": "75 - 79",
+        "both": 9899,
+        "male": 4129,
+        "female": 5770
+      },
+      {
+        "age": "80 years and over",
+        "both": 9928,
+        "male": 3750,
+        "female": 6178
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "city",
+    "region": "REGION XII (SOCCSKSARGEN)",
+    "province": "",
+    "name": "SOUTH COTABATO (excluding CITY OF GENERAL SANTOS)",
+    "pop_male_2020": 496628,
+    "pop_female_2020": 476518,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 104601,
+        "male": 53778,
+        "female": 50823
+      },
+      {
+        "age": "5 - 9",
+        "both": 106723,
+        "male": 55363,
+        "female": 51360
+      },
+      {
+        "age": "10 - 14",
+        "both": 104586,
+        "male": 53748,
+        "female": 50838
+      },
+      {
+        "age": "15 - 19",
+        "both": 96237,
+        "male": 49122,
+        "female": 47115
+      },
+      {
+        "age": "20 - 24",
+        "both": 87933,
+        "male": 44608,
+        "female": 43325
+      },
+      {
+        "age": "25 - 29",
+        "both": 81991,
+        "male": 42208,
+        "female": 39783
+      },
+      {
+        "age": "30 - 34",
+        "both": 73559,
+        "male": 38515,
+        "female": 35044
+      },
+      {
+        "age": "35 - 39",
+        "both": 62612,
+        "male": 32808,
+        "female": 29804
+      },
+      {
+        "age": "40 - 44",
+        "both": 58006,
+        "male": 30310,
+        "female": 27696
+      },
+      {
+        "age": "45 - 49",
+        "both": 48939,
+        "male": 25421,
+        "female": 23518
+      },
+      {
+        "age": "50 - 54",
+        "both": 41645,
+        "male": 21395,
+        "female": 20250
+      },
+      {
+        "age": "55 - 59",
+        "both": 33420,
+        "male": 16837,
+        "female": 16583
+      },
+      {
+        "age": "60 - 64",
+        "both": 26965,
+        "male": 13074,
+        "female": 13891
+      },
+      {
+        "age": "65 - 69",
+        "both": 19268,
+        "male": 8926,
+        "female": 10342
+      },
+      {
+        "age": "70 - 74",
+        "both": 12041,
+        "male": 5217,
+        "female": 6824
+      },
+      {
+        "age": "75 - 79",
+        "both": 7449,
+        "male": 2888,
+        "female": 4561
+      },
+      {
+        "age": "80 years and over",
+        "both": 7171,
+        "male": 2410,
+        "female": 4761
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "province",
+    "region": "REGION XII (SOCCSKSARGEN)",
+    "province": "",
+    "name": "SARANGANI",
+    "pop_male_2020": 288722,
+    "pop_female_2020": 269347,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 64989,
+        "male": 33381,
+        "female": 31608
+      },
+      {
+        "age": "5 - 9",
+        "both": 66801,
+        "male": 34417,
+        "female": 32384
+      },
+      {
+        "age": "10 - 14",
+        "both": 64498,
+        "male": 32953,
+        "female": 31545
+      },
+      {
+        "age": "15 - 19",
+        "both": 59084,
+        "male": 30137,
+        "female": 28947
+      },
+      {
+        "age": "20 - 24",
+        "both": 51538,
+        "male": 26647,
+        "female": 24891
+      },
+      {
+        "age": "25 - 29",
+        "both": 46011,
+        "male": 23944,
+        "female": 22067
+      },
+      {
+        "age": "30 - 34",
+        "both": 39592,
+        "male": 21147,
+        "female": 18445
+      },
+      {
+        "age": "35 - 39",
+        "both": 33812,
+        "male": 18006,
+        "female": 15806
+      },
+      {
+        "age": "40 - 44",
+        "both": 30148,
+        "male": 16083,
+        "female": 14065
+      },
+      {
+        "age": "45 - 49",
+        "both": 26700,
+        "male": 13989,
+        "female": 12711
+      },
+      {
+        "age": "50 - 54",
+        "both": 21972,
+        "male": 11612,
+        "female": 10360
+      },
+      {
+        "age": "55 - 59",
+        "both": 17369,
+        "male": 9045,
+        "female": 8324
+      },
+      {
+        "age": "60 - 64",
+        "both": 13518,
+        "male": 6921,
+        "female": 6597
+      },
+      {
+        "age": "65 - 69",
+        "both": 9355,
+        "male": 4737,
+        "female": 4618
+      },
+      {
+        "age": "70 - 74",
+        "both": 5791,
+        "male": 2732,
+        "female": 3059
+      },
+      {
+        "age": "75 - 79",
+        "both": 3524,
+        "male": 1597,
+        "female": 1927
+      },
+      {
+        "age": "80 years and over",
+        "both": 3367,
+        "male": 1374,
+        "female": 1993
+      }
+    ],
+    "reason": "duplicate PSGC 1208000000"
+  },
+  {
+    "level": "city",
+    "region": "REGION XIII (Caraga)",
+    "province": "",
+    "name": "AGUSAN DEL NORTE (excluding CITY OF BUTUAN)",
+    "pop_male_2020": 197983,
+    "pop_female_2020": 188228,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 38481,
+        "male": 19848,
+        "female": 18633
+      },
+      {
+        "age": "5 - 9",
+        "both": 43830,
+        "male": 22805,
+        "female": 21025
+      },
+      {
+        "age": "10 - 14",
+        "both": 43224,
+        "male": 22455,
+        "female": 20769
+      },
+      {
+        "age": "15 - 19",
+        "both": 39647,
+        "male": 20306,
+        "female": 19341
+      },
+      {
+        "age": "20 - 24",
+        "both": 33946,
+        "male": 17426,
+        "female": 16520
+      },
+      {
+        "age": "25 - 29",
+        "both": 30102,
+        "male": 15530,
+        "female": 14572
+      },
+      {
+        "age": "30 - 34",
+        "both": 27653,
+        "male": 14561,
+        "female": 13092
+      },
+      {
+        "age": "35 - 39",
+        "both": 22897,
+        "male": 12076,
+        "female": 10821
+      },
+      {
+        "age": "40 - 44",
+        "both": 20543,
+        "male": 10746,
+        "female": 9797
+      },
+      {
+        "age": "45 - 49",
+        "both": 18443,
+        "male": 9437,
+        "female": 9006
+      },
+      {
+        "age": "50 - 54",
+        "both": 17321,
+        "male": 8826,
+        "female": 8495
+      },
+      {
+        "age": "55 - 59",
+        "both": 15412,
+        "male": 7728,
+        "female": 7684
+      },
+      {
+        "age": "60 - 64",
+        "both": 12741,
+        "male": 6302,
+        "female": 6439
+      },
+      {
+        "age": "65 - 69",
+        "both": 9122,
+        "male": 4417,
+        "female": 4705
+      },
+      {
+        "age": "70 - 74",
+        "both": 5637,
+        "male": 2611,
+        "female": 3026
+      },
+      {
+        "age": "75 - 79",
+        "both": 3551,
+        "male": 1478,
+        "female": 2073
+      },
+      {
+        "age": "80 years and over",
+        "both": 3661,
+        "male": 1431,
+        "female": 2230
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "REGION XIII (Caraga)",
+    "province": "",
+    "name": "CARMEN",
+    "pop_male_2020": 11909,
+    "pop_female_2020": 11242,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 2413,
+        "male": 1299,
+        "female": 1114
+      },
+      {
+        "age": "5 - 9",
+        "both": 2688,
+        "male": 1405,
+        "female": 1283
+      },
+      {
+        "age": "10 - 14",
+        "both": 2737,
+        "male": 1385,
+        "female": 1352
+      },
+      {
+        "age": "15 - 19",
+        "both": 2354,
+        "male": 1234,
+        "female": 1120
+      },
+      {
+        "age": "20 - 24",
+        "both": 1977,
+        "male": 1031,
+        "female": 946
+      },
+      {
+        "age": "25 - 29",
+        "both": 1655,
+        "male": 847,
+        "female": 808
+      },
+      {
+        "age": "30 - 34",
+        "both": 1511,
+        "male": 795,
+        "female": 716
+      },
+      {
+        "age": "35 - 39",
+        "both": 1293,
+        "male": 671,
+        "female": 622
+      },
+      {
+        "age": "40 - 44",
+        "both": 1172,
+        "male": 604,
+        "female": 568
+      },
+      {
+        "age": "45 - 49",
+        "both": 1102,
+        "male": 556,
+        "female": 546
+      },
+      {
+        "age": "50 - 54",
+        "both": 1039,
+        "male": 542,
+        "female": 497
+      },
+      {
+        "age": "55 - 59",
+        "both": 933,
+        "male": 451,
+        "female": 482
+      },
+      {
+        "age": "60 - 64",
+        "both": 813,
+        "male": 407,
+        "female": 406
+      },
+      {
+        "age": "65 - 69",
+        "both": 554,
+        "male": 271,
+        "female": 283
+      },
+      {
+        "age": "70 - 74",
+        "both": 402,
+        "male": 186,
+        "female": 216
+      },
+      {
+        "age": "75 - 79",
+        "both": 260,
+        "male": 117,
+        "female": 143
+      },
+      {
+        "age": "80 years and over",
+        "both": 248,
+        "male": 108,
+        "female": 140
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)",
+    "province": "",
+    "name": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO",
+    "pop_male_2020": 2474905,
+    "pop_female_2020": 2463634,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 740873,
+        "male": 378821,
+        "female": 362052
+      },
+      {
+        "age": "5 - 9",
+        "both": 671706,
+        "male": 339985,
+        "female": 331721
+      },
+      {
+        "age": "10 - 14",
+        "both": 632379,
+        "male": 317973,
+        "female": 314406
+      },
+      {
+        "age": "15 - 19",
+        "both": 548372,
+        "male": 273425,
+        "female": 274947
+      },
+      {
+        "age": "20 - 24",
+        "both": 487216,
+        "male": 239268,
+        "female": 247948
+      },
+      {
+        "age": "25 - 29",
+        "both": 414333,
+        "male": 199809,
+        "female": 214524
+      },
+      {
+        "age": "30 - 34",
+        "both": 325061,
+        "male": 159142,
+        "female": 165919
+      },
+      {
+        "age": "35 - 39",
+        "both": 282881,
+        "male": 137141,
+        "female": 145740
+      },
+      {
+        "age": "40 - 44",
+        "both": 244319,
+        "male": 122578,
+        "female": 121741
+      },
+      {
+        "age": "45 - 49",
+        "both": 195488,
+        "male": 99861,
+        "female": 95627
+      },
+      {
+        "age": "50 - 54",
+        "both": 138449,
+        "male": 73677,
+        "female": 64772
+      },
+      {
+        "age": "55 - 59",
+        "both": 90806,
+        "male": 48317,
+        "female": 42489
+      },
+      {
+        "age": "60 - 64",
+        "both": 65967,
+        "male": 34547,
+        "female": 31420
+      },
+      {
+        "age": "65 - 69",
+        "both": 46430,
+        "male": 23732,
+        "female": 22698
+      },
+      {
+        "age": "70 - 74",
+        "both": 26794,
+        "male": 13717,
+        "female": 13077
+      },
+      {
+        "age": "75 - 79",
+        "both": 13857,
+        "male": 6820,
+        "female": 7037
+      },
+      {
+        "age": "80 years and over",
+        "both": 13608,
+        "male": 6092,
+        "female": 7516
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "city",
+    "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)",
+    "province": "",
+    "name": "BASILAN (excluding CITY OF ISABELA)",
+    "pop_male_2020": 213101,
+    "pop_female_2020": 212010,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 63979,
+        "male": 32675,
+        "female": 31304
+      },
+      {
+        "age": "5 - 9",
+        "both": 61636,
+        "male": 31474,
+        "female": 30162
+      },
+      {
+        "age": "10 - 14",
+        "both": 56582,
+        "male": 28765,
+        "female": 27817
+      },
+      {
+        "age": "15 - 19",
+        "both": 45050,
+        "male": 22732,
+        "female": 22318
+      },
+      {
+        "age": "20 - 24",
+        "both": 40105,
+        "male": 19710,
+        "female": 20395
+      },
+      {
+        "age": "25 - 29",
+        "both": 34417,
+        "male": 16688,
+        "female": 17729
+      },
+      {
+        "age": "30 - 34",
+        "both": 27226,
+        "male": 13222,
+        "female": 14004
+      },
+      {
+        "age": "35 - 39",
+        "both": 23655,
+        "male": 11371,
+        "female": 12284
+      },
+      {
+        "age": "40 - 44",
+        "both": 19508,
+        "male": 9670,
+        "female": 9838
+      },
+      {
+        "age": "45 - 49",
+        "both": 16292,
+        "male": 8305,
+        "female": 7987
+      },
+      {
+        "age": "50 - 54",
+        "both": 12212,
+        "male": 6329,
+        "female": 5883
+      },
+      {
+        "age": "55 - 59",
+        "both": 8616,
+        "male": 4460,
+        "female": 4156
+      },
+      {
+        "age": "60 - 64",
+        "both": 6256,
+        "male": 3172,
+        "female": 3084
+      },
+      {
+        "age": "65 - 69",
+        "both": 4528,
+        "male": 2218,
+        "female": 2310
+      },
+      {
+        "age": "70 - 74",
+        "both": 2411,
+        "male": 1170,
+        "female": 1241
+      },
+      {
+        "age": "75 - 79",
+        "both": 1320,
+        "male": 605,
+        "female": 715
+      },
+      {
+        "age": "80 years and over",
+        "both": 1318,
+        "male": 535,
+        "female": 783
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)",
+    "province": "LANAO DEL SUR",
+    "name": "AMAI MANABILANG (BUMBARAN)",
+    "pop_male_2020": 6259,
+    "pop_female_2020": 5865,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 2019,
+        "male": 1005,
+        "female": 1014
+      },
+      {
+        "age": "5 - 9",
+        "both": 1861,
+        "male": 972,
+        "female": 889
+      },
+      {
+        "age": "10 - 14",
+        "both": 1673,
+        "male": 843,
+        "female": 830
+      },
+      {
+        "age": "15 - 19",
+        "both": 1171,
+        "male": 583,
+        "female": 588
+      },
+      {
+        "age": "20 - 24",
+        "both": 1181,
+        "male": 592,
+        "female": 589
+      },
+      {
+        "age": "25 - 29",
+        "both": 999,
+        "male": 497,
+        "female": 502
+      },
+      {
+        "age": "30 - 34",
+        "both": 806,
+        "male": 416,
+        "female": 390
+      },
+      {
+        "age": "35 - 39",
+        "both": 635,
+        "male": 331,
+        "female": 304
+      },
+      {
+        "age": "40 - 44",
+        "both": 588,
+        "male": 330,
+        "female": 258
+      },
+      {
+        "age": "45 - 49",
+        "both": 390,
+        "male": 203,
+        "female": 187
+      },
+      {
+        "age": "50 - 54",
+        "both": 285,
+        "male": 166,
+        "female": 119
+      },
+      {
+        "age": "55 - 59",
+        "both": 206,
+        "male": 135,
+        "female": 71
+      },
+      {
+        "age": "60 - 64",
+        "both": 149,
+        "male": 85,
+        "female": 64
+      },
+      {
+        "age": "65 - 69",
+        "both": 97,
+        "male": 61,
+        "female": 36
+      },
+      {
+        "age": "70 - 74",
+        "both": 26,
+        "male": 16,
+        "female": 10
+      },
+      {
+        "age": "75 - 79",
+        "both": 15,
+        "male": 13,
+        "female": 2
+      },
+      {
+        "age": "80 years and over",
+        "both": 23,
+        "male": 11,
+        "female": 12
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "city",
+    "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)",
+    "province": "LANAO DEL SUR",
+    "name": "MAGUINDANAO (including CITY OF COTABATO)",
+    "pop_male_2020": 845171,
+    "pop_female_2020": 821182,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 261467,
+        "male": 135552,
+        "female": 125915
+      },
+      {
+        "age": "5 - 9",
+        "both": 229074,
+        "male": 117084,
+        "female": 111990
+      },
+      {
+        "age": "10 - 14",
+        "both": 213573,
+        "male": 108404,
+        "female": 105169
+      },
+      {
+        "age": "15 - 19",
+        "both": 174693,
+        "male": 88482,
+        "female": 86211
+      },
+      {
+        "age": "20 - 24",
+        "both": 160892,
+        "male": 79941,
+        "female": 80951
+      },
+      {
+        "age": "25 - 29",
+        "both": 138580,
+        "male": 67472,
+        "female": 71108
+      },
+      {
+        "age": "30 - 34",
+        "both": 113999,
+        "male": 56411,
+        "female": 57588
+      },
+      {
+        "age": "35 - 39",
+        "both": 97176,
+        "male": 47340,
+        "female": 49836
+      },
+      {
+        "age": "40 - 44",
+        "both": 84524,
+        "male": 43103,
+        "female": 41421
+      },
+      {
+        "age": "45 - 49",
+        "both": 64490,
+        "male": 33424,
+        "female": 31066
+      },
+      {
+        "age": "50 - 54",
+        "both": 45598,
+        "male": 24766,
+        "female": 20832
+      },
+      {
+        "age": "55 - 59",
+        "both": 29769,
+        "male": 16181,
+        "female": 13588
+      },
+      {
+        "age": "60 - 64",
+        "both": 21450,
+        "male": 11302,
+        "female": 10148
+      },
+      {
+        "age": "65 - 69",
+        "both": 14021,
+        "male": 7377,
+        "female": 6644
+      },
+      {
+        "age": "70 - 74",
+        "both": 8421,
+        "male": 4323,
+        "female": 4098
+      },
+      {
+        "age": "75 - 79",
+        "both": 4275,
+        "male": 2093,
+        "female": 2182
+      },
+      {
+        "age": "80 years and over",
+        "both": 4351,
+        "male": 1916,
+        "female": 2435
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)",
+    "province": "LANAO DEL SUR",
+    "name": "PARANG",
+    "pop_male_2020": 51562,
+    "pop_female_2020": 51268,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 16707,
+        "male": 8646,
+        "female": 8061
+      },
+      {
+        "age": "5 - 9",
+        "both": 13765,
+        "male": 6898,
+        "female": 6867
+      },
+      {
+        "age": "10 - 14",
+        "both": 12725,
+        "male": 6454,
+        "female": 6271
+      },
+      {
+        "age": "15 - 19",
+        "both": 10497,
+        "male": 5335,
+        "female": 5162
+      },
+      {
+        "age": "20 - 24",
+        "both": 9902,
+        "male": 4833,
+        "female": 5069
+      },
+      {
+        "age": "25 - 29",
+        "both": 9354,
+        "male": 4302,
+        "female": 5052
+      },
+      {
+        "age": "30 - 34",
+        "both": 7414,
+        "male": 3713,
+        "female": 3701
+      },
+      {
+        "age": "35 - 39",
+        "both": 5916,
+        "male": 2897,
+        "female": 3019
+      },
+      {
+        "age": "40 - 44",
+        "both": 4887,
+        "male": 2482,
+        "female": 2405
+      },
+      {
+        "age": "45 - 49",
+        "both": 3885,
+        "male": 1947,
+        "female": 1938
+      },
+      {
+        "age": "50 - 54",
+        "both": 2787,
+        "male": 1498,
+        "female": 1289
+      },
+      {
+        "age": "55 - 59",
+        "both": 1787,
+        "male": 965,
+        "female": 822
+      },
+      {
+        "age": "60 - 64",
+        "both": 1286,
+        "male": 674,
+        "female": 612
+      },
+      {
+        "age": "65 - 69",
+        "both": 867,
+        "male": 447,
+        "female": 420
+      },
+      {
+        "age": "70 - 74",
+        "both": 548,
+        "male": 244,
+        "female": 304
+      },
+      {
+        "age": "75 - 79",
+        "both": 283,
+        "male": 130,
+        "female": 153
+      },
+      {
+        "age": "80 years and over",
+        "both": 220,
+        "male": 97,
+        "female": 123
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "province",
+    "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)",
+    "province": "",
+    "name": "INTERIM PROVINCE (Composed of 63 barangays from COTABATO)",
+    "pop_male_2020": 108743,
+    "pop_female_2020": 106605,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 32866,
+        "male": 16881,
+        "female": 15985
+      },
+      {
+        "age": "5 - 9",
+        "both": 27219,
+        "male": 13952,
+        "female": 13267
+      },
+      {
+        "age": "10 - 14",
+        "both": 24170,
+        "male": 12459,
+        "female": 11711
+      },
+      {
+        "age": "15 - 19",
+        "both": 22917,
+        "male": 11369,
+        "female": 11548
+      },
+      {
+        "age": "20 - 24",
+        "both": 22529,
+        "male": 11161,
+        "female": 11368
+      },
+      {
+        "age": "25 - 29",
+        "both": 19508,
+        "male": 9776,
+        "female": 9732
+      },
+      {
+        "age": "30 - 34",
+        "both": 14990,
+        "male": 7531,
+        "female": 7459
+      },
+      {
+        "age": "35 - 39",
+        "both": 12189,
+        "male": 6019,
+        "female": 6170
+      },
+      {
+        "age": "40 - 44",
+        "both": 10221,
+        "male": 5153,
+        "female": 5068
+      },
+      {
+        "age": "45 - 49",
+        "both": 8123,
+        "male": 4102,
+        "female": 4021
+      },
+      {
+        "age": "50 - 54",
+        "both": 6159,
+        "male": 3231,
+        "female": 2928
+      },
+      {
+        "age": "55 - 59",
+        "both": 3980,
+        "male": 2124,
+        "female": 1856
+      },
+      {
+        "age": "60 - 64",
+        "both": 3543,
+        "male": 1726,
+        "female": 1817
+      },
+      {
+        "age": "65 - 69",
+        "both": 2829,
+        "male": 1347,
+        "female": 1482
+      },
+      {
+        "age": "70 - 74",
+        "both": 1866,
+        "male": 900,
+        "female": 966
+      },
+      {
+        "age": "75 - 79",
+        "both": 1086,
+        "male": 508,
+        "female": 578
+      },
+      {
+        "age": "80 years and over",
+        "both": 1153,
+        "male": 504,
+        "female": 649
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)",
+    "province": "INTERIM PROVINCE (Composed of 63 barangays from COTABATO)",
+    "name": "CARMEN CLUSTER",
+    "pop_male_2020": 14428,
+    "pop_female_2020": 14035,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 4317,
+        "male": 2220,
+        "female": 2097
+      },
+      {
+        "age": "5 - 9",
+        "both": 3470,
+        "male": 1809,
+        "female": 1661
+      },
+      {
+        "age": "10 - 14",
+        "both": 3346,
+        "male": 1703,
+        "female": 1643
+      },
+      {
+        "age": "15 - 19",
+        "both": 3214,
+        "male": 1583,
+        "female": 1631
+      },
+      {
+        "age": "20 - 24",
+        "both": 3020,
+        "male": 1496,
+        "female": 1524
+      },
+      {
+        "age": "25 - 29",
+        "both": 2703,
+        "male": 1348,
+        "female": 1355
+      },
+      {
+        "age": "30 - 34",
+        "both": 1899,
+        "male": 958,
+        "female": 941
+      },
+      {
+        "age": "35 - 39",
+        "both": 1555,
+        "male": 787,
+        "female": 768
+      },
+      {
+        "age": "40 - 44",
+        "both": 1319,
+        "male": 646,
+        "female": 673
+      },
+      {
+        "age": "45 - 49",
+        "both": 1096,
+        "male": 554,
+        "female": 542
+      },
+      {
+        "age": "50 - 54",
+        "both": 829,
+        "male": 447,
+        "female": 382
+      },
+      {
+        "age": "55 - 59",
+        "both": 540,
+        "male": 303,
+        "female": 237
+      },
+      {
+        "age": "60 - 64",
+        "both": 424,
+        "male": 206,
+        "female": 218
+      },
+      {
+        "age": "65 - 69",
+        "both": 280,
+        "male": 150,
+        "female": 130
+      },
+      {
+        "age": "70 - 74",
+        "both": 193,
+        "male": 100,
+        "female": 93
+      },
+      {
+        "age": "75 - 79",
+        "both": 109,
+        "male": 53,
+        "female": 56
+      },
+      {
+        "age": "80 years and over",
+        "both": 149,
+        "male": 65,
+        "female": 84
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)",
+    "province": "INTERIM PROVINCE (Composed of 63 barangays from COTABATO)",
+    "name": "KABACAN CLUSTER",
+    "pop_male_2020": 8686,
+    "pop_female_2020": 7972,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 2329,
+        "male": 1213,
+        "female": 1116
+      },
+      {
+        "age": "5 - 9",
+        "both": 2057,
+        "male": 1113,
+        "female": 944
+      },
+      {
+        "age": "10 - 14",
+        "both": 2020,
+        "male": 1037,
+        "female": 983
+      },
+      {
+        "age": "15 - 19",
+        "both": 1920,
+        "male": 976,
+        "female": 944
+      },
+      {
+        "age": "20 - 24",
+        "both": 1881,
+        "male": 965,
+        "female": 916
+      },
+      {
+        "age": "25 - 29",
+        "both": 1557,
+        "male": 853,
+        "female": 704
+      },
+      {
+        "age": "30 - 34",
+        "both": 1032,
+        "male": 555,
+        "female": 477
+      },
+      {
+        "age": "35 - 39",
+        "both": 864,
+        "male": 409,
+        "female": 455
+      },
+      {
+        "age": "40 - 44",
+        "both": 754,
+        "male": 404,
+        "female": 350
+      },
+      {
+        "age": "45 - 49",
+        "both": 705,
+        "male": 369,
+        "female": 336
+      },
+      {
+        "age": "50 - 54",
+        "both": 543,
+        "male": 263,
+        "female": 280
+      },
+      {
+        "age": "55 - 59",
+        "both": 335,
+        "male": 192,
+        "female": 143
+      },
+      {
+        "age": "60 - 64",
+        "both": 257,
+        "male": 136,
+        "female": 121
+      },
+      {
+        "age": "65 - 69",
+        "both": 170,
+        "male": 88,
+        "female": 82
+      },
+      {
+        "age": "70 - 74",
+        "both": 123,
+        "male": 57,
+        "female": 66
+      },
+      {
+        "age": "75 - 79",
+        "both": 69,
+        "male": 35,
+        "female": 34
+      },
+      {
+        "age": "80 years and over",
+        "both": 42,
+        "male": 21,
+        "female": 21
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)",
+    "province": "INTERIM PROVINCE (Composed of 63 barangays from COTABATO)",
+    "name": "MIDSAYAP CLUSTER I",
+    "pop_male_2020": 12974,
+    "pop_female_2020": 12592,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 4404,
+        "male": 2316,
+        "female": 2088
+      },
+      {
+        "age": "5 - 9",
+        "both": 3253,
+        "male": 1666,
+        "female": 1587
+      },
+      {
+        "age": "10 - 14",
+        "both": 2745,
+        "male": 1448,
+        "female": 1297
+      },
+      {
+        "age": "15 - 19",
+        "both": 2629,
+        "male": 1294,
+        "female": 1335
+      },
+      {
+        "age": "20 - 24",
+        "both": 2663,
+        "male": 1326,
+        "female": 1337
+      },
+      {
+        "age": "25 - 29",
+        "both": 1968,
+        "male": 986,
+        "female": 982
+      },
+      {
+        "age": "30 - 34",
+        "both": 1744,
+        "male": 845,
+        "female": 899
+      },
+      {
+        "age": "35 - 39",
+        "both": 1353,
+        "male": 669,
+        "female": 684
+      },
+      {
+        "age": "40 - 44",
+        "both": 1214,
+        "male": 619,
+        "female": 595
+      },
+      {
+        "age": "45 - 49",
+        "both": 945,
+        "male": 472,
+        "female": 473
+      },
+      {
+        "age": "50 - 54",
+        "both": 825,
+        "male": 404,
+        "female": 421
+      },
+      {
+        "age": "55 - 59",
+        "both": 585,
+        "male": 298,
+        "female": 287
+      },
+      {
+        "age": "60 - 64",
+        "both": 451,
+        "male": 224,
+        "female": 227
+      },
+      {
+        "age": "65 - 69",
+        "both": 304,
+        "male": 161,
+        "female": 143
+      },
+      {
+        "age": "70 - 74",
+        "both": 203,
+        "male": 103,
+        "female": 100
+      },
+      {
+        "age": "75 - 79",
+        "both": 140,
+        "male": 70,
+        "female": 70
+      },
+      {
+        "age": "80 years and over",
+        "both": 140,
+        "male": 73,
+        "female": 67
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)",
+    "province": "INTERIM PROVINCE (Composed of 63 barangays from COTABATO)",
+    "name": "MIDSAYAP CLUSTER II",
+    "pop_male_2020": 11354,
+    "pop_female_2020": 11084,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 3833,
+        "male": 1976,
+        "female": 1857
+      },
+      {
+        "age": "5 - 9",
+        "both": 3019,
+        "male": 1534,
+        "female": 1485
+      },
+      {
+        "age": "10 - 14",
+        "both": 2518,
+        "male": 1315,
+        "female": 1203
+      },
+      {
+        "age": "15 - 19",
+        "both": 2292,
+        "male": 1139,
+        "female": 1153
+      },
+      {
+        "age": "20 - 24",
+        "both": 2115,
+        "male": 1061,
+        "female": 1054
+      },
+      {
+        "age": "25 - 29",
+        "both": 1928,
+        "male": 937,
+        "female": 991
+      },
+      {
+        "age": "30 - 34",
+        "both": 1582,
+        "male": 803,
+        "female": 779
+      },
+      {
+        "age": "35 - 39",
+        "both": 1324,
+        "male": 632,
+        "female": 692
+      },
+      {
+        "age": "40 - 44",
+        "both": 1144,
+        "male": 594,
+        "female": 550
+      },
+      {
+        "age": "45 - 49",
+        "both": 796,
+        "male": 404,
+        "female": 392
+      },
+      {
+        "age": "50 - 54",
+        "both": 626,
+        "male": 337,
+        "female": 289
+      },
+      {
+        "age": "55 - 59",
+        "both": 412,
+        "male": 223,
+        "female": 189
+      },
+      {
+        "age": "60 - 64",
+        "both": 284,
+        "male": 139,
+        "female": 145
+      },
+      {
+        "age": "65 - 69",
+        "both": 198,
+        "male": 98,
+        "female": 100
+      },
+      {
+        "age": "70 - 74",
+        "both": 152,
+        "male": 72,
+        "female": 80
+      },
+      {
+        "age": "75 - 79",
+        "both": 87,
+        "male": 39,
+        "female": 48
+      },
+      {
+        "age": "80 years and over",
+        "both": 128,
+        "male": 51,
+        "female": 77
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)",
+    "province": "INTERIM PROVINCE (Composed of 63 barangays from COTABATO)",
+    "name": "PIGCAWAYAN CLUSTER",
+    "pop_male_2020": 9938,
+    "pop_female_2020": 9686,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 2790,
+        "male": 1431,
+        "female": 1359
+      },
+      {
+        "age": "5 - 9",
+        "both": 2507,
+        "male": 1266,
+        "female": 1241
+      },
+      {
+        "age": "10 - 14",
+        "both": 2161,
+        "male": 1128,
+        "female": 1033
+      },
+      {
+        "age": "15 - 19",
+        "both": 2103,
+        "male": 1041,
+        "female": 1062
+      },
+      {
+        "age": "20 - 24",
+        "both": 2168,
+        "male": 1081,
+        "female": 1087
+      },
+      {
+        "age": "25 - 29",
+        "both": 1774,
+        "male": 890,
+        "female": 884
+      },
+      {
+        "age": "30 - 34",
+        "both": 1362,
+        "male": 693,
+        "female": 669
+      },
+      {
+        "age": "35 - 39",
+        "both": 1030,
+        "male": 515,
+        "female": 515
+      },
+      {
+        "age": "40 - 44",
+        "both": 970,
+        "male": 487,
+        "female": 483
+      },
+      {
+        "age": "45 - 49",
+        "both": 770,
+        "male": 378,
+        "female": 392
+      },
+      {
+        "age": "50 - 54",
+        "both": 586,
+        "male": 316,
+        "female": 270
+      },
+      {
+        "age": "55 - 59",
+        "both": 402,
+        "male": 212,
+        "female": 190
+      },
+      {
+        "age": "60 - 64",
+        "both": 406,
+        "male": 212,
+        "female": 194
+      },
+      {
+        "age": "65 - 69",
+        "both": 239,
+        "male": 115,
+        "female": 124
+      },
+      {
+        "age": "70 - 74",
+        "both": 172,
+        "male": 83,
+        "female": 89
+      },
+      {
+        "age": "75 - 79",
+        "both": 93,
+        "male": 55,
+        "female": 38
+      },
+      {
+        "age": "80 years and over",
+        "both": 91,
+        "male": 35,
+        "female": 56
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)",
+    "province": "INTERIM PROVINCE (Composed of 63 barangays from COTABATO)",
+    "name": "PIKIT CLUSTER I",
+    "pop_male_2020": 19294,
+    "pop_female_2020": 19438,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 5322,
+        "male": 2679,
+        "female": 2643
+      },
+      {
+        "age": "5 - 9",
+        "both": 4910,
+        "male": 2470,
+        "female": 2440
+      },
+      {
+        "age": "10 - 14",
+        "both": 4168,
+        "male": 2107,
+        "female": 2061
+      },
+      {
+        "age": "15 - 19",
+        "both": 4032,
+        "male": 2018,
+        "female": 2014
+      },
+      {
+        "age": "20 - 24",
+        "both": 3960,
+        "male": 1975,
+        "female": 1985
+      },
+      {
+        "age": "25 - 29",
+        "both": 3684,
+        "male": 1789,
+        "female": 1895
+      },
+      {
+        "age": "30 - 34",
+        "both": 2938,
+        "male": 1448,
+        "female": 1490
+      },
+      {
+        "age": "35 - 39",
+        "both": 2423,
+        "male": 1233,
+        "female": 1190
+      },
+      {
+        "age": "40 - 44",
+        "both": 1832,
+        "male": 908,
+        "female": 924
+      },
+      {
+        "age": "45 - 49",
+        "both": 1446,
+        "male": 739,
+        "female": 707
+      },
+      {
+        "age": "50 - 54",
+        "both": 1098,
+        "male": 577,
+        "female": 521
+      },
+      {
+        "age": "55 - 59",
+        "both": 676,
+        "male": 365,
+        "female": 311
+      },
+      {
+        "age": "60 - 64",
+        "both": 653,
+        "male": 290,
+        "female": 363
+      },
+      {
+        "age": "65 - 69",
+        "both": 690,
+        "male": 292,
+        "female": 398
+      },
+      {
+        "age": "70 - 74",
+        "both": 444,
+        "male": 218,
+        "female": 226
+      },
+      {
+        "age": "75 - 79",
+        "both": 241,
+        "male": 93,
+        "female": 148
+      },
+      {
+        "age": "80 years and over",
+        "both": 215,
+        "male": 93,
+        "female": 122
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)",
+    "province": "INTERIM PROVINCE (Composed of 63 barangays from COTABATO)",
+    "name": "PIKIT CLUSTER II",
+    "pop_male_2020": 17258,
+    "pop_female_2020": 17071,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 5306,
+        "male": 2708,
+        "female": 2598
+      },
+      {
+        "age": "5 - 9",
+        "both": 4310,
+        "male": 2188,
+        "female": 2122
+      },
+      {
+        "age": "10 - 14",
+        "both": 3892,
+        "male": 2039,
+        "female": 1853
+      },
+      {
+        "age": "15 - 19",
+        "both": 3648,
+        "male": 1797,
+        "female": 1851
+      },
+      {
+        "age": "20 - 24",
+        "both": 3768,
+        "male": 1798,
+        "female": 1970
+      },
+      {
+        "age": "25 - 29",
+        "both": 3371,
+        "male": 1713,
+        "female": 1658
+      },
+      {
+        "age": "30 - 34",
+        "both": 2345,
+        "male": 1197,
+        "female": 1148
+      },
+      {
+        "age": "35 - 39",
+        "both": 1893,
+        "male": 917,
+        "female": 976
+      },
+      {
+        "age": "40 - 44",
+        "both": 1568,
+        "male": 776,
+        "female": 792
+      },
+      {
+        "age": "45 - 49",
+        "both": 1293,
+        "male": 634,
+        "female": 659
+      },
+      {
+        "age": "50 - 54",
+        "both": 851,
+        "male": 459,
+        "female": 392
+      },
+      {
+        "age": "55 - 59",
+        "both": 540,
+        "male": 290,
+        "female": 250
+      },
+      {
+        "age": "60 - 64",
+        "both": 548,
+        "male": 259,
+        "female": 289
+      },
+      {
+        "age": "65 - 69",
+        "both": 418,
+        "male": 211,
+        "female": 207
+      },
+      {
+        "age": "70 - 74",
+        "both": 255,
+        "male": 120,
+        "female": 135
+      },
+      {
+        "age": "75 - 79",
+        "both": 152,
+        "male": 73,
+        "female": 79
+      },
+      {
+        "age": "80 years and over",
+        "both": 171,
+        "male": 79,
+        "female": 92
+      }
+    ],
+    "reason": "no PSGC match"
+  },
+  {
+    "level": "municipality",
+    "region": "BANGSAMORO AUTONOMOUS REGION IN MUSLIM MINDANAO (BARMM)",
+    "province": "INTERIM PROVINCE (Composed of 63 barangays from COTABATO)",
+    "name": "PIKIT CLUSTER III",
+    "pop_male_2020": 14811,
+    "pop_female_2020": 14727,
+    "age_sex_2020": [
+      {
+        "age": "0 - 4",
+        "both": 4565,
+        "male": 2338,
+        "female": 2227
+      },
+      {
+        "age": "5 - 9",
+        "both": 3693,
+        "male": 1906,
+        "female": 1787
+      },
+      {
+        "age": "10 - 14",
+        "both": 3320,
+        "male": 1682,
+        "female": 1638
+      },
+      {
+        "age": "15 - 19",
+        "both": 3079,
+        "male": 1521,
+        "female": 1558
+      },
+      {
+        "age": "20 - 24",
+        "both": 2954,
+        "male": 1459,
+        "female": 1495
+      },
+      {
+        "age": "25 - 29",
+        "both": 2523,
+        "male": 1260,
+        "female": 1263
+      },
+      {
+        "age": "30 - 34",
+        "both": 2088,
+        "male": 1032,
+        "female": 1056
+      },
+      {
+        "age": "35 - 39",
+        "both": 1747,
+        "male": 857,
+        "female": 890
+      },
+      {
+        "age": "40 - 44",
+        "both": 1420,
+        "male": 719,
+        "female": 701
+      },
+      {
+        "age": "45 - 49",
+        "both": 1072,
+        "male": 552,
+        "female": 520
+      },
+      {
+        "age": "50 - 54",
+        "both": 801,
+        "male": 428,
+        "female": 373
+      },
+      {
+        "age": "55 - 59",
+        "both": 490,
+        "male": 241,
+        "female": 249
+      },
+      {
+        "age": "60 - 64",
+        "both": 520,
+        "male": 260,
+        "female": 260
+      },
+      {
+        "age": "65 - 69",
+        "both": 530,
+        "male": 232,
+        "female": 298
+      },
+      {
+        "age": "70 - 74",
+        "both": 324,
+        "male": 147,
+        "female": 177
+      },
+      {
+        "age": "75 - 79",
+        "both": 195,
+        "male": 90,
+        "female": 105
+      },
+      {
+        "age": "80 years and over",
+        "both": 217,
+        "male": 87,
+        "female": 130
+      }
+    ],
+    "reason": "no PSGC match"
+  }
+]

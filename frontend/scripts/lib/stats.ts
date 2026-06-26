@@ -7,9 +7,13 @@ import area from "@turf/area";
 import type { Geometry } from "geojson";
 
 export interface DivisionStatsFields {
+    pop_2010: number | null;
     pop_2015: number | null;
     pop_2020: number | null;
     pop_2024: number | null;
+    pop_male_2020: number | null;
+    pop_female_2020: number | null;
+    age_sex_2020: { age: string; both: number; male: number; female: number }[] | null;
     area_km2: number | null;
     density_2024: number | null;
     pct_change_2020_2024: number | null;
@@ -156,9 +160,13 @@ export function attachStats<T extends { psgc: string; correspondence?: string | 
     const area_km2 = existingArea ?? geoAreaKm2(row.geometry as Geometry | undefined);
     return {
         ...row,
+        pop_2010: null,
         pop_2015: hist.pop_2015,
         pop_2020: hist.pop_2020,
         pop_2024,
+        pop_male_2020: null,
+        pop_female_2020: null,
+        age_sex_2020: null,
         area_km2,
         density_2024: computeDensity(pop_2024, area_km2),
         pct_change_2020_2024: computePctChange(hist.pop_2020, pop_2024),
@@ -168,9 +176,13 @@ export function attachStats<T extends { psgc: string; correspondence?: string | 
 
 export function stripGeometryStats(row: DivisionStatsFields): DivisionStatsFields {
     return {
+        pop_2010: row.pop_2010 ?? null,
         pop_2015: row.pop_2015,
         pop_2020: row.pop_2020,
         pop_2024: row.pop_2024,
+        pop_male_2020: row.pop_male_2020 ?? null,
+        pop_female_2020: row.pop_female_2020 ?? null,
+        age_sex_2020: row.age_sex_2020 ?? null,
         area_km2: row.area_km2,
         density_2024: row.density_2024,
         pct_change_2020_2024: row.pct_change_2020_2024,

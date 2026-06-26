@@ -6,12 +6,8 @@ import L from "leaflet";
 import type { Feature, Geometry } from "geojson";
 import { cn } from "../../../lib/cn";
 import type { MpaLevel } from "../constants";
-import { colorForDensity, legendItems, NO_DATA_COLOR } from "../utils/densityScale";
-import {
-    colorForPopulation,
-    computePopulationBreaks,
-    populationLegendItems,
-} from "../utils/populationScale";
+import { colorForDensity, densityLegendItems, NO_DATA_COLOR, type ScaleLevel } from "../utils/densityScale";
+import { colorForPopulation, populationLegendItems, POPULATION_RAMP } from "../utils/populationScale";
 import { formatDensity, formatPopulation } from "../utils/formatStats";
 
 const PH_CENTER: [number, number] = [12.8797, 121.774];
@@ -38,7 +34,16 @@ const HOVER_STYLE: L.PathOptions = {
 
 type DisplayMode = "outline" | "density" | "population";
 
-const DENSITY_LEGEND = legendItems();
+const SCALE_LEVEL_LABELS: Record<ScaleLevel, string> = {
+    region: "region",
+    province: "province",
+    municipality: "city / municipality",
+    barangay: "barangay",
+};
+
+function scaleLevelFor(mode: MpaLevel): ScaleLevel {
+    return mode === "country" ? "region" : mode;
+}
 
 const SHADING_OPTIONS: { mode: DisplayMode; label: string }[] = [
     { mode: "outline", label: "Outline" },
@@ -157,29 +162,35 @@ export function MpaMapPanel({
         };
     }, [mode, country, provinces, regions, municities, barangays]);
 
-    // Density uses a fixed absolute scale; population is adaptive (quantile)
-    // per current view since absolute counts differ hugely between levels.
-    const { densityColors, populationColors, populationLegend } = useMemo(() => {
+    // Per-level constant scales for density and population.
+    const scaleLevel = scaleLevelFor(mode);
+    // Country has a single feature, so population shading is just flat green
+    // (a per-level scale would be meaningless for one value).
+    const flatCountryPopulation = mode === "country";
+
+    const { densityColors, populationColors, densityLegend, populationLegend } = useMemo(() => {
         const densityColors = new Map<string, string>();
         const populationColors = new Map<string, string>();
-        const pops: number[] = [];
         for (const f of currentData.features) {
             const psgc = f.properties.psgc as string;
-            densityColors.set(psgc, colorForDensity(f.properties.density_2024 as number | null));
-            const pop = f.properties.pop_2024 as number | null;
-            if (pop != null && pop > 0) pops.push(pop);
-        }
-        const popBreaks = computePopulationBreaks(pops);
-        for (const f of currentData.features) {
-            const psgc = f.properties.psgc as string;
-            populationColors.set(psgc, colorForPopulation(f.properties.pop_2024 as number | null, popBreaks));
+            densityColors.set(
+                psgc,
+                colorForDensity(f.properties.density_2024 as number | null, scaleLevel),
+            );
+            populationColors.set(
+                psgc,
+                flatCountryPopulation
+                    ? POPULATION_RAMP[0]
+                    : colorForPopulation(f.properties.pop_2024 as number | null, scaleLevel),
+            );
         }
         return {
             densityColors,
             populationColors,
-            populationLegend: populationLegendItems(popBreaks, pops),
+            densityLegend: densityLegendItems(scaleLevel),
+            populationLegend: populationLegendItems(scaleLevel),
         };
-    }, [currentData]);
+    }, [currentData, scaleLevel, flatCountryPopulation]);
 
     const activeColors = useMemo(
         () => (displayMode === "population" ? populationColors : densityColors),
@@ -308,10 +319,12 @@ export function MpaMapPanel({
             {displayMode === "density" && (
                 <div className="absolute bottom-6 left-3 z-[1000] rounded-lg border border-border-light bg-white/95 px-3 py-2.5 text-[11px] shadow-soft">
                     <p className="font-medium text-primary">Population density [2024]</p>
-                    <p className="mb-2 text-[10px] text-muted">inhabitants / km²</p>
+                    <p className="mb-2 text-[10px] text-muted">
+                        inhabitants / km² · {SCALE_LEVEL_LABELS[scaleLevel]} scale
+                    </p>
                     <div className="flex">
                         <div className="flex flex-col overflow-hidden rounded-sm border border-border-light">
-                            {DENSITY_LEGEND.map((item) => (
+                            {densityLegend.map((item) => (
                                 <span
                                     key={item.label}
                                     className="h-3.5 w-5"
@@ -320,7 +333,7 @@ export function MpaMapPanel({
                             ))}
                         </div>
                         <div className="flex flex-col">
-                            {DENSITY_LEGEND.map((item) => (
+                            {densityLegend.map((item) => (
                                 <span
                                     key={item.label}
                                     className="flex h-3.5 items-center pl-2 leading-none text-muted tabular-nums"
@@ -340,44 +353,40 @@ export function MpaMapPanel({
                 </div>
             )}
 
-            {displayMode === "population" && (
+            {displayMode === "population" && !flatCountryPopulation && (
                 <div className="absolute bottom-6 left-3 z-[1000] rounded-lg border border-border-light bg-white/95 px-3 py-2.5 text-[11px] shadow-soft">
                     <p className="font-medium text-primary">Population [2024]</p>
-                    <p className="mb-2 text-[10px] text-muted">inhabitants · scaled to this view</p>
-                    {populationLegend.length === 0 ? (
-                        <p className="text-muted">No data</p>
-                    ) : (
-                        <>
-                            <div className="flex">
-                                <div className="flex flex-col overflow-hidden rounded-sm border border-border-light">
-                                    {populationLegend.map((item) => (
-                                        <span
-                                            key={item.label}
-                                            className="h-5 w-5"
-                                            style={{ backgroundColor: item.color }}
-                                        />
-                                    ))}
-                                </div>
-                                <div className="flex flex-col">
-                                    {populationLegend.map((item) => (
-                                        <span
-                                            key={item.label}
-                                            className="flex h-5 items-center pl-2 leading-none text-muted tabular-nums"
-                                        >
-                                            {item.label}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                            <div className="mt-2 flex items-center gap-2 text-muted">
+                    <p className="mb-2 text-[10px] text-muted">
+                        inhabitants · {SCALE_LEVEL_LABELS[scaleLevel]} scale
+                    </p>
+                    <div className="flex">
+                        <div className="flex flex-col overflow-hidden rounded-sm border border-border-light">
+                            {populationLegend.map((item) => (
                                 <span
-                                    className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light"
-                                    style={{ backgroundColor: NO_DATA_COLOR }}
+                                    key={item.label}
+                                    className="h-5 w-5"
+                                    style={{ backgroundColor: item.color }}
                                 />
-                                <span>No data</span>
-                            </div>
-                        </>
-                    )}
+                            ))}
+                        </div>
+                        <div className="flex flex-col">
+                            {populationLegend.map((item) => (
+                                <span
+                                    key={item.label}
+                                    className="flex h-5 items-center pl-2 leading-none text-muted tabular-nums"
+                                >
+                                    {item.label}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="mt-2 flex items-center gap-2 text-muted">
+                        <span
+                            className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light"
+                            style={{ backgroundColor: NO_DATA_COLOR }}
+                        />
+                        <span>No data</span>
+                    </div>
                 </div>
             )}
 

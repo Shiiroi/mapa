@@ -76,9 +76,13 @@ export function buildDensityInsight(
 
 export function pickStatsFields(row: DivisionStatsFields): DivisionStatsFields {
     return {
+        pop_2010: row.pop_2010,
         pop_2015: row.pop_2015,
         pop_2020: row.pop_2020,
         pop_2024: row.pop_2024,
+        pop_male_2020: row.pop_male_2020,
+        pop_female_2020: row.pop_female_2020,
+        age_sex_2020: row.age_sex_2020,
         area_km2: row.area_km2,
         density_2024: row.density_2024,
         pct_change_2020_2024: row.pct_change_2020_2024,

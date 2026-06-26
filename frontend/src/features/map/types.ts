@@ -5,11 +5,23 @@ import type { Geometry } from "geojson";
 export type GeoLevel = "Reg" | "Prov" | "City" | "Mun" | "SubMun" | "Bgy" | "Country" | "Special";
 export type CityLevel = "HUC" | "CC" | "ICC";
 
+/** One five-year age band from 2020 CPH household population. */
+export interface AgeSexBand {
+    age: string;
+    both: number;
+    male: number;
+    female: number;
+}
+
 /** Population, area, and density keyed by PSGC (from psgc.csv + psgc0.csv + geometry). */
 export interface DivisionStatsFields {
+    pop_2010: number | null;
     pop_2015: number | null;
     pop_2020: number | null;
     pop_2024: number | null;
+    pop_male_2020: number | null;
+    pop_female_2020: number | null;
+    age_sex_2020: AgeSexBand[] | null;
     area_km2: number | null;
     density_2024: number | null;
     pct_change_2020_2024: number | null;
