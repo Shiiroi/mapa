@@ -103,6 +103,12 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
                 <h2 className="text-lg font-semibold text-primary">{displayPlace.name}</h2>
                 <p className="text-xs text-muted">{displayPlace.breadcrumb}</p>
                 <p className="mt-1 font-mono text-xs text-muted">PSGC {displayPlace.psgc}</p>
+                {displayPlace.geo_lvl === "Special" && (
+                    <p className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+                        Non-residential parcel — not a PSGC census unit; no official population.
+                        {displayPlace.note ? ` ${displayPlace.note}` : ""}
+                    </p>
+                )}
             </div>
 
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">

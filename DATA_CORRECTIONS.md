@@ -154,18 +154,39 @@ matched only 39,335. The following deterministic corrections recovered
   code for the unified barangay.
 - **Status:** Synthetic entry.
 
+### 8. Manila non-barangay parcels (NCR, City of Manila)
+
+- **Affected:** 2 parcels — Tutuban Mall, Manila North Cemetery
+- **Issue:** The altcoder Adm4 shapefile includes polygons for these areas with
+  `ADM4_PCODE = null` and no PSGC barangay code. PSA assigns no census unit to
+  them (commercial complex with disputed barangay claims; cemetery). They appear
+  as holes in barangay-level maps (also visible on citypopulation.de).
+- **Action:** Injected as named `Special` parcels from
+  `frontend/scripts/py/data/manila_parcels.json` into the City of Manila
+  barangay file (`1380600000.json`) with sentinel PSGC codes:
+  - `1380601901` — Tutuban Mall (Tondo I/II SubMun area)
+  - `1380605901` — Manila North Cemetery (Santa Cruz SubMun area)
+  Population is `null` (not zero); area is computed from boundary geometry;
+  density is `null`.
+- **Basis:** Shapefile labels + PSGC confirms SubMun totals only (no barangay
+  codes for these parcels); same hole pattern as third-party PH maps.
+- **Status:** Automated in `shape_to_geojson.py` (post-shapefile injection).
+
 ---
 
-## Unmatched features (2 remaining)
+## Unmatched shapefile features (superseded)
 
-| Shapefile code | Location | Notes |
-|----------------|----------|-------|
-| `1303901906` | `14.634°N, 120.985°E` (Manila Bay / Tondo area) | Empty name, ~0 km² sliver |
-| `1303901907` | `14.608°N, 120.973°E` (Manila Bay shoreline) | Empty name, ~0 km² sliver |
+The altcoder shapefile originally had two empty-named slivers at these locations
+that were logged as unmatched:
 
-These use non-standard NCR codes (`13039xxxx`) with no PSGC match. Likely
-digitizing artifacts or reclaimed-land slivers. Left unmatched pending
-authoritative identification.
+| Shapefile code | Location | Resolution |
+|----------------|----------|------------|
+| `1303901906` | Tondo / Tutuban area | Superseded by `1380601901` Tutuban Mall |
+| `1303901907` | Santa Cruz / North Cemetery area | Superseded by `1380605901` Manila North Cemetery |
+
+Geometry for these areas now comes from the cleaner `manila_parcels.json`
+source, not the shapefile slivers. The shapefile features remain dropped
+(no PSGC match).
 
 ---
 
@@ -175,7 +196,8 @@ Corrections live in:
 
 - `frontend/scripts/py/psgc_lookup.py` — correspondence digit-swap
 - `frontend/scripts/py/shape_to_geojson.py` — overrides, merges, synthetic entries,
-  parent roll-up, name fallbacks
+  parent roll-up, name fallbacks, Manila special parcels
+- `frontend/scripts/py/data/manila_parcels.json` — Tutuban Mall + North Cemetery geometry
 
 After editing, regenerate and re-publish:
 

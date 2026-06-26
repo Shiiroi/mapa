@@ -31,6 +31,7 @@ GEO_DIR = PUBLIC_DIR / "geo"
 BGY_DIR = GEO_DIR / "municities" / "bgy"
 PSGC_CSV = PUBLIC_DIR / "psgc.csv"
 MUNI_META = GEO_DIR / "municities" / "meta.json"
+MANILA_PARCELS = SCRIPT_DIR / "data" / "manila_parcels.json"
 
 CODE_FIELDS = ("adm4_psgc", "psgc_code", "ADM4_PCODE", "adm4_pcode", "PSGC_CODE")
 MUNI_FIELDS = ("adm3_psgc", "adm3_pcode", "ADM3_PCODE")
@@ -238,6 +239,7 @@ def convert_barangays(args: argparse.Namespace, muni_parents: dict) -> None:
         "parent_not_found": 0,
         "duplicate": 0,
         "no_geometry": 0,
+        "special": 0,
     }
 
     for idx, sr in enumerate(reader.iterShapeRecords()):
@@ -371,6 +373,41 @@ def convert_barangays(args: argparse.Namespace, muni_parents: dict) -> None:
         target_row["geometry"] = mapping(unary_union(parts))
         print(f"[merge] unioned {len(geoms)} polygon(s) into {target_psgc}", file=sys.stderr)
 
+    # Non-census Manila parcels (Tutuban Mall, North Cemetery) — fill barangay-view holes.
+    if MANILA_PARCELS.exists():
+        manila_psgc = "1380600000"
+        parents = muni_parents.get(manila_psgc)
+        if parents:
+            parcel_fc = json.loads(MANILA_PARCELS.read_text(encoding="utf-8"))
+            for feat in parcel_fc.get("features", []):
+                props = feat.get("properties") or {}
+                geometry = feat.get("geometry")
+                psgc = props.get("psgc")
+                if not psgc or not geometry:
+                    continue
+                if psgc in seen_psgc:
+                    print(f"[special] duplicate psgc {psgc}; skipping", file=sys.stderr)
+                    continue
+                seen_psgc.add(psgc)
+                row = {
+                    "psgc": psgc,
+                    "correspondence": None,
+                    "name": props.get("name", ""),
+                    "geo_lvl": "Special",
+                    "city_lvl": None,
+                    "note": props.get("note"),
+                    "municity_psgc": manila_psgc,
+                    "province_psgc": parents["province_psgc"],
+                    "region_psgc": parents["region_psgc"],
+                    "geometry": geometry,
+                }
+                by_municity[manila_psgc].append(row)
+                meta_rows.append({k: v for k, v in row.items() if k != "geometry"})
+                stats["special"] += 1
+                print(f"[special] added {psgc} ({row['name']}) to Manila", file=sys.stderr)
+        else:
+            print(f"[special] Manila municity {manila_psgc} not in meta; skipping parcels", file=sys.stderr)
+
     municity_psgcs = sorted(by_municity.keys())
     print(f"Writing {len(municity_psgcs)} per-municity barangay files…")
     for mpsgc in municity_psgcs:
@@ -394,6 +431,7 @@ def convert_barangays(args: argparse.Namespace, muni_parents: dict) -> None:
     print(f"  parent not found:   {stats['parent_not_found']}")
     print(f"  duplicate psgc:     {stats['duplicate']}")
     print(f"  no geometry:        {stats['no_geometry']}")
+    print(f"  special parcels:    {stats['special']}")
     print(f"  municities w/ bgy:  {len(municity_psgcs)}")
     print(f"  report:             {BGY_DIR / '_unmatched.json'}")
 

@@ -2,7 +2,7 @@
 
 import type { Geometry } from "geojson";
 
-export type GeoLevel = "Reg" | "Prov" | "City" | "Mun" | "SubMun" | "Bgy" | "Country";
+export type GeoLevel = "Reg" | "Prov" | "City" | "Mun" | "SubMun" | "Bgy" | "Country" | "Special";
 export type CityLevel = "HUC" | "CC" | "ICC";
 
 /** Population, area, and density keyed by PSGC (from psgc.csv + psgc0.csv + geometry). */
@@ -58,4 +58,5 @@ export interface BarangayGeoJSON extends PsgcFields {
     province_psgc: string | null;
     region_psgc: string | null;
     geometry: Geometry;
+    note?: string | null;
 }

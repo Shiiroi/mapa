@@ -36,6 +36,8 @@ function levelFromGeoLvl(geoLvl: string | undefined): string {
             return "municipality";
         case "Bgy":
             return "barangay";
+        case "Special":
+            return "special";
         default:
             return "unknown";
     }

@@ -17,6 +17,7 @@ export interface ResolvedPlace extends DivisionStatsFields {
     level: MpaLevel;
     geo_lvl: string;
     breadcrumb: string;
+    note?: string | null;
 }
 
 interface ResolvePlaceInput {
@@ -158,6 +159,7 @@ export function resolveSelectedPlace(input: ResolvePlaceInput): ResolvedPlace | 
             level: "barangay",
             geo_lvl: bgy.geo_lvl,
             breadcrumb: `${breadcrumbFor("municipality", regions, provinces, muni, bgy.province_psgc, bgy.region_psgc)} › ${bgy.name.trim()}`,
+            note: bgy.note ?? null,
             ...mergeStats(bgy),
         };
     }
