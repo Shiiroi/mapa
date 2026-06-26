@@ -88,20 +88,34 @@ export function MpaDownloadPanel({
 
             <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
                 <section>
-                    <label className="mb-2 block text-xs font-medium uppercase tracking-wide text-muted">View</label>
-                    <div className="grid grid-cols-3 gap-1 rounded-lg border border-border-light bg-surface p-1">
-                        {levels.map((l) => (
+                    <label className="mb-2 block text-xs font-medium uppercase tracking-wide text-muted">
+                        View level
+                    </label>
+                    <div className="space-y-0.5 rounded-lg border border-border-light bg-surface p-1">
+                        {levels.map((l, i) => (
                             <button
                                 key={l}
                                 type="button"
                                 onClick={() => onLevelChange(l)}
+                                style={{ paddingLeft: `${10 + i * 14}px` }}
                                 className={cn(
-                                    "truncate rounded-md px-2 py-1.5 text-center text-sm transition-colors",
+                                    "flex w-full items-center gap-1.5 rounded-md py-2 pr-3 text-left text-sm transition-colors",
                                     level === l
                                         ? "bg-accent font-medium text-white"
                                         : "text-primary hover:bg-white",
                                 )}
                             >
+                                {i > 0 && (
+                                    <span
+                                        aria-hidden
+                                        className={cn(
+                                            "font-mono text-xs leading-none",
+                                            level === l ? "text-white/70" : "text-muted",
+                                        )}
+                                    >
+                                        └
+                                    </span>
+                                )}
                                 {LEVEL_LABELS[l]}
                             </button>
                         ))}
