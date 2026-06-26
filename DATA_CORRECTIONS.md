@@ -17,6 +17,38 @@ reformatting and PSGC property normalization.
 
 ---
 
+## Administrative structure notes
+
+### NCR has no province/district level
+
+Mapa follows the **official PSGC hierarchy**, in which the National Capital
+Region (NCR, `13…`) has **no province or district tier**. Its component units
+attach **directly to the region**:
+
+| Level in NCR | Count | Examples |
+|--------------|-------|----------|
+| City | 16 | Manila, Quezon City, Makati… |
+| Municipality | 1 | Pateros |
+| SubMun | 14 | sub-units **of the City of Manila** (Tondo, Sampaloc, Binondo…) |
+
+Because of this, `municities.province_psgc` is **nullable**, and NCR cities are
+stored with `province_psgc = null` and `region_psgc = 1300000000`.
+
+> **Why this differs from many other maps:** A lot of third-party PH datasets
+> group NCR into **four "districts"** (1st–4th District of NCR / Capital,
+> Eastern, Northern, Southern Manila Districts). Those are **congressional /
+> legislative groupings**, *not* PSGC geographic administrative units. PSA does
+> not publish census geography (or boundary geometry) at that level, so Mapa
+> intentionally omits them to stay faithful to PSGC and to keep population /
+> density joins keyed on real PSGC codes.
+
+**Implication for downloads:** selecting NCR at the Region level and choosing
+"All provinces" yields an empty result (NCR has none) — use "All municipalities"
+instead. If congressional-district analysis is ever needed, it should be added
+as a separate optional grouping, not folded into the core hierarchy.
+
+---
+
 ## Barangay shapefile join corrections
 
 The altcoder Adm4 shapefile has 42,017 features. A direct PSGC code join initially

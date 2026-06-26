@@ -8,6 +8,12 @@ import type { MpaLevel } from "../constants";
 
 const PH_CENTER: [number, number] = [12.8797, 121.774];
 const PH_ZOOM = 6;
+// Outermost zoom + hard pan limit so the map can't show beyond the Philippines.
+const PH_MIN_ZOOM = 5;
+const PH_MAX_BOUNDS: L.LatLngBoundsLiteral = [
+    [3.0, 115.0],
+    [22.5, 128.0],
+];
 
 const BASE_STYLE: L.PathOptions = {
     color: "#2b6cb0",
@@ -127,6 +133,9 @@ export function MpaMapPanel({
             <MapContainer
                 center={PH_CENTER}
                 zoom={PH_ZOOM}
+                minZoom={PH_MIN_ZOOM}
+                maxBounds={PH_MAX_BOUNDS}
+                maxBoundsViscosity={1.0}
                 zoomControl={false}
                 className="h-full w-full"
                 scrollWheelZoom
