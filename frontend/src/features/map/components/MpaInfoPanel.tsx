@@ -5,6 +5,7 @@ import { cn } from "../../../lib/cn";
 import { downloadJsonFile, downloadTextFile, slugifyFilename } from "../../../lib/downloadFile";
 import { useDivisionStats } from "../hooks/useDivisionStats";
 import {
+    changeToneClass,
     compoundAnnualGrowthRate,
     formatAnnualizedChange,
     formatAreaKm2,
@@ -16,6 +17,7 @@ import {
     formatPesoPerCapita,
     formatPopulation,
 } from "../utils/formatStats";
+import { broadAgeGroups, type BroadAgeGroups } from "../utils/ageSex";
 import { mergePlaceStats } from "../utils/mergePlaceStats";
 import type { AgeSexBand } from "../types";
 import type { ResolvedPlace } from "../utils/resolvePlace";
@@ -68,33 +70,6 @@ function formatCompactNumber(n: number): string {
 function formatAgeBand(age: string): string {
     const m = age.match(/(\d+)\s*(?:years\s*and\s*over|and\s*over|\+)/i);
     return m ? `${m[1]}+` : age;
-}
-
-// Reads the lower-bound age from a PSA band label, e.g. "65 - 69" gives 65.
-function bandLowerAge(age: string): number {
-    const m = age.match(/\d+/);
-    return m ? Number(m[0]) : 0;
-}
-
-interface BroadAgeGroups {
-    young: number;
-    working: number;
-    senior: number;
-    total: number;
-}
-
-// Folds the 5-year bands into young (0-14), working-age (15-64), and senior (65+) totals.
-function broadAgeGroups(bands: AgeSexBand[]): BroadAgeGroups {
-    let young = 0;
-    let working = 0;
-    let senior = 0;
-    for (const b of bands) {
-        const lower = bandLowerAge(b.age);
-        if (lower < 15) young += b.both;
-        else if (lower < 65) working += b.both;
-        else senior += b.both;
-    }
-    return { young, working, senior, total: young + working + senior };
 }
 
 // Picks a tidy tick step (1, 2, 2.5, or 5 times a power of ten) so every gridline lands on a round number.
@@ -295,12 +270,6 @@ function AgeSexPyramid({ bands }: { bands: AgeSexBand[] }) {
     );
 }
 
-// Tints a signed value green when rising, red when falling, muted when flat or missing.
-function changeToneClass(n: number | null | undefined): string {
-    if (n == null || n === 0) return "text-muted";
-    return n > 0 ? "text-emerald-600" : "text-rose-600";
-}
-
 function StatCard({
     label,
     value,
@@ -440,15 +409,6 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
                     sub="PSA PSGC publication"
                 />
                 <StatCard
-                    label="Area (km²)"
-                    value={formatAreaKm2(displayPlace.area_km2)}
-                    sub={displayPlace.area_km2 != null ? "Estimated from boundary polygon" : "No boundary loaded"}
-                />
-                <StatCard
-                    label="Population density [2024]"
-                    value={displayPlace.density_2024 != null ? `${formatDensity(displayPlace.density_2024)}/km²` : "—"}
-                />
-                <StatCard
                     label="Change [2020 → 2024]"
                     value={formatPctChange(displayPlace.pct_change_2020_2024)}
                     valueClassName={changeToneClass(displayPlace.pct_change_2020_2024)}
@@ -459,9 +419,23 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
                     }
                 />
                 <StatCard
+                    label="Population density [2024]"
+                    value={displayPlace.density_2024 != null ? `${formatDensity(displayPlace.density_2024)}/km²` : "—"}
+                />
+                <StatCard
+                    label="Area (km²)"
+                    value={formatAreaKm2(displayPlace.area_km2)}
+                    sub={displayPlace.area_km2 != null ? "Estimated from boundary polygon" : "No boundary loaded"}
+                />
+                <StatCard
                     label="Total assets [2024]"
                     value={formatAssets(displayPlace.assets_2024)}
                     sub="COA Annual Financial Report"
+                />
+                <StatCard
+                    label="GDP [2024]"
+                    value={formatGdp(displayPlace.gdp_2024)}
+                    sub={displayPlace.gdp_2024 != null ? "PSA current prices" : "Not published at this level"}
                 />
             </div>
 
@@ -566,11 +540,6 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
                 <section>
                     <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-muted">Economy</p>
                     <div className="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                        <StatCard
-                            label="GDP [2024]"
-                            value={formatGdp(displayPlace.gdp_2024)}
-                            sub="PSA current prices"
-                        />
                         <StatCard
                             label="GDP per capita [2024]"
                             value={formatPesoPerCapita(gdpPerCapita)}

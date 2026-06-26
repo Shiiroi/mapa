@@ -6,6 +6,8 @@ from __future__ import annotations
 import csv
 import re
 import sys
+import unicodedata
+from collections import defaultdict
 from pathlib import Path
 
 try:
@@ -61,20 +63,59 @@ COLUMNS = [
 EXPECTED_AGE_ROWS = 18  # Total + 17 age bands
 
 
-def load_province_names() -> set[str]:
-  names: set[str] = set()
+def norm_place(raw: object) -> str:
+  """Normalize a place name for cross-referencing against PSGC (accent/case/suffix-insensitive)."""
+  s = unicodedata.normalize("NFD", str(raw))
+  s = "".join(c for c in s if unicodedata.category(c) != "Mn")
+  s = s.upper().strip()
+  s = re.sub(r"\s+", " ", s)
+  s = re.sub(r"\bSTO\.?\s+", "SANTO ", s)
+  s = re.sub(r"\bSTA\.?\s+", "SANTA ", s)
+  s = re.sub(r"\bGEN\.?\s+", "GENERAL ", s)
+  s = re.sub(r"\bMT\.?\s+", "MOUNT ", s)
+  s = re.sub(r"\bDR\.?\s+", "DOCTOR ", s)
+  s = re.sub(r"^CITY OF ", "", s)
+  s = re.sub(r"^MUNICIPALITY OF ", "", s)
+  s = re.sub(r"\s+CITY$", "", s)
+  s = re.sub(r"\s*\([^)]*\)\s*$", "", s)  # drop trailing "(Capital)", "(excluding ...)", aliases
+  return re.sub(r"\s+", " ", s).strip()
+
+
+class PsgcHierarchy:
+  """PSGC province lookup plus each province's set of municipality/city names.
+
+  Used to tell a real province header apart from a municipality that merely shares
+  a province's name (e.g. the town of Rizal in Cagayan vs. Rizal province)."""
+
+  def __init__(self) -> None:
+    self.province_name_to_code: dict[str, str] = {}  # norm name -> 5-digit province code
+    self.province_munis: dict[str, set[str]] = defaultdict(set)  # 5-digit code -> norm muni/city names
+
+  def is_municipality_of(self, prov_code: str | None, norm: str) -> bool:
+    return bool(prov_code) and norm in self.province_munis.get(prov_code, set())
+
+
+def load_psgc_hierarchy() -> PsgcHierarchy:
+  h = PsgcHierarchy()
   psgc_path = PUBLIC_DIR / "psgc.csv"
   if not psgc_path.exists():
-    return names
+    return h
+  mun_rows: list[tuple[str, str]] = []
   with psgc_path.open(encoding="utf-8", errors="replace") as f:
     reader = csv.DictReader(f)
     for row in reader:
-      if row.get("Geographic Level", "").strip() == "Prov":
-        name = row.get("Name", "").strip().upper()
-        if name:
-          names.add(name)
-  names.add("METRO MANILA")
-  return names
+      lvl = row.get("Geographic Level", "").strip()
+      code = row.get("10-digit PSGC", "").strip().rjust(10, "0")
+      name = row.get("Name", "").strip()
+      if not name or len(code) < 5:
+        continue
+      if lvl == "Prov":
+        h.province_name_to_code[norm_place(name)] = code[:5]
+      elif lvl in ("Mun", "City"):
+        mun_rows.append((code, name))
+  for code, name in mun_rows:
+    h.province_munis[code[:5]].add(norm_place(name))
+  return h
 
 
 def clean_name(raw: str) -> str:
@@ -99,23 +140,35 @@ def parse_int(val: object) -> int | None:
     return None
 
 
-def infer_level(name: str, province_names: set[str], tab_region: str) -> str:
+def is_region_name(name: str, tab_region: str) -> bool:
   upper = name.upper()
-  if upper in ("PHILIPPINES",):
-    return "country"
   if upper.startswith("NATIONAL CAPITAL") or upper.startswith("CORDILLERA ADMINISTRATIVE"):
-    return "region"
+    return True
   if upper.startswith("REGION ") or ("REGION" in upper and upper.endswith(")")):
-    return "region"
-  if upper == tab_region.upper():
-    return "region"
-  if upper in province_names or upper.replace(" CITY", "") in province_names:
-    return "province"
-  if "PROVINCE" in upper and upper not in province_names:
-    return "province"
+    return True
+  return upper == tab_region.upper()
+
+
+def classify_level(
+  name: str,
+  tab_region: str,
+  hierarchy: PsgcHierarchy,
+  current_prov_code: str | None,
+) -> tuple[str, str | None]:
+  """Return (level, province_code). A name is a province only if it matches a PSGC province
+  and is not a municipality of the province block we are currently inside."""
+  upper = name.upper()
+  if upper == "PHILIPPINES":
+    return "country", None
+  if is_region_name(name, tab_region):
+    return "region", None
+  norm = norm_place(name)
+  prov_code = hierarchy.province_name_to_code.get(norm)
+  if prov_code and not hierarchy.is_municipality_of(current_prov_code, norm):
+    return "province", prov_code
   if upper.startswith("CITY OF ") or upper.endswith(" CITY") or "CITY" in upper:
-    return "city"
-  return "municipality"
+    return "city", current_prov_code
+  return "municipality", current_prov_code
 
 
 def is_place_header(a: str | None, b: object) -> bool:
@@ -142,7 +195,7 @@ def find_xlsx() -> Path:
   return matches[0]
 
 
-def extract_sheet(ws, tab_name: str, province_names: set[str]) -> tuple[list[dict], list[str]]:
+def extract_sheet(ws, tab_name: str, hierarchy: PsgcHierarchy) -> tuple[list[dict], list[str]]:
   tab_region = TAB_TO_REGION.get(tab_name, tab_name)
   rows_out: list[dict] = []
   errors: list[str] = []
@@ -150,6 +203,7 @@ def extract_sheet(ws, tab_name: str, province_names: set[str]) -> tuple[list[dic
   current_name = ""
   current_level = ""
   current_province = ""
+  current_prov_code: str | None = None
   current_region = tab_region if tab_name != "Philippines" else ""
   block_rows: list[tuple[str, int | None, int | None, int | None]] = []
 
@@ -195,19 +249,24 @@ def extract_sheet(ws, tab_name: str, province_names: set[str]) -> tuple[list[dic
         current_level = "country"
         current_region = ""
         current_province = ""
+        current_prov_code = None
       elif tab_name == "Philippines":
         current_level = "region"
         current_region = current_name
         current_province = ""
+        current_prov_code = None
       else:
-        current_level = infer_level(current_name, province_names, tab_region)
+        current_level, prov_code = classify_level(
+          current_name, tab_region, hierarchy, current_prov_code
+        )
         if current_level == "region":
           current_region = current_name
           current_province = ""
+          current_prov_code = None
         elif current_level == "province":
           current_province = current_name
-        elif current_level in ("city", "municipality"):
-          pass  # keep province context
+          current_prov_code = prov_code
+        # city/municipality keep the current province context
       continue
 
     if a_str and AGE_GROUP_RE.match(a_str):
@@ -222,7 +281,7 @@ def extract_sheet(ws, tab_name: str, province_names: set[str]) -> tuple[list[dic
 
 def main() -> None:
   xlsx_path = find_xlsx()
-  province_names = load_province_names()
+  hierarchy = load_psgc_hierarchy()
   wb = openpyxl.load_workbook(xlsx_path, read_only=True, data_only=True)
 
   all_rows: list[dict] = []
@@ -230,7 +289,7 @@ def main() -> None:
 
   for tab_name in wb.sheetnames:
     ws = wb[tab_name]
-    sheet_rows, errors = extract_sheet(ws, tab_name, province_names)
+    sheet_rows, errors = extract_sheet(ws, tab_name, hierarchy)
     places = len({(r["name"], r["level"]) for r in sheet_rows})
     print(f"  {tab_name}: {places} places, {len(sheet_rows)} age rows")
     all_rows.extend(sheet_rows)

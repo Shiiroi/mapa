@@ -95,3 +95,9 @@ export function formatPesoPerCapita(n: number | null | undefined): string {
     if (n == null) return "—";
     return `₱${Math.round(n).toLocaleString("en-PH")}`;
 }
+
+// Tints a signed value green when rising, red when falling, muted when flat or missing.
+export function changeToneClass(n: number | null | undefined): string {
+    if (n == null || n === 0) return "text-muted";
+    return n > 0 ? "text-emerald-600" : "text-rose-600";
+}

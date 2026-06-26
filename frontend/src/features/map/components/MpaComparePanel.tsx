@@ -1,13 +1,21 @@
-// Side-by-side comparison of two places (population, area, density).
+// Side-by-side comparison of two places (population, economy, households).
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "../../../lib/cn";
 import { useDivisionStats } from "../hooks/useDivisionStats";
 import { fetchBarangaysByMunicity } from "../services/mapApi";
 import type { MpaLevel } from "../constants";
 import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
-import { formatAreaKm2, formatDensity, formatPctChange, formatPopulation } from "../utils/formatStats";
+import { broadAgeGroups } from "../utils/ageSex";
+import {
+    formatAreaKm2,
+    formatAssets,
+    formatDensity,
+    formatGdp,
+    formatPesoPerCapita,
+    formatPopulation,
+} from "../utils/formatStats";
 import { mergePlaceStats } from "../utils/mergePlaceStats";
 import { resolveSelectedPlace, type ResolvedPlace } from "../utils/resolvePlace";
 
@@ -180,14 +188,74 @@ function ComparePicker({
     );
 }
 
-function MetricRow({ label, a, b }: { label: string; a: string; b: string }) {
+type RowMode = "higher" | "none";
+
+// Renders one comparison row, subtly highlighting the larger of the two values when mode is "higher".
+function MetricRow({
+    label,
+    a,
+    b,
+    format,
+    mode = "higher",
+}: {
+    label: string;
+    a: number | null;
+    b: number | null;
+    format: (n: number | null) => string;
+    mode?: RowMode;
+}) {
+    const aWins = mode === "higher" && a != null && b != null && a > b;
+    const bWins = mode === "higher" && a != null && b != null && b > a;
+
+    const cellClass = (wins: boolean) =>
+        wins ? "text-sm font-semibold text-accent" : "text-sm font-medium text-primary";
+
     return (
         <tr className="border-b border-border-light last:border-0">
             <td className="py-2 pr-2 text-xs text-muted">{label}</td>
-            <td className="py-2 px-2 text-right text-sm font-medium text-primary">{a}</td>
-            <td className="py-2 pl-2 text-right text-sm font-medium text-primary">{b}</td>
+            <td className={cn("py-2 px-2 text-right", cellClass(aWins))}>{format(a)}</td>
+            <td className={cn("py-2 pl-2 text-right", cellClass(bWins))}>{format(b)}</td>
         </tr>
     );
+}
+
+function CompareSection({
+    title,
+    nameA,
+    nameB,
+    children,
+}: {
+    title: string;
+    nameA: string;
+    nameB: string;
+    children: ReactNode;
+}) {
+    return (
+        <div className="space-y-2">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">{title}</h3>
+            <table className="w-full border-collapse">
+                <thead>
+                    <tr className="text-xs text-muted">
+                        <th className="pb-2 text-left font-medium">Metric</th>
+                        <th className="pb-2 text-right font-medium">{nameA}</th>
+                        <th className="pb-2 text-right font-medium">{nameB}</th>
+                    </tr>
+                </thead>
+                <tbody>{children}</tbody>
+            </table>
+        </div>
+    );
+}
+
+// Computes GDP per capita when both GDP and population are available.
+function gdpPerCapita(gdp: number | null, pop: number | null): number | null {
+    if (gdp == null || pop == null || pop <= 0) return null;
+    return gdp / pop;
+}
+
+function formatDensityPerKm2(n: number | null): string {
+    if (n == null) return "—";
+    return `${formatDensity(n)}/km²`;
 }
 
 export function MpaComparePanel({
@@ -240,9 +308,38 @@ export function MpaComparePanel({
         [placeB, statsBQuery.data],
     );
 
+    const showPopulation =
+        displayA &&
+        displayB &&
+        (displayA.pop_2024 != null ||
+            displayB.pop_2024 != null ||
+            displayA.area_km2 != null ||
+            displayB.area_km2 != null ||
+            displayA.density_2024 != null ||
+            displayB.density_2024 != null);
+
+    const showEconomy =
+        displayA &&
+        displayB &&
+        (displayA.gdp_2024 != null ||
+            displayB.gdp_2024 != null ||
+            displayA.assets_2024 != null ||
+            displayB.assets_2024 != null);
+
+    const showHouseholds =
+        displayA &&
+        displayB &&
+        ((displayA.age_sex_2020 != null && displayA.age_sex_2020.length > 0) ||
+            (displayB.age_sex_2020 != null && displayB.age_sex_2020.length > 0));
+
+    const ageGroupsA = displayA?.age_sex_2020 ? broadAgeGroups(displayA.age_sex_2020) : null;
+    const ageGroupsB = displayB?.age_sex_2020 ? broadAgeGroups(displayB.age_sex_2020) : null;
+
     return (
         <div className="space-y-4">
-            <p className="text-sm text-muted">Pick two places and compare population, area, and density side by side.</p>
+            <p className="text-sm text-muted">
+                Pick two places and compare population, economy, and household stats side by side.
+            </p>
 
             <div className="grid grid-cols-1 gap-3">
                 <ComparePicker
@@ -270,33 +367,88 @@ export function MpaComparePanel({
             </div>
 
             {displayA && displayB ? (
-                <>
-                    <table className="w-full border-collapse">
-                        <thead>
-                            <tr className="text-xs text-muted">
-                                <th className="pb-2 text-left font-medium">Metric</th>
-                                <th className="pb-2 text-right font-medium">{displayA.name}</th>
-                                <th className="pb-2 text-right font-medium">{displayB.name}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <MetricRow label="Population [2015]" a={formatPopulation(displayA.pop_2015)} b={formatPopulation(displayB.pop_2015)} />
-                            <MetricRow label="Population [2020]" a={formatPopulation(displayA.pop_2020)} b={formatPopulation(displayB.pop_2020)} />
-                            <MetricRow label="Population [2024]" a={formatPopulation(displayA.pop_2024)} b={formatPopulation(displayB.pop_2024)} />
-                            <MetricRow label="Area (km²)" a={formatAreaKm2(displayA.area_km2)} b={formatAreaKm2(displayB.area_km2)} />
+                <div className="space-y-5">
+                    {showPopulation && (
+                        <CompareSection title="Population" nameA={displayA.name} nameB={displayB.name}>
+                            <MetricRow
+                                label="Population [2024]"
+                                a={displayA.pop_2024}
+                                b={displayB.pop_2024}
+                                format={formatPopulation}
+                            />
+                            <MetricRow
+                                label="Area (km²)"
+                                a={displayA.area_km2}
+                                b={displayB.area_km2}
+                                format={formatAreaKm2}
+                            />
                             <MetricRow
                                 label="Density [2024]"
-                                a={displayA.density_2024 != null ? `${formatDensity(displayA.density_2024)}/km²` : "—"}
-                                b={displayB.density_2024 != null ? `${formatDensity(displayB.density_2024)}/km²` : "—"}
+                                a={displayA.density_2024}
+                                b={displayB.density_2024}
+                                format={formatDensityPerKm2}
+                            />
+                        </CompareSection>
+                    )}
+
+                    {showEconomy && (
+                        <CompareSection title="Economy" nameA={displayA.name} nameB={displayB.name}>
+                            <MetricRow
+                                label="GDP [2024]"
+                                a={displayA.gdp_2024}
+                                b={displayB.gdp_2024}
+                                format={formatGdp}
                             />
                             <MetricRow
-                                label="Change [2020→2024]"
-                                a={formatPctChange(displayA.pct_change_2020_2024)}
-                                b={formatPctChange(displayB.pct_change_2020_2024)}
+                                label="GDP per capita [2024]"
+                                a={gdpPerCapita(displayA.gdp_2024, displayA.pop_2024)}
+                                b={gdpPerCapita(displayB.gdp_2024, displayB.pop_2024)}
+                                format={formatPesoPerCapita}
                             />
-                        </tbody>
-                    </table>
-                </>
+                            <MetricRow
+                                label="Total assets [2024]"
+                                a={displayA.assets_2024}
+                                b={displayB.assets_2024}
+                                format={formatAssets}
+                            />
+                        </CompareSection>
+                    )}
+
+                    {showHouseholds && (
+                        <CompareSection title="Households 2020" nameA={displayA.name} nameB={displayB.name}>
+                            <MetricRow
+                                label="Male"
+                                a={displayA.pop_male_2020}
+                                b={displayB.pop_male_2020}
+                                format={formatPopulation}
+                            />
+                            <MetricRow
+                                label="Female"
+                                a={displayA.pop_female_2020}
+                                b={displayB.pop_female_2020}
+                                format={formatPopulation}
+                            />
+                            <MetricRow
+                                label="Age 0–14"
+                                a={ageGroupsA?.young ?? null}
+                                b={ageGroupsB?.young ?? null}
+                                format={formatPopulation}
+                            />
+                            <MetricRow
+                                label="Age 15–64"
+                                a={ageGroupsA?.working ?? null}
+                                b={ageGroupsB?.working ?? null}
+                                format={formatPopulation}
+                            />
+                            <MetricRow
+                                label="Age 65+"
+                                a={ageGroupsA?.senior ?? null}
+                                b={ageGroupsB?.senior ?? null}
+                                format={formatPopulation}
+                            />
+                        </CompareSection>
+                    )}
+                </div>
             ) : (
                 <p className={cn("text-sm text-muted")}>Select both places to see the comparison table.</p>
             )}
