@@ -1,12 +1,13 @@
 // Split-layout shell: map panel and download sidebar.
 
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { MpaDownloadPanel } from "../features/map/components/MpaDownloadPanel";
 import { MpaMapPanel } from "../features/map/components/MpaMapPanel";
+import { MpaSidebar } from "../features/map/components/MpaSidebar";
 import { useMpaDownload } from "../features/map/hooks/useMpaDownload";
 import { useMapLayers } from "../features/map/hooks/useMapLayers";
 import { fetchBarangaysByMunicity } from "../features/map/services/mapApi";
+import { computeDensityBenchmarks } from "../features/map/utils/densityInsights";
 import type { MpaLevel } from "../features/map/constants";
 
 export default function MainPage() {
@@ -22,6 +23,11 @@ export default function MainPage() {
     });
 
     const barangays = barangaysQuery.data ?? [];
+
+    const benchmarks = useMemo(
+        () => computeDensityBenchmarks(regions, provinces, municities),
+        [regions, provinces, municities],
+    );
 
     const handleFeatureClick = useCallback(
         (entityPsgc: string, mode: MpaLevel) => {
@@ -46,12 +52,14 @@ export default function MainPage() {
                 />
             </div>
             <div className="min-h-0 flex-1 overflow-hidden lg:flex-none">
-                <MpaDownloadPanel
+                <MpaSidebar
                     level={download.level}
                     onLevelChange={download.setLevel}
                     regions={regions}
                     provinces={provinces}
+                    municities={municities}
                     municityMeta={municityMeta}
+                    country={country}
                     barangays={barangays}
                     barangaysLoading={barangaysQuery.isFetching}
                     selectedRegionPsgc={download.selectedRegionPsgc}
@@ -71,6 +79,7 @@ export default function MainPage() {
                     onDownload={download.download}
                     downloading={download.downloading}
                     error={download.error}
+                    benchmarks={benchmarks}
                 />
             </div>
         </div>

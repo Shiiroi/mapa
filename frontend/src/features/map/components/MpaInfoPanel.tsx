@@ -1,0 +1,164 @@
+// Place detail panel: population, area, density, and downloadable stats (no geometry).
+
+import { useMemo } from "react";
+import { cn } from "../../../lib/cn";
+import { downloadJsonFile, downloadTextFile, slugifyFilename } from "../../../lib/downloadFile";
+import { useDivisionStats } from "../hooks/useDivisionStats";
+import type { DensityBenchmarks } from "../utils/densityInsights";
+import { buildDensityInsight } from "../utils/densityInsights";
+import {
+    formatAnnualizedChange,
+    formatAreaKm2,
+    formatDensity,
+    formatPctChange,
+    formatPopulation,
+} from "../utils/formatStats";
+import { mergePlaceStats } from "../utils/mergePlaceStats";
+import type { ResolvedPlace } from "../utils/resolvePlace";
+
+interface MpaInfoPanelProps {
+    place: ResolvedPlace | null;
+    benchmarks: DensityBenchmarks;
+}
+
+function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
+    return (
+        <div className="rounded-lg border border-border-light bg-white px-3 py-2.5">
+            <p className="text-xs text-muted">{label}</p>
+            <p className="mt-0.5 text-lg font-semibold text-primary">{value}</p>
+            {sub && <p className="mt-0.5 text-xs text-muted">{sub}</p>}
+        </div>
+    );
+}
+
+export function MpaInfoPanel({ place, benchmarks }: MpaInfoPanelProps) {
+    const statsQuery = useDivisionStats(place?.psgc ?? null);
+    const displayPlace = useMemo(
+        () => (place ? mergePlaceStats(place, statsQuery.data) : null),
+        [place, statsQuery.data],
+    );
+
+    const insight = useMemo(
+        () => (displayPlace ? buildDensityInsight(displayPlace.density_2024, displayPlace.level, benchmarks) : null),
+        [displayPlace, benchmarks],
+    );
+
+    if (!place) {
+        return (
+            <p className="text-sm text-muted">
+                Select a place at the current view level to see population, area, and density.
+            </p>
+        );
+    }
+
+    if (!displayPlace) return null;
+
+    const annualChange = formatAnnualizedChange(displayPlace.pct_change_2020_2024);
+
+    function handleDownloadJson() {
+        const date = new Date().toISOString().slice(0, 10);
+        const payload = {
+            psgc: displayPlace!.psgc,
+            name: displayPlace!.name,
+            level: displayPlace!.level,
+            geo_lvl: displayPlace!.geo_lvl,
+            breadcrumb: displayPlace!.breadcrumb,
+            population_2024: displayPlace!.pop_2024,
+            population_2020: displayPlace!.pop_2020,
+            population_2015: displayPlace!.pop_2015,
+            area_km2: displayPlace!.area_km2,
+            density_2024_per_km2: displayPlace!.density_2024,
+            pct_change_2020_2024: displayPlace!.pct_change_2020_2024,
+            source: "Population from the Philippine Statistics Authority (PSA) PSGC; area and derived metrics (density, % change) computed by Mapa from PSA boundaries.",
+            source_url: "https://psa.gov.ph/classification/psgc/",
+        };
+        downloadJsonFile(payload, `mapa-info-${slugifyFilename(displayPlace!.name)}-${date}.json`);
+    }
+
+    function handleDownloadCsv() {
+        const date = new Date().toISOString().slice(0, 10);
+        const rows = [
+            ["field", "value"],
+            ["psgc", displayPlace!.psgc],
+            ["name", displayPlace!.name],
+            ["level", displayPlace!.level],
+            ["population_2024", String(displayPlace!.pop_2024 ?? "")],
+            ["population_2020", String(displayPlace!.pop_2020 ?? "")],
+            ["area_km2", String(displayPlace!.area_km2 ?? "")],
+            ["density_2024", String(displayPlace!.density_2024 ?? "")],
+            ["pct_change_2020_2024", String(displayPlace!.pct_change_2020_2024 ?? "")],
+            ["source", "Philippine Statistics Authority (PSA) PSGC; area/density/change derived by Mapa"],
+            ["source_url", "https://psa.gov.ph/classification/psgc/"],
+        ];
+        const csv = rows.map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
+        downloadTextFile(csv, `mapa-info-${slugifyFilename(displayPlace!.name)}-${date}.csv`, "text/csv");
+    }
+
+    return (
+        <div className="space-y-4">
+            <div>
+                <h2 className="text-lg font-semibold text-primary">{displayPlace.name}</h2>
+                <p className="text-xs text-muted">{displayPlace.breadcrumb}</p>
+                <p className="mt-1 font-mono text-xs text-muted">PSGC {displayPlace.psgc}</p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <StatCard
+                    label="Population [2024]"
+                    value={formatPopulation(displayPlace.pop_2024)}
+                    sub="PSA PSGC publication"
+                />
+                <StatCard
+                    label="Area (km²)"
+                    value={formatAreaKm2(displayPlace.area_km2)}
+                    sub={displayPlace.area_km2 != null ? "Estimated from boundary polygon" : "No boundary loaded"}
+                />
+                <StatCard
+                    label="Population density [2024]"
+                    value={displayPlace.density_2024 != null ? `${formatDensity(displayPlace.density_2024)}/km²` : "—"}
+                />
+                <StatCard
+                    label="Change [2020 → 2024]"
+                    value={formatPctChange(displayPlace.pct_change_2020_2024)}
+                    sub={
+                        displayPlace.pop_2020 == null
+                            ? "No comparable 2020 figure (boundary or code change)"
+                            : annualChange ?? undefined
+                    }
+                />
+            </div>
+
+            {displayPlace.pop_2015 != null && (
+                <p className="text-xs text-muted">2015 population: {formatPopulation(displayPlace.pop_2015)}</p>
+            )}
+
+            {insight && (
+                <div className="rounded-lg border border-accent/20 bg-accent/5 px-3 py-2.5 text-sm text-primary">
+                    <p className="text-xs font-medium uppercase tracking-wide text-accent">Density insight</p>
+                    <p className="mt-1 leading-relaxed">{insight}</p>
+                </div>
+            )}
+
+            <div className="flex gap-2">
+                <button
+                    type="button"
+                    onClick={handleDownloadJson}
+                    className={cn(
+                        "flex-1 rounded-lg border border-border-light bg-white px-3 py-2 text-sm font-medium text-primary hover:bg-surface",
+                    )}
+                >
+                    Download info (JSON)
+                </button>
+                <button
+                    type="button"
+                    onClick={handleDownloadCsv}
+                    className={cn(
+                        "flex-1 rounded-lg border border-border-light bg-white px-3 py-2 text-sm font-medium text-primary hover:bg-surface",
+                    )}
+                >
+                    Download info (CSV)
+                </button>
+            </div>
+        </div>
+    );
+}

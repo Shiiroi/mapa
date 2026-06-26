@@ -47,6 +47,22 @@ stored with `province_psgc = null` and `region_psgc = 1300000000`.
 instead. If congressional-district analysis is ever needed, it should be added
 as a separate optional grouping, not folded into the core hierarchy.
 
+### Population and density stats
+
+Mapa enriches every administrative level with population and density from PSA
+PSGC publications:
+
+| Field | Source | Notes |
+|-------|--------|-------|
+| `pop_2024` | `public/psgc.csv` | Current PSGC publication |
+| `pop_2020`, `pop_2015` | `public/psgc0.csv` | Joined by PSGC, fallback by correspondence code |
+| `area_km2` | Computed from boundary GeoJSON (`@turf/area`, WGS84) | Estimate from polygon |
+| `density_2024` | `pop_2024 / area_km2` | Null when area unavailable |
+| `pct_change_2020_2024` | Derived when both vintages present | Null after boundary/code changes |
+
+Pipeline: `pnpm build:geo` attaches stats to geo JSON; `pnpm seed:stats` upserts
+`division_stats` in Supabase for API fallback.
+
 ---
 
 ## Barangay shapefile join corrections

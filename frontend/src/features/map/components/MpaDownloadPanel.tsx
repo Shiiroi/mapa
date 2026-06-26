@@ -99,11 +99,7 @@ export function MpaDownloadPanel({
         : municityMeta;
 
     return (
-        <aside className="flex h-full flex-col border-l border-border bg-white">
-            <header className="border-b border-border-light px-5 py-4">
-                <h1 className="text-2xl font-semibold tracking-tight text-primary">Mapa</h1>
-            </header>
-
+        <div className="flex min-h-0 flex-1 flex-col">
             <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
                 <section>
                     <label className="mb-2 block text-xs font-medium uppercase tracking-wide text-muted">
@@ -319,7 +315,7 @@ export function MpaDownloadPanel({
                     </a>
                 </p>
             </footer>
-        </aside>
+        </div>
     );
 }
 

@@ -1,7 +1,7 @@
 // Public API for map layers; PostgREST fallback for municity metadata only.
 
 import { supabase } from "../../../config/supabase";
-import type { BarangayGeoJSON, CountryGeoJSON, ProvinceGeoJSON, MunicityGeoJSON, MunicityMeta, Region } from "../types";
+import type { BarangayGeoJSON, CountryGeoJSON, DivisionStats, ProvinceGeoJSON, MunicityGeoJSON, MunicityMeta, Region } from "../types";
 import {
     fetchBarangaysByMunicityFromStorage,
     fetchCountryFromStorage,
@@ -63,4 +63,10 @@ export async function fetchCountry(): Promise<CountryGeoJSON> {
 
 export async function fetchBarangaysByMunicity(municityPsgc: string): Promise<BarangayGeoJSON[]> {
     return fetchBarangaysByMunicityFromStorage(municityPsgc);
+}
+
+export async function fetchStatsByPsgc(psgc: string): Promise<DivisionStats | null> {
+    const { data, error } = await supabase.from("division_stats").select("*").eq("psgc", psgc).maybeSingle();
+    if (error) throw error;
+    return (data as DivisionStats | null) ?? null;
 }

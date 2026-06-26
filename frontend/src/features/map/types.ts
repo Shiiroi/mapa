@@ -5,7 +5,23 @@ import type { Geometry } from "geojson";
 export type GeoLevel = "Reg" | "Prov" | "City" | "Mun" | "SubMun" | "Bgy" | "Country";
 export type CityLevel = "HUC" | "CC" | "ICC";
 
-export interface PsgcFields {
+/** Population, area, and density keyed by PSGC (from psgc.csv + psgc0.csv + geometry). */
+export interface DivisionStatsFields {
+    pop_2015: number | null;
+    pop_2020: number | null;
+    pop_2024: number | null;
+    area_km2: number | null;
+    density_2024: number | null;
+    pct_change_2020_2024: number | null;
+}
+
+export interface DivisionStats extends DivisionStatsFields {
+    psgc: string;
+    level: string;
+    name?: string;
+}
+
+export interface PsgcFields extends DivisionStatsFields {
     psgc: string;
     correspondence: string | null;
     name: string;

@@ -4,6 +4,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
 import { parse } from "csv-parse/sync";
+import { attachStats, computeDensity, computePctChange, createStatsContext, type DivisionStatsFields } from "./lib/stats.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(__dirname, "../public");
@@ -53,6 +54,31 @@ interface OldMunicity {
 
 function padPsgc(code: string | number): string {
     return String(code).trim().padStart(10, "0");
+}
+
+// Country has no row in psgc.csv, so its population is summed from the regions
+// (which is, by construction, the national total).
+type CountryPopAggregate = Pick<DivisionStatsFields, "pop_2015" | "pop_2020" | "pop_2024">;
+
+function sumPop(rows: DivisionStatsFields[], key: keyof CountryPopAggregate): number | null {
+    let total = 0;
+    let seen = false;
+    for (const row of rows) {
+        const value = row[key];
+        if (typeof value === "number") {
+            total += value;
+            seen = true;
+        }
+    }
+    return seen ? total : null;
+}
+
+function aggregateCountryPop(regions: DivisionStatsFields[]): CountryPopAggregate {
+    return {
+        pop_2015: sumPop(regions, "pop_2015"),
+        pop_2020: sumPop(regions, "pop_2020"),
+        pop_2024: sumPop(regions, "pop_2024"),
+    };
 }
 
 // Resolves the canonical 10-digit PSGC from either the original `code` or a rebuilt `psgc`.
@@ -114,6 +140,8 @@ async function main() {
 
     const psgcMap = loadPsgcMap();
     console.log(`  Loaded ${psgcMap.size} PSGC rows from CSV`);
+    const statsCtx = createStatsContext(PUBLIC_DIR);
+    console.log(`  Loaded population stats from psgc.csv + psgc0.csv`);
 
     const oldRegions = JSON.parse(fs.readFileSync(path.join(GEO_DIR, "regions.json"), "utf8")) as OldRegion[];
     const oldProvinces = JSON.parse(fs.readFileSync(path.join(GEO_DIR, "provinces.json"), "utf8")) as OldProvince[];
@@ -132,14 +160,17 @@ async function main() {
     const regions = oldRegions.map((r) => {
         const psgc = resolvePsgc(r);
         const row = lookupPsgc(psgcMap, psgc);
-        return {
-            psgc,
-            correspondence: row?.correspondence ?? null,
-            name: r.name,
-            geo_lvl: "Reg" as const,
-            city_lvl: null,
-            geometry: r.geometry,
-        };
+        return attachStats(
+            {
+                psgc,
+                correspondence: row?.correspondence ?? null,
+                name: r.name,
+                geo_lvl: "Reg" as const,
+                city_lvl: null,
+                geometry: r.geometry,
+            },
+            statsCtx,
+        );
     });
 
     // Resolves a province's parent region psgc from either an integer id or a rebuilt region_psgc.
@@ -153,15 +184,18 @@ async function main() {
     const provinces = oldProvinces.map((p) => {
         const psgc = resolvePsgc(p);
         const row = lookupPsgc(psgcMap, psgc);
-        return {
-            psgc,
-            correspondence: row?.correspondence ?? null,
-            name: p.name,
-            geo_lvl: "Prov" as const,
-            city_lvl: null,
-            region_psgc: provinceRegionPsgc(p),
-            geometry: p.geometry,
-        };
+        return attachStats(
+            {
+                psgc,
+                correspondence: row?.correspondence ?? null,
+                name: p.name,
+                geo_lvl: "Prov" as const,
+                city_lvl: null,
+                region_psgc: provinceRegionPsgc(p),
+                geometry: p.geometry,
+            },
+            statsCtx,
+        );
     });
 
     const provincePsgcToRegionPsgc = new Map<string, string>();
@@ -187,15 +221,18 @@ async function main() {
         const psgc = resolvePsgc(m);
         const row = lookupPsgc(psgcMap, psgc);
         const { province_psgc, region_psgc } = muniParents(m);
-        return {
-            psgc,
-            correspondence: row?.correspondence ?? null,
-            name: m.name,
-            geo_lvl: muniGeoLvl(row, m.type, m.geo_lvl),
-            city_lvl: row?.city_lvl ?? null,
-            province_psgc,
-            region_psgc,
-        };
+        return attachStats(
+            {
+                psgc,
+                correspondence: row?.correspondence ?? null,
+                name: m.name,
+                geo_lvl: muniGeoLvl(row, m.type, m.geo_lvl),
+                city_lvl: row?.city_lvl ?? null,
+                province_psgc,
+                region_psgc,
+            },
+            statsCtx,
+        );
     });
 
     writeJson("regions.json", regions);
@@ -225,16 +262,19 @@ async function main() {
             const psgc = resolvePsgc(m);
             const row = lookupPsgc(psgcMap, psgc);
             const { province_psgc, region_psgc } = muniParents(m);
-            return {
-                psgc,
-                correspondence: row?.correspondence ?? null,
-                name: m.name,
-                geo_lvl: muniGeoLvl(row, m.type, m.geo_lvl),
-                city_lvl: row?.city_lvl ?? null,
-                province_psgc,
-                region_psgc,
-                geometry: m.geometry,
-            };
+            return attachStats(
+                {
+                    psgc,
+                    correspondence: row?.correspondence ?? null,
+                    name: m.name,
+                    geo_lvl: muniGeoLvl(row, m.type, m.geo_lvl),
+                    city_lvl: row?.city_lvl ?? null,
+                    province_psgc,
+                    region_psgc,
+                    geometry: m.geometry,
+                },
+                statsCtx,
+            );
         });
 
         writeJson(`municities/province-${provincePsgc}.json`, transformed);
@@ -254,6 +294,103 @@ async function main() {
 
     console.log(`Done → ${GEO_DIR}`);
     console.log(`  regions: ${regions.length}, provinces: ${provinces.length}, municities: ${meta.length}`);
+
+    const countryPop = aggregateCountryPop(regions);
+    console.log(
+        `  Country totals (summed from regions): 2015=${countryPop.pop_2015}, 2020=${countryPop.pop_2020}, 2024=${countryPop.pop_2024}`,
+    );
+
+    enrichCountryAndBarangays(statsCtx, countryPop);
+}
+
+function enrichCountryAndBarangays(statsCtx: ReturnType<typeof createStatsContext>, countryPop: CountryPopAggregate) {
+    const countryPath = path.join(GEO_DIR, "country.json");
+    if (fs.existsSync(countryPath)) {
+        const country = JSON.parse(fs.readFileSync(countryPath, "utf8")) as Record<string, unknown>;
+        const base = attachStats(
+            {
+                psgc: String(country.psgc ?? "0000000000"),
+                correspondence: (country.correspondence as string | null) ?? null,
+                name: String(country.name ?? "Philippines"),
+                geo_lvl: "Country",
+                city_lvl: null,
+                geometry: country.geometry,
+            },
+            statsCtx,
+            typeof country.area_km2 === "number" ? country.area_km2 : null,
+        );
+        // Neither CSV has a national row; the all-zero country PSGC can spuriously
+        // match a blank-coded CSV row, so always use the region-summed totals.
+        const pop_2015 = countryPop.pop_2015;
+        const pop_2020 = countryPop.pop_2020;
+        const pop_2024 = countryPop.pop_2024;
+        const enriched = {
+            ...base,
+            pop_2015,
+            pop_2020,
+            pop_2024,
+            density_2024: computeDensity(pop_2024, base.area_km2),
+            pct_change_2020_2024: computePctChange(pop_2020, pop_2024),
+        };
+        writeJson("country.json", enriched);
+    }
+
+    const bgyDir = path.join(MUNI_DIR, "bgy");
+    if (!fs.existsSync(bgyDir)) return;
+
+    let bgyFiles = 0;
+    for (const file of fs.readdirSync(bgyDir)) {
+        if (!file.endsWith(".json") || file === "meta.json" || file === "manifest.json" || file.startsWith("_")) {
+            continue;
+        }
+        const filePath = path.join(bgyDir, file);
+        const rows = JSON.parse(fs.readFileSync(filePath, "utf8")) as Array<Record<string, unknown>>;
+        const enriched = rows.map((row) =>
+            attachStats(
+                {
+                    psgc: String(row.psgc),
+                    correspondence: (row.correspondence as string | null) ?? null,
+                    name: String(row.name),
+                    geo_lvl: String(row.geo_lvl ?? "Bgy"),
+                    city_lvl: (row.city_lvl as string | null) ?? null,
+                    municity_psgc: String(row.municity_psgc),
+                    province_psgc: (row.province_psgc as string | null) ?? null,
+                    region_psgc: (row.region_psgc as string | null) ?? null,
+                    geometry: row.geometry,
+                },
+                statsCtx,
+                typeof row.area_km2 === "number" ? row.area_km2 : null,
+            ),
+        );
+        fs.writeFileSync(filePath, JSON.stringify(enriched));
+        bgyFiles++;
+    }
+
+    const metaPath = path.join(bgyDir, "meta.json");
+    if (fs.existsSync(metaPath)) {
+        const metaRows = JSON.parse(fs.readFileSync(metaPath, "utf8")) as Array<Record<string, unknown>>;
+        const enrichedMeta = metaRows.map((row) =>
+            attachStats(
+                {
+                    psgc: String(row.psgc),
+                    correspondence: (row.correspondence as string | null) ?? null,
+                    name: String(row.name),
+                    geo_lvl: String(row.geo_lvl ?? "Bgy"),
+                    city_lvl: (row.city_lvl as string | null) ?? null,
+                    municity_psgc: String(row.municity_psgc),
+                    province_psgc: (row.province_psgc as string | null) ?? null,
+                    region_psgc: (row.region_psgc as string | null) ?? null,
+                },
+                statsCtx,
+                typeof row.area_km2 === "number" ? row.area_km2 : null,
+            ),
+        );
+        fs.writeFileSync(metaPath, JSON.stringify(enrichedMeta));
+    }
+
+    if (bgyFiles > 0) {
+        console.log(`  Enriched stats on country + ${bgyFiles} barangay files`);
+    }
 }
 
 main().catch((err) => {
