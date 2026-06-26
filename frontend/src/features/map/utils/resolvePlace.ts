@@ -42,6 +42,7 @@ function mergeStats<T extends DivisionStatsFields>(row: T): DivisionStatsFields 
         area_km2: row.area_km2 ?? null,
         density_2024: row.density_2024 ?? null,
         pct_change_2020_2024: row.pct_change_2020_2024 ?? null,
+        assets_2024: row.assets_2024 ?? null,
     };
 }
 

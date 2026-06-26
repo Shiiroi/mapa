@@ -159,6 +159,17 @@ export function MpaSidebar(props: MpaSidebarProps) {
                             Philippine Statistics Authority (PSGC)
                         </a>
                     </p>
+                    <p>
+                        Total assets:{" "}
+                        <a
+                            href="https://www.coa.gov.ph/reports/annual-financial-reports/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent underline"
+                        >
+                            Commission on Audit (CY 2024 AFR, Local Government)
+                        </a>
+                    </p>
                 </footer>
             )}
         </aside>

@@ -27,3 +27,15 @@ export function formatAnnualizedChange(totalPct: number | null): string | null {
     const sign = annual > 0 ? "+" : "";
     return `${sign}${annual.toFixed(2)}% per year (2020 → 2024)`;
 }
+
+/** Compact peso display for COA AFR total assets (actual pesos). */
+export function formatAssets(n: number | null | undefined): string {
+    if (n == null) return "—";
+    const abs = Math.abs(n);
+    const sign = n < 0 ? "-" : "";
+    if (abs >= 1_000_000_000_000) return `${sign}₱${(abs / 1_000_000_000_000).toFixed(2)}T`;
+    if (abs >= 1_000_000_000) return `${sign}₱${(abs / 1_000_000_000).toFixed(2)}B`;
+    if (abs >= 1_000_000) return `${sign}₱${(abs / 1_000_000).toFixed(2)}M`;
+    if (abs >= 1_000) return `${sign}₱${(abs / 1_000).toFixed(0)}K`;
+    return `${sign}₱${abs.toLocaleString("en-PH")}`;
+}

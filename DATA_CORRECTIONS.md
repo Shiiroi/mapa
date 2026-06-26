@@ -190,6 +190,18 @@ source, not the shapefile slivers. The shapefile features remain dropped
 
 ---
 
+## COA CY2024 AFR total assets (LG financial profile)
+
+- **Source:** Commission on Audit (COA) CY 2024 Annual Financial Report (Local Government), Volume I, **Part III: Financial Profile** (`frontend/public/afr.pdf`, PDF viewer pages 172–234).
+- **Pipeline:** `pnpm extract:afr` → `lgu_finance_2024_raw.csv` → `pnpm map:afr` → `lgu_finance_2024.csv` → `pnpm seed:afr` → `division_stats.assets_2024`.
+- **Units:** Report tables are in **thousand pesos**; Mapa stores and displays **actual pesos** (`value × 1000` as `bigint`).
+- **Coverage:** ~98.5% of LGUs submitted financial statements; rows with all `-` in the PDF are stored as null. Component units (city colleges, hospitals, etc.) are skipped during extraction.
+- **Region / country totals:** Computed as the sum of matched province, city, and municipality rows per region (not copied from provinces-only `Regional Total` subtotal lines, which omit cities and municipalities).
+- **PSGC mapping:** Name normalization and alias table in `frontend/scripts/lib/afrMatch.ts`; unmatched rows logged to `lgu_finance_2024_unmatched.json`.
+- **UI:** Info panel shows **Total assets [2024]** only (other nine financial columns are in CSV but not surfaced in the app yet).
+
+---
+
 ## How corrections are applied
 
 Corrections live in:

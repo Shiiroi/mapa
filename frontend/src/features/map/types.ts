@@ -13,6 +13,7 @@ export interface DivisionStatsFields {
     area_km2: number | null;
     density_2024: number | null;
     pct_change_2020_2024: number | null;
+    assets_2024: number | null;
 }
 
 export interface DivisionStats extends DivisionStatsFields {

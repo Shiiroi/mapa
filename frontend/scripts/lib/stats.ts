@@ -13,6 +13,7 @@ export interface DivisionStatsFields {
     area_km2: number | null;
     density_2024: number | null;
     pct_change_2020_2024: number | null;
+    assets_2024: number | null;
 }
 
 interface PopVintageRow {
@@ -161,6 +162,7 @@ export function attachStats<T extends { psgc: string; correspondence?: string | 
         area_km2,
         density_2024: computeDensity(pop_2024, area_km2),
         pct_change_2020_2024: computePctChange(hist.pop_2020, pop_2024),
+        assets_2024: null,
     };
 }
 
@@ -172,5 +174,6 @@ export function stripGeometryStats(row: DivisionStatsFields): DivisionStatsField
         area_km2: row.area_km2,
         density_2024: row.density_2024,
         pct_change_2020_2024: row.pct_change_2020_2024,
+        assets_2024: row.assets_2024 ?? null,
     };
 }

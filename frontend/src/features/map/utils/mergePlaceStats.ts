@@ -16,5 +16,6 @@ export function mergePlaceStats(
         area_km2: dbStats.area_km2 ?? place.area_km2,
         density_2024: dbStats.density_2024 ?? place.density_2024,
         pct_change_2020_2024: dbStats.pct_change_2020_2024 ?? place.pct_change_2020_2024,
+        assets_2024: dbStats.assets_2024 ?? place.assets_2024,
     };
 }

@@ -7,6 +7,7 @@ import { useDivisionStats } from "../hooks/useDivisionStats";
 import {
     formatAnnualizedChange,
     formatAreaKm2,
+    formatAssets,
     formatDensity,
     formatPctChange,
     formatPopulation,
@@ -72,8 +73,11 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
             area_km2: displayPlace!.area_km2,
             density_2024_per_km2: displayPlace!.density_2024,
             pct_change_2020_2024: displayPlace!.pct_change_2020_2024,
-            source: "Population from the Philippine Statistics Authority (PSA) PSGC; area and derived metrics (density, % change) computed by Mapa from PSA boundaries.",
+            assets_2024: displayPlace!.assets_2024,
+            source:
+                "Population from the Philippine Statistics Authority (PSA) PSGC; area and derived metrics (density, % change) computed by Mapa from PSA boundaries. Total assets from COA CY2024 Annual Financial Report (Local Government), Part III Financial Profile.",
             source_url: "https://psa.gov.ph/classification/psgc/",
+            assets_source: "COA CY2024 AFR",
         };
         downloadJsonFile(payload, `mapa-info-${slugifyFilename(displayPlace!.name)}-${date}.json`);
     }
@@ -90,7 +94,8 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
             ["area_km2", String(displayPlace!.area_km2 ?? "")],
             ["density_2024", String(displayPlace!.density_2024 ?? "")],
             ["pct_change_2020_2024", String(displayPlace!.pct_change_2020_2024 ?? "")],
-            ["source", "Philippine Statistics Authority (PSA) PSGC; area/density/change derived by Mapa"],
+            ["assets_2024", String(displayPlace!.assets_2024 ?? "")],
+            ["source", "Philippine Statistics Authority (PSA) PSGC; area/density/change derived by Mapa; assets from COA CY2024 AFR"],
             ["source_url", "https://psa.gov.ph/classification/psgc/"],
         ];
         const csv = rows.map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
@@ -134,6 +139,11 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
                             ? "No comparable 2020 figure (boundary or code change)"
                             : annualChange ?? undefined
                     }
+                />
+                <StatCard
+                    label="Total assets [2024]"
+                    value={formatAssets(displayPlace.assets_2024)}
+                    sub="COA Annual Financial Report"
                 />
             </div>
 
