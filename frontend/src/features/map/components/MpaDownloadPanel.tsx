@@ -89,14 +89,14 @@ export function MpaDownloadPanel({
             <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
                 <section>
                     <label className="mb-2 block text-xs font-medium uppercase tracking-wide text-muted">View</label>
-                    <div className="flex flex-wrap gap-1 rounded-lg border border-border-light bg-surface p-1">
+                    <div className="grid grid-cols-3 gap-1 rounded-lg border border-border-light bg-surface p-1">
                         {levels.map((l) => (
                             <button
                                 key={l}
                                 type="button"
                                 onClick={() => onLevelChange(l)}
                                 className={cn(
-                                    "flex-1 min-w-[4.5rem] rounded-md px-2 py-1.5 text-sm transition-colors",
+                                    "truncate rounded-md px-2 py-1.5 text-center text-sm transition-colors",
                                     level === l
                                         ? "bg-accent font-medium text-white"
                                         : "text-primary hover:bg-white",
@@ -248,13 +248,14 @@ export function MpaDownloadPanel({
                         </>
                     )}
                 </section>
+            </div>
 
+            <div className="border-t border-border-light px-5 py-4">
                 {error && (
-                    <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">
+                    <p className="mb-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">
                         {error}
                     </p>
                 )}
-
                 <button
                     type="button"
                     onClick={onDownload}
@@ -268,7 +269,7 @@ export function MpaDownloadPanel({
                 </button>
             </div>
 
-            <footer className="mt-auto space-y-3 border-t border-border-light px-5 py-4 text-xs leading-relaxed text-muted">
+            <footer className="space-y-3 border-t border-border-light px-5 py-4 text-xs leading-relaxed text-muted">
                 <div>
                     <p className="font-medium text-primary">Attribution</p>
                     <p>
