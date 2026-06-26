@@ -1,4 +1,4 @@
-// Builds scoped GeoJSON FeatureCollections; uses province region_id for correct filtering.
+// Builds scoped GeoJSON FeatureCollections; uses province region_psgc for correct filtering.
 
 import type { Feature, FeatureCollection, Geometry } from "geojson";
 import type { MpaLevel } from "../constants";
@@ -7,12 +7,12 @@ import type { MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../
 import { fetchMunicitiesByProvinceFromStorage } from "../services/geoStorage";
 
 export type DownloadScope =
-    | { kind: "region"; regionId: number }
-    | { kind: "provincesInRegion"; regionId: number }
-    | { kind: "munisInRegion"; regionId: number }
-    | { kind: "province"; provinceId: number }
-    | { kind: "munisInProvince"; provinceId: number }
-    | { kind: "municipality"; municityId: number; provinceId: number };
+    | { kind: "region"; regionPsgc: string }
+    | { kind: "provincesInRegion"; regionPsgc: string }
+    | { kind: "munisInRegion"; regionPsgc: string }
+    | { kind: "province"; provincePsgc: string }
+    | { kind: "munisInProvince"; provincePsgc: string }
+    | { kind: "municipality"; municityPsgc: string; provincePsgc: string };
 
 export interface BuildDownloadInput {
     level: MpaLevel;
@@ -45,33 +45,31 @@ function buildFilename(level: MpaLevel, slug: string): string {
     return `mapa-${level}-${slugifyDivisionName(slug)}-${date}.json`;
 }
 
-// Province-linked munis use the province's region_id; direct region_id only when province_id is null.
-export function getEffectiveRegionId(
-    m: Pick<MunicityMeta, "province_id" | "region_id">,
+// Province-linked munis use the province's region_psgc; direct region_psgc only when province_psgc is null.
+export function getEffectiveRegionPsgc(
+    m: Pick<MunicityMeta, "province_psgc" | "region_psgc">,
     provinces: ProvinceGeoJSON[],
-): number | null {
-    if (m.province_id != null) {
-        const province = provinces.find((p) => p.id === m.province_id);
-        if (province) return province.region_id;
+): string | null {
+    if (m.province_psgc != null) {
+        const province = provinces.find((p) => p.psgc === m.province_psgc);
+        if (province) return province.region_psgc;
     }
-    return m.region_id;
+    return m.region_psgc;
 }
 
-// Returns province IDs belonging to a region via the provinces table (not municity region_id).
-function provinceIdsInRegion(regionId: number, provinces: ProvinceGeoJSON[]): number[] {
-    return provinces.filter((p) => p.region_id === regionId).map((p) => p.id);
+function provincePsgcsInRegion(regionPsgc: string, provinces: ProvinceGeoJSON[]): string[] {
+    return provinces.filter((p) => p.region_psgc === regionPsgc).map((p) => p.psgc);
 }
 
-// Loads municity geometries per province, using cache when available.
 async function loadMunisForProvinces(
-    provinceIds: number[],
+    provincePsgcs: string[],
     municities: MunicityGeoJSON[],
 ): Promise<MunicityGeoJSON[]> {
     const chunks = await Promise.all(
-        provinceIds.map((pid) => {
-            const cached = municities.filter((m) => m.province_id === pid);
+        provincePsgcs.map((psgc) => {
+            const cached = municities.filter((m) => m.province_psgc === psgc);
             if (cached.length > 0) return Promise.resolve(cached);
-            return fetchMunicitiesByProvinceFromStorage(pid);
+            return fetchMunicitiesByProvinceFromStorage(psgc);
         }),
     );
     return chunks.flat();
@@ -84,112 +82,121 @@ export async function buildDownloadGeoJson(input: BuildDownloadInput): Promise<B
 
     switch (scope.kind) {
         case "region": {
-            const region = regions.find((r) => r.id === scope.regionId);
+            const region = regions.find((r) => r.psgc === scope.regionPsgc);
             if (!region?.geometry) throw new Error("Region not found");
             label = region.name;
             features = [
                 toFeature(region.geometry, {
-                    id: region.id,
-                    code: region.code,
+                    psgc: region.psgc,
+                    correspondence: region.correspondence,
                     name: region.name,
+                    geo_lvl: region.geo_lvl,
+                    city_lvl: region.city_lvl,
                     level: "region",
                 }),
             ];
             break;
         }
         case "provincesInRegion": {
-            const region = regions.find((r) => r.id === scope.regionId);
+            const region = regions.find((r) => r.psgc === scope.regionPsgc);
             if (!region) throw new Error("Region not found");
             label = `${region.name}-provinces`;
             features = provinces
-                .filter((p) => p.region_id === scope.regionId && p.geometry)
+                .filter((p) => p.region_psgc === scope.regionPsgc && p.geometry)
                 .map((p) =>
                     toFeature(p.geometry, {
-                        id: p.id,
-                        code: p.code,
+                        psgc: p.psgc,
+                        correspondence: p.correspondence,
                         name: p.name,
+                        geo_lvl: p.geo_lvl,
+                        city_lvl: p.city_lvl,
                         level: "province",
-                        region_id: p.region_id,
+                        region_psgc: p.region_psgc,
                     }),
                 );
             break;
         }
         case "munisInRegion": {
-            const region = regions.find((r) => r.id === scope.regionId);
+            const region = regions.find((r) => r.psgc === scope.regionPsgc);
             if (!region) throw new Error("Region not found");
             label = `${region.name}-municipalities`;
-            const pids = provinceIdsInRegion(scope.regionId, provinces);
-            const munis = await loadMunisForProvinces(pids, municities);
+            const psgcs = provincePsgcsInRegion(scope.regionPsgc, provinces);
+            const munis = await loadMunisForProvinces(psgcs, municities);
             features = munis
                 .filter((m) => m.geometry)
                 .map((m) =>
                     toFeature(m.geometry, {
-                        id: m.id,
-                        code: m.code,
+                        psgc: m.psgc,
+                        correspondence: m.correspondence,
                         name: m.name,
+                        geo_lvl: m.geo_lvl,
+                        city_lvl: m.city_lvl,
                         level: "municipality",
-                        region_id: getEffectiveRegionId(m, provinces),
-                        province_id: m.province_id,
-                        type: m.type,
+                        region_psgc: getEffectiveRegionPsgc(m, provinces),
+                        province_psgc: m.province_psgc,
                     }),
                 );
             break;
         }
         case "province": {
-            const province = provinces.find((p) => p.id === scope.provinceId);
+            const province = provinces.find((p) => p.psgc === scope.provincePsgc);
             if (!province?.geometry) throw new Error("Province not found");
             label = province.name;
             features = [
                 toFeature(province.geometry, {
-                    id: province.id,
-                    code: province.code,
+                    psgc: province.psgc,
+                    correspondence: province.correspondence,
                     name: province.name,
+                    geo_lvl: province.geo_lvl,
+                    city_lvl: province.city_lvl,
                     level: "province",
-                    region_id: province.region_id,
+                    region_psgc: province.region_psgc,
                 }),
             ];
             break;
         }
         case "munisInProvince": {
-            const province = provinces.find((p) => p.id === scope.provinceId);
+            const province = provinces.find((p) => p.psgc === scope.provincePsgc);
             if (!province) throw new Error("Province not found");
             label = `${province.name}-municipalities`;
-            let munis = municities.filter((m) => m.province_id === scope.provinceId);
+            let munis = municities.filter((m) => m.province_psgc === scope.provincePsgc);
             if (munis.length === 0) {
-                munis = await fetchMunicitiesByProvinceFromStorage(scope.provinceId);
+                munis = await fetchMunicitiesByProvinceFromStorage(scope.provincePsgc);
             }
             features = munis
                 .filter((m) => m.geometry)
                 .map((m) =>
                     toFeature(m.geometry, {
-                        id: m.id,
-                        code: m.code,
+                        psgc: m.psgc,
+                        correspondence: m.correspondence,
                         name: m.name,
+                        geo_lvl: m.geo_lvl,
+                        city_lvl: m.city_lvl,
                         level: "municipality",
-                        region_id: getEffectiveRegionId(m, provinces),
-                        province_id: m.province_id,
-                        type: m.type,
+                        region_psgc: getEffectiveRegionPsgc(m, provinces),
+                        province_psgc: m.province_psgc,
                     }),
                 );
             break;
         }
         case "municipality": {
-            let muni = municities.find((m) => m.id === scope.municityId);
+            let muni = municities.find((m) => m.psgc === scope.municityPsgc);
             if (!muni) {
-                const chunk = await fetchMunicitiesByProvinceFromStorage(scope.provinceId);
-                muni = chunk.find((m) => m.id === scope.municityId);
+                const chunk = await fetchMunicitiesByProvinceFromStorage(scope.provincePsgc);
+                muni = chunk.find((m) => m.psgc === scope.municityPsgc);
             }
             if (!muni?.geometry) throw new Error("Municipality not found");
             label = muni.name;
             features = [
                 toFeature(muni.geometry, {
-                    id: muni.id,
-                    code: muni.code,
+                    psgc: muni.psgc,
+                    correspondence: muni.correspondence,
                     name: muni.name,
+                    geo_lvl: muni.geo_lvl,
+                    city_lvl: muni.city_lvl,
                     level: "municipality",
-                    region_id: getEffectiveRegionId(muni, provinces),
-                    province_id: muni.province_id,
-                    type: muni.type,
+                    region_psgc: getEffectiveRegionPsgc(muni, provinces),
+                    province_psgc: muni.province_psgc,
                 }),
             ];
             break;

@@ -1,37 +1,34 @@
-// TypeScript types for regions, provinces, and municipalities.
+// TypeScript types for regions, provinces, and municipalities (PSGC-keyed).
 
 import type { Geometry } from "geojson";
 
-export interface ProvinceGeoJSON {
-    id: number;
-    code: string;
+export type GeoLevel = "Reg" | "Prov" | "City" | "Mun" | "SubMun" | "Bgy" | "Country";
+export type CityLevel = "HUC" | "CC" | "ICC";
+
+export interface PsgcFields {
+    psgc: string;
+    correspondence: string | null;
     name: string;
-    region_id: number;
+    geo_lvl: GeoLevel;
+    city_lvl: CityLevel | null;
+}
+
+export interface Region extends PsgcFields {
     geometry: Geometry;
 }
 
-export interface MunicityGeoJSON {
-    id: number;
-    name: string;
-    code: string;
-    province_id: number | null;
-    region_id: number | null;
-    type: "city" | "municipality";
+export interface ProvinceGeoJSON extends PsgcFields {
+    region_psgc: string;
     geometry: Geometry;
 }
 
-export interface MunicityMeta {
-    id: number;
-    name: string;
-    code: string;
-    province_id: number | null;
-    region_id: number | null;
-    type: "city" | "municipality";
+export interface MunicityGeoJSON extends PsgcFields {
+    province_psgc: string | null;
+    region_psgc: string | null;
+    geometry: Geometry;
 }
 
-export interface Region {
-    id: number;
-    code: string;
-    name: string;
-    geometry: Geometry;
+export interface MunicityMeta extends PsgcFields {
+    province_psgc: string | null;
+    region_psgc: string | null;
 }

@@ -30,7 +30,7 @@ export async function fetchMunicitiesMeta(): Promise<MunicityMeta[]> {
 async function fetchMunicitiesMetaFromDb(): Promise<MunicityMeta[]> {
     const { data, error } = await supabase
         .from("municities")
-        .select("id, name, code, province_id, region_id, type")
+        .select("psgc, correspondence, name, geo_lvl, city_lvl, province_psgc, region_psgc")
         .order("name");
 
     if (error) throw error;
@@ -43,14 +43,14 @@ export async function fetchMunicitiesGeometry(): Promise<MunicityGeoJSON[]> {
     return all;
 }
 
-export async function fetchProvincesByRegion(regionId: number): Promise<ProvinceGeoJSON[]> {
+export async function fetchProvincesByRegion(regionPsgc: string): Promise<ProvinceGeoJSON[]> {
     const provinces = await fetchProvincesFromStorage();
-    return provinces.filter((p) => p.region_id === regionId);
+    return provinces.filter((p) => p.region_psgc === regionPsgc);
 }
 
-export async function fetchMunicitiesByProvince(provinceId: number): Promise<MunicityGeoJSON[]> {
+export async function fetchMunicitiesByProvince(provincePsgc: string): Promise<MunicityGeoJSON[]> {
     return fetchGeoLayerFromStorage<MunicityGeoJSON[]>(
-        `municities/province-${provinceId}.json`,
-        `fetchMunicitiesByProvince-${provinceId}`,
+        `municities/province-${provincePsgc}.json`,
+        `fetchMunicitiesByProvince-${provincePsgc}`,
     );
 }

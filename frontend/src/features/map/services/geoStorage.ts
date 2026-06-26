@@ -47,16 +47,16 @@ export async function fetchMunicitiesMetaFromStorage(): Promise<MunicityMeta[]> 
 }
 
 export async function fetchMunicitiesGeometryFromStorage(): Promise<MunicityGeoJSON[]> {
-    const manifest = await fetchGeoLayerFromStorage<{ provinceIds: number[] }>(
+    const manifest = await fetchGeoLayerFromStorage<{ provincePsgcs: string[] }>(
         "municities/manifest.json",
         "fetchMunicitiesManifest",
     );
 
     const batches = await Promise.all(
-        manifest.provinceIds.map((provinceId) =>
+        manifest.provincePsgcs.map((provincePsgc) =>
             fetchGeoLayerFromStorage<MunicityGeoJSON[]>(
-                `municities/province-${provinceId}.json`,
-                `fetchMunicitiesProvince-${provinceId}`,
+                `municities/province-${provincePsgc}.json`,
+                `fetchMunicitiesProvince-${provincePsgc}`,
             ),
         ),
     );
@@ -64,9 +64,9 @@ export async function fetchMunicitiesGeometryFromStorage(): Promise<MunicityGeoJ
     return batches.flat();
 }
 
-export async function fetchMunicitiesByProvinceFromStorage(provinceId: number): Promise<MunicityGeoJSON[]> {
+export async function fetchMunicitiesByProvinceFromStorage(provincePsgc: string): Promise<MunicityGeoJSON[]> {
     return fetchGeoLayerFromStorage<MunicityGeoJSON[]>(
-        `municities/province-${provinceId}.json`,
-        `fetchMunicitiesProvince-${provinceId}`,
+        `municities/province-${provincePsgc}.json`,
+        `fetchMunicitiesProvince-${provincePsgc}`,
     );
 }

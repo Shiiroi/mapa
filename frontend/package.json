@@ -7,8 +7,9 @@
         "dev": "vite",
         "dev:docker": "vite --mode docker",
         "build": "tsc -b && vite build",
-        "export:geo": "tsx scripts/export-geo-layers.ts",
-        "upload:geo": "tsx --env-file=.env scripts/upload-geo-storage.ts",
+        "build:geo": "tsx scripts/build-geo.ts",
+        "seed:db": "tsx --env-file=.env scripts/seed-db.ts",
+        "upload:geo": "tsx --env-file=.env scripts/upload-geo.ts",
         "lint": "eslint .",
         "preview": "vite preview"
     },

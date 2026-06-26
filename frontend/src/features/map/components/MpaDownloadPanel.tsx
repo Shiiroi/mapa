@@ -11,16 +11,16 @@ interface MpaDownloadPanelProps {
     regions: Region[];
     provinces: ProvinceGeoJSON[];
     municityMeta: MunicityMeta[];
-    selectedRegionId: number | null;
-    onRegionChange: (id: number | null) => void;
-    selectedProvinceId: number | null;
-    onProvinceChange: (id: number | null) => void;
-    selectedMunicityId: number | null;
-    onMunicityChange: (id: number | null) => void;
-    regionFilterId: number | null;
-    onRegionFilterChange: (id: number | null) => void;
-    provinceFilterId: number | null;
-    onProvinceFilterChange: (id: number | null) => void;
+    selectedRegionPsgc: string | null;
+    onRegionChange: (psgc: string | null) => void;
+    selectedProvincePsgc: string | null;
+    onProvinceChange: (psgc: string | null) => void;
+    selectedMunicityPsgc: string | null;
+    onMunicityChange: (psgc: string | null) => void;
+    regionFilterPsgc: string | null;
+    onRegionFilterChange: (psgc: string | null) => void;
+    provinceFilterPsgc: string | null;
+    onProvinceFilterChange: (psgc: string | null) => void;
     downloadMode: DownloadMode;
     onDownloadModeChange: (mode: DownloadMode) => void;
     onDownload: () => void;
@@ -36,15 +36,15 @@ export function MpaDownloadPanel({
     regions,
     provinces,
     municityMeta,
-    selectedRegionId,
+    selectedRegionPsgc,
     onRegionChange,
-    selectedProvinceId,
+    selectedProvincePsgc,
     onProvinceChange,
-    selectedMunicityId,
+    selectedMunicityPsgc,
     onMunicityChange,
-    regionFilterId,
+    regionFilterPsgc,
     onRegionFilterChange,
-    provinceFilterId,
+    provinceFilterPsgc,
     onProvinceFilterChange,
     downloadMode,
     onDownloadModeChange,
@@ -52,12 +52,12 @@ export function MpaDownloadPanel({
     downloading,
     error,
 }: MpaDownloadPanelProps) {
-    const filteredProvinces = regionFilterId
-        ? provinces.filter((p) => p.region_id === regionFilterId)
+    const filteredProvinces = regionFilterPsgc
+        ? provinces.filter((p) => p.region_psgc === regionFilterPsgc)
         : provinces;
 
-    const filteredMunis = provinceFilterId
-        ? municityMeta.filter((m) => m.province_id === provinceFilterId)
+    const filteredMunis = provinceFilterPsgc
+        ? municityMeta.filter((m) => m.province_psgc === provinceFilterPsgc)
         : municityMeta;
 
     return (
@@ -95,9 +95,9 @@ export function MpaDownloadPanel({
                         <>
                             <SelectField
                                 label="Region"
-                                value={selectedRegionId}
+                                value={selectedRegionPsgc}
                                 onChange={onRegionChange}
-                                options={regions.map((r) => ({ value: r.id, label: r.name }))}
+                                options={regions.map((r) => ({ value: r.psgc, label: r.name }))}
                                 placeholder="Select a region…"
                             />
                             <label className="flex items-center gap-2 text-sm text-primary">
@@ -118,20 +118,20 @@ export function MpaDownloadPanel({
                         <>
                             <SelectField
                                 label="Filter by region (optional)"
-                                value={regionFilterId}
-                                onChange={(id) => {
-                                    onRegionFilterChange(id);
+                                value={regionFilterPsgc}
+                                onChange={(psgc) => {
+                                    onRegionFilterChange(psgc);
                                     onProvinceChange(null);
                                 }}
-                                options={regions.map((r) => ({ value: r.id, label: r.name }))}
+                                options={regions.map((r) => ({ value: r.psgc, label: r.name }))}
                                 placeholder="All regions"
                                 allowEmpty
                             />
                             <SelectField
                                 label="Province"
-                                value={selectedProvinceId}
+                                value={selectedProvincePsgc}
                                 onChange={onProvinceChange}
-                                options={filteredProvinces.map((p) => ({ value: p.id, label: p.name }))}
+                                options={filteredProvinces.map((p) => ({ value: p.psgc, label: p.name }))}
                                 placeholder="Select a province…"
                             />
                             <label className="flex items-center gap-2 text-sm text-primary">
@@ -152,19 +152,19 @@ export function MpaDownloadPanel({
                         <>
                             <SelectField
                                 label="Filter by province"
-                                value={provinceFilterId}
-                                onChange={(id) => {
-                                    onProvinceFilterChange(id);
+                                value={provinceFilterPsgc}
+                                onChange={(psgc) => {
+                                    onProvinceFilterChange(psgc);
                                     onMunicityChange(null);
                                 }}
-                                options={provinces.map((p) => ({ value: p.id, label: p.name }))}
+                                options={provinces.map((p) => ({ value: p.psgc, label: p.name }))}
                                 placeholder="Select a province…"
                             />
                             <SelectField
                                 label="Municipality / City"
-                                value={selectedMunicityId}
+                                value={selectedMunicityPsgc}
                                 onChange={onMunicityChange}
-                                options={filteredMunis.map((m) => ({ value: m.id, label: m.name }))}
+                                options={filteredMunis.map((m) => ({ value: m.psgc, label: m.name }))}
                                 placeholder="Select a municipality…"
                                 disabled={downloadMode === "allMunisInProvince"}
                             />
@@ -232,9 +232,9 @@ export function MpaDownloadPanel({
 
 interface SelectFieldProps {
     label: string;
-    value: number | null;
-    onChange: (value: number | null) => void;
-    options: { value: number; label: string }[];
+    value: string | null;
+    onChange: (value: string | null) => void;
+    options: { value: string; label: string }[];
     placeholder?: string;
     allowEmpty?: boolean;
     disabled?: boolean;
@@ -247,7 +247,7 @@ function SelectField({ label, value, onChange, options, placeholder, allowEmpty,
             <select
                 value={value ?? ""}
                 disabled={disabled}
-                onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
+                onChange={(e) => onChange(e.target.value || null)}
                 className="w-full rounded-md border border-border-light bg-white px-3 py-2 text-sm text-primary disabled:opacity-50"
             >
                 {(allowEmpty || !value) && <option value="">{placeholder ?? "Select…"}</option>}

@@ -13,8 +13,8 @@ export default function MainPage() {
     const download = useMpaDownload({ regions, provinces, municities, municityMeta });
 
     const handleFeatureClick = useCallback(
-        (entityId: number, mode: MpaLevel) => {
-            download.setSelectionFromMap(mode, entityId);
+        (entityPsgc: string, mode: MpaLevel) => {
+            download.setSelectionFromMap(mode, entityPsgc);
         },
         [download],
     );
@@ -42,16 +42,16 @@ export default function MainPage() {
                     regions={regions}
                     provinces={provinces}
                     municityMeta={municityMeta}
-                    selectedRegionId={download.selectedRegionId}
-                    onRegionChange={download.setSelectedRegionId}
-                    selectedProvinceId={download.selectedProvinceId}
-                    onProvinceChange={download.setSelectedProvinceId}
-                    selectedMunicityId={download.selectedMunicityId}
-                    onMunicityChange={download.setSelectedMunicityId}
-                    regionFilterId={download.regionFilterId}
-                    onRegionFilterChange={download.setRegionFilterId}
-                    provinceFilterId={download.provinceFilterId}
-                    onProvinceFilterChange={download.setProvinceFilterId}
+                    selectedRegionPsgc={download.selectedRegionPsgc}
+                    onRegionChange={download.setSelectedRegionPsgc}
+                    selectedProvincePsgc={download.selectedProvincePsgc}
+                    onProvinceChange={download.setSelectedProvincePsgc}
+                    selectedMunicityPsgc={download.selectedMunicityPsgc}
+                    onMunicityChange={download.setSelectedMunicityPsgc}
+                    regionFilterPsgc={download.regionFilterPsgc}
+                    onRegionFilterChange={download.setRegionFilterPsgc}
+                    provinceFilterPsgc={download.provinceFilterPsgc}
+                    onProvinceFilterChange={download.setProvinceFilterPsgc}
                     downloadMode={download.downloadMode}
                     onDownloadModeChange={download.setDownloadMode}
                     onDownload={download.download}

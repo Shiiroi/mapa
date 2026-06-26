@@ -29,13 +29,13 @@ const HOVER_STYLE: L.PathOptions = {
 };
 
 export interface MapEntity {
-    id: number;
+    psgc: string;
     name: string;
-    code: string;
     geometry: Geometry;
-    region_id?: number | null;
-    province_id?: number | null;
-    type?: string;
+    region_psgc?: string | null;
+    province_psgc?: string | null;
+    geo_lvl?: string;
+    city_lvl?: string | null;
 }
 
 interface MpaMapPanelProps {
@@ -43,7 +43,7 @@ interface MpaMapPanelProps {
     regions?: MapEntity[];
     municities?: MapEntity[];
     mode: MpaLevel;
-    onFeatureClick?: (entityId: number, mode: MpaLevel) => void;
+    onFeatureClick?: (entityPsgc: string, mode: MpaLevel) => void;
     loading?: boolean;
     error?: Error | null;
 }
@@ -77,12 +77,12 @@ export function MpaMapPanel({
                 .map((e) => ({
                     type: "Feature" as const,
                     properties: {
-                        id: e.id,
+                        psgc: e.psgc,
                         name: e.name,
-                        code: e.code,
-                        region_id: e.region_id ?? null,
-                        province_id: e.province_id ?? null,
-                        type: e.type ?? null,
+                        region_psgc: e.region_psgc ?? null,
+                        province_psgc: e.province_psgc ?? null,
+                        geo_lvl: e.geo_lvl ?? null,
+                        city_lvl: e.city_lvl ?? null,
                         mode,
                     },
                     geometry: e.geometry,
@@ -93,14 +93,14 @@ export function MpaMapPanel({
     const onEachFeature = useCallback(
         (feature: Feature, layer: L.GeoJSON) => {
             const name = feature.properties?.name as string;
-            const id = feature.properties?.id as number;
+            const psgc = feature.properties?.psgc as string;
             if (name) {
                 layer.bindTooltip(name, { sticky: true, direction: "top" });
             }
             layer.on("mouseover", () => layer.setStyle(HOVER_STYLE));
             layer.on("mouseout", () => layer.setStyle(BASE_STYLE(mode)));
             layer.on("click", () => {
-                if (id != null) onFeatureClick?.(id, mode);
+                if (psgc) onFeatureClick?.(psgc, mode);
             });
         },
         [mode, onFeatureClick],

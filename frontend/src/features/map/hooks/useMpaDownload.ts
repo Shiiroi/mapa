@@ -17,81 +17,81 @@ interface UseMpaDownloadOptions {
 
 export function useMpaDownload({ regions, provinces, municities, municityMeta }: UseMpaDownloadOptions) {
     const [level, setLevel] = useState<MpaLevel>("province");
-    const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null);
-    const [selectedProvinceId, setSelectedProvinceId] = useState<number | null>(null);
-    const [selectedMunicityId, setSelectedMunicityId] = useState<number | null>(null);
-    const [regionFilterId, setRegionFilterId] = useState<number | null>(null);
-    const [provinceFilterId, setProvinceFilterId] = useState<number | null>(null);
+    const [selectedRegionPsgc, setSelectedRegionPsgc] = useState<string | null>(null);
+    const [selectedProvincePsgc, setSelectedProvincePsgc] = useState<string | null>(null);
+    const [selectedMunicityPsgc, setSelectedMunicityPsgc] = useState<string | null>(null);
+    const [regionFilterPsgc, setRegionFilterPsgc] = useState<string | null>(null);
+    const [provinceFilterPsgc, setProvinceFilterPsgc] = useState<string | null>(null);
     const [downloadMode, setDownloadMode] = useState<DownloadMode>("single");
     const [downloading, setDownloading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Syncs sidebar pickers when a map feature is clicked.
     const setSelectionFromMap = useCallback(
-        (mode: MpaLevel, entityId: number) => {
+        (mode: MpaLevel, entityPsgc: string) => {
             setLevel(mode);
             setDownloadMode("single");
             if (mode === "region") {
-                setSelectedRegionId(entityId);
-                setRegionFilterId(entityId);
+                setSelectedRegionPsgc(entityPsgc);
+                setRegionFilterPsgc(entityPsgc);
             } else if (mode === "province") {
-                const province = provinces.find((p) => p.id === entityId);
-                setSelectedProvinceId(entityId);
+                const province = provinces.find((p) => p.psgc === entityPsgc);
+                setSelectedProvincePsgc(entityPsgc);
                 if (province) {
-                    setRegionFilterId(province.region_id);
-                    setProvinceFilterId(entityId);
+                    setRegionFilterPsgc(province.region_psgc);
+                    setProvinceFilterPsgc(entityPsgc);
                 }
             } else {
-                const muni = municities.find((m) => m.id === entityId) ?? municityMeta.find((m) => m.id === entityId);
-                setSelectedMunicityId(entityId);
-                if (muni?.province_id) {
-                    setProvinceFilterId(muni.province_id);
-                    const province = provinces.find((p) => p.id === muni.province_id);
-                    if (province) setRegionFilterId(province.region_id);
+                const muni =
+                    municities.find((m) => m.psgc === entityPsgc) ??
+                    municityMeta.find((m) => m.psgc === entityPsgc);
+                setSelectedMunicityPsgc(entityPsgc);
+                if (muni?.province_psgc) {
+                    setProvinceFilterPsgc(muni.province_psgc);
+                    const province = provinces.find((p) => p.psgc === muni.province_psgc);
+                    if (province) setRegionFilterPsgc(province.region_psgc);
                 }
             }
         },
         [provinces, municities, municityMeta],
     );
 
-    // Maps sidebar level, mode, and selections to a download scope.
     const resolveScope = useCallback((): DownloadScope => {
         if (level === "region") {
-            if (!selectedRegionId) throw new Error("Select a region");
+            if (!selectedRegionPsgc) throw new Error("Select a region");
             if (downloadMode === "subdivisions") {
-                return { kind: "provincesInRegion", regionId: selectedRegionId };
+                return { kind: "provincesInRegion", regionPsgc: selectedRegionPsgc };
             }
-            return { kind: "region", regionId: selectedRegionId };
+            return { kind: "region", regionPsgc: selectedRegionPsgc };
         }
 
         if (level === "province") {
             if (downloadMode === "subdivisions") {
-                const regionId = selectedRegionId ?? regionFilterId;
-                if (!regionId) throw new Error("Select a region");
-                return { kind: "munisInRegion", regionId };
+                const regionPsgc = selectedRegionPsgc ?? regionFilterPsgc;
+                if (!regionPsgc) throw new Error("Select a region");
+                return { kind: "munisInRegion", regionPsgc };
             }
-            if (!selectedProvinceId) throw new Error("Select a province");
-            return { kind: "province", provinceId: selectedProvinceId };
+            if (!selectedProvincePsgc) throw new Error("Select a province");
+            return { kind: "province", provincePsgc: selectedProvincePsgc };
         }
 
         if (downloadMode === "allMunisInProvince") {
-            const pid = provinceFilterId ?? selectedProvinceId;
-            if (!pid) throw new Error("Select a province");
-            return { kind: "munisInProvince", provinceId: pid };
+            const psgc = provinceFilterPsgc ?? selectedProvincePsgc;
+            if (!psgc) throw new Error("Select a province");
+            return { kind: "munisInProvince", provincePsgc: psgc };
         }
 
-        const muniId = selectedMunicityId;
-        const pid = provinceFilterId ?? selectedProvinceId;
-        if (!muniId || !pid) throw new Error("Select a municipality");
-        return { kind: "municipality", municityId: muniId, provinceId: pid };
+        const muniPsgc = selectedMunicityPsgc;
+        const provPsgc = provinceFilterPsgc ?? selectedProvincePsgc;
+        if (!muniPsgc || !provPsgc) throw new Error("Select a municipality");
+        return { kind: "municipality", municityPsgc: muniPsgc, provincePsgc: provPsgc };
     }, [
         level,
         downloadMode,
-        selectedRegionId,
-        selectedProvinceId,
-        selectedMunicityId,
-        provinceFilterId,
-        regionFilterId,
+        selectedRegionPsgc,
+        selectedProvincePsgc,
+        selectedMunicityPsgc,
+        provinceFilterPsgc,
+        regionFilterPsgc,
     ]);
 
     const download = useCallback(async () => {
@@ -118,16 +118,16 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta }:
     return {
         level,
         setLevel,
-        selectedRegionId,
-        setSelectedRegionId,
-        selectedProvinceId,
-        setSelectedProvinceId,
-        selectedMunicityId,
-        setSelectedMunicityId,
-        regionFilterId,
-        setRegionFilterId,
-        provinceFilterId,
-        setProvinceFilterId,
+        selectedRegionPsgc,
+        setSelectedRegionPsgc,
+        selectedProvincePsgc,
+        setSelectedProvincePsgc,
+        selectedMunicityPsgc,
+        setSelectedMunicityPsgc,
+        regionFilterPsgc,
+        setRegionFilterPsgc,
+        provinceFilterPsgc,
+        setProvinceFilterPsgc,
         downloadMode,
         setDownloadMode,
         downloading,
