@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const GEO_DIR = path.join(__dirname, "../public/geo");
 const BUCKET = "geo";
+const CONCURRENCY = 8;
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -21,6 +22,10 @@ const supabase = createClient(supabaseUrl, serviceKey);
 
 async function uploadFile(relativePath: string) {
     const filePath = path.join(GEO_DIR, relativePath);
+    if (!fs.existsSync(filePath)) {
+        console.warn(`  skip (missing): ${relativePath}`);
+        return;
+    }
     const body = fs.readFileSync(filePath);
     const kb = Math.round(body.byteLength / 1024);
 
@@ -34,8 +39,7 @@ async function uploadFile(relativePath: string) {
         throw new Error(`${relativePath} (${kb} KB): ${error.message}`);
     }
 
-    const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(relativePath);
-    console.log(`  ${relativePath} — ${kb} KB → ${urlData.publicUrl}`);
+    console.log(`  ${relativePath} — ${kb} KB`);
 }
 
 function listProvinceFiles(): string[] {
@@ -44,6 +48,26 @@ function listProvinceFiles(): string[] {
         .readdirSync(dir)
         .filter((name) => /^province-\d+\.json$/.test(name))
         .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+}
+
+function listBgyFiles(): string[] {
+    const dir = path.join(GEO_DIR, "municities/bgy");
+    if (!fs.existsSync(dir)) return [];
+    return fs
+        .readdirSync(dir)
+        .filter((name) => /^\d+\.json$/.test(name))
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+}
+
+async function uploadMany(relativePaths: string[]) {
+    let i = 0;
+    async function worker() {
+        while (i < relativePaths.length) {
+            const idx = i++;
+            await uploadFile(relativePaths[idx]);
+        }
+    }
+    await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()));
 }
 
 async function main() {
@@ -58,6 +82,20 @@ async function main() {
     console.log(`Uploading ${provinceFiles.length} province municity files…`);
     for (const fileName of provinceFiles) {
         await uploadFile(`municities/${fileName}`);
+    }
+
+    if (fs.existsSync(path.join(GEO_DIR, "country.json"))) {
+        await uploadFile("country.json");
+    }
+
+    const bgyMeta = path.join(GEO_DIR, "municities/bgy/meta.json");
+    if (fs.existsSync(bgyMeta)) {
+        await uploadFile("municities/bgy/meta.json");
+        await uploadFile("municities/bgy/manifest.json");
+
+        const bgyFiles = listBgyFiles();
+        console.log(`Uploading ${bgyFiles.length} per-municity barangay files (concurrency ${CONCURRENCY})…`);
+        await uploadMany(bgyFiles.map((f) => `municities/bgy/${f}`));
     }
 
     console.log("Done.");

@@ -8,7 +8,10 @@
         "dev:docker": "vite --mode docker",
         "build": "tsc -b && vite build",
         "build:geo": "tsx scripts/build-geo.ts",
+        "shape:inspect": "scripts/py/.venv/bin/python scripts/py/inspect_shapefile.py",
+        "shape:geo": "scripts/py/.venv/bin/python scripts/py/shape_to_geojson.py",
         "seed:db": "tsx --env-file=.env scripts/seed-db.ts",
+        "seed:bgy": "tsx --env-file=.env scripts/seed-bgy.ts",
         "upload:geo": "tsx --env-file=.env scripts/upload-geo.ts",
         "lint": "eslint .",
         "preview": "vite preview"

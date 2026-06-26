@@ -3,7 +3,7 @@
 import { cn } from "../../../lib/cn";
 import type { MpaLevel } from "../constants";
 import type { DownloadMode } from "../hooks/useMpaDownload";
-import type { MunicityMeta, ProvinceGeoJSON, Region } from "../types";
+import type { BarangayGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
 
 interface MpaDownloadPanelProps {
     level: MpaLevel;
@@ -11,12 +11,16 @@ interface MpaDownloadPanelProps {
     regions: Region[];
     provinces: ProvinceGeoJSON[];
     municityMeta: MunicityMeta[];
+    barangays: BarangayGeoJSON[];
+    barangaysLoading: boolean;
     selectedRegionPsgc: string | null;
     onRegionChange: (psgc: string | null) => void;
     selectedProvincePsgc: string | null;
     onProvinceChange: (psgc: string | null) => void;
     selectedMunicityPsgc: string | null;
     onMunicityChange: (psgc: string | null) => void;
+    selectedBarangayPsgc: string | null;
+    onBarangayChange: (psgc: string | null) => void;
     regionFilterPsgc: string | null;
     onRegionFilterChange: (psgc: string | null) => void;
     provinceFilterPsgc: string | null;
@@ -28,7 +32,15 @@ interface MpaDownloadPanelProps {
     error: string | null;
 }
 
-const LEVELS: MpaLevel[] = ["region", "province", "municipality"];
+const BASE_LEVELS: MpaLevel[] = ["country", "region", "province", "municipality"];
+
+const LEVEL_LABELS: Record<MpaLevel, string> = {
+    country: "Country",
+    region: "Region",
+    province: "Province",
+    municipality: "Municipality",
+    barangay: "Barangay",
+};
 
 export function MpaDownloadPanel({
     level,
@@ -36,12 +48,16 @@ export function MpaDownloadPanel({
     regions,
     provinces,
     municityMeta,
+    barangays,
+    barangaysLoading,
     selectedRegionPsgc,
     onRegionChange,
     selectedProvincePsgc,
     onProvinceChange,
     selectedMunicityPsgc,
     onMunicityChange,
+    selectedBarangayPsgc,
+    onBarangayChange,
     regionFilterPsgc,
     onRegionFilterChange,
     provinceFilterPsgc,
@@ -52,6 +68,10 @@ export function MpaDownloadPanel({
     downloading,
     error,
 }: MpaDownloadPanelProps) {
+    const levels: MpaLevel[] = selectedMunicityPsgc
+        ? [...BASE_LEVELS, "barangay"]
+        : BASE_LEVELS;
+
     const filteredProvinces = regionFilterPsgc
         ? provinces.filter((p) => p.region_psgc === regionFilterPsgc)
         : provinces;
@@ -69,20 +89,20 @@ export function MpaDownloadPanel({
             <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
                 <section>
                     <label className="mb-2 block text-xs font-medium uppercase tracking-wide text-muted">View</label>
-                    <div className="flex gap-1 rounded-lg border border-border-light bg-surface p-1">
-                        {LEVELS.map((l) => (
+                    <div className="flex flex-wrap gap-1 rounded-lg border border-border-light bg-surface p-1">
+                        {levels.map((l) => (
                             <button
                                 key={l}
                                 type="button"
                                 onClick={() => onLevelChange(l)}
                                 className={cn(
-                                    "flex-1 rounded-md px-2 py-1.5 text-sm capitalize transition-colors",
+                                    "flex-1 min-w-[4.5rem] rounded-md px-2 py-1.5 text-sm transition-colors",
                                     level === l
                                         ? "bg-accent font-medium text-white"
                                         : "text-primary hover:bg-white",
                                 )}
                             >
-                                {l}
+                                {LEVEL_LABELS[l]}
                             </button>
                         ))}
                     </div>
@@ -90,6 +110,10 @@ export function MpaDownloadPanel({
 
                 <section className="space-y-3">
                     <label className="block text-xs font-medium uppercase tracking-wide text-muted">Scope</label>
+
+                    {level === "country" && (
+                        <p className="text-sm text-primary">Whole Philippines boundary</p>
+                    )}
 
                     {level === "region" && (
                         <>
@@ -181,6 +205,48 @@ export function MpaDownloadPanel({
                             </label>
                         </>
                     )}
+
+                    {level === "barangay" && (
+                        <>
+                            <SelectField
+                                label="Filter by province"
+                                value={provinceFilterPsgc}
+                                onChange={(psgc) => {
+                                    onProvinceFilterChange(psgc);
+                                    onMunicityChange(null);
+                                }}
+                                options={provinces.map((p) => ({ value: p.psgc, label: p.name }))}
+                                placeholder="Select a province…"
+                            />
+                            <SelectField
+                                label="Municipality / City"
+                                value={selectedMunicityPsgc}
+                                onChange={onMunicityChange}
+                                options={filteredMunis.map((m) => ({ value: m.psgc, label: m.name }))}
+                                placeholder="Select a municipality…"
+                            />
+                            <SelectField
+                                label="Barangay"
+                                value={selectedBarangayPsgc}
+                                onChange={onBarangayChange}
+                                options={barangays.map((b) => ({ value: b.psgc, label: b.name }))}
+                                placeholder={barangaysLoading ? "Loading barangays…" : "Select a barangay…"}
+                                disabled={downloadMode === "allBgysInMunicity" || barangaysLoading || !selectedMunicityPsgc}
+                            />
+                            <label className="flex items-center gap-2 text-sm text-primary">
+                                <input
+                                    type="checkbox"
+                                    checked={downloadMode === "allBgysInMunicity"}
+                                    onChange={(e) =>
+                                        onDownloadModeChange(e.target.checked ? "allBgysInMunicity" : "single")
+                                    }
+                                    className="rounded border-border"
+                                    disabled={!selectedMunicityPsgc}
+                                />
+                                All barangays in municipality
+                            </label>
+                        </>
+                    )}
                 </section>
 
                 {error && (
@@ -208,6 +274,15 @@ export function MpaDownloadPanel({
                     <p>
                         Boundaries:{" "}
                         <a
+                            href="https://github.com/altcoder/philippines-psgc-shapefiles"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent underline"
+                        >
+                            philippines-psgc-shapefiles
+                        </a>{" "}
+                        and{" "}
+                        <a
                             href="https://github.com/faeldon/philippines-json-maps"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -217,7 +292,17 @@ export function MpaDownloadPanel({
                         </a>{" "}
                         © James Faeldon, MIT
                     </p>
-                    <p>PSGC codes/names: Philippine Statistics Authority</p>
+                    <p>
+                        PSGC codes/names:{" "}
+                        <a
+                            href="https://psa.gov.ph/classification/psgc/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent underline"
+                        >
+                            Philippine Statistics Authority
+                        </a>
+                    </p>
                 </div>
                 <p>
                     Part of{" "}

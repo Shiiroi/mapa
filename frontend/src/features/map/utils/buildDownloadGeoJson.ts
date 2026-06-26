@@ -3,16 +3,22 @@
 import type { Feature, FeatureCollection, Geometry } from "geojson";
 import type { MpaLevel } from "../constants";
 import { slugifyDivisionName } from "./slugifyDivisionName";
-import type { MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
-import { fetchMunicitiesByProvinceFromStorage } from "../services/geoStorage";
+import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
+import {
+    fetchBarangaysByMunicityFromStorage,
+    fetchMunicitiesByProvinceFromStorage,
+} from "../services/geoStorage";
 
 export type DownloadScope =
+    | { kind: "country" }
     | { kind: "region"; regionPsgc: string }
     | { kind: "provincesInRegion"; regionPsgc: string }
     | { kind: "munisInRegion"; regionPsgc: string }
     | { kind: "province"; provincePsgc: string }
     | { kind: "munisInProvince"; provincePsgc: string }
-    | { kind: "municipality"; municityPsgc: string; provincePsgc: string };
+    | { kind: "municipality"; municityPsgc: string; provincePsgc: string }
+    | { kind: "barangay"; municityPsgc: string; barangayPsgc: string }
+    | { kind: "bgysInMunicity"; municityPsgc: string };
 
 export interface BuildDownloadInput {
     level: MpaLevel;
@@ -21,6 +27,7 @@ export interface BuildDownloadInput {
     provinces: ProvinceGeoJSON[];
     municities: MunicityGeoJSON[];
     municityMeta: MunicityMeta[];
+    country: CountryGeoJSON | null;
 }
 
 export interface BuildDownloadResult {
@@ -43,6 +50,20 @@ function toFeature(
 function buildFilename(level: MpaLevel, slug: string): string {
     const date = new Date().toISOString().slice(0, 10);
     return `mapa-${level}-${slugifyDivisionName(slug)}-${date}.json`;
+}
+
+function barangayToFeature(bgy: BarangayGeoJSON): Feature {
+    return toFeature(bgy.geometry, {
+        psgc: bgy.psgc,
+        correspondence: bgy.correspondence,
+        name: bgy.name,
+        geo_lvl: bgy.geo_lvl,
+        city_lvl: bgy.city_lvl,
+        level: "barangay",
+        municity_psgc: bgy.municity_psgc,
+        province_psgc: bgy.province_psgc,
+        region_psgc: bgy.region_psgc,
+    });
 }
 
 // Province-linked munis use the province's region_psgc; direct region_psgc only when province_psgc is null.
@@ -76,11 +97,26 @@ async function loadMunisForProvinces(
 }
 
 export async function buildDownloadGeoJson(input: BuildDownloadInput): Promise<BuildDownloadResult> {
-    const { level, scope, regions, provinces, municities } = input;
+    const { level, scope, regions, provinces, municities, municityMeta, country } = input;
     let features: Feature[] = [];
     let label = "philippines";
 
     switch (scope.kind) {
+        case "country": {
+            if (!country?.geometry) throw new Error("Country boundary not found");
+            label = country.name;
+            features = [
+                toFeature(country.geometry, {
+                    psgc: country.psgc,
+                    correspondence: country.correspondence,
+                    name: country.name,
+                    geo_lvl: country.geo_lvl,
+                    city_lvl: country.city_lvl,
+                    level: "country",
+                }),
+            ];
+            break;
+        }
         case "region": {
             const region = regions.find((r) => r.psgc === scope.regionPsgc);
             if (!region?.geometry) throw new Error("Region not found");
@@ -199,6 +235,22 @@ export async function buildDownloadGeoJson(input: BuildDownloadInput): Promise<B
                     province_psgc: muni.province_psgc,
                 }),
             ];
+            break;
+        }
+        case "bgysInMunicity": {
+            const muni = municityMeta.find((m) => m.psgc === scope.municityPsgc);
+            const bgys = await fetchBarangaysByMunicityFromStorage(scope.municityPsgc);
+            if (!bgys.length) throw new Error("No barangays found for this municipality");
+            label = muni ? `${muni.name}-barangays` : `${scope.municityPsgc}-barangays`;
+            features = bgys.filter((b) => b.geometry).map(barangayToFeature);
+            break;
+        }
+        case "barangay": {
+            const bgys = await fetchBarangaysByMunicityFromStorage(scope.municityPsgc);
+            const bgy = bgys.find((b) => b.psgc === scope.barangayPsgc);
+            if (!bgy?.geometry) throw new Error("Barangay not found");
+            label = bgy.name;
+            features = [barangayToFeature(bgy)];
             break;
         }
     }

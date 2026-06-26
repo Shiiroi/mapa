@@ -32,3 +32,14 @@ export interface MunicityMeta extends PsgcFields {
     province_psgc: string | null;
     region_psgc: string | null;
 }
+
+export interface CountryGeoJSON extends PsgcFields {
+    geometry: Geometry;
+}
+
+export interface BarangayGeoJSON extends PsgcFields {
+    municity_psgc: string;
+    province_psgc: string | null;
+    region_psgc: string | null;
+    geometry: Geometry;
+}

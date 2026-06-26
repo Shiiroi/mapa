@@ -1,7 +1,7 @@
 // Fetches geo JSON from Supabase Storage, with /geo/ local fallback.
 
 import { supabase } from "../../../config/supabase";
-import type { MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
+import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
 
 const GEO_BUCKET = "geo";
 
@@ -68,5 +68,16 @@ export async function fetchMunicitiesByProvinceFromStorage(provincePsgc: string)
     return fetchGeoLayerFromStorage<MunicityGeoJSON[]>(
         `municities/province-${provincePsgc}.json`,
         `fetchMunicitiesProvince-${provincePsgc}`,
+    );
+}
+
+export async function fetchCountryFromStorage(): Promise<CountryGeoJSON> {
+    return fetchGeoLayerFromStorage<CountryGeoJSON>("country.json", "fetchCountry");
+}
+
+export async function fetchBarangaysByMunicityFromStorage(municityPsgc: string): Promise<BarangayGeoJSON[]> {
+    return fetchGeoLayerFromStorage<BarangayGeoJSON[]>(
+        `municities/bgy/${municityPsgc}.json`,
+        `fetchBarangaysMunicity-${municityPsgc}`,
     );
 }

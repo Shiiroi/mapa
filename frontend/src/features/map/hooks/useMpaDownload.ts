@@ -4,32 +4,54 @@ import { useCallback, useState } from "react";
 import { downloadJsonFile } from "../../../lib/downloadFile";
 import type { MpaLevel } from "../constants";
 import { buildDownloadGeoJson, type DownloadScope } from "../utils/buildDownloadGeoJson";
-import type { MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
+import type { CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
 
-export type DownloadMode = "single" | "subdivisions" | "allMunisInProvince";
+export type DownloadMode = "single" | "subdivisions" | "allMunisInProvince" | "allBgysInMunicity";
 
 interface UseMpaDownloadOptions {
     regions: Region[];
     provinces: ProvinceGeoJSON[];
     municities: MunicityGeoJSON[];
     municityMeta: MunicityMeta[];
+    country: CountryGeoJSON | null;
 }
 
-export function useMpaDownload({ regions, provinces, municities, municityMeta }: UseMpaDownloadOptions) {
-    const [level, setLevel] = useState<MpaLevel>("province");
+export function useMpaDownload({ regions, provinces, municities, municityMeta, country }: UseMpaDownloadOptions) {
+    const [level, setLevelState] = useState<MpaLevel>("province");
     const [selectedRegionPsgc, setSelectedRegionPsgc] = useState<string | null>(null);
     const [selectedProvincePsgc, setSelectedProvincePsgc] = useState<string | null>(null);
-    const [selectedMunicityPsgc, setSelectedMunicityPsgc] = useState<string | null>(null);
+    const [selectedMunicityPsgc, setSelectedMunicityPsgcState] = useState<string | null>(null);
+    const [selectedBarangayPsgc, setSelectedBarangayPsgc] = useState<string | null>(null);
     const [regionFilterPsgc, setRegionFilterPsgc] = useState<string | null>(null);
     const [provinceFilterPsgc, setProvinceFilterPsgc] = useState<string | null>(null);
     const [downloadMode, setDownloadMode] = useState<DownloadMode>("single");
     const [downloading, setDownloading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const setMunicityPsgc = useCallback((psgc: string | null) => {
+        setSelectedMunicityPsgcState(psgc);
+        setSelectedBarangayPsgc(null);
+        if (!psgc && level === "barangay") {
+            setLevelState("municipality");
+            setDownloadMode("single");
+        }
+    }, [level]);
+
+    const setLevel = useCallback((next: MpaLevel) => {
+        if (next === "barangay" && !selectedMunicityPsgc) {
+            return;
+        }
+        setLevelState(next);
+        setDownloadMode("single");
+    }, [selectedMunicityPsgc]);
+
     const setSelectionFromMap = useCallback(
         (mode: MpaLevel, entityPsgc: string) => {
-            setLevel(mode);
+            setLevelState(mode);
             setDownloadMode("single");
+            if (mode === "country") {
+                return;
+            }
             if (mode === "region") {
                 setSelectedRegionPsgc(entityPsgc);
                 setRegionFilterPsgc(entityPsgc);
@@ -40,22 +62,29 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta }:
                     setRegionFilterPsgc(province.region_psgc);
                     setProvinceFilterPsgc(entityPsgc);
                 }
-            } else {
+            } else if (mode === "municipality") {
                 const muni =
                     municities.find((m) => m.psgc === entityPsgc) ??
                     municityMeta.find((m) => m.psgc === entityPsgc);
-                setSelectedMunicityPsgc(entityPsgc);
+                setSelectedMunicityPsgcState(entityPsgc);
+                setSelectedBarangayPsgc(null);
                 if (muni?.province_psgc) {
                     setProvinceFilterPsgc(muni.province_psgc);
                     const province = provinces.find((p) => p.psgc === muni.province_psgc);
                     if (province) setRegionFilterPsgc(province.region_psgc);
                 }
+            } else if (mode === "barangay") {
+                setSelectedBarangayPsgc(entityPsgc);
             }
         },
         [provinces, municities, municityMeta],
     );
 
     const resolveScope = useCallback((): DownloadScope => {
+        if (level === "country") {
+            return { kind: "country" };
+        }
+
         if (level === "region") {
             if (!selectedRegionPsgc) throw new Error("Select a region");
             if (downloadMode === "subdivisions") {
@@ -74,6 +103,16 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta }:
             return { kind: "province", provincePsgc: selectedProvincePsgc };
         }
 
+        if (level === "barangay") {
+            const muniPsgc = selectedMunicityPsgc;
+            if (!muniPsgc) throw new Error("Select a municipality");
+            if (downloadMode === "allBgysInMunicity") {
+                return { kind: "bgysInMunicity", municityPsgc: muniPsgc };
+            }
+            if (!selectedBarangayPsgc) throw new Error("Select a barangay");
+            return { kind: "barangay", municityPsgc: muniPsgc, barangayPsgc: selectedBarangayPsgc };
+        }
+
         if (downloadMode === "allMunisInProvince") {
             const psgc = provinceFilterPsgc ?? selectedProvincePsgc;
             if (!psgc) throw new Error("Select a province");
@@ -90,6 +129,7 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta }:
         selectedRegionPsgc,
         selectedProvincePsgc,
         selectedMunicityPsgc,
+        selectedBarangayPsgc,
         provinceFilterPsgc,
         regionFilterPsgc,
     ]);
@@ -106,6 +146,7 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta }:
                 provinces,
                 municities,
                 municityMeta,
+                country,
             });
             downloadJsonFile(result.geojson, result.filename);
         } catch (err) {
@@ -113,7 +154,7 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta }:
         } finally {
             setDownloading(false);
         }
-    }, [level, resolveScope, regions, provinces, municities, municityMeta]);
+    }, [level, resolveScope, regions, provinces, municities, municityMeta, country]);
 
     return {
         level,
@@ -123,7 +164,9 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta }:
         selectedProvincePsgc,
         setSelectedProvincePsgc,
         selectedMunicityPsgc,
-        setSelectedMunicityPsgc,
+        setSelectedMunicityPsgc: setMunicityPsgc,
+        selectedBarangayPsgc,
+        setSelectedBarangayPsgc,
         regionFilterPsgc,
         setRegionFilterPsgc,
         provinceFilterPsgc,

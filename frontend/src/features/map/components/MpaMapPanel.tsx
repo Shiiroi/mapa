@@ -9,19 +9,13 @@ import type { MpaLevel } from "../constants";
 const PH_CENTER: [number, number] = [12.8797, 121.774];
 const PH_ZOOM = 6;
 
-const MODE_STYLES: Record<MpaLevel, { color: string; fillColor: string }> = {
-    region: { color: "#e53e3e", fillColor: "#fc8181" },
-    province: { color: "#2b6cb0", fillColor: "#3182ce" },
-    municipality: { color: "#38a169", fillColor: "#68d391" },
-};
-
-const BASE_STYLE = (mode: MpaLevel): L.PathOptions => ({
-    color: MODE_STYLES[mode].color,
+const BASE_STYLE: L.PathOptions = {
+    color: "#2b6cb0",
     weight: 0.8,
-    fillColor: MODE_STYLES[mode].fillColor,
+    fillColor: "#3182ce",
     fillOpacity: 0.15,
     renderer: L.canvas(),
-});
+};
 
 const HOVER_STYLE: L.PathOptions = {
     weight: 2,
@@ -39,9 +33,11 @@ export interface MapEntity {
 }
 
 interface MpaMapPanelProps {
+    country?: MapEntity | null;
     provinces?: MapEntity[];
     regions?: MapEntity[];
     municities?: MapEntity[];
+    barangays?: MapEntity[];
     mode: MpaLevel;
     onFeatureClick?: (entityPsgc: string, mode: MpaLevel) => void;
     loading?: boolean;
@@ -49,9 +45,11 @@ interface MpaMapPanelProps {
 }
 
 export function MpaMapPanel({
+    country = null,
     provinces = [],
     regions = [],
     municities = [],
+    barangays = [],
     mode,
     onFeatureClick,
     loading,
@@ -60,6 +58,9 @@ export function MpaMapPanel({
     const currentData = useMemo(() => {
         let entities: MapEntity[] = [];
         switch (mode) {
+            case "country":
+                entities = country ? [country] : [];
+                break;
             case "region":
                 entities = regions;
                 break;
@@ -68,6 +69,9 @@ export function MpaMapPanel({
                 break;
             case "municipality":
                 entities = municities;
+                break;
+            case "barangay":
+                entities = barangays;
                 break;
         }
         return {
@@ -88,7 +92,7 @@ export function MpaMapPanel({
                     geometry: e.geometry,
                 })),
         };
-    }, [mode, provinces, regions, municities]);
+    }, [mode, country, provinces, regions, municities, barangays]);
 
     const onEachFeature = useCallback(
         (feature: Feature, layer: L.GeoJSON) => {
@@ -98,7 +102,7 @@ export function MpaMapPanel({
                 layer.bindTooltip(name, { sticky: true, direction: "top" });
             }
             layer.on("mouseover", () => layer.setStyle(HOVER_STYLE));
-            layer.on("mouseout", () => layer.setStyle(BASE_STYLE(mode)));
+            layer.on("mouseout", () => layer.setStyle(BASE_STYLE));
             layer.on("click", () => {
                 if (psgc) onFeatureClick?.(psgc, mode);
             });
@@ -136,7 +140,7 @@ export function MpaMapPanel({
                 <GeoJSON
                     key={`${mode}-${currentData.features.length}`}
                     data={currentData}
-                    pathOptions={BASE_STYLE(mode)}
+                    pathOptions={BASE_STYLE}
                     onEachFeature={onEachFeature}
                 />
             </MapContainer>
