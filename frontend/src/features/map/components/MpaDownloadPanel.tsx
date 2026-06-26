@@ -2,7 +2,7 @@
 
 import { cn } from "../../../lib/cn";
 import type { MpaLevel } from "../constants";
-import type { DownloadMode } from "../hooks/useMpaDownload";
+import type { ExportKind } from "../hooks/useMpaDownload";
 import type { BarangayGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
 
 interface MpaDownloadPanelProps {
@@ -25,8 +25,8 @@ interface MpaDownloadPanelProps {
     onRegionFilterChange: (psgc: string | null) => void;
     provinceFilterPsgc: string | null;
     onProvinceFilterChange: (psgc: string | null) => void;
-    downloadMode: DownloadMode;
-    onDownloadModeChange: (mode: DownloadMode) => void;
+    exportKind: ExportKind;
+    onExportKindChange: (kind: ExportKind) => void;
     onDownload: () => void;
     downloading: boolean;
     error: string | null;
@@ -35,11 +35,29 @@ interface MpaDownloadPanelProps {
 const BASE_LEVELS: MpaLevel[] = ["country", "region", "province", "municipality"];
 
 const LEVEL_LABELS: Record<MpaLevel, string> = {
-    country: "Country",
+    country: "Whole Philippines",
     region: "Region",
     province: "Province",
     municipality: "Municipality",
     barangay: "Barangay",
+};
+
+// Per level: the single sub-level a download can target ("self" = the unit's own
+// boundary). Barangays are only exportable within a single municipality.
+const EXPORT_OPTIONS: Partial<Record<MpaLevel, { kind: ExportKind; label: string }[]>> = {
+    region: [
+        { kind: "self", label: "Region outline" },
+        { kind: "provinces", label: "All provinces" },
+        { kind: "municipalities", label: "All municipalities" },
+    ],
+    province: [
+        { kind: "self", label: "Province outline" },
+        { kind: "municipalities", label: "All municipalities" },
+    ],
+    municipality: [
+        { kind: "self", label: "This municipality" },
+        { kind: "barangays", label: "All barangays" },
+    ],
 };
 
 export function MpaDownloadPanel({
@@ -62,8 +80,8 @@ export function MpaDownloadPanel({
     onRegionFilterChange,
     provinceFilterPsgc,
     onProvinceFilterChange,
-    downloadMode,
-    onDownloadModeChange,
+    exportKind,
+    onExportKindChange,
     onDownload,
     downloading,
     error,
@@ -126,30 +144,17 @@ export function MpaDownloadPanel({
                     <label className="block text-xs font-medium uppercase tracking-wide text-muted">Scope</label>
 
                     {level === "country" && (
-                        <p className="text-sm text-primary">Whole Philippines boundary</p>
+                        <p className="text-sm text-primary">Whole Philippines outline (single shape)</p>
                     )}
 
                     {level === "region" && (
-                        <>
-                            <SelectField
-                                label="Region"
-                                value={selectedRegionPsgc}
-                                onChange={onRegionChange}
-                                options={regions.map((r) => ({ value: r.psgc, label: r.name }))}
-                                placeholder="Select a region…"
-                            />
-                            <label className="flex items-center gap-2 text-sm text-primary">
-                                <input
-                                    type="checkbox"
-                                    checked={downloadMode === "subdivisions"}
-                                    onChange={(e) =>
-                                        onDownloadModeChange(e.target.checked ? "subdivisions" : "single")
-                                    }
-                                    className="rounded border-border"
-                                />
-                                Include provinces in region (instead of region boundary)
-                            </label>
-                        </>
+                        <SelectField
+                            label="Region"
+                            value={selectedRegionPsgc}
+                            onChange={onRegionChange}
+                            options={regions.map((r) => ({ value: r.psgc, label: r.name }))}
+                            placeholder="Select a region…"
+                        />
                     )}
 
                     {level === "province" && (
@@ -172,17 +177,6 @@ export function MpaDownloadPanel({
                                 options={filteredProvinces.map((p) => ({ value: p.psgc, label: p.name }))}
                                 placeholder="Select a province…"
                             />
-                            <label className="flex items-center gap-2 text-sm text-primary">
-                                <input
-                                    type="checkbox"
-                                    checked={downloadMode === "subdivisions"}
-                                    onChange={(e) =>
-                                        onDownloadModeChange(e.target.checked ? "subdivisions" : "single")
-                                    }
-                                    className="rounded border-border"
-                                />
-                                All municipalities in selected region
-                            </label>
                         </>
                     )}
 
@@ -204,19 +198,7 @@ export function MpaDownloadPanel({
                                 onChange={onMunicityChange}
                                 options={filteredMunis.map((m) => ({ value: m.psgc, label: m.name }))}
                                 placeholder="Select a municipality…"
-                                disabled={downloadMode === "allMunisInProvince"}
                             />
-                            <label className="flex items-center gap-2 text-sm text-primary">
-                                <input
-                                    type="checkbox"
-                                    checked={downloadMode === "allMunisInProvince"}
-                                    onChange={(e) =>
-                                        onDownloadModeChange(e.target.checked ? "allMunisInProvince" : "single")
-                                    }
-                                    className="rounded border-border"
-                                />
-                                All municipalities in province
-                            </label>
                         </>
                     )}
 
@@ -245,21 +227,32 @@ export function MpaDownloadPanel({
                                 onChange={onBarangayChange}
                                 options={barangays.map((b) => ({ value: b.psgc, label: b.name }))}
                                 placeholder={barangaysLoading ? "Loading barangays…" : "Select a barangay…"}
-                                disabled={downloadMode === "allBgysInMunicity" || barangaysLoading || !selectedMunicityPsgc}
+                                disabled={barangaysLoading || !selectedMunicityPsgc}
                             />
-                            <label className="flex items-center gap-2 text-sm text-primary">
-                                <input
-                                    type="checkbox"
-                                    checked={downloadMode === "allBgysInMunicity"}
-                                    onChange={(e) =>
-                                        onDownloadModeChange(e.target.checked ? "allBgysInMunicity" : "single")
-                                    }
-                                    className="rounded border-border"
-                                    disabled={!selectedMunicityPsgc}
-                                />
-                                All barangays in municipality
-                            </label>
                         </>
+                    )}
+
+                    {EXPORT_OPTIONS[level] && (
+                        <div>
+                            <label className="mb-1 block text-sm text-primary">Download as</label>
+                            <div className="space-y-0.5 rounded-lg border border-border-light bg-surface p-1">
+                                {EXPORT_OPTIONS[level]!.map((opt) => (
+                                    <button
+                                        key={opt.kind}
+                                        type="button"
+                                        onClick={() => onExportKindChange(opt.kind)}
+                                        className={cn(
+                                            "w-full rounded-md px-3 py-1.5 text-left text-sm transition-colors",
+                                            exportKind === opt.kind
+                                                ? "bg-accent font-medium text-white"
+                                                : "text-primary hover:bg-white",
+                                        )}
+                                    >
+                                        {opt.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                     )}
                 </section>
             </div>

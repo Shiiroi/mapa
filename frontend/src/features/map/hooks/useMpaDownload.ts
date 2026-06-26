@@ -6,7 +6,9 @@ import type { MpaLevel } from "../constants";
 import { buildDownloadGeoJson, type DownloadScope } from "../utils/buildDownloadGeoJson";
 import type { CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
 
-export type DownloadMode = "single" | "subdivisions" | "allMunisInProvince" | "allBgysInMunicity";
+// What to export within the current view level. "self" = the selected unit's own
+// boundary; the others export one child level (single level per file).
+export type ExportKind = "self" | "provinces" | "municipalities" | "barangays";
 
 interface UseMpaDownloadOptions {
     regions: Region[];
@@ -24,7 +26,7 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta, c
     const [selectedBarangayPsgc, setSelectedBarangayPsgc] = useState<string | null>(null);
     const [regionFilterPsgc, setRegionFilterPsgc] = useState<string | null>(null);
     const [provinceFilterPsgc, setProvinceFilterPsgc] = useState<string | null>(null);
-    const [downloadMode, setDownloadMode] = useState<DownloadMode>("single");
+    const [exportKind, setExportKind] = useState<ExportKind>("self");
     const [downloading, setDownloading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -33,7 +35,7 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta, c
         setSelectedBarangayPsgc(null);
         if (!psgc && level === "barangay") {
             setLevelState("municipality");
-            setDownloadMode("single");
+            setExportKind("self");
         }
     }, [level]);
 
@@ -42,13 +44,13 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta, c
             return;
         }
         setLevelState(next);
-        setDownloadMode("single");
+        setExportKind("self");
     }, [selectedMunicityPsgc]);
 
     const setSelectionFromMap = useCallback(
         (mode: MpaLevel, entityPsgc: string) => {
             setLevelState(mode);
-            setDownloadMode("single");
+            setExportKind("self");
             if (mode === "country") {
                 return;
             }
@@ -87,51 +89,52 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta, c
 
         if (level === "region") {
             if (!selectedRegionPsgc) throw new Error("Select a region");
-            if (downloadMode === "subdivisions") {
+            if (exportKind === "provinces") {
                 return { kind: "provincesInRegion", regionPsgc: selectedRegionPsgc };
+            }
+            if (exportKind === "municipalities") {
+                return { kind: "munisInRegion", regionPsgc: selectedRegionPsgc };
             }
             return { kind: "region", regionPsgc: selectedRegionPsgc };
         }
 
         if (level === "province") {
-            if (downloadMode === "subdivisions") {
-                const regionPsgc = selectedRegionPsgc ?? regionFilterPsgc;
-                if (!regionPsgc) throw new Error("Select a region");
-                return { kind: "munisInRegion", regionPsgc };
-            }
             if (!selectedProvincePsgc) throw new Error("Select a province");
+            if (exportKind === "municipalities") {
+                return { kind: "munisInProvince", provincePsgc: selectedProvincePsgc };
+            }
             return { kind: "province", provincePsgc: selectedProvincePsgc };
         }
 
         if (level === "barangay") {
             const muniPsgc = selectedMunicityPsgc;
             if (!muniPsgc) throw new Error("Select a municipality");
-            if (downloadMode === "allBgysInMunicity") {
-                return { kind: "bgysInMunicity", municityPsgc: muniPsgc };
-            }
             if (!selectedBarangayPsgc) throw new Error("Select a barangay");
             return { kind: "barangay", municityPsgc: muniPsgc, barangayPsgc: selectedBarangayPsgc };
         }
 
-        if (downloadMode === "allMunisInProvince") {
-            const psgc = provinceFilterPsgc ?? selectedProvincePsgc;
-            if (!psgc) throw new Error("Select a province");
-            return { kind: "munisInProvince", provincePsgc: psgc };
-        }
-
+        // municipality level
         const muniPsgc = selectedMunicityPsgc;
-        const provPsgc = provinceFilterPsgc ?? selectedProvincePsgc;
-        if (!muniPsgc || !provPsgc) throw new Error("Select a municipality");
+        if (!muniPsgc) throw new Error("Select a municipality");
+        if (exportKind === "barangays") {
+            return { kind: "bgysInMunicity", municityPsgc: muniPsgc };
+        }
+        const provPsgc =
+            provinceFilterPsgc ??
+            selectedProvincePsgc ??
+            municityMeta.find((m) => m.psgc === muniPsgc)?.province_psgc ??
+            null;
+        if (!provPsgc) throw new Error("Select a municipality");
         return { kind: "municipality", municityPsgc: muniPsgc, provincePsgc: provPsgc };
     }, [
         level,
-        downloadMode,
+        exportKind,
         selectedRegionPsgc,
         selectedProvincePsgc,
         selectedMunicityPsgc,
         selectedBarangayPsgc,
         provinceFilterPsgc,
-        regionFilterPsgc,
+        municityMeta,
     ]);
 
     const download = useCallback(async () => {
@@ -171,8 +174,8 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta, c
         setRegionFilterPsgc,
         provinceFilterPsgc,
         setProvinceFilterPsgc,
-        downloadMode,
-        setDownloadMode,
+        exportKind,
+        setExportKind,
         downloading,
         error,
         setSelectionFromMap,

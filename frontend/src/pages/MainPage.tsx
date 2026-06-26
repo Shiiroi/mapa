@@ -48,10 +48,7 @@ export default function MainPage() {
             <div className="min-h-0 flex-1 overflow-hidden lg:flex-none">
                 <MpaDownloadPanel
                     level={download.level}
-                    onLevelChange={(l) => {
-                        download.setLevel(l);
-                        download.setDownloadMode("single");
-                    }}
+                    onLevelChange={download.setLevel}
                     regions={regions}
                     provinces={provinces}
                     municityMeta={municityMeta}
@@ -69,8 +66,8 @@ export default function MainPage() {
                     onRegionFilterChange={download.setRegionFilterPsgc}
                     provinceFilterPsgc={download.provinceFilterPsgc}
                     onProvinceFilterChange={download.setProvinceFilterPsgc}
-                    downloadMode={download.downloadMode}
-                    onDownloadModeChange={download.setDownloadMode}
+                    exportKind={download.exportKind}
+                    onExportKindChange={download.setExportKind}
                     onDownload={download.download}
                     downloading={download.downloading}
                     error={download.error}
