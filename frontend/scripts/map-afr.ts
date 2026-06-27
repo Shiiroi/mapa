@@ -11,7 +11,7 @@ import {
     type AfrRawRow,
     loadPsgcIndexes,
     matchAfrRow,
-    regionPsgcFromAfrLabel,
+    regionPsgcFromLguPsgc,
 } from "./lib/afrMatch.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -96,8 +96,8 @@ function main() {
     const regionAssets = new Map<string, number>();
     for (const row of matched) {
         if (!["province", "city", "municipality"].includes(row.level)) continue;
-        const regionPsgc = regionPsgcFromAfrLabel(row.region);
-        if (!regionPsgc || row.assets == null) continue;
+        const regionPsgc = regionPsgcFromLguPsgc(row.psgc);
+        if (row.assets == null) continue;
         regionAssets.set(regionPsgc, (regionAssets.get(regionPsgc) ?? 0) + row.assets);
     }
 

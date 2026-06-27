@@ -35,12 +35,15 @@ function sampleRamp(n: number): string[] {
 
 export const DENSITY_RAMP_8 = sampleRamp(8);
 
-/** Upper-bound breaks per view level (7 breaks → 8 buckets), per km². */
+/**
+ * Upper-bound breaks per view level (7 breaks → 8 buckets), per km².
+ * Log-Jenks natural breaks snapped to m × 5 × 10ⁿ nice numbers.
+ */
 export const DENSITY_BREAKS_BY_LEVEL: Record<ScaleLevel, number[]> = {
-    region: [150, 250, 350, 500, 850, 2500, 10_000],
-    province: [100, 175, 250, 400, 750, 1500, 10_000],
-    municipality: [100, 200, 350, 650, 1500, 3000, 15_000],
-    barangay: [150, 350, 800, 2500, 7000, 15_000, 40_000],
+    region: [100, 150, 250, 350, 450, 750, 1_000],
+    province: [95, 200, 300, 450, 750, 1_500, 3_500],
+    municipality: [35, 95, 200, 350, 700, 1_500, 6_500],
+    barangay: [35, 150, 300, 700, 2_000, 6_500, 25_000],
 };
 
 export interface LegendItem {
@@ -57,7 +60,7 @@ function formatLegendValue(v: number): string {
 
 function densityBucketIndex(value: number, breaks: number[]): number {
     for (let i = 0; i < breaks.length; i++) {
-        if (value < breaks[i]) return i;
+        if (value <= breaks[i]) return i;
     }
     return DENSITY_RAMP_8.length - 1;
 }
@@ -71,12 +74,23 @@ export function colorForDensity(
     return DENSITY_RAMP_8[densityBucketIndex(value, breaks)];
 }
 
-/** Discrete legend rows, low → high density (one row per color bucket). */
+/** Discrete legend rows, low → high density (≤ / range / > per bucket). */
 export function densityLegendItems(level: ScaleLevel): LegendItem[] {
     const breaks = DENSITY_BREAKS_BY_LEVEL[level];
-    const legendValues = [0, ...breaks];
-    return legendValues.map((v, i) => ({
-        color: DENSITY_RAMP_8[i],
-        label: `${formatLegendValue(v)}/km²`,
-    }));
+    const items: LegendItem[] = [];
+    items.push({
+        color: DENSITY_RAMP_8[0],
+        label: `≤ ${formatLegendValue(breaks[0])}/km²`,
+    });
+    for (let i = 1; i < breaks.length; i++) {
+        items.push({
+            color: DENSITY_RAMP_8[i],
+            label: `${formatLegendValue(breaks[i - 1])} – ${formatLegendValue(breaks[i])}/km²`,
+        });
+    }
+    items.push({
+        color: DENSITY_RAMP_8[breaks.length],
+        label: `> ${formatLegendValue(breaks[breaks.length - 1])}/km²`,
+    });
+    return items;
 }

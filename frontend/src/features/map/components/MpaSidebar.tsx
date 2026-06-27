@@ -147,6 +147,7 @@ export function MpaSidebar(props: MpaSidebarProps) {
                             municityMeta={props.municityMeta}
                             currentSelection={currentSelection}
                             currentSelectionName={selectedPlace?.name ?? null}
+                            activeOverlay={props.activeOverlay}
                         />
                     </div>
                 )}
@@ -165,16 +166,26 @@ export function MpaSidebar(props: MpaSidebarProps) {
             </div>
 
             {tab !== "geojson" && (
-                <footer className="space-y-3 border-t border-border-light px-5 py-4 text-xs leading-relaxed text-muted">
+                <footer className="space-y-1 border-t border-border-light px-5 py-4 text-xs leading-relaxed text-muted">
+                    <p className="font-medium uppercase tracking-wide">Sources</p>
                     <p>
-                        Population:{" "}
+                        Population: Philippine Statistics Authority —{" "}
                         <a
-                            href="https://psa.gov.ph/classification/psgc/"
+                            href="https://psa.gov.ph/classification/psgc/node/1684083211"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-accent underline"
                         >
-                            Philippine Statistics Authority (PSGC &amp; 2010–2024 censuses)
+                            PSGC
+                        </a>{" "}
+                        &amp;{" "}
+                        <a
+                            href="https://psa.gov.ph/content/2024-census-population-popcen-population-counts-declared-official-president"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent underline"
+                        >
+                            2024 census
                         </a>
                     </p>
                     <p>
@@ -191,7 +202,7 @@ export function MpaSidebar(props: MpaSidebarProps) {
                     <p>
                         GDP:{" "}
                         <a
-                            href="https://psa.gov.ph/statistics/nap-account"
+                            href="https://openstat.psa.gov.ph/PXWeb/pxweb/en/DB/DB__2B__GP__RG__GRD/0012B5CPGD1.px/?rxid=9ba3cb75-b9b1-46d6-b436-46cbcc201f7f"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-accent underline"
@@ -210,39 +221,7 @@ export function MpaSidebar(props: MpaSidebarProps) {
                             Commission on Audit (CY 2024 AFR, Local Government)
                         </a>
                     </p>
-                    <p>
-                        Custom maps (elections):{" "}
-                        <a
-                            href="https://github.com/AstroMC98/GMA-Eleksyon-2022-Data"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-accent underline"
-                        >
-                            GMA Eleksyon 2022 (MIT, unofficial partial count)
-                        </a>
-                        ; official results from{" "}
-                        <a
-                            href="https://comelec.gov.ph/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-accent underline"
-                        >
-                            COMELEC
-                        </a>
-                        .
-                    </p>
-                    <p>
-                        POI counts:{" "}
-                        <a
-                            href="https://www.openstreetmap.org/copyright"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-accent underline"
-                        >
-                            OpenStreetMap contributors
-                        </a>{" "}
-                        (ODbL).
-                    </p>
+                    <p>Area &amp; density: derived by Mapa from PSA boundary geometry (approximate).</p>
                 </footer>
             )}
         </aside>

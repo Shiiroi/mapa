@@ -5,13 +5,21 @@ import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, Pr
 
 const GEO_BUCKET = "geo";
 
+/** Bump when geo JSON is re-uploaded so clients bypass stale browser HTTP cache. */
+const GEO_DATA_VERSION = "2026-06-27.5";
+
+function withGeoVersion(url: string): string {
+    const sep = url.includes("?") ? "&" : "?";
+    return `${url}${sep}v=${GEO_DATA_VERSION}`;
+}
+
 export function getGeoStoragePublicUrl(fileName: string): string {
     const { data } = supabase.storage.from(GEO_BUCKET).getPublicUrl(fileName);
-    return data.publicUrl;
+    return withGeoVersion(data.publicUrl);
 }
 
 async function fetchFromLocal<T>(fileName: string, label: string): Promise<T> {
-    const res = await fetch(`/geo/${fileName}`);
+    const res = await fetch(withGeoVersion(`/geo/${fileName}`));
     if (!res.ok) {
         throw new Error(`Local ${label} failed: ${res.status} ${res.statusText}`);
     }

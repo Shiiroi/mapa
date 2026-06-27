@@ -3,21 +3,24 @@
 import { DENSITY_RAMP, NO_DATA_COLOR, type ScaleLevel } from "./densityScale";
 
 /**
- * Same green → magenta colors as the density legend, sampled to 7 buckets.
+ * Same green → magenta colors as the density legend, sampled to 8 buckets.
  */
 function sampleRamp(n: number): string[] {
     const last = DENSITY_RAMP.length - 1;
     return Array.from({ length: n }, (_, i) => DENSITY_RAMP[Math.round((i * last) / (n - 1))]);
 }
 
-export const POPULATION_RAMP = sampleRamp(7);
+export const POPULATION_RAMP = sampleRamp(8);
 
-/** Upper-bound breaks per view level (6 breaks → 7 buckets). */
+/**
+ * Upper-bound breaks per view level (7 breaks → 8 buckets).
+ * Log-Jenks natural breaks snapped to m × 5 × 10ⁿ nice numbers.
+ */
 export const POPULATION_BREAKS_BY_LEVEL: Record<ScaleLevel, number[]> = {
-    region: [3_000_000, 4_500_000, 5_000_000, 6_000_000, 9_000_000, 14_000_000],
-    province: [250_000, 500_000, 800_000, 1_500_000, 3_000_000, 5_000_000],
-    municipality: [20_000, 35_000, 55_000, 90_000, 150_000, 300_000],
-    barangay: [1_000, 2_000, 3_500, 6_000, 12_000, 25_000],
+    region: [3_000_000, 4_000_000, 4_500_000, 5_000_000, 5_500_000, 6_500_000, 15_000_000],
+    province: [95_000, 150_000, 300_000, 700_000, 1_000_000, 2_000_000, 4_500_000],
+    municipality: [5_000, 15_000, 25_000, 35_000, 55_000, 100_000, 250_000],
+    barangay: [250, 550, 950, 1_500, 2_500, 5_000, 15_000],
 };
 
 export interface LegendItem {
@@ -26,6 +29,8 @@ export interface LegendItem {
 }
 
 export function formatCompact(n: number): string {
+    if (n >= 1e12) return `${(n / 1e12).toFixed(n >= 1e13 ? 0 : 1)}T`;
+    if (n >= 1e9) return `${(n / 1e9).toFixed(n >= 1e10 ? 0 : 1)}B`;
     if (n >= 1e6) return `${(n / 1e6).toFixed(n >= 1e7 ? 0 : 1)}M`;
     if (n >= 1e3) return `${Math.round(n / 1e3)}K`;
     return String(Math.round(n));

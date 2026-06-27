@@ -30,6 +30,7 @@ export const AFR_REGION_TO_PSGC: Record<string, string> = {
     "REGION XI": "1100000000",
     "REGION XII": "1200000000",
     "REGION XIII": "1600000000",
+    NIR: "1800000000",
 };
 
 /** Census / household xlsx region labels -> AFR region key. */
@@ -75,6 +76,9 @@ const SCOPED_ALIASES: Record<string, string> = {
     "sulu|parang": "PARANG",
     "sulu|tongkil (banguingui)": "TONGKIL",
     "basilan|tipo-tipo|tuburan": "TUBURAN",
+    "lanao del sur|tagoloan": "TAGOLOAN II",
+    "lanao del sur|ditsaan ramain": "DITSAAN-RAMAIN",
+    "lanao del sur|lumbaca unayan": "LUMBACA-UNAYAN",
 };
 
 const PROVINCE_ALIASES: Record<string, string> = {
@@ -84,6 +88,7 @@ const PROVINCE_ALIASES: Record<string, string> = {
     "TIPO-TIPO": "BASILAN",
     "SOUTH UBIAN": "TAWI-TAWI",
     "NORTH COTABATO": "COTABATO",
+    "COTABATO CITY": "COTABATO",
 };
 
 /** Global aliases after normalization. */
@@ -110,14 +115,18 @@ const GLOBAL_ALIASES: Record<string, string> = {
     "G.M. NATIVIDAD": "GENERAL MAMERTO NATIVIDAD",
     "TALUGTOG": "TALUGTUG",
     "POLILIO": "POLILLO",
-    "SAN JOSE DE BUENAVISTA": "SAN JOSE DE BUENAVISTA",
+    "SAN JOSE DE BUENAVISTA": "SAN JOSE",
     "MAAYON": "MA-AYON",
     "PRES. ROXAS": "PRESIDENT ROXAS",
-    "SAPIAN": "SAPIAN",
+    "SAPIAN": "SAPI-AN",
     "A. CASTANEDA": "ALFONSO CASTANEDA",
     "SANCHEZ MIRA": "SANCHEZ-MIRA",
-    "SILVINO LUBOS": "SILVINO O. LOBOS",
+    "SILVINO LUBOS": "SILVINO LOBOS",
     "LUMBAYA UNAYAN": "LUMBA-BAYABAO",
+    "ALBUQUERQUE": "ALBURQUERQUE",
+    "CARRANGALAN": "CARRANGLAN",
+    "GENERAL SALIPADA K. PENDATUN": "GENERAL S.K. PENDATUN",
+    "LEON B. POSTIGO": "BACUNGAN",
     "SULTAN MATSURA": "SULTAN MASTURA",
     "D.S. BENEDICTO": "SALVADOR BENEDICTO",
     "E.B. MAGALONA": "ENRIQUE B. MAGALONA",
@@ -130,7 +139,7 @@ const GLOBAL_ALIASES: Record<string, string> = {
     "ROSELLER T. LIM": "ROSELLER LIM",
     "PANTAO-RAGAT": "PANTAO RAGAT",
     "TANGKAL": "TANGCAL",
-    "BE DUJALI": "B E DUJALI",
+    "BE DUJALI": "BRAULIO E. DUJALI",
     "SARANGGANI": "SARANGANI",
     "BANAY-BANAY": "BANAYBANAY",
     "GOV. GENEROSO": "GOVERNOR GENEROSO",
@@ -141,11 +150,11 @@ const GLOBAL_ALIASES: Record<string, string> = {
     "BACOLOD KALAWI": "BACOLOD-KALAWI",
     "BUADIPUSO BUNTONG": "BUADIPOSO-BUNTONG",
     "CALANUGAS": "CALANOGAS",
-    "LUMBA BAYABAO": "LUMBA BAYABAO",
+    "LUMBA BAYABAO": "LUMBA-BAYABAO",
     "DATU BLAH SINSUAT": "DATU BLAH T. SINSUAT",
-    "NORTH UPI": "NORTH UPI",
+    "NORTH UPI": "UPI",
     "SULTAN MASTURA": "SULTAN MASTURA",
-    "DATU MONTAWAL": "DATU MONTAWAL",
+    "DATU MONTAWAL": "PAGAGAWAN",
     "DATU SAUDI AMPATUAN": "DATU SAUDI-AMPATUAN",
     "GEN. SALIPADA K. PENDATUN": "GENERAL SALIPADA K. PENDATUN",
     "TAWI TAWI": "TAWI-TAWI",
@@ -153,10 +162,6 @@ const GLOBAL_ALIASES: Record<string, string> = {
     "LAS PINAS": "LAS PIÑAS",
     "PARAÑAQUE": "PARAÑAQUE",
     "PARANAQUE": "PARAÑAQUE",
-    "PEÑARANDA": "PEÑARANDA",
-    "PENARANDA": "PEÑARANDA",
-    "PEÑABLANCA": "PEÑABLANCA",
-    "PENABLANCA": "PEÑABLANCA",
 };
 
 export interface AfrRawRow {
@@ -254,6 +259,11 @@ export function regionPsgcFromAfrLabel(label: string): string | null {
     return AFR_REGION_TO_PSGC[key] ?? null;
 }
 
+/** Region PSGC from an LGU's 10-digit code (first 2 digits + zeros). */
+export function regionPsgcFromLguPsgc(psgc: string): string {
+    return `${psgc.slice(0, 2)}00000000`;
+}
+
 export function normalizeCensusRegionLabel(label: string): string {
     return stripDiacritics(label).trim().toUpperCase().replace(/\s+/g, " ");
 }
@@ -261,7 +271,7 @@ export function normalizeCensusRegionLabel(label: string): string {
 export function regionPsgcFromCensusLabel(label: string): string | null {
     const norm = normalizeCensusRegionLabel(label);
     const afrKey = CENSUS_REGION_LABEL_TO_AFR[norm];
-    if (afrKey && afrKey !== "PHILIPPINES" && afrKey !== "NIR") {
+    if (afrKey && afrKey !== "PHILIPPINES") {
         return AFR_REGION_TO_PSGC[afrKey] ?? null;
     }
     return regionPsgcFromAfrLabel(label);

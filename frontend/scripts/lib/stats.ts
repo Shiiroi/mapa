@@ -142,12 +142,75 @@ export interface StatsContext {
     pop2024: Map<string, Pop2024Row>;
     histByPsgc: Map<string, PopVintageRow>;
     histByCorrespondence: Map<string, PopVintageRow>;
+    assetsByPsgc: Map<string, number>;
+    gdpByPsgc: Map<string, { gdp_2022: number | null; gdp_2023: number | null; gdp_2024: number | null }>;
+    ageSexByPsgc: Map<string, { pop_male_2020: number | null; pop_female_2020: number | null; age_sex_2020: unknown }>;
+}
+
+function parseNum(raw: string | undefined | null): number | null {
+    if (raw == null || raw === "") return null;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : null;
+}
+
+function loadAssetsMap(csvPath: string): Map<string, number> {
+    if (!fs.existsSync(csvPath)) return new Map();
+    const raw = fs.readFileSync(csvPath);
+    const rows = parse(raw, { columns: true, skip_empty_lines: true }) as Record<string, string>[];
+    const map = new Map<string, number>();
+    for (const row of rows) {
+        const psgc = padPsgc(row.psgc);
+        const assets = parseNum(row.assets);
+        // COA AFR figures are in thousand pesos; store actual pesos to match
+        // division_stats (seed-afr-assets.ts) and the GDP/peso formatting.
+        if (assets != null) map.set(psgc, assets * 1000);
+    }
+    return map;
+}
+
+function loadGdpMap(csvPath: string): Map<string, { gdp_2022: number | null; gdp_2023: number | null; gdp_2024: number | null }> {
+    if (!fs.existsSync(csvPath)) return new Map();
+    const raw = fs.readFileSync(csvPath);
+    const rows = parse(raw, { columns: true, skip_empty_lines: true }) as Record<string, string>[];
+    const map = new Map<string, { gdp_2022: number | null; gdp_2023: number | null; gdp_2024: number | null }>();
+    for (const row of rows) {
+        const psgc = padPsgc(row.psgc);
+        map.set(psgc, {
+            gdp_2022: parseNum(row.gdp_2022),
+            gdp_2023: parseNum(row.gdp_2023),
+            gdp_2024: parseNum(row.gdp_2024),
+        });
+    }
+    return map;
+}
+
+function loadAgeSexMap(csvPath: string): Map<string, { pop_male_2020: number | null; pop_female_2020: number | null; age_sex_2020: unknown }> {
+    if (!fs.existsSync(csvPath)) return new Map();
+    const raw = fs.readFileSync(csvPath, "utf8");
+    const rows = parse(raw, { columns: true, skip_empty_lines: true, relax_column_count: true }) as Record<string, string>[];
+    const map = new Map<string, { pop_male_2020: number | null; pop_female_2020: number | null; age_sex_2020: unknown }>();
+    for (const row of rows) {
+        const psgc = padPsgc(row.psgc);
+        let age_sex_2020: unknown = null;
+        try {
+            if (row.age_sex_2020) age_sex_2020 = JSON.parse(row.age_sex_2020);
+        } catch { /* leave null */ }
+        map.set(psgc, {
+            pop_male_2020: parseNum(row.pop_male_2020),
+            pop_female_2020: parseNum(row.pop_female_2020),
+            age_sex_2020,
+        });
+    }
+    return map;
 }
 
 export function createStatsContext(publicDir: string): StatsContext {
     const pop2024 = loadPop2024Map(path.join(publicDir, "psgc.csv"));
     const { byPsgc, byCorrespondence } = loadHistoricalPopMaps(path.join(publicDir, "psgc0.csv"));
-    return { pop2024, histByPsgc: byPsgc, histByCorrespondence: byCorrespondence };
+    const assetsByPsgc = loadAssetsMap(path.join(publicDir, "lgu_finance_2024.csv"));
+    const gdpByPsgc = loadGdpMap(path.join(publicDir, "gdp_mapped.csv"));
+    const ageSexByPsgc = loadAgeSexMap(path.join(publicDir, "household_agesex_2020.csv"));
+    return { pop2024, histByPsgc: byPsgc, histByCorrespondence: byCorrespondence, assetsByPsgc, gdpByPsgc, ageSexByPsgc };
 }
 
 export function attachStats<T extends { psgc: string; correspondence?: string | null; geometry?: unknown }>(
@@ -161,22 +224,24 @@ export function attachStats<T extends { psgc: string; correspondence?: string | 
     const hist = resolveHistoricalPop(psgc, correspondence, ctx.histByPsgc, ctx.histByCorrespondence);
     const pop_2024 = popRow?.pop_2024 ?? null;
     const area_km2 = existingArea ?? geoAreaKm2(row.geometry as Geometry | undefined);
+    const gdpRow = ctx.gdpByPsgc.get(psgc);
+    const ageSexRow = ctx.ageSexByPsgc.get(psgc);
     return {
         ...row,
         pop_2010: null,
         pop_2015: hist.pop_2015,
         pop_2020: hist.pop_2020,
         pop_2024,
-        pop_male_2020: null,
-        pop_female_2020: null,
-        age_sex_2020: null,
+        pop_male_2020: ageSexRow?.pop_male_2020 ?? null,
+        pop_female_2020: ageSexRow?.pop_female_2020 ?? null,
+        age_sex_2020: (ageSexRow?.age_sex_2020 as { age: string; both: number; male: number; female: number }[] | null) ?? null,
         area_km2,
         density_2024: computeDensity(pop_2024, area_km2),
         pct_change_2020_2024: computePctChange(hist.pop_2020, pop_2024),
-        assets_2024: null,
-        gdp_2022: null,
-        gdp_2023: null,
-        gdp_2024: null,
+        assets_2024: ctx.assetsByPsgc.get(psgc) ?? null,
+        gdp_2022: gdpRow?.gdp_2022 ?? null,
+        gdp_2023: gdpRow?.gdp_2023 ?? null,
+        gdp_2024: gdpRow?.gdp_2024 ?? null,
     };
 }
 

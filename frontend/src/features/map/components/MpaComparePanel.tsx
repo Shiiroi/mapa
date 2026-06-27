@@ -6,7 +6,7 @@ import { cn } from "../../../lib/cn";
 import { useDivisionStats } from "../hooks/useDivisionStats";
 import { fetchBarangaysByMunicity } from "../services/mapApi";
 import type { MpaLevel } from "../constants";
-import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
+import type { BarangayGeoJSON, CountryGeoJSON, CustomOverlay, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
 import { broadAgeGroups } from "../utils/ageSex";
 import {
     formatAreaKm2,
@@ -45,6 +45,8 @@ interface MpaComparePanelProps {
     currentSelection: CompareSelection | null;
     /** Name of the currently selected place, for the button label. */
     currentSelectionName: string | null;
+    /** Active custom overlay from the Custom tab (null if none). */
+    activeOverlay?: CustomOverlay | null;
 }
 
 function emptySelection(level: MpaLevel): CompareSelection {
@@ -266,6 +268,7 @@ export function MpaComparePanel({
     municityMeta,
     currentSelection,
     currentSelectionName,
+    activeOverlay = null,
 }: MpaComparePanelProps) {
     const [selA, setSelA] = useState<CompareSelection>({ ...DEFAULT_SELECTION, level: "municipality" });
     const [selB, setSelB] = useState<CompareSelection>({ ...DEFAULT_SELECTION, level: "municipality" });
@@ -368,6 +371,39 @@ export function MpaComparePanel({
 
             {displayA && displayB ? (
                 <div className="space-y-5">
+                    {activeOverlay && (() => {
+                        const psgcA = displayA.psgc.padStart(10, "0");
+                        const psgcB = displayB.psgc.padStart(10, "0");
+                        const cellA = activeOverlay.valuesByPsgc[psgcA];
+                        const cellB = activeOverlay.valuesByPsgc[psgcB];
+                        if (!cellA && !cellB) return null;
+                        const valA = activeOverlay.kind === "numeric" ? (cellA?.value ?? null) : null;
+                        const valB = activeOverlay.kind === "numeric" ? (cellB?.value ?? null) : null;
+                        const catA = activeOverlay.kind === "categorical" ? (cellA?.category ?? "—") : null;
+                        const catB = activeOverlay.kind === "categorical" ? (cellB?.category ?? "—") : null;
+                        const label = activeOverlay.meta.unit
+                            ? `${activeOverlay.meta.title} (${activeOverlay.meta.unit})`
+                            : activeOverlay.meta.title;
+                        return (
+                            <CompareSection title="Custom data" nameA={displayA.name} nameB={displayB.name}>
+                                {activeOverlay.kind === "numeric" ? (
+                                    <MetricRow
+                                        label={label}
+                                        a={valA}
+                                        b={valB}
+                                        format={formatPopulation}
+                                    />
+                                ) : (
+                                    <tr className="border-b border-border-light last:border-0">
+                                        <td className="py-2 pr-2 text-xs text-muted">{label}</td>
+                                        <td className="py-2 px-2 text-right text-sm font-medium text-primary">{catA}</td>
+                                        <td className="py-2 pl-2 text-right text-sm font-medium text-primary">{catB}</td>
+                                    </tr>
+                                )}
+                            </CompareSection>
+                        );
+                    })()}
+
                     {showPopulation && (
                         <CompareSection title="Population" nameA={displayA.name} nameB={displayB.name}>
                             <MetricRow
