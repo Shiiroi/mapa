@@ -1,6 +1,6 @@
 // Split-layout shell: map panel and download sidebar.
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { MpaMapPanel } from "../features/map/components/MpaMapPanel";
 import { MpaSidebar } from "../features/map/components/MpaSidebar";
@@ -8,11 +8,21 @@ import { useMpaDownload } from "../features/map/hooks/useMpaDownload";
 import { useMapLayers } from "../features/map/hooks/useMapLayers";
 import { fetchBarangaysByMunicity } from "../features/map/services/mapApi";
 import type { MpaLevel } from "../features/map/constants";
-import type { CustomOverlay } from "../features/map/types";
+import type { CustomOverlay, SeriesViewState } from "../features/map/types";
+import { defaultSeriesViewState } from "../features/map/utils/seriesScale";
 
 export default function MainPage() {
     const { provinces, municities, municityMeta, regions, country, loading, error } = useMapLayers();
     const [activeOverlay, setActiveOverlay] = useState<CustomOverlay | null>(null);
+    const [overlayView, setOverlayView] = useState<SeriesViewState>({ mode: "lead" });
+
+    useEffect(() => {
+        if (activeOverlay?.kind === "series") {
+            setOverlayView(defaultSeriesViewState(activeOverlay));
+        } else {
+            setOverlayView({ mode: "lead" });
+        }
+    }, [activeOverlay]);
 
     const download = useMpaDownload({ regions, provinces, municities, municityMeta, country });
 
@@ -24,6 +34,26 @@ export default function MainPage() {
         for (const m of municityMeta) set.add(m.psgc);
         return set;
     }, [country, regions, provinces, municityMeta]);
+
+    // True level per PSGC, so the CSV parser can tell HUC/independent cities
+    // (codes ending in "00000", like provinces) apart from actual provinces.
+    const psgcLevels = useMemo(() => {
+        const map = new Map<string, MpaLevel>();
+        if (country) map.set(country.psgc, "country");
+        for (const r of regions) map.set(r.psgc, "region");
+        for (const p of provinces) map.set(p.psgc, "province");
+        for (const m of municityMeta) map.set(m.psgc, "municipality");
+        return map;
+    }, [country, regions, provinces, municityMeta]);
+
+    const psgcLevelsByTier = useMemo(
+        (): Partial<Record<MpaLevel, ReadonlySet<string>>> => ({
+            region: new Set(regions.map((r) => r.psgc)),
+            province: new Set(provinces.map((p) => p.psgc)),
+            municipality: new Set(municityMeta.map((m) => m.psgc)),
+        }),
+        [regions, provinces, municityMeta],
+    );
 
     const barangaysQuery = useQuery({
         queryKey: ["barangays", download.selectedMunicityPsgc],
@@ -57,6 +87,7 @@ export default function MainPage() {
                     loading={loading || (download.level === "barangay" && barangaysQuery.isFetching)}
                     error={error ?? (barangaysQuery.error as Error | null)}
                     overlay={activeOverlay}
+                    overlayView={overlayView}
                 />
             </div>
             <div className="min-h-0 flex-1 overflow-hidden lg:flex-none">
@@ -88,7 +119,11 @@ export default function MainPage() {
                     error={download.error}
                     activeOverlay={activeOverlay}
                     onOverlayChange={setActiveOverlay}
+                    overlayView={overlayView}
+                    onOverlayViewChange={setOverlayView}
                     knownPsgcs={knownPsgcs}
+                    psgcLevels={psgcLevels}
+                    psgcLevelsByTier={psgcLevelsByTier}
                 />
             </div>
         </div>

@@ -78,24 +78,53 @@ export interface BarangayGeoJSON extends PsgcFields {
     note?: string | null;
 }
 
-/** One value cell in a custom map overlay (numeric count or categorical winner). */
+/** One named series in a multi-series overlay (candidate, budget line, land-use class, etc.). */
+export interface CustomSeriesDef {
+    key: string;
+    label: string;
+    color?: string;
+}
+
+export type SeriesViewMode = "dominant" | "lead" | "share" | "head2head";
+
+/** User-selected visualization mode for multi-series overlays. */
+export interface SeriesViewState {
+    mode: SeriesViewMode;
+    shareKey?: string;
+    pairA?: string;
+    pairB?: string;
+}
+
+/** One value cell in a custom map overlay (numeric, categorical, or multi-series). */
 export interface CustomOverlayValue {
     value?: number;
     category?: string;
     detail?: unknown;
+    /** Per-series values keyed by CustomSeriesDef.key. */
+    series?: Record<string, number>;
 }
 
 /** Active choropleth overlay from a built-in dataset or session CSV upload. */
 export interface CustomOverlay {
     source: "builtin" | "upload";
-    kind: "numeric" | "categorical";
+    kind: "numeric" | "categorical" | "series";
+    /** Primary level (first in `levels`; kept for backward-compatible labels). */
     level: MpaLevel;
+    /** Administrative tiers present in this dataset. */
+    levels: MpaLevel[];
+    /** Values keyed by tier, then PSGC. Only the bucket matching the map view is rendered. */
+    valuesByLevel: Partial<Record<MpaLevel, Record<string, CustomOverlayValue>>>;
+    /** Flat union of all tiers (used for tooltips and compare). */
     valuesByPsgc: Record<string, CustomOverlayValue>;
+    /** Ordered series definitions (required when kind === "series"). */
+    series?: CustomSeriesDef[];
     meta: {
         title: string;
         unit?: string;
         sourceName?: string;
         sourceUrl?: string;
+        /** Default visualization mode for series overlays. */
+        defaultView?: SeriesViewMode;
     };
 }
 
@@ -104,12 +133,13 @@ export interface CustomDataset {
     title: string;
     description: string | null;
     category: string;
-    kind: "numeric" | "categorical";
+    kind: "numeric" | "categorical" | "series";
     level: MpaLevel;
     unit: string | null;
     value_label: string | null;
     source_name: string | null;
     source_url: string | null;
+    series: CustomSeriesDef[] | null;
 }
 
 export interface CustomDatasetValueRow {

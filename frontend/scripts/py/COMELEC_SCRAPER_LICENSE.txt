@@ -1,0 +1,35 @@
+scrape_comelec.py is adapted from "scraper2022" by ianalis.
+
+Upstream: https://github.com/ianalis/scraper2022
+Upstream license: MIT
+
+----------------------------------------------------------------------
+MIT License
+
+Copyright (c) 2022 ianalis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+----------------------------------------------------------------------
+
+DATA NOTICE
+The election results downloaded by this script are official outputs of the
+Commission on Elections (COMELEC) 2022 transparency server. Works of the
+Philippine government are not protected by copyright (RA 8293, sec. 176), so the
+data may be reused, including commercially. When publishing, attribute the
+source, e.g. "Source: COMELEC 2022 transparency results".

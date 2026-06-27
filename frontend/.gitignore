@@ -15,6 +15,9 @@ dist-ssr
 # TypeScript build artifacts
 *.tsbuildinfo
 
+# Local COMELEC scrape (large, regenerable)
+scripts/py/data/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -5,25 +5,44 @@ import { cn } from "../../../lib/cn";
 import { downloadTextFile } from "../../../lib/downloadFile";
 import type { MpaLevel } from "../constants";
 import { useCustomDatasetValues, useCustomDatasets } from "../hooks/useCustomDatasets";
-import type { CustomDataset, CustomOverlay } from "../types";
-import { buildOverlayFromDataset } from "../utils/customOverlay";
-import { overlayLevelMatchesMap } from "../utils/customScale";
+import type { CustomDataset, CustomOverlay, SeriesViewMode, SeriesViewState } from "../types";
+import { buildOverlayFromDataset, overlayActiveAtLevel } from "../utils/customOverlay";
 import { formatPopulation } from "../utils/formatStats";
-import { scaleLevelFor } from "../utils/mapScale";
+import { SCALE_LEVEL_LABELS, scaleLevelFor } from "../utils/mapScale";
 import {
     CUSTOM_CSV_TEMPLATE,
+    CUSTOM_SERIES_CSV_TEMPLATE,
     overlayFromParsedCsv,
     parseCustomCsv,
 } from "../utils/parseCustomCsv";
 import type { ResolvedPlace } from "../utils/resolvePlace";
+import {
+    dominantSeries,
+    leadMargin,
+    seriesLabel,
+    seriesModeLabel,
+    seriesShare,
+    seriesTotal,
+} from "../utils/seriesScale";
 
 interface MpaCustomPanelProps {
     mapLevel: MpaLevel;
     activeOverlay: CustomOverlay | null;
     onOverlayChange: (overlay: CustomOverlay | null) => void;
+    overlayView: SeriesViewState;
+    onOverlayViewChange: (view: SeriesViewState) => void;
     selectedPlace: ResolvedPlace | null;
     knownPsgcs: Set<string>;
+    psgcLevels: ReadonlyMap<string, MpaLevel>;
+    psgcLevelsByTier: Partial<Record<MpaLevel, ReadonlySet<string>>>;
 }
+
+const SERIES_MODES: { mode: SeriesViewMode; label: string; minSeries: number }[] = [
+    { mode: "dominant", label: "Dominant", minSeries: 1 },
+    { mode: "lead", label: "Lead", minSeries: 2 },
+    { mode: "share", label: "Share", minSeries: 1 },
+    { mode: "head2head", label: "Head-to-head", minSeries: 2 },
+];
 
 function groupByCategory(datasets: CustomDataset[]): Map<string, CustomDataset[]> {
     const map = new Map<string, CustomDataset[]>();
@@ -38,12 +57,20 @@ function titleFromFilename(filename: string): string {
     return filename.replace(/\.[^.]+$/, "").trim() || "Uploaded dataset";
 }
 
+function formatPct(n: number): string {
+    return `${(n * 100).toFixed(1)}%`;
+}
+
 export function MpaCustomPanel({
     mapLevel,
     activeOverlay,
     onOverlayChange,
+    overlayView,
+    onOverlayViewChange,
     selectedPlace,
     knownPsgcs,
+    psgcLevels,
+    psgcLevelsByTier,
 }: MpaCustomPanelProps) {
     const datasetsQuery = useCustomDatasets();
     const [selectedDatasetId, setSelectedDatasetId] = useState<string | null>(null);
@@ -59,8 +86,10 @@ export function MpaCustomPanel({
     );
 
     const mapScaleLevel = scaleLevelFor(mapLevel);
-    const levelMatches =
-        activeOverlay != null && overlayLevelMatchesMap(activeOverlay.level, mapScaleLevel);
+    const levelMatches = activeOverlay != null && overlayActiveAtLevel(activeOverlay, mapScaleLevel);
+
+    const seriesKeys = activeOverlay?.series?.map((s) => s.key) ?? [];
+    const seriesCount = seriesKeys.length;
 
     useEffect(() => {
         if (!selectedDatasetId || !valuesQuery.data) return;
@@ -79,7 +108,7 @@ export function MpaCustomPanel({
         setSelectedDatasetId(null);
         if (!file) return;
         const text = await file.text();
-        const result = parseCustomCsv(text, knownPsgcs);
+        const result = parseCustomCsv(text, knownPsgcs, psgcLevels, psgcLevelsByTier);
         if (!result.ok) {
             setUploadError(result.error);
             return;
@@ -93,10 +122,16 @@ export function MpaCustomPanel({
             ? activeOverlay.valuesByPsgc[selectedPlace.psgc.padStart(10, "0")]
             : null;
 
+    const setMode = (mode: SeriesViewMode) => {
+        onOverlayViewChange({ ...overlayView, mode });
+    };
+
     return (
         <div className="space-y-5">
             <p className="text-sm text-muted">
-                Upload a CSV to color the map by your own numbers (session only — not saved).
+                Upload a CSV to color the map with your own data (session only — not saved). Use a single{" "}
+                <code className="text-primary">value</code> column for one number per area, or multiple series
+                columns for breakdowns (elections, budgets, land use, etc.).
                 {hasBuiltinDatasets ? " Or pick a built-in dataset below." : ""}
             </p>
 
@@ -135,9 +170,45 @@ export function MpaCustomPanel({
             <section className="space-y-2 rounded-lg border border-border-light bg-surface p-3">
                 <p className="text-xs font-medium uppercase tracking-wide text-muted">Upload CSV</p>
                 <p className="text-xs text-muted">
-                    Columns: <code className="text-primary">psgc,value</code> (optional{" "}
-                    <code className="text-primary">label</code>). All rows must share one administrative level.
+                    Every row is matched to the map by its <code className="text-primary">psgc</code> code. Pick one of
+                    two shapes:
                 </p>
+                <ul className="space-y-1 text-xs text-muted">
+                    <li>
+                        <span className="font-medium text-primary">One number per area</span> —{" "}
+                        <code className="text-primary">psgc,value,label</code>
+                    </li>
+                    <li>
+                        <span className="font-medium text-primary">Breakdown per area</span> (elections, budgets…) —{" "}
+                        <code className="text-primary">psgc,label,SeriesA,SeriesB,…</code>
+                    </li>
+                </ul>
+                <details className="text-xs text-muted">
+                    <summary className="cursor-pointer font-medium text-primary">How the CSV is structured</summary>
+                    <div className="mt-1.5 space-y-1.5 border-l-2 border-border-light pl-2.5">
+                        <p>
+                            <span className="font-medium text-primary">psgc</span> is the 10-digit code (region,
+                            province, city/municipality, or barangay). The map reads the level from the code, so you can
+                            mix all levels in one file — it shows the right rows as you switch the View by level.
+                        </p>
+                        <p>
+                            <span className="font-medium text-primary">label</span> is optional and only shown in
+                            tooltips. For breakdowns, the column headers become the series names.
+                        </p>
+                        <p>
+                            Lines starting with <code className="text-primary">#</code> are optional settings:{" "}
+                            <code className="text-primary">title</code>, <code className="text-primary">unit</code>, and
+                            (for breakdowns) <code className="text-primary">colors</code>,{" "}
+                            <code className="text-primary">mode</code>. They work in both shapes.
+                        </p>
+                        <p>
+                            Avoid commas inside names/labels. In <code className="text-primary">#</code> settings,
+                            separate items with <code className="text-primary">;</code> so a spreadsheet keeps them in
+                            one cell.
+                        </p>
+                        <p>Download a template below for a ready-to-edit example.</p>
+                    </div>
+                </details>
                 <label className="block space-y-1">
                     <span className="text-xs text-muted">Dataset title</span>
                     <input
@@ -154,7 +225,20 @@ export function MpaCustomPanel({
                         onClick={() => downloadTextFile(CUSTOM_CSV_TEMPLATE, "custom-overlay-template.csv", "text/csv")}
                         className="rounded-md border border-accent/40 px-2 py-1 text-xs font-medium text-accent hover:bg-accent/10"
                     >
-                        Download template
+                        Single-value template
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            downloadTextFile(
+                                CUSTOM_SERIES_CSV_TEMPLATE,
+                                "custom-series-template.csv",
+                                "text/csv",
+                            )
+                        }
+                        className="rounded-md border border-accent/40 px-2 py-1 text-xs font-medium text-accent hover:bg-accent/10"
+                    >
+                        Multi-series template
                     </button>
                     <label className="cursor-pointer rounded-md border border-border-light bg-white px-2 py-1 text-xs font-medium text-primary hover:bg-white/80">
                         Choose file…
@@ -206,9 +290,102 @@ export function MpaCustomPanel({
 
                     {!levelMatches && (
                         <p className="text-xs text-amber-700">
-                            Switch map view to <strong>{activeOverlay.level}</strong> level to see this dataset on the
-                            map.
+                            Covers{" "}
+                            {activeOverlay.levels
+                                .map((l) => SCALE_LEVEL_LABELS[l as keyof typeof SCALE_LEVEL_LABELS] ?? l)
+                                .join(", ")}
+                            . Switch map view to one of those levels to see it on the map.
                         </p>
+                    )}
+
+                    {activeOverlay.kind === "series" && seriesCount > 0 && (
+                        <div className="space-y-2 border-t border-border-light pt-2">
+                            <p className="text-xs font-medium uppercase tracking-wide text-muted">Visualization</p>
+                            <div className="flex flex-wrap gap-1">
+                                {SERIES_MODES.map(({ mode, label, minSeries }) => {
+                                    const disabled = seriesCount < minSeries;
+                                    return (
+                                        <button
+                                            key={mode}
+                                            type="button"
+                                            disabled={disabled}
+                                            onClick={() => setMode(mode)}
+                                            title={disabled ? `Needs at least ${minSeries} series` : undefined}
+                                            className={cn(
+                                                "rounded-md px-2 py-1 text-xs font-medium transition-colors",
+                                                overlayView.mode === mode
+                                                    ? "bg-accent text-white"
+                                                    : "border border-border-light text-primary hover:bg-surface",
+                                                disabled && "cursor-not-allowed opacity-40",
+                                            )}
+                                        >
+                                            {label}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {overlayView.mode === "share" && (
+                                <label className="block space-y-1">
+                                    <span className="text-xs text-muted">Series</span>
+                                    <select
+                                        value={overlayView.shareKey ?? seriesKeys[0]}
+                                        onChange={(e) =>
+                                            onOverlayViewChange({ ...overlayView, shareKey: e.target.value })
+                                        }
+                                        className="w-full rounded-md border border-border-light bg-white px-2 py-1.5 text-sm text-primary"
+                                    >
+                                        {activeOverlay.series!.map((s) => (
+                                            <option key={s.key} value={s.key}>
+                                                {s.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+                            )}
+
+                            {overlayView.mode === "head2head" && seriesCount >= 2 && (
+                                <div className="grid grid-cols-2 gap-2">
+                                    <label className="block space-y-1">
+                                        <span className="text-xs text-muted">Series A</span>
+                                        <select
+                                            value={overlayView.pairA ?? seriesKeys[0]}
+                                            onChange={(e) =>
+                                                onOverlayViewChange({ ...overlayView, pairA: e.target.value })
+                                            }
+                                            className="w-full rounded-md border border-border-light bg-white px-2 py-1.5 text-sm text-primary"
+                                        >
+                                            {activeOverlay.series!.map((s) => (
+                                                <option key={s.key} value={s.key}>
+                                                    {s.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </label>
+                                    <label className="block space-y-1">
+                                        <span className="text-xs text-muted">Series B</span>
+                                        <select
+                                            value={overlayView.pairB ?? seriesKeys[1]}
+                                            onChange={(e) =>
+                                                onOverlayViewChange({ ...overlayView, pairB: e.target.value })
+                                            }
+                                            className="w-full rounded-md border border-border-light bg-white px-2 py-1.5 text-sm text-primary"
+                                        >
+                                            {activeOverlay.series!.map((s) => (
+                                                <option key={s.key} value={s.key}>
+                                                    {s.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </label>
+                                </div>
+                            )}
+
+                            <p className="text-[10px] text-muted">
+                                Viewing: {seriesModeLabel(overlayView.mode)}
+                                {activeOverlay.meta.unit ? ` · ${activeOverlay.meta.unit}` : ""}
+                            </p>
+                        </div>
                     )}
 
                     {selectedPlace && selectedValue && (
@@ -222,6 +399,48 @@ export function MpaCustomPanel({
                             )}
                             {activeOverlay.kind === "categorical" && selectedValue.category && (
                                 <p className="text-lg font-semibold text-primary">{selectedValue.category}</p>
+                            )}
+                            {activeOverlay.kind === "series" && selectedValue.series && (
+                                <div className="mt-1 space-y-1">
+                                    {(() => {
+                                        const top = dominantSeries(selectedValue);
+                                        const total = seriesTotal(selectedValue);
+                                        const margin = leadMargin(selectedValue);
+                                        return (
+                                            <>
+                                                {top && (
+                                                    <p className="text-sm font-semibold text-primary">
+                                                        Dominant: {seriesLabel(activeOverlay, top.key)}
+                                                        {total > 0 && ` (${formatPct(top.value / total)})`}
+                                                        {margin != null && ` · +${formatPct(margin)} lead`}
+                                                    </p>
+                                                )}
+                                                <ul className="space-y-0.5">
+                                                    {activeOverlay.series!.map((def) => {
+                                                        const val = selectedValue.series![def.key] ?? 0;
+                                                        const share = seriesShare(selectedValue, def.key);
+                                                        const isTop = top?.key === def.key;
+                                                        return (
+                                                            <li
+                                                                key={def.key}
+                                                                className={cn(
+                                                                    "flex justify-between text-xs",
+                                                                    isTop ? "font-medium text-primary" : "text-muted",
+                                                                )}
+                                                            >
+                                                                <span>{def.label}</span>
+                                                                <span className="tabular-nums">
+                                                                    {formatPopulation(Math.round(val))}
+                                                                    {share != null && ` (${formatPct(share)})`}
+                                                                </span>
+                                                            </li>
+                                                        );
+                                                    })}
+                                                </ul>
+                                            </>
+                                        );
+                                    })()}
+                                </div>
                             )}
                         </div>
                     )}

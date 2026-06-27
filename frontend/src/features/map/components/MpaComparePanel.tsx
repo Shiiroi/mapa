@@ -377,13 +377,49 @@ export function MpaComparePanel({
                         const cellA = activeOverlay.valuesByPsgc[psgcA];
                         const cellB = activeOverlay.valuesByPsgc[psgcB];
                         if (!cellA && !cellB) return null;
+                        const label = activeOverlay.meta.unit
+                            ? `${activeOverlay.meta.title} (${activeOverlay.meta.unit})`
+                            : activeOverlay.meta.title;
+
+                        if (activeOverlay.kind === "series" && activeOverlay.series?.length) {
+                            return (
+                                <CompareSection title="Custom data" nameA={displayA.name} nameB={displayB.name}>
+                                    {activeOverlay.series.map((def) => {
+                                        const valA = cellA?.series?.[def.key] ?? null;
+                                        const valB = cellB?.series?.[def.key] ?? null;
+                                        const totalA = cellA?.series
+                                            ? Object.values(cellA.series).reduce((s, v) => s + (v > 0 ? v : 0), 0)
+                                            : 0;
+                                        const totalB = cellB?.series
+                                            ? Object.values(cellB.series).reduce((s, v) => s + (v > 0 ? v : 0), 0)
+                                            : 0;
+                                        const shareA = valA != null && totalA > 0 ? valA / totalA : null;
+                                        const shareB = valB != null && totalB > 0 ? valB / totalB : null;
+                                        const fmt = (v: number | null, share: number | null) => {
+                                            if (v == null) return "—";
+                                            const base = formatPopulation(Math.round(v));
+                                            return share != null ? `${base} (${(share * 100).toFixed(1)}%)` : base;
+                                        };
+                                        return (
+                                            <tr key={def.key} className="border-b border-border-light last:border-0">
+                                                <td className="py-2 pr-2 text-xs text-muted">{def.label}</td>
+                                                <td className="py-2 px-2 text-right text-sm font-medium text-primary tabular-nums">
+                                                    {fmt(valA, shareA)}
+                                                </td>
+                                                <td className="py-2 pl-2 text-right text-sm font-medium text-primary tabular-nums">
+                                                    {fmt(valB, shareB)}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </CompareSection>
+                            );
+                        }
+
                         const valA = activeOverlay.kind === "numeric" ? (cellA?.value ?? null) : null;
                         const valB = activeOverlay.kind === "numeric" ? (cellB?.value ?? null) : null;
                         const catA = activeOverlay.kind === "categorical" ? (cellA?.category ?? "—") : null;
                         const catB = activeOverlay.kind === "categorical" ? (cellB?.category ?? "—") : null;
-                        const label = activeOverlay.meta.unit
-                            ? `${activeOverlay.meta.title} (${activeOverlay.meta.unit})`
-                            : activeOverlay.meta.title;
                         return (
                             <CompareSection title="Custom data" nameA={displayA.name} nameB={displayB.name}>
                                 {activeOverlay.kind === "numeric" ? (

@@ -10,7 +10,7 @@ import { MpaComparePanel, type CompareSelection } from "./MpaComparePanel";
 import { MpaCustomPanel } from "./MpaCustomPanel";
 import { MpaDownloadPanel } from "./MpaDownloadPanel";
 import { MpaInfoPanel } from "./MpaInfoPanel";
-import type { CustomOverlay } from "../types";
+import type { CustomOverlay, SeriesViewState } from "../types";
 
 export type SidebarTab = "geojson" | "info" | "compare" | "custom";
 
@@ -42,7 +42,11 @@ interface MpaSidebarProps {
     error: string | null;
     activeOverlay: CustomOverlay | null;
     onOverlayChange: (overlay: CustomOverlay | null) => void;
+    overlayView: SeriesViewState;
+    onOverlayViewChange: (view: SeriesViewState) => void;
     knownPsgcs: Set<string>;
+    psgcLevels: ReadonlyMap<string, MpaLevel>;
+    psgcLevelsByTier: Partial<Record<MpaLevel, ReadonlySet<string>>>;
 }
 
 const TABS: { id: SidebarTab; label: string }[] = [
@@ -158,8 +162,12 @@ export function MpaSidebar(props: MpaSidebarProps) {
                             mapLevel={props.level}
                             activeOverlay={props.activeOverlay}
                             onOverlayChange={props.onOverlayChange}
+                            overlayView={props.overlayView}
+                            onOverlayViewChange={props.onOverlayViewChange}
                             selectedPlace={selectedPlace}
                             knownPsgcs={props.knownPsgcs}
+                            psgcLevels={props.psgcLevels}
+                            psgcLevelsByTier={props.psgcLevelsByTier}
                         />
                     </div>
                 )}
