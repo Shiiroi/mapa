@@ -1,9 +1,9 @@
-// Seeds the built-in "2022 President by province" dataset from the official
-// COMELEC-derived CSV (scripts/map-comelec-president.ts output).
+// Seeds the built-in "2022 President" dataset from the official COMELEC-derived
+// CSV (scripts/map-comelec-president.ts output).
 //
-// The province file is a multi-series CSV with "# colors:" / "# series:"
-// directives and a "psgc,label,<candidate>,…" header. We parse it directly so
-// seeding stays in sync with whatever map:comelec produced.
+// Uses the all-tiers file (region + province + city/municipality + barangay)
+// so the built-in overlay behaves like uploading elections_2022_president_all.csv.
+// Re-run after map:comelec to pick up newly scraped barangays (upsert, no reset).
 
 import { createClient } from "@supabase/supabase-js";
 import { parse } from "csv-parse/sync";
@@ -12,7 +12,7 @@ import * as path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CSV_PATH = path.join(__dirname, "../public/elections_2022_president_province.csv");
+const CSV_PATH = path.join(__dirname, "../public/elections_2022_president_all.csv");
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -34,7 +34,7 @@ function seriesKeyFromLabel(label: string): string {
     return label.trim().replace(/\s+/g, "_");
 }
 
-/** Split a COMELEC province CSV into # directive lines and data lines. */
+/** Split a COMELEC CSV into # directive lines and data lines. */
 function splitCsv(text: string): { directives: string[]; dataLines: string[] } {
     const directives: string[] = [];
     const dataLines: string[] = [];
@@ -77,7 +77,7 @@ async function main() {
 
     const { directives, dataLines } = splitCsv(fs.readFileSync(CSV_PATH, "utf8"));
     if (dataLines.length < 2) {
-        console.error("No data rows found in province CSV.");
+        console.error("No data rows found in all-tiers CSV.");
         process.exit(1);
     }
 
@@ -104,12 +104,12 @@ async function main() {
 
     const DATASET = {
         id: "elections-2022-president",
-        title: "2022 presidential results by province",
+        title: "2022 presidential results",
         description:
-            "Presidential vote totals per province, aggregated from official COMELEC 2022 transparency results. Metro Manila and the Negros Island Region are derived from their cities/municipalities.",
+            "Presidential vote totals by region, province, city/municipality, and barangay from official COMELEC 2022 transparency results. Metro Manila and the Negros Island Region are derived from their cities/municipalities. Barangay coverage grows as more areas are scraped.",
         category: "Elections",
         kind: "series" as const,
-        level: "province",
+        level: "region",
         unit: "votes",
         value_label: null,
         source_name: "COMELEC 2022 transparency results",
@@ -142,8 +142,11 @@ async function main() {
         };
     });
 
-    console.log(`Upserting ${values.length} province values…`);
-    for (const batch of chunks(values, 200)) {
+    // NCR (1300000000) may appear as both region and province in the all CSV; keep one row per PSGC.
+    const deduped = [...new Map(values.map((row) => [row.psgc, row])).values()];
+
+    console.log(`Upserting ${deduped.length} values…`);
+    for (const batch of chunks(deduped, 200)) {
         const { error } = await supabase
             .from("custom_dataset_values")
             .upsert(batch, { onConflict: "dataset_id,psgc" });

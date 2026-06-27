@@ -23,6 +23,30 @@ export function inferLevelFromPsgc(psgc: string): MpaLevel | null {
     return "barangay";
 }
 
+/** Resolve which admin tiers a PSGC belongs to (handles NCR dual region/province). */
+export function resolveTiersForPsgc(
+    psgc: string,
+    psgcLevels?: ReadonlyMap<string, MpaLevel>,
+    psgcLevelsByTier?: Partial<Record<MpaLevel, ReadonlySet<string>>>,
+): MpaLevel[] {
+    if (psgcLevelsByTier) {
+        const tiers: MpaLevel[] = [];
+        for (const level of LEVEL_ORDER) {
+            if (psgcLevelsByTier[level]?.has(psgc)) tiers.push(level);
+        }
+        if (tiers.length) return tiers;
+    }
+    const single = psgcLevels?.get(psgc) ?? inferLevelFromPsgc(psgc);
+    return single ? [single] : [];
+}
+
+export function primaryTier(tiers: MpaLevel[]): MpaLevel {
+    return tiers.reduce(
+        (best, tier) => (LEVEL_ORDER.indexOf(tier) > LEVEL_ORDER.indexOf(best) ? tier : best),
+        tiers[0],
+    );
+}
+
 function detailToSeries(detail: unknown): Record<string, number> | undefined {
     if (!detail || typeof detail !== "object" || Array.isArray(detail)) return undefined;
     const out: Record<string, number> = {};
@@ -34,21 +58,25 @@ function detailToSeries(detail: unknown): Record<string, number> | undefined {
     return Object.keys(out).length > 0 ? out : undefined;
 }
 
+function rowToCell(row: CustomDatasetValueRow, kind: CustomOverlay["kind"]): CustomOverlayValue {
+    const cell: CustomOverlayValue = {
+        value: row.value ?? undefined,
+        category: row.category ?? undefined,
+        detail: row.detail ?? undefined,
+    };
+    if (kind === "series") {
+        cell.series = detailToSeries(row.detail);
+    }
+    return cell;
+}
+
 export function rowsToValuesByPsgc(
     rows: CustomDatasetValueRow[],
     kind: CustomOverlay["kind"],
 ): Record<string, CustomOverlayValue> {
     const out: Record<string, CustomOverlayValue> = {};
     for (const row of rows) {
-        const cell: CustomOverlayValue = {
-            value: row.value ?? undefined,
-            category: row.category ?? undefined,
-            detail: row.detail ?? undefined,
-        };
-        if (kind === "series") {
-            cell.series = detailToSeries(row.detail);
-        }
-        out[row.psgc.padStart(10, "0")] = cell;
+        out[row.psgc.padStart(10, "0")] = rowToCell(row, kind);
     }
     return out;
 }
@@ -56,15 +84,35 @@ export function rowsToValuesByPsgc(
 export function buildOverlayFromDataset(
     dataset: CustomDataset,
     rows: CustomDatasetValueRow[],
+    psgcLevels?: ReadonlyMap<string, MpaLevel>,
+    psgcLevelsByTier?: Partial<Record<MpaLevel, ReadonlySet<string>>>,
     source: CustomOverlay["source"] = "builtin",
 ): CustomOverlay {
-    const valuesByPsgc = rowsToValuesByPsgc(rows, dataset.kind);
+    const valuesByLevel: CustomOverlay["valuesByLevel"] = {};
+    const valuesByPsgc: CustomOverlay["valuesByPsgc"] = {};
+    const levelsSet = new Set<MpaLevel>();
+
+    for (const row of rows) {
+        const psgc = row.psgc.padStart(10, "0");
+        const tiers = resolveTiersForPsgc(psgc, psgcLevels, psgcLevelsByTier);
+        if (!tiers.length) continue;
+
+        const cell = rowToCell(row, dataset.kind);
+        for (const tier of tiers) {
+            if (!valuesByLevel[tier]) valuesByLevel[tier] = {};
+            valuesByLevel[tier]![psgc] = cell;
+            levelsSet.add(tier);
+        }
+        valuesByPsgc[psgc] = cell;
+    }
+
+    const levels = sortLevels([...levelsSet]);
     const overlay: CustomOverlay = {
         source,
         kind: dataset.kind,
-        level: dataset.level,
-        levels: [dataset.level],
-        valuesByLevel: { [dataset.level]: valuesByPsgc },
+        level: levels[0] ?? dataset.level,
+        levels: levels.length ? levels : [dataset.level],
+        valuesByLevel: levels.length ? valuesByLevel : { [dataset.level]: valuesByPsgc },
         valuesByPsgc,
         meta: {
             title: dataset.title,

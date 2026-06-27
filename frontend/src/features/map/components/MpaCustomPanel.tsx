@@ -61,6 +61,41 @@ function formatPct(n: number): string {
     return `${(n * 100).toFixed(1)}%`;
 }
 
+function DatasetToggle({
+    active,
+    disabled,
+    onChange,
+    label,
+}: {
+    active: boolean;
+    disabled?: boolean;
+    onChange: (on: boolean) => void;
+    label: string;
+}) {
+    return (
+        <button
+            type="button"
+            role="switch"
+            aria-checked={active}
+            aria-label={label}
+            disabled={disabled}
+            onClick={() => onChange(!active)}
+            className={cn(
+                "relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+                active ? "bg-accent" : "bg-border-light",
+                disabled && "cursor-not-allowed opacity-50",
+            )}
+        >
+            <span
+                className={cn(
+                    "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition",
+                    active ? "translate-x-5" : "translate-x-0",
+                )}
+            />
+        </button>
+    );
+}
+
 export function MpaCustomPanel({
     mapLevel,
     activeOverlay,
@@ -95,12 +130,21 @@ export function MpaCustomPanel({
         if (!selectedDatasetId || !valuesQuery.data) return;
         const dataset = datasetsQuery.data?.find((d) => d.id === selectedDatasetId);
         if (!dataset) return;
-        onOverlayChange(buildOverlayFromDataset(dataset, valuesQuery.data));
-    }, [selectedDatasetId, valuesQuery.data, datasetsQuery.data, onOverlayChange]);
+        onOverlayChange(
+            buildOverlayFromDataset(dataset, valuesQuery.data, psgcLevels, psgcLevelsByTier),
+        );
+    }, [selectedDatasetId, valuesQuery.data, datasetsQuery.data, onOverlayChange, psgcLevels, psgcLevelsByTier]);
 
-    const handleSelectBuiltin = (dataset: CustomDataset) => {
-        setSelectedDatasetId(dataset.id);
-        setUploadError(null);
+    const handleToggleBuiltin = (dataset: CustomDataset, on: boolean) => {
+        if (on) {
+            setSelectedDatasetId(dataset.id);
+            setUploadError(null);
+            return;
+        }
+        if (selectedDatasetId === dataset.id) {
+            setSelectedDatasetId(null);
+            onOverlayChange(null);
+        }
     };
 
     const handleFileUpload = async (file: File | null) => {
@@ -136,34 +180,45 @@ export function MpaCustomPanel({
             </p>
 
             {hasBuiltinDatasets && (
-                <section className="space-y-2">
+                <section className="space-y-3">
                     <p className="text-xs font-medium uppercase tracking-wide text-muted">Built-in datasets</p>
                     {[...grouped.entries()].map(([category, items]) => (
-                        <div key={category} className="space-y-1">
+                        <div key={category} className="space-y-2">
                             <p className="text-xs text-muted">{category}</p>
-                            {items.map((dataset) => (
-                                <button
-                                    key={dataset.id}
-                                    type="button"
-                                    onClick={() => handleSelectBuiltin(dataset)}
-                                    className={cn(
-                                        "w-full rounded-lg border px-3 py-2 text-left text-sm transition-colors",
-                                        selectedDatasetId === dataset.id && activeOverlay?.source === "builtin"
-                                            ? "border-accent bg-accent/5"
-                                            : "border-border-light hover:bg-surface",
-                                    )}
-                                >
-                                    <span className="font-medium text-primary">{dataset.title}</span>
-                                    {dataset.description && (
-                                        <span className="mt-0.5 block text-xs text-muted">{dataset.description}</span>
-                                    )}
-                                </button>
-                            ))}
+                            {items.map((dataset) => {
+                                const isActive =
+                                    selectedDatasetId === dataset.id && activeOverlay?.source === "builtin";
+                                const isLoading = selectedDatasetId === dataset.id && valuesQuery.isFetching;
+                                return (
+                                    <div
+                                        key={dataset.id}
+                                        className={cn(
+                                            "flex items-start gap-3 rounded-lg border px-3 py-2.5 transition-colors",
+                                            isActive ? "border-accent bg-accent/5" : "border-border-light bg-surface/50",
+                                        )}
+                                    >
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-sm font-medium text-primary">{dataset.title}</p>
+                                            {dataset.description && (
+                                                <p className="mt-0.5 text-xs leading-relaxed text-muted">
+                                                    {dataset.description}
+                                                </p>
+                                            )}
+                                            {isLoading && (
+                                                <p className="mt-1 text-xs text-muted">Loading values…</p>
+                                            )}
+                                        </div>
+                                        <DatasetToggle
+                                            active={isActive}
+                                            disabled={isLoading}
+                                            label={`Toggle ${dataset.title}`}
+                                            onChange={(on) => handleToggleBuiltin(dataset, on)}
+                                        />
+                                    </div>
+                                );
+                            })}
                         </div>
                     ))}
-                    {selectedDatasetId && valuesQuery.isFetching && (
-                        <p className="text-xs text-muted">Loading values…</p>
-                    )}
                 </section>
             )}
 

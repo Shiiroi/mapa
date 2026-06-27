@@ -1,6 +1,6 @@
 import type { MpaLevel } from "../constants";
 import type { CustomOverlay, CustomSeriesDef, SeriesViewMode } from "../types";
-import { inferLevelFromPsgc, sortLevels, LEVEL_ORDER } from "./customOverlay";
+import { sortLevels, resolveTiersForPsgc, primaryTier } from "./customOverlay";
 
 export interface ParsedNumericCsv {
     kind: "numeric";
@@ -150,27 +150,6 @@ function buildSeriesDefs(
     for (const def of byKey.values()) ordered.push(def);
     return ordered;
 }
-
-function resolveTiersForPsgc(
-    psgc: string,
-    psgcLevels?: ReadonlyMap<string, MpaLevel>,
-    psgcLevelsByTier?: Partial<Record<MpaLevel, ReadonlySet<string>>>,
-): MpaLevel[] {
-    if (psgcLevelsByTier) {
-        const tiers: MpaLevel[] = [];
-        for (const level of LEVEL_ORDER) {
-            if (psgcLevelsByTier[level]?.has(psgc)) tiers.push(level);
-        }
-        if (tiers.length) return tiers;
-    }
-    const single = psgcLevels?.get(psgc) ?? inferLevelFromPsgc(psgc);
-    return single ? [single] : [];
-}
-
-function primaryTier(tiers: MpaLevel[]): MpaLevel {
-    return tiers.reduce((best, tier) => (LEVEL_ORDER.indexOf(tier) > LEVEL_ORDER.indexOf(best) ? tier : best), tiers[0]);
-}
-
 // Parses numeric (psgc,value) or multi-series (psgc,label,SeriesA,SeriesB,...) CSV.
 // `psgcLevelsByTier` maps each tier to its member PSGCs (handles NCR sharing 1300000000
 // at region and province). `psgcLevels` is a flat fallback for HUC disambiguation.

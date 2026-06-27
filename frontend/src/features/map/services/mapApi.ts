@@ -74,7 +74,7 @@ export async function fetchStatsByPsgc(psgc: string): Promise<DivisionStats | nu
 export async function fetchCustomDatasets(): Promise<CustomDataset[]> {
     const { data, error } = await supabase
         .from("custom_datasets")
-        .select("id, title, description, category, kind, level, unit, value_label, source_name, source_url")
+        .select("id, title, description, category, kind, level, unit, value_label, source_name, source_url, series")
         .order("category")
         .order("title");
     if (error) throw error;
