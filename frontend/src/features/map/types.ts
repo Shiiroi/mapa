@@ -1,6 +1,7 @@
 // TypeScript types for regions, provinces, and municipalities (PSGC-keyed).
 
 import type { Geometry } from "geojson";
+import type { MpaLevel } from "./constants";
 
 export type GeoLevel = "Reg" | "Prov" | "City" | "Mun" | "SubMun" | "Bgy" | "Country" | "Special";
 export type CityLevel = "HUC" | "CC" | "ICC";
@@ -75,4 +76,46 @@ export interface BarangayGeoJSON extends PsgcFields {
     region_psgc: string | null;
     geometry: Geometry;
     note?: string | null;
+}
+
+/** One value cell in a custom map overlay (numeric count or categorical winner). */
+export interface CustomOverlayValue {
+    value?: number;
+    category?: string;
+    detail?: unknown;
+}
+
+/** Active choropleth overlay from a built-in dataset or session CSV upload. */
+export interface CustomOverlay {
+    source: "builtin" | "upload";
+    kind: "numeric" | "categorical";
+    level: MpaLevel;
+    valuesByPsgc: Record<string, CustomOverlayValue>;
+    meta: {
+        title: string;
+        unit?: string;
+        sourceName?: string;
+        sourceUrl?: string;
+    };
+}
+
+export interface CustomDataset {
+    id: string;
+    title: string;
+    description: string | null;
+    category: string;
+    kind: "numeric" | "categorical";
+    level: MpaLevel;
+    unit: string | null;
+    value_label: string | null;
+    source_name: string | null;
+    source_url: string | null;
+}
+
+export interface CustomDatasetValueRow {
+    dataset_id: string;
+    psgc: string;
+    value: number | null;
+    category: string | null;
+    detail: unknown;
 }

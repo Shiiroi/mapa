@@ -1,0 +1,85 @@
+psgc,level,name,hospital_count
+1300000000,province,Metro Manila,236
+0102800000,province,Ilocos Norte,23
+0102900000,province,Ilocos Sur,22
+0103300000,province,La Union,16
+0105500000,province,Pangasinan,61
+0200900000,province,Batanes,0
+0201500000,province,Cagayan,30
+0203100000,province,Isabela,39
+0205000000,province,Nueva Vizcaya,10
+0205700000,province,Quirino,2
+0300800000,province,Bataan,17
+0301400000,province,Bulacan,96
+0304900000,province,Nueva Ecija,37
+0305400000,province,Pampanga,76
+0306900000,province,Tarlac,30
+0307100000,province,Zambales,18
+0307700000,province,Aurora,4
+0401000000,province,Batangas,87
+0402100000,province,Cavite,91
+0403400000,province,Laguna,0
+0405600000,province,Quezon,34
+0405800000,province,Rizal,0
+1704000000,province,Marinduque,7
+1705100000,province,Occidental Mindoro,11
+1705200000,province,Oriental Mindoro,16
+1705300000,province,Palawan,24
+1705900000,province,Romblon,8
+0500500000,province,Albay,34
+0501600000,province,Camarines Norte,0
+0501700000,province,Camarines Sur,28
+0502000000,province,Catanduanes,0
+0504100000,province,Masbate,12
+0506200000,province,Sorsogon,0
+0600400000,province,Aklan,15
+0600600000,province,Antique,15
+0601900000,province,Capiz,20
+0603000000,province,Iloilo,36
+1804500000,province,Negros Occidental,36
+0607900000,province,Guimaras,0
+0701200000,province,Bohol,28
+0702200000,province,Cebu,73
+1804600000,province,Negros Oriental,22
+1806100000,province,Siquijor,0
+0802600000,province,Eastern Samar,19
+0803700000,province,Leyte,47
+0804800000,province,Northern Samar,10
+0806000000,province,Samar,14
+0806400000,province,Southern Leyte,20
+0807800000,province,Biliran,1
+0907200000,province,Zamboanga del Norte,12
+0907300000,province,Zamboanga del Sur,28
+0908300000,province,Zamboanga Sibugay,10
+1001300000,province,Bukidnon,30
+1001800000,province,Camiguin,1
+1003500000,province,Lanao del Norte,19
+1004200000,province,Misamis Occidental,16
+1004300000,province,Misamis Oriental,25
+1102300000,province,Davao del Norte,30
+1102400000,province,Davao del Sur,57
+1102500000,province,Davao Oriental,0
+1108200000,province,Davao de Oro,8
+1108600000,province,Davao Occidental,0
+1204700000,province,Cotabato,33
+1206300000,province,South Cotabato,36
+1206500000,province,Sultan Kudarat,14
+1208000000,province,Sarangani,7
+1400100000,province,Abra,2
+1401100000,province,Benguet,0
+1402700000,province,Ifugao,10
+1403200000,province,Kalinga,0
+1404400000,province,Mountain Province,6
+1408100000,province,Apayao,5
+1900700000,province,Basilan,7
+1903600000,province,Lanao del Sur,0
+1908700000,province,Maguindanao del Norte,0
+1908800000,province,Maguindanao del Sur,5
+0906600000,province,Sulu,5
+1907000000,province,Tawi-Tawi,0
+1600200000,province,Agusan del Norte,0
+1600300000,province,Agusan del Sur,14
+1606700000,province,Surigao del Norte,12
+1606800000,province,Surigao del Sur,0
+1608500000,province,Dinagat Islands,3
+1909900000,province,Special Geographic Area,0

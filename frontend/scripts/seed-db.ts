@@ -23,7 +23,11 @@ function readJson<T>(relativePath: string): T {
 }
 
 function stripGeometry<T extends { geometry?: unknown }>(rows: T[]): Omit<T, "geometry">[] {
-    return rows.map(({ geometry: _g, ...rest }) => rest);
+    return rows.map((row) => {
+        const { ...rest } = row;
+        delete rest.geometry;
+        return rest as Omit<T, "geometry">;
+    });
 }
 
 function chunks<T>(arr: T[], size: number): T[][] {

@@ -6,8 +6,15 @@ import L from "leaflet";
 import type { Feature, Geometry } from "geojson";
 import { cn } from "../../../lib/cn";
 import type { MpaLevel } from "../constants";
-import { colorForDensity, densityLegendItems, NO_DATA_COLOR, type ScaleLevel } from "../utils/densityScale";
+import type { CustomOverlay } from "../types";
+import { colorForDensity, densityLegendItems, NO_DATA_COLOR } from "../utils/densityScale";
 import { colorForPopulation, populationLegendItems, POPULATION_RAMP } from "../utils/populationScale";
+import {
+    buildCategoricalOverlayScale,
+    buildNumericOverlayScale,
+    overlayLevelMatchesMap,
+} from "../utils/customScale";
+import { SCALE_LEVEL_LABELS, scaleLevelFor } from "../utils/mapScale";
 import { formatDensity, formatPopulation } from "../utils/formatStats";
 
 const PH_CENTER: [number, number] = [12.8797, 121.774];
@@ -32,20 +39,9 @@ const HOVER_STYLE: L.PathOptions = {
     fillOpacity: 0.85,
 };
 
-type DisplayMode = "outline" | "density" | "population";
+type DisplayMode = "outline" | "density" | "population" | "custom";
 
-const SCALE_LEVEL_LABELS: Record<ScaleLevel, string> = {
-    region: "region",
-    province: "province",
-    municipality: "city / municipality",
-    barangay: "barangay",
-};
-
-function scaleLevelFor(mode: MpaLevel): ScaleLevel {
-    return mode === "country" ? "region" : mode;
-}
-
-const SHADING_OPTIONS: { mode: DisplayMode; label: string }[] = [
+const BASE_SHADING_OPTIONS: { mode: DisplayMode; label: string }[] = [
     { mode: "outline", label: "Outline" },
     { mode: "density", label: "Density" },
     { mode: "population", label: "Population" },
@@ -83,6 +79,7 @@ interface MpaMapPanelProps {
     barangayAvailable?: boolean;
     loading?: boolean;
     error?: Error | null;
+    overlay?: CustomOverlay | null;
 }
 
 function featureStyle(
@@ -90,9 +87,13 @@ function featureStyle(
     displayMode: DisplayMode,
     psgcToColor: Map<string, string>,
     fillOpacity: number,
+    overlayActive: boolean,
 ): L.PathOptions {
     if (displayMode === "outline" || !feature?.properties) {
         return BASE_STYLE;
+    }
+    if (displayMode === "custom" && !overlayActive) {
+        return { ...BASE_STYLE, fillColor: NO_DATA_COLOR, fillOpacity };
     }
     const psgc = feature.properties.psgc as string;
     const fillColor = psgcToColor.get(psgc) ?? NO_DATA_COLOR;
@@ -115,9 +116,24 @@ export function MpaMapPanel({
     barangayAvailable = false,
     loading,
     error,
+    overlay = null,
 }: MpaMapPanelProps) {
-    const [displayMode, setDisplayMode] = useState<DisplayMode>("outline");
+    const [userDisplayMode, setUserDisplayMode] = useState<DisplayMode>("outline");
     const [fillOpacity, setFillOpacity] = useState(0.7);
+
+    const displayMode = useMemo((): DisplayMode => {
+        if (overlay) return "custom";
+        if (userDisplayMode === "custom") return "outline";
+        return userDisplayMode;
+    }, [overlay, userDisplayMode]);
+
+    const shadingOptions = useMemo(
+        () =>
+            overlay
+                ? [...BASE_SHADING_OPTIONS, { mode: "custom" as DisplayMode, label: "Custom" }]
+                : BASE_SHADING_OPTIONS,
+        [overlay],
+    );
 
     const levelOptions = [...BASE_LEVELS, { level: "barangay" as MpaLevel, label: "Barangay" }];
 
@@ -192,14 +208,51 @@ export function MpaMapPanel({
         };
     }, [currentData, scaleLevel, flatCountryPopulation]);
 
-    const activeColors = useMemo(
-        () => (displayMode === "population" ? populationColors : densityColors),
-        [displayMode, populationColors, densityColors],
-    );
+    const overlayLevelOk = overlay != null && overlayLevelMatchesMap(overlay.level, scaleLevel);
+
+    const { customColors, customLegend, customLegendTitle } = useMemo(() => {
+        if (!overlay || !overlayLevelOk) {
+            return { customColors: new Map<string, string>(), customLegend: [], customLegendTitle: "" };
+        }
+        const colors = new Map<string, string>();
+        if (overlay.kind === "numeric") {
+            const values = Object.values(overlay.valuesByPsgc)
+                .map((v) => v.value)
+                .filter((v): v is number => v != null);
+            const { colorForValue, legend } = buildNumericOverlayScale(values);
+            for (const [psgc, cell] of Object.entries(overlay.valuesByPsgc)) {
+                colors.set(psgc, colorForValue(cell.value));
+            }
+            return {
+                customColors: colors,
+                customLegend: legend,
+                customLegendTitle: overlay.meta.unit ? `(${overlay.meta.unit})` : "",
+            };
+        }
+        const categories = Object.values(overlay.valuesByPsgc)
+            .map((v) => v.category)
+            .filter((c): c is string => !!c);
+        const { categoryToColor, legend } = buildCategoricalOverlayScale(categories);
+        for (const [psgc, cell] of Object.entries(overlay.valuesByPsgc)) {
+            if (cell.category) colors.set(psgc, categoryToColor.get(cell.category) ?? NO_DATA_COLOR);
+        }
+        return {
+            customColors: colors,
+            customLegend: legend,
+            customLegendTitle: "",
+        };
+    }, [overlay, overlayLevelOk]);
+
+    const activeColors = useMemo(() => {
+        if (displayMode === "custom") return customColors;
+        if (displayMode === "population") return populationColors;
+        return densityColors;
+    }, [displayMode, customColors, populationColors, densityColors]);
 
     const getStyle = useCallback(
-        (feature?: Feature) => featureStyle(feature, displayMode, activeColors, fillOpacity),
-        [displayMode, activeColors, fillOpacity],
+        (feature?: Feature) =>
+            featureStyle(feature, displayMode, activeColors, fillOpacity, overlayLevelOk),
+        [displayMode, activeColors, fillOpacity, overlayLevelOk],
     );
 
     const onEachFeature = useCallback(
@@ -213,12 +266,17 @@ export function MpaMapPanel({
                 tooltip = `${name} — ${formatDensity(density)}/km²`;
             } else if (displayMode === "population" && pop != null && pop > 0) {
                 tooltip = `${name} — ${formatPopulation(pop)}`;
+            } else if (displayMode === "custom" && overlay && overlayLevelOk) {
+                const cell = overlay.valuesByPsgc[psgc];
+                if (cell?.category) tooltip = `${name} — ${cell.category}`;
+                else if (cell?.value != null)
+                    tooltip = `${name} — ${formatPopulation(Math.round(cell.value))}${overlay.meta.unit ? ` ${overlay.meta.unit}` : ""}`;
             }
             if (tooltip) {
                 layer.bindTooltip(tooltip, { sticky: true, direction: "top" });
             }
             const baseForFeature = () =>
-                featureStyle(feature, displayMode, activeColors, fillOpacity);
+                featureStyle(feature, displayMode, activeColors, fillOpacity, overlayLevelOk);
             layer.on("mouseover", () => {
                 layer.setStyle({ ...baseForFeature(), ...HOVER_STYLE });
             });
@@ -227,7 +285,7 @@ export function MpaMapPanel({
                 if (psgc) onFeatureClick?.(psgc, mode);
             });
         },
-        [mode, onFeatureClick, displayMode, activeColors, fillOpacity],
+        [mode, onFeatureClick, displayMode, activeColors, fillOpacity, overlay, overlayLevelOk],
     );
 
     return (
@@ -278,11 +336,11 @@ export function MpaMapPanel({
                     <span className="px-1.5 text-[10px] font-medium uppercase tracking-wide text-muted">
                         Shading
                     </span>
-                    {SHADING_OPTIONS.map((opt) => (
+                    {shadingOptions.map((opt) => (
                         <button
                             key={opt.mode}
                             type="button"
-                            onClick={() => setDisplayMode(opt.mode)}
+                            onClick={() => setUserDisplayMode(opt.mode)}
                             className={cn(
                                 "rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
                                 displayMode === opt.mode
@@ -315,6 +373,39 @@ export function MpaMapPanel({
                     </div>
                 )}
             </div>
+
+            {overlay && displayMode === "custom" && !overlayLevelOk && (
+                <div className="absolute bottom-6 left-3 z-[1000] max-w-xs rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-900 shadow-soft">
+                    Switch view to <strong>{overlay.level}</strong> level to see &ldquo;{overlay.meta.title}&rdquo;.
+                </div>
+            )}
+
+            {displayMode === "custom" && overlay && overlayLevelOk && customLegend.length > 0 && (
+                <div className="absolute bottom-6 left-3 z-[1000] rounded-lg border border-border-light bg-white/95 px-3 py-2.5 text-[11px] shadow-soft">
+                    <p className="font-medium text-primary">{overlay.meta.title}</p>
+                    <p className="mb-2 text-[10px] text-muted">
+                        {SCALE_LEVEL_LABELS[scaleLevel]} scale {customLegendTitle}
+                    </p>
+                    <div className="flex flex-col gap-0.5">
+                        {customLegend.map((item) => (
+                            <div key={item.label} className="flex items-center gap-2 text-muted">
+                                <span
+                                    className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light"
+                                    style={{ backgroundColor: item.color }}
+                                />
+                                <span className="leading-tight">{item.label}</span>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="mt-2 flex items-center gap-2 text-muted">
+                        <span
+                            className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light"
+                            style={{ backgroundColor: NO_DATA_COLOR }}
+                        />
+                        <span>No data</span>
+                    </div>
+                </div>
+            )}
 
             {displayMode === "density" && (
                 <div className="absolute bottom-6 left-3 z-[1000] rounded-lg border border-border-light bg-white/95 px-3 py-2.5 text-[11px] shadow-soft">
@@ -407,7 +498,7 @@ export function MpaMapPanel({
                 />
                 <ZoomControl position="bottomright" />
                 <GeoJSON
-                    key={`${mode}-${displayMode}-${fillOpacity}-${currentData.features.length}`}
+                    key={`${mode}-${displayMode}-${fillOpacity}-${currentData.features.length}-${overlay?.meta.title ?? ""}`}
                     data={currentData}
                     style={getStyle}
                     onEachFeature={onEachFeature}

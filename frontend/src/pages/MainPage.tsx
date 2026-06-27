@@ -1,6 +1,6 @@
 // Split-layout shell: map panel and download sidebar.
 
-import { useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { MpaMapPanel } from "../features/map/components/MpaMapPanel";
 import { MpaSidebar } from "../features/map/components/MpaSidebar";
@@ -8,11 +8,22 @@ import { useMpaDownload } from "../features/map/hooks/useMpaDownload";
 import { useMapLayers } from "../features/map/hooks/useMapLayers";
 import { fetchBarangaysByMunicity } from "../features/map/services/mapApi";
 import type { MpaLevel } from "../features/map/constants";
+import type { CustomOverlay } from "../features/map/types";
 
 export default function MainPage() {
     const { provinces, municities, municityMeta, regions, country, loading, error } = useMapLayers();
+    const [activeOverlay, setActiveOverlay] = useState<CustomOverlay | null>(null);
 
     const download = useMpaDownload({ regions, provinces, municities, municityMeta, country });
+
+    const knownPsgcs = useMemo(() => {
+        const set = new Set<string>();
+        if (country) set.add(country.psgc);
+        for (const r of regions) set.add(r.psgc);
+        for (const p of provinces) set.add(p.psgc);
+        for (const m of municityMeta) set.add(m.psgc);
+        return set;
+    }, [country, regions, provinces, municityMeta]);
 
     const barangaysQuery = useQuery({
         queryKey: ["barangays", download.selectedMunicityPsgc],
@@ -45,6 +56,7 @@ export default function MainPage() {
                     barangayAvailable={!!download.selectedMunicityPsgc}
                     loading={loading || (download.level === "barangay" && barangaysQuery.isFetching)}
                     error={error ?? (barangaysQuery.error as Error | null)}
+                    overlay={activeOverlay}
                 />
             </div>
             <div className="min-h-0 flex-1 overflow-hidden lg:flex-none">
@@ -74,6 +86,9 @@ export default function MainPage() {
                     onDownload={download.download}
                     downloading={download.downloading}
                     error={download.error}
+                    activeOverlay={activeOverlay}
+                    onOverlayChange={setActiveOverlay}
+                    knownPsgcs={knownPsgcs}
                 />
             </div>
         </div>

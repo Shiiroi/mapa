@@ -432,7 +432,7 @@ export function matchAfrRow(row: AfrRawRow, indexes: PsgcIndexes): string | null
             return map?.get(normName) ?? null;
         };
 
-        let hit = tryProvinceMap(provincePsgc);
+        const hit = tryProvinceMap(provincePsgc);
         if (hit) return hit;
 
         if (provNorm === "SULU") {

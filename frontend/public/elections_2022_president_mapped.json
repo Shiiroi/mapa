@@ -1,0 +1,317 @@
+[
+  {
+    "psgc": "1404400000",
+    "level": "province",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "MOUNTAIN PROVINCE",
+    "winner": "Bongbong Marcos",
+    "winner_votes": 70876,
+    "total_votes": 87440,
+    "detail": {
+      "Manny Pacman Pacquiao": 3185,
+      "Isko Moreno Domagoso": 1872,
+      "Jose Jr. Montemayor": 163,
+      "Faisal Mangondato": 44,
+      "Norberto Gonzales": 92,
+      "Leody De Guzman": 164,
+      "Ping Lacson": 2574,
+      "Leni Robredo": 8327,
+      "Ernie Abella": 143,
+      "Bongbong Marcos": 70876
+    }
+  },
+  {
+    "psgc": "0105500000",
+    "level": "province",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "winner": "Bongbong Marcos",
+    "winner_votes": 1371178,
+    "total_votes": 1757671,
+    "detail": {
+      "Manny Pacman Pacquiao": 29179,
+      "Isko Moreno Domagoso": 42145,
+      "Jose Jr. Montemayor": 1771,
+      "Faisal Mangondato": 1698,
+      "Norberto Gonzales": 2777,
+      "Leody De Guzman": 3138,
+      "Ping Lacson": 23857,
+      "Leni Robredo": 278411,
+      "Ernie Abella": 3517,
+      "Bongbong Marcos": 1371178
+    }
+  },
+  {
+    "psgc": "0205700000",
+    "level": "province",
+    "region": "REGION II",
+    "province": "QUIRINO",
+    "winner": "Bongbong Marcos",
+    "winner_votes": 84373,
+    "total_votes": 102515,
+    "detail": {
+      "Manny Pacman Pacquiao": 4621,
+      "Isko Moreno Domagoso": 2512,
+      "Jose Jr. Montemayor": 267,
+      "Faisal Mangondato": 77,
+      "Norberto Gonzales": 114,
+      "Leody De Guzman": 165,
+      "Ping Lacson": 2093,
+      "Leni Robredo": 8124,
+      "Ernie Abella": 169,
+      "Bongbong Marcos": 84373
+    }
+  },
+  {
+    "psgc": "0307100000",
+    "level": "province",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "winner": "Bongbong Marcos",
+    "winner_votes": 291252,
+    "total_votes": 446525,
+    "detail": {
+      "Manny Pacman Pacquiao": 10487,
+      "Isko Moreno Domagoso": 17214,
+      "Jose Jr. Montemayor": 532,
+      "Faisal Mangondato": 878,
+      "Norberto Gonzales": 633,
+      "Leody De Guzman": 752,
+      "Ping Lacson": 9969,
+      "Leni Robredo": 114105,
+      "Ernie Abella": 703,
+      "Bongbong Marcos": 291252
+    }
+  },
+  {
+    "psgc": "0405800000",
+    "level": "province",
+    "region": "REGION IV-A",
+    "province": "RIZAL",
+    "winner": "Bongbong Marcos",
+    "winner_votes": 764642,
+    "total_votes": 1274477,
+    "detail": {
+      "Manny Pacman Pacquiao": 32354,
+      "Isko Moreno Domagoso": 57536,
+      "Jose Jr. Montemayor": 1064,
+      "Faisal Mangondato": 1451,
+      "Norberto Gonzales": 1499,
+      "Leody De Guzman": 2239,
+      "Ping Lacson": 41497,
+      "Leni Robredo": 371052,
+      "Ernie Abella": 1143,
+      "Bongbong Marcos": 764642
+    }
+  },
+  {
+    "psgc": "1705900000",
+    "level": "province",
+    "region": "REGION IV-B",
+    "province": "ROMBLON",
+    "winner": "Bongbong Marcos",
+    "winner_votes": 71127,
+    "total_votes": 166480,
+    "detail": {
+      "Manny Pacman Pacquiao": 12445,
+      "Isko Moreno Domagoso": 10895,
+      "Jose Jr. Montemayor": 347,
+      "Faisal Mangondato": 109,
+      "Norberto Gonzales": 256,
+      "Leody De Guzman": 274,
+      "Ping Lacson": 5511,
+      "Leni Robredo": 65142,
+      "Ernie Abella": 374,
+      "Bongbong Marcos": 71127
+    }
+  },
+  {
+    "psgc": "0506200000",
+    "level": "province",
+    "region": "REGION V",
+    "province": "SORSOGON",
+    "winner": "Leni Robredo",
+    "winner_votes": 333112,
+    "total_votes": 449677,
+    "detail": {
+      "Manny Pacman Pacquiao": 9973,
+      "Isko Moreno Domagoso": 6842,
+      "Jose Jr. Montemayor": 603,
+      "Faisal Mangondato": 483,
+      "Norberto Gonzales": 1071,
+      "Leody De Guzman": 1371,
+      "Ping Lacson": 4150,
+      "Leni Robredo": 333112,
+      "Ernie Abella": 1617,
+      "Bongbong Marcos": 90455
+    }
+  },
+  {
+    "psgc": "1804500000",
+    "level": "province",
+    "region": "REGION VI",
+    "province": "NEGROS OCCIDENTAL",
+    "winner": "Leni Robredo",
+    "winner_votes": 638231,
+    "total_votes": 1527341,
+    "detail": {
+      "Manny Pacman Pacquiao": 202701,
+      "Isko Moreno Domagoso": 45305,
+      "Jose Jr. Montemayor": 2422,
+      "Faisal Mangondato": 1258,
+      "Norberto Gonzales": 3359,
+      "Leody De Guzman": 3791,
+      "Ping Lacson": 21732,
+      "Leni Robredo": 638231,
+      "Ernie Abella": 6013,
+      "Bongbong Marcos": 602529
+    }
+  },
+  {
+    "psgc": "1806100000",
+    "level": "province",
+    "region": "REGION VII",
+    "province": "SIQUIJOR",
+    "winner": "Bongbong Marcos",
+    "winner_votes": 31412,
+    "total_votes": 61850,
+    "detail": {
+      "Manny Pacman Pacquiao": 8224,
+      "Isko Moreno Domagoso": 2658,
+      "Jose Jr. Montemayor": 233,
+      "Faisal Mangondato": 55,
+      "Norberto Gonzales": 120,
+      "Leody De Guzman": 164,
+      "Ping Lacson": 1040,
+      "Leni Robredo": 17753,
+      "Ernie Abella": 191,
+      "Bongbong Marcos": 31412
+    }
+  },
+  {
+    "psgc": "0806400000",
+    "level": "province",
+    "region": "REGION VIII",
+    "province": "SOUTHERN LEYTE",
+    "winner": "Bongbong Marcos",
+    "winner_votes": 157809,
+    "total_votes": 236506,
+    "detail": {
+      "Manny Pacman Pacquiao": 21588,
+      "Isko Moreno Domagoso": 18635,
+      "Jose Jr. Montemayor": 297,
+      "Faisal Mangondato": 269,
+      "Norberto Gonzales": 437,
+      "Leody De Guzman": 431,
+      "Ping Lacson": 2008,
+      "Leni Robredo": 34517,
+      "Ernie Abella": 515,
+      "Bongbong Marcos": 157809
+    }
+  },
+  {
+    "psgc": "0908300000",
+    "level": "province",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA SIBUGAY",
+    "winner": "Bongbong Marcos",
+    "winner_votes": 167885,
+    "total_votes": 313658,
+    "detail": {
+      "Manny Pacman Pacquiao": 84565,
+      "Isko Moreno Domagoso": 7989,
+      "Jose Jr. Montemayor": 491,
+      "Faisal Mangondato": 2003,
+      "Norberto Gonzales": 740,
+      "Leody De Guzman": 691,
+      "Ping Lacson": 2213,
+      "Leni Robredo": 45937,
+      "Ernie Abella": 1144,
+      "Bongbong Marcos": 167885
+    }
+  },
+  {
+    "psgc": "1004300000",
+    "level": "province",
+    "region": "REGION X",
+    "province": "MISAMIS ORIENTAL",
+    "winner": "Bongbong Marcos",
+    "winner_votes": 612387,
+    "total_votes": 837620,
+    "detail": {
+      "Manny Pacman Pacquiao": 100562,
+      "Isko Moreno Domagoso": 18129,
+      "Jose Jr. Montemayor": 1072,
+      "Faisal Mangondato": 1291,
+      "Norberto Gonzales": 1686,
+      "Leody De Guzman": 1482,
+      "Ping Lacson": 8018,
+      "Leni Robredo": 91000,
+      "Ernie Abella": 1993,
+      "Bongbong Marcos": 612387
+    }
+  },
+  {
+    "psgc": "1102500000",
+    "level": "province",
+    "region": "REGION XI",
+    "province": "DAVAO ORIENTAL",
+    "winner": "Bongbong Marcos",
+    "winner_votes": 230885,
+    "total_votes": 308681,
+    "detail": {
+      "Manny Pacman Pacquiao": 47668,
+      "Isko Moreno Domagoso": 3945,
+      "Jose Jr. Montemayor": 685,
+      "Faisal Mangondato": 1125,
+      "Norberto Gonzales": 791,
+      "Leody De Guzman": 785,
+      "Ping Lacson": 2393,
+      "Leni Robredo": 19242,
+      "Ernie Abella": 1162,
+      "Bongbong Marcos": 230885
+    }
+  },
+  {
+    "psgc": "1206500000",
+    "level": "province",
+    "region": "REGION XII",
+    "province": "SULTAN KUDARAT",
+    "winner": "Bongbong Marcos",
+    "winner_votes": 252172,
+    "total_votes": 369732,
+    "detail": {
+      "Manny Pacman Pacquiao": 31617,
+      "Isko Moreno Domagoso": 10465,
+      "Jose Jr. Montemayor": 439,
+      "Faisal Mangondato": 4215,
+      "Norberto Gonzales": 801,
+      "Leody De Guzman": 792,
+      "Ping Lacson": 3179,
+      "Leni Robredo": 64646,
+      "Ernie Abella": 1406,
+      "Bongbong Marcos": 252172
+    }
+  },
+  {
+    "psgc": "1907000000",
+    "level": "province",
+    "region": "BARMM",
+    "province": "TAWI-TAWI",
+    "winner": "Bongbong Marcos",
+    "winner_votes": 141954,
+    "total_votes": 172898,
+    "detail": {
+      "Manny Pacman Pacquiao": 11373,
+      "Isko Moreno Domagoso": 2833,
+      "Jose Jr. Montemayor": 192,
+      "Faisal Mangondato": 1531,
+      "Norberto Gonzales": 474,
+      "Leody De Guzman": 183,
+      "Ping Lacson": 532,
+      "Leni Robredo": 13413,
+      "Ernie Abella": 413,
+      "Bongbong Marcos": 141954
+    }
+  }
+]

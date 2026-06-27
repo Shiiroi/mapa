@@ -1,7 +1,7 @@
 // Public API for map layers; PostgREST fallback for municity metadata only.
 
 import { supabase } from "../../../config/supabase";
-import type { BarangayGeoJSON, CountryGeoJSON, DivisionStats, ProvinceGeoJSON, MunicityGeoJSON, MunicityMeta, Region } from "../types";
+import type { BarangayGeoJSON, CountryGeoJSON, CustomDataset, CustomDatasetValueRow, DivisionStats, ProvinceGeoJSON, MunicityGeoJSON, MunicityMeta, Region } from "../types";
 import {
     fetchBarangaysByMunicityFromStorage,
     fetchCountryFromStorage,
@@ -69,4 +69,33 @@ export async function fetchStatsByPsgc(psgc: string): Promise<DivisionStats | nu
     const { data, error } = await supabase.from("division_stats").select("*").eq("psgc", psgc).maybeSingle();
     if (error) throw error;
     return (data as DivisionStats | null) ?? null;
+}
+
+export async function fetchCustomDatasets(): Promise<CustomDataset[]> {
+    const { data, error } = await supabase
+        .from("custom_datasets")
+        .select("id, title, description, category, kind, level, unit, value_label, source_name, source_url")
+        .order("category")
+        .order("title");
+    if (error) throw error;
+    return (data ?? []) as CustomDataset[];
+}
+
+export async function fetchCustomDatasetValues(datasetId: string): Promise<CustomDatasetValueRow[]> {
+    const pageSize = 1000;
+    let from = 0;
+    const all: CustomDatasetValueRow[] = [];
+    while (true) {
+        const { data, error } = await supabase
+            .from("custom_dataset_values")
+            .select("dataset_id, psgc, value, category, detail")
+            .eq("dataset_id", datasetId)
+            .range(from, from + pageSize - 1);
+        if (error) throw error;
+        if (!data?.length) break;
+        all.push(...(data as CustomDatasetValueRow[]));
+        if (data.length < pageSize) break;
+        from += pageSize;
+    }
+    return all;
 }

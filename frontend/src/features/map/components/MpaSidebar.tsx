@@ -7,10 +7,12 @@ import type { ExportKind } from "../hooks/useMpaDownload";
 import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
 import { resolveSelectedPlace } from "../utils/resolvePlace";
 import { MpaComparePanel, type CompareSelection } from "./MpaComparePanel";
+import { MpaCustomPanel } from "./MpaCustomPanel";
 import { MpaDownloadPanel } from "./MpaDownloadPanel";
 import { MpaInfoPanel } from "./MpaInfoPanel";
+import type { CustomOverlay } from "../types";
 
-export type SidebarTab = "geojson" | "info" | "compare";
+export type SidebarTab = "geojson" | "info" | "compare" | "custom";
 
 interface MpaSidebarProps {
     level: MpaLevel;
@@ -38,12 +40,16 @@ interface MpaSidebarProps {
     onDownload: () => void;
     downloading: boolean;
     error: string | null;
+    activeOverlay: CustomOverlay | null;
+    onOverlayChange: (overlay: CustomOverlay | null) => void;
+    knownPsgcs: Set<string>;
 }
 
 const TABS: { id: SidebarTab; label: string }[] = [
     { id: "geojson", label: "GeoJSON" },
     { id: "info", label: "Info" },
     { id: "compare", label: "Compare" },
+    { id: "custom", label: "Custom" },
 ];
 
 export function MpaSidebar(props: MpaSidebarProps) {
@@ -144,6 +150,18 @@ export function MpaSidebar(props: MpaSidebarProps) {
                         />
                     </div>
                 )}
+
+                {tab === "custom" && (
+                    <div className="flex-1 overflow-y-auto px-5 py-5">
+                        <MpaCustomPanel
+                            mapLevel={props.level}
+                            activeOverlay={props.activeOverlay}
+                            onOverlayChange={props.onOverlayChange}
+                            selectedPlace={selectedPlace}
+                            knownPsgcs={props.knownPsgcs}
+                        />
+                    </div>
+                )}
             </div>
 
             {tab !== "geojson" && (
@@ -191,6 +209,39 @@ export function MpaSidebar(props: MpaSidebarProps) {
                         >
                             Commission on Audit (CY 2024 AFR, Local Government)
                         </a>
+                    </p>
+                    <p>
+                        Custom maps (elections):{" "}
+                        <a
+                            href="https://github.com/AstroMC98/GMA-Eleksyon-2022-Data"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent underline"
+                        >
+                            GMA Eleksyon 2022 (MIT, unofficial partial count)
+                        </a>
+                        ; official results from{" "}
+                        <a
+                            href="https://comelec.gov.ph/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent underline"
+                        >
+                            COMELEC
+                        </a>
+                        .
+                    </p>
+                    <p>
+                        POI counts:{" "}
+                        <a
+                            href="https://www.openstreetmap.org/copyright"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent underline"
+                        >
+                            OpenStreetMap contributors
+                        </a>{" "}
+                        (ODbL).
                     </p>
                 </footer>
             )}
