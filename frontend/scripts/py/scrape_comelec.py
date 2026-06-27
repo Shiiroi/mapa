@@ -165,7 +165,7 @@ def download_data(
 
     can = node_info.get("can", "")
     rank = rank_of(can)
-    node_name = node_info.get("rn", path.basename(node_dir) if node_dir else "")
+    node_name = node_info.get("rn", os.path.basename(node_dir) if node_dir else "")
 
     matched_here = (
         bool(only_citymuns)
