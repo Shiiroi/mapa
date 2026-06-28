@@ -339,7 +339,7 @@ export function matchPlace(row: PlaceRow, indexes: PsgcIndexes): string | null {
 // Builds the PSGC lookup indexes (provinces, cities, municipalities by region/province)
 // from psgc.csv and the municity meta.json.
 export function loadPsgcIndexes(publicDir: string): PsgcIndexes {
-    const psgcPath = path.join(publicDir, "psgc.csv");
+    const psgcPath = path.join(publicDir, "data/raw/psgc.csv");
     const metaPath = path.join(publicDir, "geo/municities/meta.json");
 
     const raw = fs.readFileSync(psgcPath);

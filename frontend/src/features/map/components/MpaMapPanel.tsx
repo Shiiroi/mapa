@@ -626,7 +626,7 @@ export function MpaMapPanel({
 
             {displayMode === "gdp" && gdpLegend.length > 0 && (
                 <LegendShell title="GDP [2024]" collapsed={legendCollapsed} onToggle={toggleLegend}>
-                    <p className="mb-2 text-[10px] text-muted">current prices · data-driven scale</p>
+                    <p className="mb-2 text-[10px] text-muted">constant 2018 prices · data-driven scale</p>
                     <div className="flex flex-col gap-0.5">
                         {gdpLegend.map((item) => (
                             <div key={item.label} className="flex items-center gap-2 text-muted">

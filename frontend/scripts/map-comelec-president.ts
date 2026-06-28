@@ -2,10 +2,10 @@
 // Parse a local COMELEC 2022 scrape (scripts/py/scrape_comelec.py output) into
 // multi-series CSVs (one per tier) that the custom-overlay uploader understands.
 //
-//   region   -> public/elections_2022_president_region.csv
-//   province -> public/elections_2022_president_province.csv
-//   citymun  -> public/elections_2022_president_citymun.csv
-//   barangay -> public/elections_2022_president_barangay.csv   (if scraped)
+//   region   -> public/data/clean/elections_2022_president_region.csv
+//   province -> public/data/clean/elections_2022_president_province.csv
+//   citymun  -> public/data/clean/elections_2022_president_citymun.csv
+//   barangay -> public/data/clean/elections_2022_president_barangay.csv   (if scraped)
 //
 // The COMELEC JSON field names are not publicly documented, so this script
 // auto-detects them:
@@ -28,6 +28,7 @@ import {
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(__dirname, "../public");
+const CLEAN_DIR = path.join(PUBLIC_DIR, "data/clean");
 const DATA_DIR = path.join(__dirname, "py", "data");
 const RESULTS_DIR = path.join(DATA_DIR, "results");
 const CONTESTS_DIR = path.join(DATA_DIR, "contests");
@@ -448,7 +449,7 @@ function writeTierCsv(
         const cols = [r.psgc, safe(r.label), ...candidates.map((c) => String(r.votes[c.display] ?? 0))];
         lines.push(cols.join(","));
     }
-    const out = path.join(PUBLIC_DIR, `elections_2022_president_${tier}.csv`);
+    const out = path.join(CLEAN_DIR, `elections_2022_president_${tier}.csv`);
     fs.writeFileSync(out, lines.join("\n") + "\n");
     console.log(`  ${tier}: ${rows.length} areas, ${candidates.length} candidates -> ${path.basename(out)}`);
 }
@@ -483,7 +484,7 @@ function writeUniversalCsv(
         const cols = [r.psgc, safe(r.label), ...cands.map((c) => String(r.votes[c.display] ?? 0))];
         lines.push(cols.join(","));
     }
-    const out = path.join(PUBLIC_DIR, "elections_2022_president_all.csv");
+    const out = path.join(CLEAN_DIR, "elections_2022_president_all.csv");
     fs.writeFileSync(out, lines.join("\n") + "\n");
     console.log(`  all: ${rows.length} areas, ${cands.length} candidates -> ${path.basename(out)}`);
 }
@@ -572,7 +573,7 @@ function main() {
     writeUniversalCsv(tiers, "2022 President (all levels)", cands);
 
     if (unmatched.length) {
-        const out = path.join(PUBLIC_DIR, "elections_2022_president_unmatched.json");
+        const out = path.join(CLEAN_DIR, "elections_2022_president_unmatched.json");
         fs.writeFileSync(out, JSON.stringify(unmatched, null, 2));
         const byTier = unmatched.reduce<Record<string, number>>((a, u) => {
             a[u.tier] = (a[u.tier] ?? 0) + 1;

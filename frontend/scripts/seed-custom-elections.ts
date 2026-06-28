@@ -12,7 +12,7 @@ import * as path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CSV_PATH = path.join(__dirname, "../public/elections_2022_president_all.csv");
+const CSV_PATH = path.join(__dirname, "../public/data/clean/elections_2022_president_all.csv");
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;

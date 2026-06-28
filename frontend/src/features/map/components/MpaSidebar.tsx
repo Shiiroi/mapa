@@ -215,7 +215,7 @@ export function MpaSidebar(props: MpaSidebarProps) {
                             rel="noopener noreferrer"
                             className="text-accent underline"
                         >
-                            PSA Subnational Economic Accounts (current prices)
+                            PSA Subnational Economic Accounts (constant 2018 prices)
                         </a>
                     </p>
                     <p>

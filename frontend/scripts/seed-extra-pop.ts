@@ -8,8 +8,8 @@ import { parse } from "csv-parse/sync";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(__dirname, "../public");
-const POP_2010_CSV = path.join(PUBLIC_DIR, "pop_2010.csv");
-const AGESEX_CSV = path.join(PUBLIC_DIR, "household_agesex_2020.csv");
+const POP_2010_CSV = path.join(PUBLIC_DIR, "data/clean/pop_2010.csv");
+const AGESEX_CSV = path.join(PUBLIC_DIR, "data/clean/household_agesex_2020.csv");
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;

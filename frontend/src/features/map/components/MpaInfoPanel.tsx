@@ -343,12 +343,12 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
             gdp_2024: displayPlace!.gdp_2024,
             gdp_per_capita_2024: gdpPerCapita,
             source:
-                "Population from the Philippine Statistics Authority (PSA) PSGC and 2010/2015/2020/2024 census tables; 2020 household age/sex and GDP (current prices) from PSA; area and derived metrics (density, % change) computed by Mapa from PSA boundaries. Total assets from COA CY2024 Annual Financial Report (Local Government), Part III Financial Profile.",
+                "Population from the Philippine Statistics Authority (PSA) PSGC and 2010/2015/2020/2024 census tables; 2020 household age/sex and GDP (constant 2018 prices) from PSA; area and derived metrics (density, % change) computed by Mapa from PSA boundaries. Total assets from COA CY2024 Annual Financial Report (Local Government), Part III Financial Profile.",
             source_url: PSA_PSGC_URL,
             age_sex_source: "PSA 2020 Census of Population and Housing — Age and Sex Distribution",
             age_sex_source_url: PSA_AGESEX_URL,
             age_sex_file_url: PSA_AGESEX_FILE_URL,
-            gdp_source: "PSA Gross Domestic Product by Province and HUCs (current prices)",
+            gdp_source: "PSA Gross Domestic Product by Province and HUCs (constant 2018 prices)",
             gdp_source_url: PSA_GDP_URL,
             assets_source: "COA CY2024 AFR",
         };
@@ -376,12 +376,12 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
             ["gdp_2023", String(displayPlace!.gdp_2023 ?? "")],
             ["gdp_2024", String(displayPlace!.gdp_2024 ?? "")],
             ["gdp_per_capita_2024", String(gdpPerCapita ?? "")],
-            ["source", "Philippine Statistics Authority (PSA) PSGC and 2010–2024 censuses; 2020 CPH age/sex; GDP current prices; area/density/change derived by Mapa; assets from COA CY2024 AFR"],
+            ["source", "Philippine Statistics Authority (PSA) PSGC and 2010–2024 censuses; 2020 CPH age/sex; GDP constant 2018 prices; area/density/change derived by Mapa; assets from COA CY2024 AFR"],
             ["source_url", PSA_PSGC_URL],
             ["age_sex_source", "PSA 2020 Census of Population and Housing — Age and Sex Distribution"],
             ["age_sex_source_url", PSA_AGESEX_URL],
             ["age_sex_file_url", PSA_AGESEX_FILE_URL],
-            ["gdp_source", "PSA Gross Domestic Product by Province and HUCs (current prices)"],
+            ["gdp_source", "PSA Gross Domestic Product by Province and HUCs (constant 2018 prices)"],
             ["gdp_source_url", PSA_GDP_URL],
         ];
         const csv = rows.map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
@@ -435,7 +435,7 @@ export function MpaInfoPanel({ place }: MpaInfoPanelProps) {
                 <StatCard
                     label="GDP [2024]"
                     value={formatGdp(displayPlace.gdp_2024)}
-                    sub={displayPlace.gdp_2024 != null ? "PSA current prices" : "Not published at this level"}
+                    sub={displayPlace.gdp_2024 != null ? "PSA constant 2018 prices" : "Not published at this level"}
                 />
             </div>
 

@@ -72,27 +72,20 @@ Architecture keeps a clean separation: **administrative metadata lives in Postgr
 mapa/
 ├── frontend/
 │   ├── public/
-│   │   ├── psgc.csv                 # PSA PSGC reference (source of truth for codes/names)
-│   │   ├── shape/                   # altcoder shapefiles (Adm0, Adm4)
-│   │   └── geo/                     # Generated GeoJSON (source for upload)
-│   │       ├── country.json
-│   │       ├── regions.json
-│   │       ├── provinces.json
-│   │       └── municities/
-│   │           ├── meta.json        # Metadata only (no geometry)
-│   │           ├── manifest.json    # { provincePsgcs: string[] }
-│   │           ├── province-{psgc}.json
-│   │           └── bgy/
-│   │               ├── meta.json
-│   │               ├── manifest.json  # { municityPsgcs: string[] }
-│   │               ├── {municityPsgc}.json
-│   │               └── _unmatched.json
+│   │   ├── geo/                     # GeoJSON (uploaded to Supabase Storage)
+│   │   │   ├── country.json, regions.json, provinces.json
+│   │   │   └── municities/          # meta.json, manifest, province-*.json, bgy/
+│   │   ├── data/
+│   │   │   ├── clean/               # PSGC-keyed CSVs — seed scripts read these
+│   │   │   └── raw/                 # Provenance extracts (not needed to run the app)
+│   │   ├── source/                  # Original xlsx/pdf sources (provenance only)
+│   │   └── backup/                  # DB dumps (gitignored; optional local mirror)
 │   ├── scripts/
-│   │   ├── build-geo.ts             # Re-key geo JSON to PSGC from psgc.csv
-│   │   ├── seed-db.ts               # Seed regions/provinces/municities
-│   │   ├── seed-bgy.ts              # Seed barangays table
+│   │   ├── seed-*.ts                # Seed Postgres from public/data/clean + geo
 │   │   ├── upload-geo.ts            # Upload public/geo/** to Supabase Storage
-│   │   └── py/                      # Shapefile → GeoJSON pipeline
+│   │   ├── map-comelec-president.ts # COMELEC scrape → clean election CSVs
+│   │   ├── lib/afrMatch.ts          # PSGC name matching for elections pipeline
+│   │   └── py/scrape_comelec.py     # Download COMELEC 2022 results (optional regen)
 │   └── src/
 │       ├── features/map/            # Map rendering, layers, download UI
 │       └── pages/
@@ -120,7 +113,7 @@ cd frontend
 pnpm install
 ```
 
-For the Python shapefile pipeline:
+For the COMELEC scraper (optional — only if regenerating election data):
 
 ```bash
 cd frontend/scripts/py
@@ -144,24 +137,20 @@ SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
 
 Run the migrations in `supabase/migrations/` against your Supabase project.
 
-### 4. Build and upload geo data
+### 4. Seed database and upload geo
+
+After applying migrations, seed everything from the committed clean data:
 
 ```bash
 cd frontend
 
-# Re-key region/province/municity GeoJSON to PSGC from psgc.csv
-pnpm build:geo
-
-# Convert barangay + country shapefiles to GeoJSON
-pnpm shape:geo
-
-# Seed Postgres metadata tables
-pnpm seed:db
-pnpm seed:bgy
-
-# Upload public/geo/** to Supabase Storage (bucket: geo)
-pnpm upload:geo
+# Upload geo JSON to Supabase Storage, then seed all Postgres tables
+pnpm seed:all
 ```
+
+`seed:all` runs: `upload:geo` → `seed:db` → `seed:bgy` → `seed:stats` → `seed:extrapop` → `seed:gdp` → `seed:afr` → `seed:custom-elections`.
+
+You only need `public/geo/` and `public/data/clean/` to seed a fresh instance. `public/data/raw/` and `public/source/` are provenance archives and can be omitted when self-hosting.
 
 ### 5. Run the app
 
@@ -174,22 +163,19 @@ pnpm dev
 ## Data pipeline
 
 ```
-public/psgc.csv (PSA codes & names)
+public/geo/                    # Boundaries + embedded pop/area stats (committed)
+public/data/clean/*.csv        # PSGC-keyed stats overlays (committed)
         │
-        ├── build-geo.ts ──────────► public/geo/regions.json, provinces.json,
-        │                            municities/province-{psgc}.json
+        ├── seed:db / seed:bgy / seed:stats / seed:extrapop / seed:gdp / seed:afr
+        │       └──► Postgres (metadata + division_stats + custom_datasets)
         │
-        └── scripts/py/shape_to_geojson.py
-                │  (altcoder shapefiles in public/shape/)
-                ▼
-            country.json + municities/bgy/{municityPsgc}.json
-                │
-                ▼
-        seed:db / seed:bgy ────────► Postgres (metadata, no geometry)
-                │
-                ▼
-        upload:geo ────────────────► Supabase Storage (CDN)
+        └── upload:geo ────────► Supabase Storage (CDN)
+
+Optional regen (elections):
+  scrape:comelec → map:comelec → public/data/clean/elections_*.csv → seed:custom-elections
 ```
+
+GDP values use **PSA constant 2018 prices** (real terms, correct for trend lines and growth rates).
 
 **Why chunked?** City/municipality and barangay boundaries are large. Splitting into per-province and per-municity files with manifest indexes lets the app load only what the user needs.
 
