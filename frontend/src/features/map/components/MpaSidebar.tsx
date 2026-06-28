@@ -84,10 +84,10 @@ export function MpaSidebar(props: MpaSidebarProps) {
         : null;
 
     return (
-        <aside className="flex h-full flex-col border-l border-border bg-white">
-            <header className="border-b border-border-light px-5 py-4">
-                <h1 className="text-2xl font-semibold tracking-tight text-primary">Mapa</h1>
-                <div className="mt-3 flex gap-1 rounded-lg border border-border-light bg-surface p-1">
+        <aside className="flex h-full min-h-0 flex-col overflow-hidden border-l border-border bg-white">
+            <header className="shrink-0 border-b border-border-light px-4 py-3 lg:px-5 lg:py-4">
+                <h1 className="text-xl font-semibold tracking-tight text-primary lg:text-2xl">Mapa</h1>
+                <div className="mt-2 flex gap-1 rounded-lg border border-border-light bg-surface p-1 lg:mt-3">
                     {TABS.map((t) => (
                         <button
                             key={t.id}
@@ -106,7 +106,7 @@ export function MpaSidebar(props: MpaSidebarProps) {
                 </div>
             </header>
 
-            <div className="flex min-h-0 flex-1 flex-col">
+            <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
                 {tab === "geojson" && (
                     <MpaDownloadPanel
                         level={props.level}
@@ -136,13 +136,13 @@ export function MpaSidebar(props: MpaSidebarProps) {
                 )}
 
                 {tab === "info" && (
-                    <div className="flex-1 overflow-y-auto px-5 py-5">
+                    <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 lg:px-5 lg:py-5">
                         <MpaInfoPanel place={selectedPlace} />
                     </div>
                 )}
 
                 {tab === "compare" && (
-                    <div className="flex-1 overflow-y-auto px-5 py-5">
+                    <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 lg:px-5 lg:py-5">
                         <MpaComparePanel
                             country={props.country}
                             regions={props.regions}
@@ -157,7 +157,7 @@ export function MpaSidebar(props: MpaSidebarProps) {
                 )}
 
                 {tab === "custom" && (
-                    <div className="flex-1 overflow-y-auto px-5 py-5">
+                    <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 lg:px-5 lg:py-5">
                         <MpaCustomPanel
                             mapLevel={props.level}
                             activeOverlay={props.activeOverlay}
@@ -174,7 +174,7 @@ export function MpaSidebar(props: MpaSidebarProps) {
             </div>
 
             {tab === "custom" && (
-                <footer className="space-y-1 border-t border-border-light px-5 py-4 text-xs leading-relaxed text-muted">
+                <footer className="shrink-0 space-y-1 border-t border-border-light bg-white px-4 py-3 text-xs leading-relaxed text-muted lg:px-5 lg:py-4">
                     <p className="font-medium uppercase tracking-wide">Sources</p>
                     <p>
                         2022 presidential results: Commission on Elections (COMELEC) — 2022 National &amp;
@@ -193,7 +193,7 @@ export function MpaSidebar(props: MpaSidebarProps) {
             )}
 
             {(tab === "info" || tab === "compare") && (
-                <footer className="space-y-1 border-t border-border-light px-5 py-4 text-xs leading-relaxed text-muted">
+                <footer className="shrink-0 space-y-1 border-t border-border-light bg-white px-4 py-3 text-xs leading-relaxed text-muted lg:px-5 lg:py-4">
                     <p className="font-medium uppercase tracking-wide">Sources</p>
                     <p>
                         Population: Philippine Statistics Authority —{" "}

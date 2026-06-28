@@ -12,9 +12,14 @@ import type { CustomOverlay, SeriesViewState } from "../features/map/types";
 import { defaultSeriesViewState } from "../features/map/utils/seriesScale";
 
 export default function MainPage() {
-    const { provinces, municities, municityMeta, regions, country, loading, error } = useMapLayers();
     const [activeOverlay, setActiveOverlay] = useState<CustomOverlay | null>(null);
     const [overlayView, setOverlayView] = useState<SeriesViewState>({ mode: "lead" });
+    const [mapLevel, setMapLevel] = useState<MpaLevel>("country");
+
+    const { provinces, municities, municityMeta, regions, country, loading, municitiesLoading, error } =
+        useMapLayers({
+            loadMunicitiesGeometry: mapLevel === "municipality" || mapLevel === "province",
+        });
 
     useEffect(() => {
         if (activeOverlay?.kind === "series") {
@@ -25,6 +30,10 @@ export default function MainPage() {
     }, [activeOverlay]);
 
     const download = useMpaDownload({ regions, provinces, municities, municityMeta, country });
+
+    useEffect(() => {
+        setMapLevel(download.level);
+    }, [download.level]);
 
     const knownPsgcs = useMemo(() => {
         const set = new Set<string>();
@@ -63,6 +72,10 @@ export default function MainPage() {
     });
 
     const barangays = barangaysQuery.data ?? [];
+    const mapLoading =
+        loading ||
+        (download.level === "municipality" && municitiesLoading) ||
+        (download.level === "barangay" && barangaysQuery.isLoading);
 
     const handleFeatureClick = useCallback(
         (entityPsgc: string, mode: MpaLevel) => {
@@ -72,8 +85,8 @@ export default function MainPage() {
     );
 
     return (
-        <div className="flex h-dvh flex-col lg:grid lg:grid-cols-2">
-            <div className="min-h-[55dvh] flex-1 lg:min-h-0">
+        <div className="flex h-dvh flex-col overflow-hidden lg:grid lg:grid-cols-2">
+            <div className="h-[min(52dvh,28rem)] shrink-0 lg:h-full lg:min-h-0">
                 <MpaMapPanel
                     country={country}
                     provinces={provinces}
@@ -84,13 +97,13 @@ export default function MainPage() {
                     onFeatureClick={handleFeatureClick}
                     onLevelChange={download.setLevel}
                     barangayAvailable={!!download.selectedMunicityPsgc}
-                    loading={loading || (download.level === "barangay" && barangaysQuery.isFetching)}
+                    loading={mapLoading}
                     error={error ?? (barangaysQuery.error as Error | null)}
                     overlay={activeOverlay}
                     overlayView={overlayView}
                 />
             </div>
-            <div className="min-h-0 flex-1 overflow-hidden lg:flex-none">
+            <div className="min-h-0 flex-1 overflow-hidden border-t border-border-light lg:border-t-0">
                 <MpaSidebar
                     level={download.level}
                     regions={regions}
@@ -99,7 +112,7 @@ export default function MainPage() {
                     municityMeta={municityMeta}
                     country={country}
                     barangays={barangays}
-                    barangaysLoading={barangaysQuery.isFetching}
+                    barangaysLoading={barangaysQuery.isLoading}
                     selectedRegionPsgc={download.selectedRegionPsgc}
                     onRegionChange={download.setSelectedRegionPsgc}
                     selectedProvincePsgc={download.selectedProvincePsgc}

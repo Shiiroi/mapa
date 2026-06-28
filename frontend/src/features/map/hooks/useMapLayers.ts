@@ -4,19 +4,28 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchCountry, fetchProvinces, fetchMunicitiesMeta, fetchMunicitiesGeometry, fetchRegions } from "../services/mapApi";
 import type { CountryGeoJSON, ProvinceGeoJSON, MunicityGeoJSON, MunicityMeta, Region } from "../types";
 
+interface UseMapLayersOptions {
+    /** When true, loads all municity geometries (heavy; only needed for city/mun map view). */
+    loadMunicitiesGeometry?: boolean;
+}
+
 interface UseMapLayersReturn {
     provinces: ProvinceGeoJSON[];
     municities: MunicityGeoJSON[];
     municityMeta: MunicityMeta[];
     regions: Region[];
     country: CountryGeoJSON | null;
+    /** True while core layers needed for country/region/province views are loading. */
     loading: boolean;
+    /** True while municity geometries are still loading (city/mun view only). */
+    municitiesLoading: boolean;
     error: Error | null;
 }
 
-// Loads and caches all base map layers (regions, provinces, municities, country),
-// exposing a combined loading/error state.
-export function useMapLayers(): UseMapLayersReturn {
+// Loads and caches base map layers. Municity geometry is deferred until requested
+// so the Philippines view is not blocked by hundreds of per-province JSON files.
+export function useMapLayers(options: UseMapLayersOptions = {}): UseMapLayersReturn {
+    const { loadMunicitiesGeometry = false } = options;
     const provincesQuery = useQuery<ProvinceGeoJSON[]>({
         queryKey: ["provinces"],
         queryFn: fetchProvinces,
@@ -35,6 +44,7 @@ export function useMapLayers(): UseMapLayersReturn {
         staleTime: 20 * 60 * 1000,
         gcTime: 30 * 60 * 1000,
         retry: false,
+        enabled: loadMunicitiesGeometry,
     });
 
     const regionsQuery = useQuery<Region[]>({
@@ -53,8 +63,8 @@ export function useMapLayers(): UseMapLayersReturn {
         provincesQuery.isLoading ||
         municityMetaQuery.isLoading ||
         regionsQuery.isLoading ||
-        countryQuery.isLoading ||
-        municitiesGeometryQuery.isFetching;
+        countryQuery.isLoading;
+    const municitiesLoading = loadMunicitiesGeometry && municitiesGeometryQuery.isLoading;
     const error =
         provincesQuery.error ??
         municityMetaQuery.error ??
@@ -69,6 +79,7 @@ export function useMapLayers(): UseMapLayersReturn {
         regions: regionsQuery.data ?? [],
         country: countryQuery.data ?? null,
         loading,
+        municitiesLoading,
         error: error as Error | null,
     };
 }

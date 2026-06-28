@@ -49,6 +49,23 @@ const CANDIDATE_META: { match: string; display: string; color: string }[] = [
     { match: "MONTEMAYOR", display: "Jose Montemayor", color: "#b15928" },
 ];
 
+// Official national totals (0000000000 country row), hardcoded so the Philippines
+// view always shows the canonical headline numbers instead of a sum of whatever
+// barangays happen to be scraped. Source: COMELEC 2022 transparency results,
+// partial/unofficial as of May 13, 2022 (98.35% of ERs).
+const COUNTRY_TOTALS: Record<string, number> = {
+    "Bongbong Marcos": 31104175,
+    "Leni Robredo": 14822051,
+    "Manny Pacquiao": 3629805,
+    "Isko Moreno": 1900010,
+    "Ping Lacson": 882236,
+    "Faisal Mangondato": 259576,
+    "Ernesto Abella": 113242,
+    "Leody de Guzman": 92070,
+    "Norberto Gonzales": 89097,
+    "Jose Montemayor": 59944,
+};
+
 interface NodeInfo {
     can?: string; // category / level: Country|Region|Province|Municipality|City|Barangay
     rn?: string; // region/name of this node
@@ -252,6 +269,7 @@ function matchCityMun(region: string, province: string, name: string, idx: PsgcI
 }
 
 const tiers: Record<string, SeriesRow[]> = {
+    country: [],
     region: [],
     province: [],
     citymun: [],
@@ -449,7 +467,7 @@ function writeUniversalCsv(
     title: string,
     cands: { display: string; color: string }[],
 ) {
-    const tierOrder = ["region", "province", "citymun", "barangay"] as const;
+    const tierOrder = ["country", "region", "province", "citymun", "barangay"] as const;
     const rows = tierOrder.flatMap((tier) => tiers[tier] ?? []);
     if (!rows.length) return;
 
@@ -551,7 +569,11 @@ function main() {
         "region",
     );
 
-    const allRows = [...tiers.region, ...tiers.province, ...tiers.citymun, ...tiers.barangay];
+    // Whole-country row uses the hardcoded official national totals, not a sum of
+    // the scraped tiers (which are partial until every barangay is scraped).
+    tiers.country = [{ psgc: "0000000000", label: "Philippines", votes: { ...COUNTRY_TOTALS } }];
+
+    const allRows = [...tiers.country, ...tiers.region, ...tiers.province, ...tiers.citymun, ...tiers.barangay];
     const cands = orderedCandidates(allRows);
 
     console.log("Writing CSV:");

@@ -18,7 +18,7 @@ import {
     gdpLegendItems,
 } from "../utils/customScale";
 import { overlayActiveAtLevel } from "../utils/customOverlay";
-import { SCALE_LEVEL_LABELS, scaleLevelFor } from "../utils/mapScale";
+import { SCALE_LEVEL_LABELS, scaleLevelFor } from "../constants";
 import { formatDensity, formatGdp, formatAssets, formatPopulation } from "../utils/formatStats";
 import { buildSeriesScale, formatSeriesTooltip } from "../utils/seriesScale";
 
@@ -303,10 +303,13 @@ export function MpaMapPanel({
         };
     }, [currentData, scaleLevel]);
 
-    const overlayLevelOk = overlay != null && overlayActiveAtLevel(overlay, scaleLevel);
+    // Overlay values are matched to the rendered polygons at the exact map level.
+    // In Philippines view that is the single country polygon (0000000000), so the
+    // overlay must include a country row or the view stays blank.
+    const overlayLevelOk = overlay != null && overlayActiveAtLevel(overlay, mode);
     const activeValues = useMemo(
-        () => overlay?.valuesByLevel[scaleLevel] ?? {},
-        [overlay, scaleLevel],
+        () => overlay?.valuesByLevel[mode] ?? {},
+        [overlay, mode],
     );
 
     const { customColors, customLegend, customLegendTitle, customLegendNote } = useMemo(() => {
@@ -418,7 +421,7 @@ export function MpaMapPanel({
     );
 
     return (
-        <div className="relative h-full min-h-[50dvh] w-full">
+        <div className="relative h-full min-h-0 w-full">
             {loading && (
                 <div className="absolute inset-0 z-[1001] flex items-center justify-center bg-parchment/80">
                     <p className="rounded-lg bg-white px-6 py-4 shadow-soft">Loading Philippines map…</p>

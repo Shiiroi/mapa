@@ -4,11 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 import { cn } from "../../../lib/cn";
 import { downloadTextFile } from "../../../lib/downloadFile";
 import type { MpaLevel } from "../constants";
+import { SCALE_LEVEL_LABELS } from "../constants";
 import { useCustomDatasetValues, useCustomDatasets } from "../hooks/useCustomDatasets";
 import type { CustomDataset, CustomOverlay, SeriesViewMode, SeriesViewState } from "../types";
 import { buildOverlayFromDataset, overlayActiveAtLevel } from "../utils/customOverlay";
 import { formatPopulation } from "../utils/formatStats";
-import { SCALE_LEVEL_LABELS, scaleLevelFor } from "../utils/mapScale";
 import {
     CUSTOM_CSV_TEMPLATE,
     CUSTOM_SERIES_CSV_TEMPLATE,
@@ -120,8 +120,7 @@ export function MpaCustomPanel({
         [datasetsQuery.data],
     );
 
-    const mapScaleLevel = scaleLevelFor(mapLevel);
-    const levelMatches = activeOverlay != null && overlayActiveAtLevel(activeOverlay, mapScaleLevel);
+    const levelMatches = activeOverlay != null && overlayActiveAtLevel(activeOverlay, mapLevel);
 
     const seriesKeys = activeOverlay?.series?.map((s) => s.key) ?? [];
     const seriesCount = seriesKeys.length;
@@ -153,7 +152,7 @@ export function MpaCustomPanel({
         if (!file) return;
         const text = await file.text();
         const result = parseCustomCsv(text, knownPsgcs, psgcLevels, psgcLevelsByTier);
-        if (!result.ok) {
+        if (result.ok === false) {
             setUploadError(result.error);
             return;
         }
@@ -257,6 +256,12 @@ export function MpaCustomPanel({
                             <span className="font-medium text-primary">psgc</span> is the 10-digit code (region,
                             province, city/municipality, or barangay). The map reads the level from the code, so you can
                             mix all levels in one file — it shows the right rows as you switch the View by level.
+                        </p>
+                        <p>
+                            The map only colors areas you provide rows for — anything missing stays blank. The{" "}
+                            <span className="font-medium text-primary">Philippines</span> view needs a single{" "}
+                            <code className="text-primary">0000000000</code> whole-country row, or it stays blank
+                            (switch to the region view to see region rows).
                         </p>
                         <p>
                             <span className="font-medium text-primary">label</span> is optional and only shown in

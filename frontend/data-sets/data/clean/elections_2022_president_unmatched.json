@@ -1,6 +1,5610 @@
 [
   {
     "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "ADAMS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN AGUSTIN I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN AGUSTIN II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN ANDRES I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN ANDRES II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN GABRIEL I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN GABRIEL II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN PEDRO I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN PEDRO II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN ROQUE I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN ROQUE II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN SIMON I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN SIMON II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN VICENTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SANTA FILOMENA I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SANTA FILOMENA II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SANTA RITA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SANTO CRISTO I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SANTO CRISTO II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "CANAAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "GARRETA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN LORENZO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "AGLIPAY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BARANI (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BEN-AGAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "CALLAGUIP (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "CANGRUNAAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "CAUNAYAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "LACUB (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "PALPALICONG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN JULIAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SUABIT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BARBAQUESO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "ALBANO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "DANCEL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "GUERRERO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "MADAMBA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "PURUGANAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "PERALTA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "HILARIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "LORENZO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "MARCOS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "VALENCIANO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 24, NSTRA. SRA. DE CONSOLACION (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 7-A, NSTRA. SRA. DE NATIVIDAD (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 7-B, NSTRA. SRA. DE NATIVIDAD (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 27, NSTRA. SRA. DE SOLEDAD (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 13, NSTRA. SRA. DE VISITACION (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 3, NSTRA. SRA. DEL ROSARIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 6, SAN AGUSTIN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 22, SAN ANDRES (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 28, SAN BERNARDO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 17, SAN FRANCISCO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 4, SAN GUILLERMO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 15, SAN GUILLERMO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 12, SAN ISIDRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 16, SAN JACINTO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 10, SAN JOSE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 1, SAN LORENZO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 26, SAN MARCELINO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 23, SAN MATIAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 20, SAN MIGUEL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 21, SAN PEDRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 5, SAN PEDRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BRY. NO. 18, SAN QUIRINO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 8, SAN VICENTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 9, SANTA ANGELA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 11, SANTA BALBINA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 25, SANTA CAYETANA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 2, SANTA JOAQUINA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 19, SANTA MARCELA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 14, SANTO TOMAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "BGY. NO. 29, SANTO TOMAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "LYDIA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "PANNARATAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SALBANG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN BLAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN ROQUE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SANTA RITA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "ANAO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "CABAROAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "LOING (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "PAGDILAO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "VALBUENA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN FRANCISCO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN ILDEFONSO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN BALTAZAR (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN BARTOLOME (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN CAYETANO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN EUGENIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN FERNANDO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN GREGORIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN JOSE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN JUAN BAUTISTA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN LUCAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN MIGUEL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN PAULO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN RUFINO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN SILVESTRE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN AGUSTIN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN FRANCISCO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN JOAQUIN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN LEANDRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN VICENTE  (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SANTA BARBARA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "JUAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "LAURETA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "PEDRO S. ALVIAR"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN JOSE (LIPAY)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN NICOLAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN PEDRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN RAMON (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SAN ROQUE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS NORTE",
+    "name": "SANTA MARIA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "ALILEM DAYA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BARANGAY  1 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BARANGAY  2 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BARANGAY  3 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BARANGAY  4 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BARANGAY  5 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BARANGAY  6 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BACLIG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BONIFACIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "QUEZON (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "RIZAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "CUBCUBBOOT"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "SAN ANTONIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "SAN ISIDRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "SAN JOSE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "SAN JUAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "DON DIMAS QUERUBIN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "DON ALEJANDRO QUIROLGICO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "DON LORENZO QUERUBIN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "CONCEPCION (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "ROSARIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "SAN BASILIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "SAN CLEMENTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "SAN JULIAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "SAN LUCAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "SAN RAMON (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "SAN VICENTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "CASOCOS"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "SAN JOSE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "SANTA LUCIA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "LEGLEG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "CABAROAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BANNUAR (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "LIRA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "PANDAYAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "RESURRECCION (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "MAGSAYSAY DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "MARCOS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "QUEZON (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "QUIRINO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "AYUSAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BARANGOBONG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BURGOS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BALLAIGUI (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "MACABIAG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "NAMNAMA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "RANG-AY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "SABAÑGAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BALBALAYANG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "DEL PILAR (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "MAGSAYSAY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "MALACAÑANG"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "QUIRINO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "RIZAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BARANGAY I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BARANGAY II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BARANGAY III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BARANGAY IV (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BARANGAY V (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "ILOCOS SUR",
+    "name": "BARANGAY VI (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "CONSOLACION (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "SAN NICOLAS CENTRAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "SAN NICOLAS NORTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "SAN NICOLAS SUR (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "SANTA BARBARA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "SUYO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "CABUAAN OESTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "ALMIEDA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "CENTRAL EAST NO.  1 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "CENTRAL EAST NO.  2 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "CENTRAL WEST NO.  1 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "CENTRAL WEST NO.  2 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "CENTRAL WEST NO.  3 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "CENTRAL EAST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "CENTRAL WEST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "ALCALA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "MAGALLANES (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "SALCEDO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "VICTORIA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "NATIVIDAD (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "ORTIZ (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "BARANGAY I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "BARANGAY II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "BARANGAY III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "BARANGAY IV (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "ILI NORTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "LA UNION",
+    "name": "ILI SUR (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "NINOY"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "KASIKIS"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "AMAMPEREZ"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "BATANGCAWA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "INANLORENZANA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "SANGCAGULIS"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "TATARAO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE IV (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE V (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE VI (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE VII (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "CONCORDIA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "GERMINAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "SAPA PEQUEÑA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "OSMEÑA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ARELLANO STREET (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "BURGOS STREET (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "CALUMBOYAN NORTE"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "CALUMBOYAN SUR"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "CALVO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "GENERAL LUNA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "LOPEZ (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "MABINI (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "MARAVILLA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "MARAVILLA-ARELLANO EXT. (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "OLEGARIO-CAOILE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "OSMEÑA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "POGON-LOMBOY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "QUEZON (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "TORRES BUGALLON (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZAMORA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "CASTAÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "BAKITBAKIT"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE  I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE  IV (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE  II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE  III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE  V (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "BUGALLON-POSADAS STREET (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "BONIFACIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "BURGOS PADLAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "LUCBAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "MABINI (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "MALACAÑANG"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "PALARIS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "PEREZ BOULEVARD (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "QUEZON BOULEVARD (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "RIZAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ROXAS BOULEVARD (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "GOMOT"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "CAPAOAY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "GUISET NORTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "GUISET SUR (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "CABOLOAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "CAMANGGAAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "BARANGAY A (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "BARANGAY B (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "BARANGAY C (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "BARANGAY D (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "BATANGCAOA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "DALANGIRING"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE V (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "ZONE IV (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "BOTIQUE"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION I",
+    "province": "PANGASINAN",
+    "name": "POBLACION (LAOAC)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "BATANES",
+    "name": "TUHEL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "BATANES",
+    "name": "HANIB"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "BATANES",
+    "name": "UVOY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "BATANES",
+    "name": "MALAKDANG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "BATANES",
+    "name": "SINAKAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "BATANES",
+    "name": "KAYVALUGANAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "BATANES",
+    "name": "KAYUGANAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO NORTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO SUR (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "JURISDICTION"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO EAST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO WEST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "SILANGAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "ALITUNGTUNG"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "PACAC-PEQUEÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO   1 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO   2 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO   3 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO   4 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO   5 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO   6 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO   7 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO   8 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO   9 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  10 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  11 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  12 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  13 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  14 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  15 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "BITAG PEQUEÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "IMURONG"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO EAST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO WEST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "ANTIPORDA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "ALUCAO WESTE"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO NORTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO SUR (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "DACAL-LAFUGU"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "JURISDICTION"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "TULUTTUGING"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CAPANIKIAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CAMALAGGOAN/D LEAÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "BARANGAY I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "BARANGAY II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "MARACURU"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "BARANGAY IV (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO NORTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO SUR (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "PIÑA ESTE"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "PIÑA WESTE"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "FLOURISHING (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "PARADISE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "PROGRESSIVE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "SMART (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "AJAT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "NATTANZAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "SANTA TERESA (MAGALLUNGON)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "ALIMANAO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "BALUNGCANAG"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CAPACUAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "DUNGGAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "LINNO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "LIWAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "VISITACION (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO EAST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "ARIDAWEN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO NORTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO SUR (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO NORTHEAST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO NORTHWEST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO SOUTHEAST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO SOUTHWEST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "BALAGAO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CULONG"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "MALUMIN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "VILLA LAIDA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  1 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  4 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  5 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  6 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  7 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  8 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  9 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  10 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  11 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "NAMBBALAN NORTE"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  2 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  3 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "CENTRO  12 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "CAGAYAN",
+    "name": "NAMBBALAN SUR"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "ANTONINO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CALAOCAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "MAGSAYSAY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SAN ANTONIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CENTRO I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CENTRO II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CENTRO III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "RIZALUNA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SAN JOSE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SAN JUAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SAN PEDRO-SAN PABLO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DISTRICT II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DISTRICT I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CALIGUIAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CENTRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CENTRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DISTRICT  I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DISTRICT  II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DISTRICT  III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DIGUMASED (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DIMAPULA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SILAUAN SUR (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SILAUAN NORTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CABUGAO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DISTRICT I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DISTRICT II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DISTRICT III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "BACULOD (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "BAGUMBAYAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CABESERIA 6 AND 24"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "OSMEÑA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SAN VICENTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SANTA BARBARA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "BARANGAY  I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "BARANGAY  II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "PONGPONGAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CENTRO 1 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CENTRO 2 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CENTRO 3 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "MACAÑAO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "ELEONOR (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "FELY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "LITA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "RAGAN SUR (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CALOOCAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CENTRO I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CENTRO II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "MAGSAYSAY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "QUEZON (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "QUIRINO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "ROXAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DICABISAGAN EAST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DICABISAGAN WEST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DIDDADUNGAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "ALUNAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "ARELLANO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SANTOS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SAMONTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SANTA LUCIA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "BUGALLON PROPER (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CUTOG PEQUEÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DISTRICT I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DISTRICT II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "LABINAB GRANDE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "LABINAB PEQUEÑO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "NAPACCU GRANDE"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "NAPACCU PEQUEÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SALUCONG"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "TALLUNGAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "RIZAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "VIRA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "BANTUG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "LUNA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "MUÑOZ EAST"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "MUÑOZ WEST"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DOÑA CONCHA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DABUBU PEQUEÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "MASAYA CENTRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CENTRO  1 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CENTRO  2 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "RIZAL EAST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "RIZAL WEST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DISTRICT  1 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DISTRICT  2 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DISTRICT  3 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "DISTRICT  4 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "ZONE I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "ZONE II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "ZONE III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SANTA FILOMINA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "BACAREÑA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "MARASAT PEQUEÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "BARANGAY I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "BARANGAY II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "BARANGAY III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "BARANGAY IV (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CALAO EAST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CALAO WEST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CENTRO EAST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CENTRO WEST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CAÑOGAN ABAJO NORTE"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CAÑOGAN ABAJO SUR"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "CAÑOGAN ALTO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "UAUANG-TULIAO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "UAUANG-GALICIA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "BARANGAY DISTRICT  1 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "BARANGAY DISTRICT  2 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "BARANGAY DISTRICT  3 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "BARANGAY DISTRICT  4 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "ISABELA",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "AMMUEG"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "SAN GERONIMO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "SAN PEDRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "VILLA COLOMA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "QUIRINO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "BANGGOT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "BUAG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "CALAOCAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "DISTRICT IV (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "AMPAKLING"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "LANGCA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "MALASIN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "BINNUANGAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "BILET"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "TOKOD"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "SEGUEM"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "NANTAWACAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "PACQUET"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "AMILONG LABENG"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "CABALATAN-ALANG"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "PAMPANG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "TALECABCAB"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "TUBONGAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "ALANG-SALACSAC"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "CALIAT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "OSMEÑA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "CAUAYAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "NUEVA VIZCAYA",
+    "name": "LUBLUB (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "QUIRINO",
+    "name": "PROGRESO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "QUIRINO",
+    "name": "GUNDAWAY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "QUIRINO",
+    "name": "MANGANDINGAY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "QUIRINO",
+    "name": "VILLA PEÑA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "QUIRINO",
+    "name": "ANDRES BONIFACIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "QUIRINO",
+    "name": "AURORA EAST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "QUIRINO",
+    "name": "AURORA WEST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "QUIRINO",
+    "name": "DOÑA IMELDA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "QUIRINO",
+    "name": "RIZAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "QUIRINO",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "QUIRINO",
+    "name": "MAGSAYSAY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION II",
+    "province": "QUIRINO",
+    "name": "RIZAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "CALAYLAYAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "LAON (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "WAWA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "BAGUMBAYAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "TABING-ILOG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "DOÑA FRANCISCA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "BONIFACIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "BURGOS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "DEL PILAR (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "GEN. LUNA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "GOMEZ (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "MABINI PROPER (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "MABINI EXT. (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "PADRE DANDAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "RIZAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "ROXAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "SAN ISIDRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "TORRES BUGAUEN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "ZAMORA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "A. RIVERA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "BURGOS-SOLIMAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "CATANING (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "DAUNGAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "SAN PEDRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "SANTO CRISTO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "KITANG 2 AND LUZ"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "BAGONG PARAISO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "BALUT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "BAYAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "CALERO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "PAKING-CARBONERO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "CENTRO II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "PALIHAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "PANTALAN BAGO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "PANTALAN LUMA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "PARANG PARANG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "CENTRO I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "TENEJERO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "WAWA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "ARELLANO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "BAGUMBAYAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "BALAGTAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "BALUT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "DAANG BAGO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "DAANG BILOLO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "LATI (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "LUSUNGAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "SAN VICENTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "VILLA ANGELES (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "WAKAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "WAWA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "DEL ROSARIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "RIZAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "EAST CALAGUIMAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "EAST DAANG BAGO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "IBABA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "SAN JUAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "SAN ROQUE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "WEST CALAGUIMAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BATAAN",
+    "name": "WEST DAANG BAGO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SAN ROQUE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SANTA CRUZ (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SANTO CRISTO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "WAWA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "BIÑANG 1ST"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "BIÑANG 2ND"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SAN JOSE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SANTO NIÑO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "LIYANG"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SAN VICENTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SANTO NIÑO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SANTO ROSARIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SANTOL"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "GASAK  (SAINT FRANCIS)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "PAG-ASA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "TELEPATIO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "BAGONG BUHAY"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "MINUYAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "MUZON"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SAN MARTIN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SANTA CRUZ"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "FATIMA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SAN RAFAEL"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "SANTO NIÑO II"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "ST. MARTIN DE PORRES"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "BULACAN",
+    "name": "MARONGUILLO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "COMMERCIAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "KAINGIN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "MAGTANGGOL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "MANTILE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "PALO MARIA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "RIZAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SAMPALUCAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SAN ROQUE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SINIPIT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SISILANG NA LIGAYA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SOCIAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "TULAY NA BATO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "BARRERA DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "BERNARDO DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "BONIFACIO DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "KAPITAN PEPE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "CITY SUPERMARKET (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "DICARMA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "DIMASALANG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "FATIMA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "GENERAL LUNA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "ISLA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "MATADERO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "MELOJAVILLA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "QUEZON DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "RIZDELIS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SANBERMICRISTI (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "VIJANDRE DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "ZULUETA DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "NABAO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "PADRE BURGOS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "NATIVIDAD NORTH (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "NATIVIDAD SOUTH (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SAN JUAN NORTH (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SAN JUAN SOUTH (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "NACURALAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SINIMBAAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SAN LORENZO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SAN VICENTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SAN PEDRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "CAMILING"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SAINT JOHN DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SANTA VERONICA DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SANTO CRISTO DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SARANAY DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "TAMPAC II AND III"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "DAMPULAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "DON MARIANO MARCOS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "OCAMPO-RIVERA DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "BARANGAY I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "BARANGAY II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "BARANGAY III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "BARANGAY IV (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "BAGUMBAYAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "CABADUCAN EAST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "CABADUCAN WEST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "ESTACION (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "MALATE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "DOÑA JOSEFA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "LAS PIÑAS"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "DOÑA LUCIA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "BARANGAY I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "BARANGAY II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SANTO NIÑO 1ST"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SANTO NIÑO 2ND"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SANTO NIÑO 3RD"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "VILLA FLORESCA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "BONIFACIO DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "BURGOS DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SAN BARTOLOME (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "RIZAL DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "COJUANGCO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "MALACAÑANG"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "RIZAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "VALENZUELA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "ZAMORA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "ANDAL ALINO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "ESGUERRA DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "MAESTRANG KIKAY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "MARCOS DISTRICT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "PUROK MATIAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "PAG-ASA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "PULONG SAN MIGUEL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "MAGSAYSAY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "OSMEÑA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "QUEZON (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "QUIRINO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "ROXAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "NUEVA ECIJA",
+    "name": "SAN VICENTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "MALABAÑAS"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "STO. ROSARIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SAN JUAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SANTO NIÑO TABUAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "CABAMBANGAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "BUAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "PARALAYA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "PESCADORES (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SAN AGUSTIN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "VIZAL SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "PLAZA BURGOS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SANTA FILOMENA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SANTO NIÑO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SAN JUAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SAN NICOLAS 1ST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SANTA LUCIA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SANTO TOMAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SAN GABRIEL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "STA. CRUZ (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "STA. RITA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "STO. NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "STO. ROSARIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SAN NICOLAS 1ST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SAN PABLO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SANTA CRUZ (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SAN ISIDRO MATUA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SAN NICOLAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "STA. LUCIA ANAC (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "STO. NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "PARIAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SAN NICOLAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "STO. ROSARIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "PULONG SANTOL"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SEPUNG BULAUN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SANTO ROSARIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SAN JUAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SAN JOAQUIN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "SAN JOSE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "PAMPANGA",
+    "name": "STA. LUCIA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "SAN NICOLAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "MANAKEM"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "PALIMBO-CAAROSIPAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "CUBCUB (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "SAN JOSE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "SAN NICOLAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "MATAYUMCAB"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "GUEVARRA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "SAN ISIDRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "SAN ROQUE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "SAN FERNANDO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "SAN GAVINO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "SAN NICOLAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "TARLAC",
+    "name": "SANTA LUCIA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "PACO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "TAMPO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "BINUCLUTAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "OWAOG-NIBLOC"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "BANUANBAYO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "CAMILING"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "DOLORES (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "DEL CARMEN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SAN JUAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SAN JOSE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SAN JUAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SAN PABLO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "ANTIPOLO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "BURGOS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "LUNA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SAN GREGORIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SAN JUAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SAN NICOLAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "AMAGNA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "APOSTOL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "FARAÑAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "FERIA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "MANGLICMOT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "ROSETE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "BURGOS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "CONSUELO SUR (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "LA PAZ (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "LUCERO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "RIZAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SAN GUILLERMO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SAN ISIDRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "CENTRAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "CANDELARIA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "LIBERTAD (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "NATIVIDAD (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "PATROCINIO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SAN JOSE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SAN JUAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SAN PASCUAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "SAN RAFAEL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "BARACA-CAMACHILE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "CALAPANDAYAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "ILWAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "ZAMBALES",
+    "name": "WAWANDUE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY IV (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY V (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY  1 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY  2 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY  3 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY  4 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY  5 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY  6 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY  7 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY  8 (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BIANUAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "MALIGAYA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "MASAGANA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "ZONE I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "ZONE II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY IV (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION III",
+    "province": "AURORA",
+    "name": "BARANGAY IV (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "BAGTING (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "BANONONG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "CAWA-CAWA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "DAWO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "LINABO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "POTOL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "SANTA CRUZ (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "ESTACA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "BIASONG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "BARRA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "CENTRAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "MIPUTAK (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "BARANGAY UNO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "BARANGAY DOS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "ANTONINO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "LOPOC (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "BAYBAY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "PIÑALAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "PIÑAMAR"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "PARANGLUMBA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "SIAYAN PROPER (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "MUÑOZ"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "DOÑA JOSEFA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "DOÑA CECILIA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "PIÑA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "SAINT MARY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "SAN NICOLAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "SAN VICENTE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "SAN ROQUE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "SIRAWAI PROPER (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "BACUNGAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "KALAWIT (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL NORTE",
+    "name": "TUGOP"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "DEPILI"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "PANGI"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "PAG-ASA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "PAGLAUM (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "SAN PABLO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "SAN PEDRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "LOWER CAMPO ISLAM (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "UPPER CAMPO ISLAM (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "LUBUSAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "LOWER SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "UPPER SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "MADASIGON (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "MAKUGUIHON (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "MALOLOY-ON (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "BALANGASAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "GATAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "SAN FRANCISCO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "SAN JOSE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "SAN PEDRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "SANTA LUCIA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "SANTIAGO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "TUBURAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "DOÑA JOSEFINA"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "HAPPY VALLEY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "LOWER LODIONG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "NEW VILLAGE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "RIVERSIDE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "SAN CARLOS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "SANTO NIÑO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "DULIAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "DULIAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "BARANGAY ZONE I (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "BARANGAY ZONE II (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "BARANGAY ZONE III (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "BARANGAY ZONE IV (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "UPPER BAGONG TUDELA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "NEMEÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "GUMAHAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "REGION IX",
+    "province": "ZAMBOANGA DEL SUR",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
     "region": "CORDILLERA ADMINISTRATIVE REGION",
     "province": "ABRA",
     "name": "BAÑACAO"

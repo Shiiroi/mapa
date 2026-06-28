@@ -366,6 +366,7 @@ export const CUSTOM_CSV_TEMPLATE = `# SINGLE-VALUE MAP: one number per area.
 # title: My dataset
 # unit: people
 # Tip: you may mix region / province / city / barangay rows. The level is read from each PSGC.
+# The map only colors areas you provide. For the Philippines view, add a 0000000000 (whole-country) row, or it stays blank.
 # Find PSGC codes at https://psa.gov.ph/classification/psgc
 # (The line below is the real header. Keep the commas there - they make the columns.)
 psgc,value,label
@@ -383,6 +384,7 @@ export const CUSTOM_SERIES_CSV_TEMPLATE = `# MULTI-SERIES MAP: one row per area 
 # colors: Marcos=#bb1e1e; Robredo=#ec1c8f
 # mode: lead    (choose one of: lead | dominant | share | head2head)
 # Tip: you may mix region / province / city / barangay rows. The level is read from each PSGC.
+# The map only colors areas you provide. For the Philippines view, add a 0000000000 (whole-country) row, or it stays blank.
 # (The line below is the real header. Keep the commas there - they make the columns.)
 psgc,label,Marcos,Robredo
 1300000000,Metro Manila,2500000,1800000
