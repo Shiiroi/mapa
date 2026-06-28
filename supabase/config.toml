@@ -2,7 +2,7 @@
 # https://supabase.com/docs/guides/local-development/cli/config
 # A string used to distinguish different Supabase projects on the same host. Defaults to the
 # working directory name when running `supabase init`.
-project_id = "turistala"
+project_id = "mapa"
 
 [api]
 enabled = true
@@ -59,15 +59,9 @@ schema_paths = []
 
 [db.seed]
 # If enabled, seeds the database after migrations during a db reset.
-enabled = true
-# Specifies an ordered list of seed files to load during db reset.
-# Supports glob patterns relative to supabase directory: "./seeds/*.sql"
-sql_paths = [
-  "./seed.sql",
-  "./seeds/01_regions.sql",
-  "./seeds/02_provinces.sql",
-  "./seeds/03_municities.sql",
-]
+enabled = false
+# Seed data is loaded via frontend pnpm setup (clean) or pnpm restore (backup CSVs).
+sql_paths = []
 
 [db.network_restrictions]
 # Enable management of network restrictions.

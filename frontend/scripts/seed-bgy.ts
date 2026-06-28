@@ -49,7 +49,7 @@ async function upsertTable(table: string, rows: Record<string, unknown>[]) {
 // Seeds barangay metadata (chunked) from the bgy meta.json into Supabase.
 async function main() {
     if (!fs.existsSync(BGY_META)) {
-        console.error(`Missing ${BGY_META} — run pnpm shape:geo first`);
+        console.error(`Missing ${BGY_META}`);
         process.exit(1);
     }
 

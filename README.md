@@ -139,18 +139,37 @@ Run the migrations in `supabase/migrations/` against your Supabase project.
 
 ### 4. Seed database and upload geo
 
-After applying migrations, seed everything from the committed clean data:
+After applying migrations, pick one path:
+
+**Clean (from source — recommended for self-hosters who want transparent, reproducible data):**
 
 ```bash
 cd frontend
-
-# Upload geo JSON to Supabase Storage, then seed all Postgres tables
-pnpm seed:all
+pnpm setup
 ```
 
-`seed:all` runs: `upload:geo` → `seed:db` → `seed:bgy` → `seed:stats` → `seed:extrapop` → `seed:gdp` → `seed:afr` → `seed:custom-elections`.
+`setup` = `upload:geo` + `seed:all`. Reads `public/geo/` and `public/data/clean/*.csv`, transforms via seed scripts, upserts into Postgres.
 
-You only need `public/geo/` and `public/data/clean/` to seed a fresh instance. `public/data/raw/` and `public/source/` are provenance archives and can be omitted when self-hosting.
+**Restore (fast clone — exact mirror from committed CSV snapshots):**
+
+```bash
+cd frontend
+pnpm restore
+```
+
+`restore` = `upload:geo` + `db:restore`. Reads `public/backup/<table>.csv` row-for-row (includes whatever election barangay rows were last exported).
+
+| Command | What it does |
+|---------|----------------|
+| `pnpm setup` | Upload geo + seed from clean source data |
+| `pnpm restore` | Upload geo + restore from `public/backup/*.csv` |
+| `pnpm seed:all` | Seed Postgres only (no geo upload) |
+| `pnpm db:export` | Dump current DB → refresh `public/backup/*.csv` |
+| `pnpm db:restore` | Restore Postgres from backup CSVs only |
+
+Individual seeders (for partial updates): `seed:db`, `seed:bgy`, `seed:stats`, `seed:extrapop`, `seed:gdp`, `seed:afr`, `seed:custom-elections`.
+
+You only need **`public/geo/`** + **`public/data/clean/`** for `setup`, or **`public/geo/`** + **`public/backup/`** for `restore`. `public/data/raw/` and `public/source/` are provenance only.
 
 ### 5. Run the app
 
@@ -172,10 +191,37 @@ public/data/clean/*.csv        # PSGC-keyed stats overlays (committed)
         └── upload:geo ────────► Supabase Storage (CDN)
 
 Optional regen (elections):
-  scrape:comelec → map:comelec → public/data/clean/elections_*.csv → seed:custom-elections
+  scrape:comelec → map:comelec → public/data/clean/elections_*.csv → seed:custom-elections → db:export
+
+Backup snapshot:
+  db:export → public/backup/*.csv  (refresh after DB changes; used by pnpm restore)
 ```
 
 GDP values use **PSA constant 2018 prices** (real terms, correct for trend lines and growth rates).
+
+### Incremental barangay election results
+
+Barangay **geometry metadata** is seeded once via `seed:bgy` (included in `setup` / `restore`). Barangay **election overlay rows** grow as you scrape COMELEC; re-seed and refresh backup after each stage:
+
+```bash
+cd frontend
+
+# Stage 1 — Manila barangays (resumable; same command to continue)
+pnpm scrape:comelec -- --max-rank barangay --only-region NCR --only-citymun MANILA
+pnpm map:comelec
+pnpm seed:custom-elections
+pnpm db:export
+
+# Stage 2 — whole NCR (skips Manila files already on disk)
+pnpm scrape:comelec -- --max-rank barangay --only-region NCR
+pnpm map:comelec && pnpm seed:custom-elections && pnpm db:export
+
+# Stage 3 — whole Philippines
+pnpm scrape:comelec -- --max-rank barangay
+pnpm map:comelec && pnpm seed:custom-elections && pnpm db:export
+```
+
+All seed/restore commands are **upserts** — they never wipe the whole DB.
 
 **Why chunked?** City/municipality and barangay boundaries are large. Splitting into per-province and per-municity files with manifest indexes lets the app load only what the user needs.
 

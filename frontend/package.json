@@ -17,7 +17,11 @@
         "seed:db": "tsx --env-file=.env scripts/seed-db.ts",
         "seed:bgy": "tsx --env-file=.env scripts/seed-bgy.ts",
         "upload:geo": "tsx --env-file=.env scripts/upload-geo.ts",
-        "seed:all": "npm run upload:geo && npm run seed:db && npm run seed:bgy && npm run seed:stats && npm run seed:extrapop && npm run seed:gdp && npm run seed:afr && npm run seed:custom-elections",
+        "seed:all": "npm run seed:db && npm run seed:bgy && npm run seed:stats && npm run seed:extrapop && npm run seed:gdp && npm run seed:afr && npm run seed:custom-elections",
+        "setup": "npm run upload:geo && npm run seed:all",
+        "db:export": "tsx --env-file=.env scripts/db-export.ts",
+        "db:restore": "tsx --env-file=.env scripts/db-restore.ts",
+        "restore": "npm run upload:geo && npm run db:restore",
         "lint": "eslint .",
         "preview": "vite preview"
     },
