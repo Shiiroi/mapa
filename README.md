@@ -100,7 +100,7 @@ Create `frontend/.env`:
 
 ```bash
 VITE_SUPABASE_URL=https://<your-project>.supabase.co
-VITE_SUPABASE_ANON_KEY=<your-anon-or-publishable-key>
+VITE_SUPABASE_PUBLISHABLE_KEY=<your-anon-or-publishable-key>
 
 # Server-side scripts only (never expose to the client)
 SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
