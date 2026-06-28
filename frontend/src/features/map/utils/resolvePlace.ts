@@ -34,6 +34,7 @@ interface ResolvePlaceInput {
     selectedBarangayPsgc: string | null;
 }
 
+// Picks just the stats fields off a geo row, normalizing missing values to null.
 function mergeStats<T extends DivisionStatsFields>(row: T): DivisionStatsFields {
     return {
         pop_2010: row.pop_2010 ?? null,
@@ -53,10 +54,12 @@ function mergeStats<T extends DivisionStatsFields>(row: T): DivisionStatsFields 
     };
 }
 
+// Looks up a municity by PSGC, preferring full geometry over metadata-only rows.
 function findMunicity(psgc: string, municities: MunicityGeoJSON[], meta: MunicityMeta[]): MunicityGeoJSON | MunicityMeta | undefined {
     return municities.find((m) => m.psgc === psgc) ?? meta.find((m) => m.psgc === psgc);
 }
 
+// Builds the "Philippines › Region › Province › City" breadcrumb for a place.
 function breadcrumbFor(
     level: MpaLevel,
     regions: Region[],
@@ -80,6 +83,8 @@ function breadcrumbFor(
     return parts.join(" › ");
 }
 
+// Resolves the active selection at the current level into a fully-formed place
+// (name, breadcrumb, stats) for the Info tab, or null if nothing is selected.
 export function resolveSelectedPlace(input: ResolvePlaceInput): ResolvedPlace | null {
     const {
         level,

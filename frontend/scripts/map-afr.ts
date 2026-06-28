@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-/** Map raw COA AFR CSV rows to PSGC codes; compute region/country asset totals. */
+// Map raw COA AFR CSV rows to PSGC codes; compute region/country asset totals.
 
 import * as fs from "fs";
 import * as path from "path";
@@ -41,6 +41,7 @@ function parseNum(raw: string | undefined): number | null {
     return Number.isFinite(n) ? n : null;
 }
 
+// Parses the raw COA AFR CSV into typed rows with numeric financial fields.
 function loadRawRows(): AfrRawRow[] {
     const raw = fs.readFileSync(RAW_CSV, "utf8");
     const rows = parse(raw, { columns: true, skip_empty_lines: true }) as Record<string, string>[];
@@ -62,6 +63,7 @@ function loadRawRows(): AfrRawRow[] {
     }));
 }
 
+// Matches AFR rows to PSGC, derives region/country asset totals, and writes outputs.
 function main() {
     if (!fs.existsSync(RAW_CSV)) {
         console.error(`Missing ${RAW_CSV}. Run: pnpm extract:afr`);

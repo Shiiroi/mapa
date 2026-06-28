@@ -23,6 +23,7 @@ const supabase = createClient(supabaseUrl, serviceKey);
 
 type StatsRow = DivisionStatsFields & { psgc: string; geo_lvl?: string };
 
+// Maps a geo_lvl code (Reg, Prov, City…) to the division_stats level string.
 function levelFromGeoLvl(geoLvl: string | undefined): string {
     switch (geoLvl) {
         case "Country":
@@ -43,6 +44,7 @@ function levelFromGeoLvl(geoLvl: string | undefined): string {
     }
 }
 
+// Projects an enriched geo row to the division_stats columns.
 function toDbRow(row: StatsRow): Record<string, unknown> {
     return {
         psgc: row.psgc,
@@ -71,6 +73,7 @@ async function upsertChunk(rows: Record<string, unknown>[]) {
     if (error) throw new Error(error.message);
 }
 
+// Collects stats from all geo files (deduped by psgc) and upserts division_stats.
 async function main() {
     console.log("Seeding division_stats from public/geo…");
     const allRows: Record<string, unknown>[] = [];

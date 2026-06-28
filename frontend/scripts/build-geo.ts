@@ -60,6 +60,7 @@ function padPsgc(code: string | number): string {
 // (which is, by construction, the national total).
 type CountryPopAggregate = Pick<DivisionStatsFields, "pop_2015" | "pop_2020" | "pop_2024">;
 
+// Sums a population field across rows, returning null when no row has a value.
 function sumPop(rows: DivisionStatsFields[], key: keyof CountryPopAggregate): number | null {
     let total = 0;
     let seen = false;
@@ -73,6 +74,7 @@ function sumPop(rows: DivisionStatsFields[], key: keyof CountryPopAggregate): nu
     return seen ? total : null;
 }
 
+// National population totals derived by summing all region rows.
 function aggregateCountryPop(regions: DivisionStatsFields[]): CountryPopAggregate {
     return {
         pop_2015: sumPop(regions, "pop_2015"),
@@ -90,6 +92,7 @@ function resolvePsgc(row: { code?: string; psgc?: string }): string {
     return padPsgc(raw);
 }
 
+// Writes pretty-printed JSON under GEO_DIR, creating parent dirs and logging size.
 function writeJson(relativePath: string, data: unknown) {
     const outPath = path.join(GEO_DIR, relativePath);
     fs.mkdirSync(path.dirname(outPath), { recursive: true });
@@ -98,6 +101,7 @@ function writeJson(relativePath: string, data: unknown) {
     console.log(`  ${relativePath} — ${kb} KB`);
 }
 
+// Indexes psgc.csv by PSGC → correspondence code, geographic level, and city class.
 function loadPsgcMap(): Map<string, PsgcRow> {
     const raw = fs.readFileSync(PSGC_CSV);
     const rows = parse(raw, {
@@ -125,6 +129,7 @@ function lookupPsgc(map: Map<string, PsgcRow>, code: string | number): PsgcRow |
     return map.get(padPsgc(code));
 }
 
+// Resolves a municity's geo level (City/Mun), preferring the CSV then existing/old fields.
 function muniGeoLvl(
     psgcRow: PsgcRow | undefined,
     oldType: "city" | "municipality" | undefined,
@@ -135,6 +140,7 @@ function muniGeoLvl(
     return oldType === "city" ? "City" : "Mun";
 }
 
+// Rebuilds region/province/municity geo JSON into PSGC-keyed, stats-enriched files.
 async function main() {
     console.log("Building PSGC-keyed geo layers…");
 
@@ -303,6 +309,7 @@ async function main() {
     enrichCountryAndBarangays(statsCtx, countryPop);
 }
 
+// Enriches country.json (with region-summed totals) and every barangay file with stats.
 function enrichCountryAndBarangays(statsCtx: ReturnType<typeof createStatsContext>, countryPop: CountryPopAggregate) {
     const countryPath = path.join(GEO_DIR, "country.json");
     if (fs.existsSync(countryPath)) {

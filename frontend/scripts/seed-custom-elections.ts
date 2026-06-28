@@ -30,6 +30,7 @@ interface SeriesDef {
     color?: string;
 }
 
+// Turns a candidate display label into a stable series key (spaces → underscores).
 function seriesKeyFromLabel(label: string): string {
     return label.trim().replace(/\s+/g, "_");
 }
@@ -69,6 +70,7 @@ function chunks<T>(arr: T[], size: number): T[][] {
     return out;
 }
 
+// Seeds the built-in 2022 President series dataset and its per-PSGC values from the CSV.
 async function main() {
     if (!fs.existsSync(CSV_PATH)) {
         console.error(`Missing ${CSV_PATH}. Run: npm run map:comelec`);

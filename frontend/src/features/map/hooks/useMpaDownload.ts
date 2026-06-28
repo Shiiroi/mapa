@@ -18,6 +18,7 @@ interface UseMpaDownloadOptions {
     country: CountryGeoJSON | null;
 }
 
+// Manages the download panel's selection state and runs the scoped GeoJSON export.
 export function useMpaDownload({ regions, provinces, municities, municityMeta, country }: UseMpaDownloadOptions) {
     const [level, setLevelState] = useState<MpaLevel>("province");
     const [selectedRegionPsgc, setSelectedRegionPsgc] = useState<string | null>(null);
@@ -30,6 +31,7 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta, c
     const [downloading, setDownloading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // Sets the municity and clears any barangay; drops back a level if cleared at barangay.
     const setMunicityPsgc = useCallback((psgc: string | null) => {
         setSelectedMunicityPsgcState(psgc);
         setSelectedBarangayPsgc(null);
@@ -39,6 +41,7 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta, c
         }
     }, [level]);
 
+    // Switches the export level, ignoring barangay until a municity is selected.
     const setLevel = useCallback((next: MpaLevel) => {
         if (next === "barangay" && !selectedMunicityPsgc) {
             return;
@@ -47,6 +50,7 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta, c
         setExportKind("self");
     }, [selectedMunicityPsgc]);
 
+    // Syncs the download selection (and parent filters) when the user clicks the map.
     const setSelectionFromMap = useCallback(
         (mode: MpaLevel, entityPsgc: string) => {
             setLevelState(mode);
@@ -82,6 +86,8 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta, c
         [provinces, municities, municityMeta],
     );
 
+    // Translates the current level + export kind + selection into a DownloadScope,
+    // throwing a user-facing message when a required selection is missing.
     const resolveScope = useCallback((): DownloadScope => {
         if (level === "country") {
             return { kind: "country" };
@@ -137,6 +143,7 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta, c
         municityMeta,
     ]);
 
+    // Builds the scoped GeoJSON and saves it, surfacing any error to the panel.
     const download = useCallback(async () => {
         setError(null);
         setDownloading(true);

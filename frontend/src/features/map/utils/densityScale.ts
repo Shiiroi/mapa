@@ -65,6 +65,7 @@ function densityBucketIndex(value: number, breaks: number[]): number {
     return DENSITY_RAMP_8.length - 1;
 }
 
+// Heat-ramp color for a density value using the per-level breaks, or no-data gray.
 export function colorForDensity(
     value: number | null | undefined,
     level: ScaleLevel,

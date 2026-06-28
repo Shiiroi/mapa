@@ -195,15 +195,18 @@ export interface PsgcIndexes {
     provincePsgcToNorm: Map<string, string>;
 }
 
+// Normalizes a province name and applies province-specific aliases.
 function normalizeProvinceName(name: string): string {
     const base = normalizeAfrName(name);
     return PROVINCE_ALIASES[base] ?? base;
 }
 
+// Removes accent marks so names compare regardless of diacritics.
 function stripDiacritics(s: string): string {
     return s.normalize("NFD").replace(/\p{M}/gu, "");
 }
 
+// Expands common Philippine place-name abbreviations (STO. → SANTO, etc.).
 function expandAbbreviations(s: string): string {
     return s
         .replace(/\bSTO\.\s*/g, "SANTO ")
@@ -216,10 +219,13 @@ function expandAbbreviations(s: string): string {
         .trim();
 }
 
+// Canonicalizes an AFR region label for AFR_REGION_TO_PSGC lookup.
 export function normalizeAfrRegion(label: string): string {
     return stripDiacritics(label).trim().toUpperCase().replace(/\s*-\s*/g, "-");
 }
 
+// Normalizes an AFR LGU name (strip diacritics/suffixes, expand abbreviations) and
+// applies scoped then global aliases so it matches the canonical PSGC name.
 export function normalizeAfrName(name: string, scope?: { province?: string; region?: string }): string {
     let s = stripDiacritics(name).trim().toUpperCase();
     s = s.replace(/\s+/g, " ");
@@ -244,6 +250,7 @@ export function normalizeAfrName(name: string, scope?: { province?: string; regi
     return s;
 }
 
+// Normalizes a PSGC-source name to the same canonical form used for matching.
 export function normalizePsgcName(name: string): string {
     let s = stripDiacritics(name).trim().toUpperCase();
     s = s.replace(/\s+/g, " ");
@@ -254,6 +261,7 @@ export function normalizePsgcName(name: string): string {
     return s.replace(/\s+COLLEGE$/, "").trim();
 }
 
+// Region PSGC for an AFR region label, or null if unrecognized.
 export function regionPsgcFromAfrLabel(label: string): string | null {
     const key = normalizeAfrRegion(label);
     return AFR_REGION_TO_PSGC[key] ?? null;
@@ -264,10 +272,12 @@ export function regionPsgcFromLguPsgc(psgc: string): string {
     return `${psgc.slice(0, 2)}00000000`;
 }
 
+// Canonicalizes a census/household region label for CENSUS_REGION_LABEL_TO_AFR lookup.
 export function normalizeCensusRegionLabel(label: string): string {
     return stripDiacritics(label).trim().toUpperCase().replace(/\s+/g, " ");
 }
 
+// Region PSGC from a census region label, via the AFR region mapping.
 export function regionPsgcFromCensusLabel(label: string): string | null {
     const norm = normalizeCensusRegionLabel(label);
     const afrKey = CENSUS_REGION_LABEL_TO_AFR[norm];
@@ -309,12 +319,14 @@ const EMPTY_AFR_FIN: Pick<
     cash_end: null,
 };
 
+// Converts a census region label to its AFR region key (passthrough if unknown).
 export function censusRegionToAfrLabel(region: string): string {
     if (!region.trim()) return region;
     const norm = normalizeCensusRegionLabel(region);
     return CENSUS_REGION_LABEL_TO_AFR[norm] ?? region;
 }
 
+// Resolves a generic census/place row to a PSGC (country/region shortcut, else AFR matching).
 export function matchPlace(row: PlaceRow, indexes: PsgcIndexes): string | null {
     if (row.level === "country") return "0000000000";
     if (row.level === "region") {
@@ -324,6 +336,8 @@ export function matchPlace(row: PlaceRow, indexes: PsgcIndexes): string | null {
     return matchAfrRow({ ...EMPTY_AFR_FIN, ...row, region: afrRegion }, indexes);
 }
 
+// Builds the PSGC lookup indexes (provinces, cities, municipalities by region/province)
+// from psgc.csv and the municity meta.json.
 export function loadPsgcIndexes(publicDir: string): PsgcIndexes {
     const psgcPath = path.join(publicDir, "psgc.csv");
     const metaPath = path.join(publicDir, "geo/municities/meta.json");
@@ -390,6 +404,8 @@ export function loadPsgcIndexes(publicDir: string): PsgcIndexes {
     };
 }
 
+// Resolves an AFR row to a PSGC by level (province/city/municipality), handling
+// province scoping, legacy Sulu codes, and whitespace-insensitive fallbacks.
 export function matchAfrRow(row: AfrRawRow, indexes: PsgcIndexes): string | null {
     const regionPsgc = regionPsgcFromAfrLabel(row.region);
     if (!regionPsgc) return null;

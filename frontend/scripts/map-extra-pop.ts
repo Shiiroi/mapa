@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-/** Map population.csv (2010) and household age/sex raw CSV to PSGC-keyed seed files. */
+// Map population.csv (2010) and household age/sex raw CSV to PSGC-keyed seed files.
 
 import * as fs from "fs";
 import * as path from "path";
@@ -38,6 +38,7 @@ interface HouseholdPlace extends PlaceRow {
     age_sex_2020: AgeSexBand[];
 }
 
+// Strips footnote markers and fixes mojibake in census place names.
 function cleanCensusName(name: string): string {
     return name
         .replace(/\s+\d+$/, "")
@@ -46,6 +47,7 @@ function cleanCensusName(name: string): string {
         .trim();
 }
 
+// Parses a 2010 census population cell (strips commas and footnote letters).
 function parsePop2010(raw: string | undefined): number | null {
     if (!raw) return null;
     const cleaned = raw.replace(/,/g, "").replace(/[a-d]/gi, "").trim();
@@ -54,6 +56,7 @@ function parsePop2010(raw: string | undefined): number | null {
     return Number.isFinite(n) ? n : null;
 }
 
+// Infers a census row's admin level from its place name (Pateros is the lone municipality).
 function inferPopLevel(name: string): PlaceRow["level"] {
     const upper = cleanCensusName(name).toUpperCase();
     if (upper === "PHILIPPINES") return "country";
@@ -83,6 +86,7 @@ function regionLabelForMatch(regionContext: string, level: string): string {
     return regionContext;
 }
 
+// Parses the 2010 population CSV into flat rows, tracking the current region context.
 function loadPopulation2010(): Pop2010Row[] {
     const raw = fs.readFileSync(POP_CSV, "utf8");
     const rows = parse(raw, { relax_column_count: true }) as string[][];
@@ -126,6 +130,7 @@ function placeKey(row: PlaceRow): string {
     return [row.level, row.region, row.province, row.name].join("|");
 }
 
+// Groups raw household age/sex rows by place, accumulating per-age bands and totals.
 function loadHouseholdRaw(): Map<string, HouseholdPlace> {
     const raw = fs.readFileSync(HOUSEHOLD_RAW, "utf8");
     const rows = parse(raw, { columns: true, skip_empty_lines: true }) as Record<string, string>[];
@@ -164,6 +169,7 @@ function loadHouseholdRaw(): Map<string, HouseholdPlace> {
     return byPlace;
 }
 
+// Tallies matched/unmatched counts per admin level for reporting.
 function countByLevel<T extends { level: string }>(rows: T[], matched: boolean[], getLevel?: (r: T) => string) {
     const counts = new Map<string, { ok: number; fail: number }>();
     rows.forEach((row, i) => {
@@ -176,6 +182,7 @@ function countByLevel<T extends { level: string }>(rows: T[], matched: boolean[]
     return counts;
 }
 
+// Matches both 2010 population and 2020 household age/sex rows to PSGC and writes seed CSVs.
 function main() {
     if (!fs.existsSync(POP_CSV)) {
         console.error(`Missing ${POP_CSV}`);

@@ -1,3 +1,5 @@
+// Fold 2020 CPH age/sex bands into broad young, working-age, and senior totals.
+
 import type { AgeSexBand } from "../types";
 
 // Reads the lower-bound age from a PSA band label, e.g. "65 - 69" gives 65.

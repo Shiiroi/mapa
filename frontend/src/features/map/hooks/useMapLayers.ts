@@ -14,6 +14,8 @@ interface UseMapLayersReturn {
     error: Error | null;
 }
 
+// Loads and caches all base map layers (regions, provinces, municities, country),
+// exposing a combined loading/error state.
 export function useMapLayers(): UseMapLayersReturn {
     const provincesQuery = useQuery<ProvinceGeoJSON[]>({
         queryKey: ["provinces"],

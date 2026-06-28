@@ -38,6 +38,7 @@ function chunks<T>(arr: T[], size: number): T[][] {
     return out;
 }
 
+// Seeds the osm-hospitals numeric dataset and its per-province counts from the CSV.
 async function main() {
     if (!fs.existsSync(CSV_PATH)) {
         console.error(`Missing ${CSV_PATH}. Run: pnpm extract:osm`);

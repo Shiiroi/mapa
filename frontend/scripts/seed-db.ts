@@ -22,6 +22,7 @@ function readJson<T>(relativePath: string): T {
     return JSON.parse(fs.readFileSync(path.join(GEO_DIR, relativePath), "utf8")) as T;
 }
 
+// Drops the heavy geometry field before upserting metadata rows.
 function stripGeometry<T extends { geometry?: unknown }>(rows: T[]): Omit<T, "geometry">[] {
     return rows.map((row) => {
         const { ...rest } = row;
@@ -50,12 +51,14 @@ function dedupeByPsgc(rows: Record<string, unknown>[]): Record<string, unknown>[
     return [...byPsgc.values()];
 }
 
+// Upserts rows into a table, keyed on psgc.
 async function upsertTable(table: string, rows: Record<string, unknown>[]) {
     const { error } = await supabase.from(table).upsert(rows, { onConflict: "psgc" });
     if (error) throw new Error(`${table}: ${error.message}`);
     console.log(`  ${table}: ${rows.length} rows`);
 }
 
+// Seeds regions, provinces, and (chunked) municities metadata into Supabase.
 async function main() {
     console.log("Seeding database from public/geo…");
 

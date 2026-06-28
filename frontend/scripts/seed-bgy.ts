@@ -27,6 +27,7 @@ function chunks<T>(arr: T[], size: number): T[][] {
     return out;
 }
 
+// Keeps the last row per psgc so upsert batches don't touch a key twice.
 function dedupeByPsgc(rows: Record<string, unknown>[]): Record<string, unknown>[] {
     const byPsgc = new Map<string, Record<string, unknown>>();
     for (const row of rows) {
@@ -38,12 +39,14 @@ function dedupeByPsgc(rows: Record<string, unknown>[]): Record<string, unknown>[
     return [...byPsgc.values()];
 }
 
+// Upserts rows into a table, keyed on psgc.
 async function upsertTable(table: string, rows: Record<string, unknown>[]) {
     const { error } = await supabase.from(table).upsert(rows, { onConflict: "psgc" });
     if (error) throw new Error(`${table}: ${error.message}`);
     console.log(`  ${table}: ${rows.length} rows`);
 }
 
+// Seeds barangay metadata (chunked) from the bgy meta.json into Supabase.
 async function main() {
     if (!fs.existsSync(BGY_META)) {
         console.error(`Missing ${BGY_META} — run pnpm shape:geo first`);

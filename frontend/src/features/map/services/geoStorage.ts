@@ -13,11 +13,13 @@ function withGeoVersion(url: string): string {
     return `${url}${sep}v=${GEO_DATA_VERSION}`;
 }
 
+// Public Supabase Storage URL for a geo file, with cache-busting version query.
 export function getGeoStoragePublicUrl(fileName: string): string {
     const { data } = supabase.storage.from(GEO_BUCKET).getPublicUrl(fileName);
     return withGeoVersion(data.publicUrl);
 }
 
+// Fetches a geo file from the bundled public/geo/ fallback path.
 async function fetchFromLocal<T>(fileName: string, label: string): Promise<T> {
     const res = await fetch(withGeoVersion(`/geo/${fileName}`));
     if (!res.ok) {
@@ -54,6 +56,7 @@ export async function fetchMunicitiesMetaFromStorage(): Promise<MunicityMeta[]> 
     return fetchGeoLayerFromStorage<MunicityMeta[]>("municities/meta.json", "fetchMunicitiesMeta");
 }
 
+// Loads every province's municity geometry file (per the manifest) and flattens them.
 export async function fetchMunicitiesGeometryFromStorage(): Promise<MunicityGeoJSON[]> {
     const manifest = await fetchGeoLayerFromStorage<{ provincePsgcs: string[] }>(
         "municities/manifest.json",

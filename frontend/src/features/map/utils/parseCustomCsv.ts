@@ -1,10 +1,12 @@
+// Parse uploaded custom CSV (single-value or multi-series) into overlay-ready structures.
+
 import type { MpaLevel } from "../constants";
 import type { CustomOverlay, CustomSeriesDef, SeriesViewMode } from "../types";
 import { sortLevels, resolveTiersForPsgc, primaryTier } from "./customOverlay";
 
 export interface ParsedNumericCsv {
     kind: "numeric";
-    title: string;
+    title?: string;
     levels: MpaLevel[];
     unit?: string;
     rows: { psgc: string; value: number; label?: string; level: MpaLevel; tiers: MpaLevel[] }[];
@@ -12,7 +14,7 @@ export interface ParsedNumericCsv {
 
 export interface ParsedSeriesCsv {
     kind: "series";
-    title: string;
+    title?: string;
     levels: MpaLevel[];
     unit?: string;
     series: CustomSeriesDef[];
@@ -232,7 +234,7 @@ export function parseCustomCsv(
             ok: true,
             data: {
                 kind: "numeric",
-                title: directives.title ?? "Uploaded dataset",
+                title: directives.title,
                 levels,
                 unit: directives.unit,
                 rows,
@@ -297,7 +299,7 @@ export function parseCustomCsv(
         ok: true,
         data: {
             kind: "series",
-            title: directives.title ?? "Uploaded dataset",
+            title: directives.title,
             levels,
             unit: directives.unit,
             series: seriesDefs,
@@ -307,8 +309,9 @@ export function parseCustomCsv(
     };
 }
 
+// Turn parsed CSV data into a session CustomOverlay (mirrors buildOverlayFromDataset for uploads).
 export function overlayFromParsedCsv(parsed: ParsedCustomCsv, title?: string): CustomOverlay {
-    const overlayTitle = title?.trim() || parsed.title;
+    const overlayTitle = title?.trim() || parsed.title?.trim() || "Uploaded dataset";
     const valuesByLevel: CustomOverlay["valuesByLevel"] = {};
     const valuesByPsgc: CustomOverlay["valuesByPsgc"] = {};
 

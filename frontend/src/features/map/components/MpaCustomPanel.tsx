@@ -157,8 +157,8 @@ export function MpaCustomPanel({
             setUploadError(result.error);
             return;
         }
-        const title = uploadTitle.trim() || titleFromFilename(file.name);
-        onOverlayChange(overlayFromParsedCsv(result.data, title));
+        const finalTitle = uploadTitle.trim() || result.data.title?.trim() || titleFromFilename(file.name);
+        onOverlayChange(overlayFromParsedCsv(result.data, finalTitle));
     };
 
     const selectedValue =

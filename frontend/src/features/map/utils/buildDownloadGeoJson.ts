@@ -47,11 +47,13 @@ function toFeature(
     };
 }
 
+// Composes a dated, slugified export filename like "mapa-province-cebu-2026-06-28.json".
 function buildFilename(level: MpaLevel, slug: string): string {
     const date = new Date().toISOString().slice(0, 10);
     return `mapa-${level}-${slugifyDivisionName(slug)}-${date}.json`;
 }
 
+// Converts a barangay record into a GeoJSON Feature with its PSGC properties.
 function barangayToFeature(bgy: BarangayGeoJSON): Feature {
     return toFeature(bgy.geometry, {
         psgc: bgy.psgc,
@@ -82,6 +84,8 @@ function provincePsgcsInRegion(regionPsgc: string, provinces: ProvinceGeoJSON[])
     return provinces.filter((p) => p.region_psgc === regionPsgc).map((p) => p.psgc);
 }
 
+// Gathers municities for the given provinces, using cached rows when available
+// and fetching from storage only for provinces not yet loaded.
 async function loadMunisForProvinces(
     provincePsgcs: string[],
     municities: MunicityGeoJSON[],
@@ -96,6 +100,7 @@ async function loadMunisForProvinces(
     return chunks.flat();
 }
 
+// Assembles the GeoJSON FeatureCollection, filename, and label for a download scope.
 export async function buildDownloadGeoJson(input: BuildDownloadInput): Promise<BuildDownloadResult> {
     const { level, scope, regions, provinces, municities, municityMeta, country } = input;
     let features: Feature[] = [];

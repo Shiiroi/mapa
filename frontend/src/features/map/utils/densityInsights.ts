@@ -8,12 +8,14 @@ export interface DensityBenchmarks {
     nationalRegionalAvg: number | null;
 }
 
+// Mean of positive density values across rows, ignoring null/zero.
 function avgDensity(rows: { density_2024: number | null }[]): number | null {
     const vals = rows.map((r) => r.density_2024).filter((d): d is number => d != null && d > 0);
     if (!vals.length) return null;
     return vals.reduce((a, b) => a + b, 0) / vals.length;
 }
 
+// National average densities at each level, used as comparison baselines.
 export function computeDensityBenchmarks(
     regions: Region[],
     provinces: ProvinceGeoJSON[],
@@ -26,6 +28,7 @@ export function computeDensityBenchmarks(
     };
 }
 
+// Picks the matching national average for a level (barangays use the municipal one).
 function levelBenchmark(level: string, benchmarks: DensityBenchmarks): number | null {
     switch (level) {
         case "region":
@@ -40,6 +43,8 @@ function levelBenchmark(level: string, benchmarks: DensityBenchmarks): number | 
     }
 }
 
+// Human-readable density blurb comparing a place to its level's national average
+// and adding a qualitative analogy (urban, sparse, etc.).
 export function buildDensityInsight(
     density: number | null,
     level: string,
@@ -74,6 +79,7 @@ export function buildDensityInsight(
     return parts.length ? parts.join(" ") : null;
 }
 
+// Extracts only the DivisionStatsFields subset from a larger row object.
 export function pickStatsFields(row: DivisionStatsFields): DivisionStatsFields {
     return {
         pop_2010: row.pop_2010,

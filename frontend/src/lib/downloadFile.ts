@@ -10,6 +10,7 @@ export function downloadJsonFile(data: unknown, filename: string): void {
     URL.revokeObjectURL(url);
 }
 
+// Triggers a browser download of arbitrary text content with the given MIME type.
 export function downloadTextFile(content: string, filename: string, mime = "text/plain"): void {
     const blob = new Blob([content], { type: mime });
     const url = URL.createObjectURL(blob);
@@ -20,6 +21,7 @@ export function downloadTextFile(content: string, filename: string, mime = "text
     URL.revokeObjectURL(url);
 }
 
+// Lowercases and replaces unsafe characters with hyphens for safe filenames.
 export function slugifyFilename(value: string): string {
     return value.replace(/[^a-z0-9_-]+/gi, "-").toLowerCase() || "export";
 }

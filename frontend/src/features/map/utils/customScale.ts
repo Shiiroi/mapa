@@ -42,6 +42,7 @@ function staticBucketIndex(value: number, breaks: number[]): number {
     return POPULATION_RAMP.length - 1;
 }
 
+// Builds discrete legend rows (≤ / range / >) from a fixed set of breaks.
 function staticLegendItems(breaks: number[]): LegendItem[] {
     const items: LegendItem[] = [];
     items.push({ color: POPULATION_RAMP[0], label: `≤ ${formatCompact(breaks[0])}` });
@@ -58,23 +59,27 @@ function staticLegendItems(breaks: number[]): LegendItem[] {
     return items;
 }
 
+// Ramp color for a GDP value at the given level, or no-data gray.
 export function colorForGdp(value: number | null | undefined, level: ScaleLevel): string {
     const breaks = staticBreaksForLevel(GDP_BREAKS_BY_LEVEL, level);
     if (value == null || value <= 0 || !breaks) return NO_DATA_COLOR;
     return POPULATION_RAMP[staticBucketIndex(value, breaks)];
 }
 
+// GDP legend rows for a level, or null if that level has no defined breaks.
 export function gdpLegendItems(level: ScaleLevel): LegendItem[] | null {
     const breaks = staticBreaksForLevel(GDP_BREAKS_BY_LEVEL, level);
     return breaks ? staticLegendItems(breaks) : null;
 }
 
+// Ramp color for a total-assets value at the given level, or no-data gray.
 export function colorForAssets(value: number | null | undefined, level: ScaleLevel): string {
     const breaks = staticBreaksForLevel(ASSETS_BREAKS_BY_LEVEL, level);
     if (value == null || value <= 0 || !breaks) return NO_DATA_COLOR;
     return POPULATION_RAMP[staticBucketIndex(value, breaks)];
 }
 
+// Assets legend rows for a level, or null if that level has no defined breaks.
 export function assetsLegendItems(level: ScaleLevel): LegendItem[] | null {
     const breaks = staticBreaksForLevel(ASSETS_BREAKS_BY_LEVEL, level);
     return breaks ? staticLegendItems(breaks) : null;

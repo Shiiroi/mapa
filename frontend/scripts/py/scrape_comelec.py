@@ -62,6 +62,7 @@ REGION_ALIASES = {
 }
 
 
+# Map a COMELEC `can` category string to its tier rank (non-standard ones → citymun).
 def rank_of(can: str) -> int:
     c = (can or "").strip().lower()
     if c == "country":
@@ -254,6 +255,8 @@ def download_data(
 @click.option("-l", "--log-level", default="INFO",
               type=click.Choice(["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]))
 def main(base_dir, download_delay, max_rank, only_region, only_citymun, log_level):
+    # CLI entry point: configure the session, then crawl from the country root down
+    # to the requested tier within any region/city-municipality filters.
     logging.basicConfig(level=log_level, format="%(message)s")
     sess = requests.Session()
     sess.headers = {

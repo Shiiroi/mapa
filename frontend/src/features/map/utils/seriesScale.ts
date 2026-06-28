@@ -8,11 +8,13 @@ import { POPULATION_RAMP } from "./populationScale";
 const NEUTRAL = "#e5e7eb";
 const LEAD_BREAKS = [0.05, 0.1, 0.2, 0.4] as const;
 
+// Sums all non-negative series values in a cell (the denominator for shares).
 export function seriesTotal(cell: CustomOverlayValue | undefined): number {
     if (!cell?.series) return 0;
     return Object.values(cell.series).reduce((sum, v) => sum + (v > 0 ? v : 0), 0);
 }
 
+// Fraction (0–1) of a cell's total contributed by one series, or null if no data.
 export function seriesShare(cell: CustomOverlayValue | undefined, key: string): number | null {
     const total = seriesTotal(cell);
     if (total <= 0 || !cell?.series) return null;
@@ -21,6 +23,7 @@ export function seriesShare(cell: CustomOverlayValue | undefined, key: string): 
     return val / total;
 }
 
+// Returns the series with the highest value in a cell (the "winner").
 export function dominantSeries(cell: CustomOverlayValue | undefined): { key: string; value: number } | null {
     if (!cell?.series) return null;
     let best: { key: string; value: number } | null = null;
@@ -32,6 +35,7 @@ export function dominantSeries(cell: CustomOverlayValue | undefined): { key: str
     return best;
 }
 
+// Returns the runner-up series, excluding the given (usually dominant) key.
 export function secondSeries(
     cell: CustomOverlayValue | undefined,
     excludeKey: string,
@@ -47,6 +51,7 @@ export function secondSeries(
     return best;
 }
 
+// Winner's lead over second place as a fraction of the cell total (0–1).
 export function leadMargin(cell: CustomOverlayValue | undefined): number | null {
     const top = dominantSeries(cell);
     if (!top) return null;
@@ -57,6 +62,7 @@ export function leadMargin(cell: CustomOverlayValue | undefined): number | null 
     return (top.value - second.value) / total;
 }
 
+// Display label for a series key, falling back to the key itself.
 export function seriesLabel(overlay: CustomOverlay, key: string): string {
     return overlay.series?.find((s) => s.key === key)?.label ?? key;
 }
@@ -74,6 +80,7 @@ export function seriesModeLabel(mode: SeriesViewMode): string {
     }
 }
 
+// Initial view state for an overlay: default mode plus first/second series as defaults.
 export function defaultSeriesViewState(overlay: CustomOverlay): SeriesViewState {
     const keys = overlay.series?.map((s) => s.key) ?? [];
     const mode = overlay.meta.defaultView ?? "lead";
@@ -98,6 +105,7 @@ function hexToRgb(hex: string): [number, number, number] {
     return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
+// Linearly interpolates between two hex colors (t in [0,1]).
 function blendColors(a: string, b: string, t: number): string {
     const [ar, ag, ab] = hexToRgb(a);
     const [br, bg, bb] = hexToRgb(b);
@@ -107,6 +115,7 @@ function blendColors(a: string, b: string, t: number): string {
     return `#${((1 << 24) + (r << 16) + (g << 8) + bl).toString(16).slice(1)}`;
 }
 
+// Assigns each series its defined color, or a palette color by index.
 function buildSeriesColorMap(seriesDefs: CustomSeriesDef[]): Map<string, string> {
     const map = new Map<string, string>();
     seriesDefs.forEach((def, i) => {
@@ -115,6 +124,7 @@ function buildSeriesColorMap(seriesDefs: CustomSeriesDef[]): Map<string, string>
     return map;
 }
 
+// Maps a lead margin to a color intensity so wider leads render darker.
 function leadBlendStrength(marginFraction: number): number {
     for (let i = 0; i < LEAD_BREAKS.length; i++) {
         if (marginFraction <= LEAD_BREAKS[i]) {
@@ -133,6 +143,7 @@ function shareBucketIndex(share: number): number {
     return POPULATION_RAMP.length - 1;
 }
 
+// Picks A's or B's color (intensity scaled by the share gap) for head-to-head view.
 function head2HeadColor(diff: number, colorA: string, colorB: string): string {
     const abs = Math.abs(diff);
     const strength = Math.min(0.9, 0.35 + abs * 1.5);
@@ -147,6 +158,8 @@ export interface SeriesScaleResult {
     legendTitle: string;
 }
 
+// Builds the per-PSGC color function and legend for a multi-series overlay,
+// branching on the active view mode (dominant, lead, share, head-to-head).
 export function buildSeriesScale(overlay: CustomOverlay, view: SeriesViewState): SeriesScaleResult {
     const seriesDefs = overlay.series ?? [];
     const colorMap = buildSeriesColorMap(seriesDefs);
@@ -256,6 +269,7 @@ export function buildSeriesScale(overlay: CustomOverlay, view: SeriesViewState):
     };
 }
 
+// Human-readable hover summary for a cell, phrased for the active view mode.
 export function formatSeriesTooltip(
     overlay: CustomOverlay,
     cell: CustomOverlayValue | undefined,

@@ -1,12 +1,16 @@
+// Build CustomOverlay objects from DB rows or CSV uploads; resolve PSGC tiers for multi-level data.
+
 import type { MpaLevel } from "../constants";
 import type { CustomDataset, CustomDatasetValueRow, CustomOverlay, CustomOverlayValue, CustomSeriesDef } from "../types";
 
 export const LEVEL_ORDER: MpaLevel[] = ["country", "region", "province", "municipality", "barangay"];
 
+// Sort admin tiers from country down to barangay for stable legend and level lists.
 export function sortLevels(levels: MpaLevel[]): MpaLevel[] {
     return [...levels].sort((a, b) => LEVEL_ORDER.indexOf(a) - LEVEL_ORDER.indexOf(b));
 }
 
+// True when the overlay has values for the current map view level.
 export function overlayActiveAtLevel(overlay: CustomOverlay, mapLevel: MpaLevel): boolean {
     if (!overlay.levels.includes(mapLevel)) return false;
     const bucket = overlay.valuesByLevel[mapLevel];
@@ -23,7 +27,7 @@ export function inferLevelFromPsgc(psgc: string): MpaLevel | null {
     return "barangay";
 }
 
-/** Resolve which admin tiers a PSGC belongs to (handles NCR dual region/province). */
+// Resolve which admin tiers a PSGC belongs to (handles NCR dual region/province).
 export function resolveTiersForPsgc(
     psgc: string,
     psgcLevels?: ReadonlyMap<string, MpaLevel>,
@@ -40,6 +44,7 @@ export function resolveTiersForPsgc(
     return single ? [single] : [];
 }
 
+// Pick the most specific tier when a PSGC maps to multiple levels (e.g. NCR).
 export function primaryTier(tiers: MpaLevel[]): MpaLevel {
     return tiers.reduce(
         (best, tier) => (LEVEL_ORDER.indexOf(tier) > LEVEL_ORDER.indexOf(best) ? tier : best),
@@ -70,6 +75,7 @@ function rowToCell(row: CustomDatasetValueRow, kind: CustomOverlay["kind"]): Cus
     return cell;
 }
 
+// Flatten DB value rows into a PSGC-keyed lookup (used as valuesByPsgc fallback).
 export function rowsToValuesByPsgc(
     rows: CustomDatasetValueRow[],
     kind: CustomOverlay["kind"],
@@ -81,6 +87,7 @@ export function rowsToValuesByPsgc(
     return out;
 }
 
+// Build a multi-level CustomOverlay from a built-in dataset and its DB value rows.
 export function buildOverlayFromDataset(
     dataset: CustomDataset,
     rows: CustomDatasetValueRow[],

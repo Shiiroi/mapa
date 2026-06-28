@@ -33,6 +33,7 @@ interface Pop2024Row {
     correspondence: string | null;
 }
 
+// Parses a comma-grouped population string into an integer, or null if non-numeric.
 export function parsePop(raw: string | undefined | null): number | null {
     if (raw == null) return null;
     const cleaned = String(raw).replace(/,/g, "").trim();
@@ -51,6 +52,7 @@ function padCorrespondence(raw: string | null | undefined): string | null {
     return digits ? digits.padStart(9, "0") : null;
 }
 
+// Finds the first column whose (whitespace-normalized) header matches the pattern.
 function findPopColumn(row: Record<string, string>, pattern: RegExp): string | undefined {
     for (const key of Object.keys(row)) {
         if (pattern.test(key.replace(/\s+/g, " "))) return row[key];
@@ -58,6 +60,7 @@ function findPopColumn(row: Record<string, string>, pattern: RegExp): string | u
     return undefined;
 }
 
+// Indexes psgc.csv by PSGC → 2024 population and correspondence code.
 export function loadPop2024Map(csvPath: string): Map<string, Pop2024Row> {
     const raw = fs.readFileSync(csvPath);
     const rows = parse(raw, { columns: true, skip_empty_lines: true, bom: true, relax_column_count: true }) as Record<
@@ -76,6 +79,7 @@ export function loadPop2024Map(csvPath: string): Map<string, Pop2024Row> {
     return map;
 }
 
+// Indexes psgc0.csv by both PSGC and correspondence code → 2015/2020 populations.
 export function loadHistoricalPopMaps(csvPath: string): {
     byPsgc: Map<string, PopVintageRow>;
     byCorrespondence: Map<string, PopVintageRow>;
@@ -101,6 +105,7 @@ export function loadHistoricalPopMaps(csvPath: string): {
     return { byPsgc, byCorrespondence };
 }
 
+// Looks up historical population by PSGC, falling back to correspondence code.
 export function resolveHistoricalPop(
     psgc: string,
     correspondence: string | null,
@@ -116,11 +121,13 @@ export function resolveHistoricalPop(
     return { pop_2015: null, pop_2020: null };
 }
 
+// Percent change in population from 2020 to 2024.
 export function computePctChange(pop2020: number | null, pop2024: number | null): number | null {
     if (pop2020 == null || pop2024 == null || pop2020 === 0) return null;
     return ((pop2024 - pop2020) / pop2020) * 100;
 }
 
+// People per km² from 2024 population and area.
 export function computeDensity(pop2024: number | null, areaKm2: number | null): number | null {
     if (pop2024 == null || areaKm2 == null || areaKm2 <= 0) return null;
     return pop2024 / areaKm2;
@@ -153,6 +160,7 @@ function parseNum(raw: string | undefined | null): number | null {
     return Number.isFinite(n) ? n : null;
 }
 
+// Indexes COA AFR CSV by PSGC → total assets in actual pesos (CSV is thousand pesos).
 function loadAssetsMap(csvPath: string): Map<string, number> {
     if (!fs.existsSync(csvPath)) return new Map();
     const raw = fs.readFileSync(csvPath);
@@ -168,6 +176,7 @@ function loadAssetsMap(csvPath: string): Map<string, number> {
     return map;
 }
 
+// Indexes mapped GDP CSV by PSGC → 2022/2023/2024 GDP.
 function loadGdpMap(csvPath: string): Map<string, { gdp_2022: number | null; gdp_2023: number | null; gdp_2024: number | null }> {
     if (!fs.existsSync(csvPath)) return new Map();
     const raw = fs.readFileSync(csvPath);
@@ -184,6 +193,7 @@ function loadGdpMap(csvPath: string): Map<string, { gdp_2022: number | null; gdp
     return map;
 }
 
+// Indexes household age/sex CSV by PSGC → 2020 male/female totals and age bands.
 function loadAgeSexMap(csvPath: string): Map<string, { pop_male_2020: number | null; pop_female_2020: number | null; age_sex_2020: unknown }> {
     if (!fs.existsSync(csvPath)) return new Map();
     const raw = fs.readFileSync(csvPath, "utf8");
@@ -204,6 +214,7 @@ function loadAgeSexMap(csvPath: string): Map<string, { pop_male_2020: number | n
     return map;
 }
 
+// Loads every source CSV once into lookup maps for repeated attachStats calls.
 export function createStatsContext(publicDir: string): StatsContext {
     const pop2024 = loadPop2024Map(path.join(publicDir, "psgc.csv"));
     const { byPsgc, byCorrespondence } = loadHistoricalPopMaps(path.join(publicDir, "psgc0.csv"));
@@ -213,6 +224,8 @@ export function createStatsContext(publicDir: string): StatsContext {
     return { pop2024, histByPsgc: byPsgc, histByCorrespondence: byCorrespondence, assetsByPsgc, gdpByPsgc, ageSexByPsgc };
 }
 
+// Enriches a geo row with all stats fields (pop, area, density, assets, GDP, age/sex),
+// computing area from geometry when not already provided.
 export function attachStats<T extends { psgc: string; correspondence?: string | null; geometry?: unknown }>(
     row: T,
     ctx: StatsContext,
@@ -245,6 +258,7 @@ export function attachStats<T extends { psgc: string; correspondence?: string | 
     };
 }
 
+// Returns just the stats fields (no geometry) for DB seeding, normalizing nulls.
 export function stripGeometryStats(row: DivisionStatsFields): DivisionStatsFields {
     return {
         pop_2010: row.pop_2010 ?? null,

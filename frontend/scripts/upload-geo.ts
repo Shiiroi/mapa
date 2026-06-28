@@ -26,6 +26,7 @@ function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// True for transient upload errors (timeouts, rate limits, 5xx, network) worth retrying.
 function isRetryableUploadError(message: string): boolean {
     const lower = message.toLowerCase();
     return (
@@ -47,6 +48,7 @@ function isRetryableUploadError(message: string): boolean {
 // in the bucket with a matching byte size.
 const SKIP_EXISTING = process.env.SKIP_EXISTING === "1";
 
+// Pages through a bucket prefix, recording each object's byte size for skip-existing checks.
 async function loadExistingSizes(prefix: string, into: Map<string, number>) {
     const pageSize = 1000;
     let offset = 0;
@@ -73,6 +75,7 @@ async function loadExistingSizes(prefix: string, into: Map<string, number>) {
 
 const existingSizes = new Map<string, number>();
 
+// Uploads one geo file to the bucket with retry/backoff, skipping unchanged files.
 async function uploadFile(relativePath: string) {
     const filePath = path.join(GEO_DIR, relativePath);
     if (!fs.existsSync(filePath)) {
@@ -112,6 +115,7 @@ async function uploadFile(relativePath: string) {
     throw new Error(`${relativePath} (${kb} KB): ${lastError ?? "upload failed"}`);
 }
 
+// Lists province-*.json municity files in numeric order.
 function listProvinceFiles(): string[] {
     const dir = path.join(GEO_DIR, "municities");
     return fs
@@ -120,6 +124,7 @@ function listProvinceFiles(): string[] {
         .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 }
 
+// Lists per-municity barangay JSON files in numeric order.
 function listBgyFiles(): string[] {
     const dir = path.join(GEO_DIR, "municities/bgy");
     if (!fs.existsSync(dir)) return [];
@@ -131,6 +136,7 @@ function listBgyFiles(): string[] {
 
 const failures: string[] = [];
 
+// Uploads a file, recording the path in `failures` instead of throwing on error.
 async function tryUpload(relativePath: string) {
     try {
         await uploadFile(relativePath);
@@ -141,6 +147,7 @@ async function tryUpload(relativePath: string) {
     }
 }
 
+// Uploads many files with a fixed pool of concurrent workers.
 async function uploadMany(relativePaths: string[]) {
     let i = 0;
     async function worker() {
@@ -152,6 +159,7 @@ async function uploadMany(relativePaths: string[]) {
     await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()));
 }
 
+// Uploads all geo layers (top-level, province, country, barangay) to the bucket.
 async function main() {
     console.log(`Uploading geo layers to bucket "${BUCKET}"…`);
 

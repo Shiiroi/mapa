@@ -28,6 +28,7 @@ export interface LegendItem {
     label: string;
 }
 
+// Compact human-readable number with K/M/B/T suffix (e.g. 12,300 → "12K").
 export function formatCompact(n: number): string {
     if (n >= 1e12) return `${(n / 1e12).toFixed(n >= 1e13 ? 0 : 1)}T`;
     if (n >= 1e9) return `${(n / 1e9).toFixed(n >= 1e10 ? 0 : 1)}B`;
@@ -43,6 +44,7 @@ function populationBucketIndex(value: number, breaks: number[]): number {
     return POPULATION_RAMP.length - 1;
 }
 
+// Ramp color for a population value using the per-level breaks, or no-data gray.
 export function colorForPopulation(
     value: number | null | undefined,
     level: ScaleLevel,
@@ -52,6 +54,7 @@ export function colorForPopulation(
     return POPULATION_RAMP[populationBucketIndex(value, breaks)];
 }
 
+// Discrete population legend rows (≤ / range / >) for the given level.
 export function populationLegendItems(level: ScaleLevel): LegendItem[] {
     const breaks = POPULATION_BREAKS_BY_LEVEL[level];
     const items: LegendItem[] = [];

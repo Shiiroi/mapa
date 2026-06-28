@@ -27,6 +27,7 @@ function chunks<T>(arr: T[], size: number): T[][] {
     return out;
 }
 
+// Loads all existing division_stats psgc → level pairs (paginated past the 1k cap).
 async function fetchAllDivisionPsgc(): Promise<Map<string, string>> {
     const map = new Map<string, string>();
     const pageSize = 1000;
@@ -45,6 +46,7 @@ async function fetchAllDivisionPsgc(): Promise<Map<string, string>> {
     return map;
 }
 
+// Merges 2010 population and 2020 age/sex CSVs and upserts them onto division_stats.
 async function main() {
     if (!fs.existsSync(POP_2010_CSV) || !fs.existsSync(AGESEX_CSV)) {
         console.error("Missing mapped CSVs. Run: pnpm map:extrapop");

@@ -44,6 +44,7 @@ async function fetchAllDivisionPsgc(): Promise<Map<string, string>> {
     return map;
 }
 
+// Upserts GDP columns onto existing division_stats rows from the mapped GDP CSV.
 async function main() {
     if (!fs.existsSync(CSV_PATH)) {
         console.error(`Missing ${CSV_PATH}. Run: pnpm map:gdp`);

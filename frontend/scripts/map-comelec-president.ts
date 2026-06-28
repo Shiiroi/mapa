@@ -65,6 +65,7 @@ interface SeriesRow {
 
 // ---------- helpers ----------
 
+// Reads and parses a JSON file, returning null on missing/invalid files.
 function readJson<T>(p: string): T | null {
     try {
         return JSON.parse(fs.readFileSync(p, "utf8")) as T;
@@ -73,6 +74,7 @@ function readJson<T>(p: string): T | null {
     }
 }
 
+// Maps a COMELEC ballot name to a known candidate display name, or null.
 function displayForBallotName(ballot: string): string | null {
     const up = ballot.toUpperCase();
     for (const c of CANDIDATE_META) {
@@ -174,6 +176,7 @@ function votesFromResult(
 
 // ---------- barangay PSGC index from psgc.csv ----------
 
+// Indexes psgc.csv barangays as municityPsgc → (normalized name → barangay PSGC).
 function loadBarangayIndex(): Map<string, Map<string, string>> {
     const raw = fs.readFileSync(path.join(PUBLIC_DIR, "psgc.csv"), "latin1");
     const rows = parseCsv(raw, {
@@ -218,6 +221,7 @@ function stripNcrPrefix(name: string): string {
     return name.replace(/^NCR\s*-\s*/i, "").trim();
 }
 
+// Resolves a COMELEC city/municipality node to a PSGC, honoring overrides and CITY hints.
 function matchCityMun(region: string, province: string, name: string, idx: PsgcIndexes): string | null {
     const key = `${region.trim().toUpperCase()}|${province.trim().toUpperCase()}|${name.trim().toUpperCase()}`;
     if (PSGC_OVERRIDES[key]) return PSGC_OVERRIDES[key];
@@ -240,6 +244,8 @@ const tiers: Record<string, SeriesRow[]> = {
 
 let inspected = 0;
 
+// Recursively walks the scraped result tree, collecting per-city/municipality and
+// barangay presidential vote rows into the `tiers` accumulator.
 function walk(
     nodeDir: string,
     ctx: Ctx,
@@ -333,6 +339,7 @@ interface LguParent {
     regionPsgc: string;
 }
 
+// Maps each LGU PSGC to its province and (prefix-derived) region for aggregation.
 function loadLguParents(publicDir: string): Map<string, LguParent> {
     const meta = JSON.parse(
         fs.readFileSync(path.join(publicDir, "geo/municities/meta.json"), "utf8"),
@@ -353,6 +360,7 @@ function loadLguParents(publicDir: string): Map<string, LguParent> {
     return out;
 }
 
+// Maps region PSGC → region display name.
 function loadRegionLabels(publicDir: string): Map<string, string> {
     const regions = JSON.parse(fs.readFileSync(path.join(publicDir, "geo/regions.json"), "utf8")) as {
         psgc: string;
@@ -363,6 +371,7 @@ function loadRegionLabels(publicDir: string): Map<string, string> {
     return out;
 }
 
+// Maps province PSGC → province display name.
 function loadProvinceLabels(publicDir: string): Map<string, string> {
     const provinces = JSON.parse(fs.readFileSync(path.join(publicDir, "geo/provinces.json"), "utf8")) as {
         psgc: string;
@@ -399,6 +408,7 @@ function aggregateByParent(
 
 // ---------- CSV emit ----------
 
+// Candidates ordered by total votes (desc) with their party colors.
 function orderedCandidates(rows: SeriesRow[]): { display: string; color: string }[] {
     const totals = new Map<string, number>();
     for (const r of rows) for (const [k, v] of Object.entries(r.votes)) totals.set(k, (totals.get(k) ?? 0) + v);
@@ -410,6 +420,7 @@ function orderedCandidates(rows: SeriesRow[]): { display: string; color: string 
         }));
 }
 
+// Writes one tier's rows to a directive-prefixed custom-overlay CSV.
 function writeTierCsv(
     tier: string,
     rows: SeriesRow[],
@@ -442,6 +453,7 @@ function writeTierCsv(
     console.log(`  ${tier}: ${rows.length} areas, ${candidates.length} candidates -> ${path.basename(out)}`);
 }
 
+// Writes all tiers (region→barangay) into a single combined custom-overlay CSV.
 function writeUniversalCsv(
     tiers: Record<string, SeriesRow[]>,
     title: string,
@@ -495,6 +507,8 @@ function dedupeRows(rows: SeriesRow[], tier: string): SeriesRow[] {
 
 // ---------- main ----------
 
+// Parses the scrape, aggregates city/municipality rows up to province/region, and
+// writes per-tier and combined presidential-result CSVs.
 function main() {
     if (!fs.existsSync(RESULTS_DIR)) {
         throw new Error(

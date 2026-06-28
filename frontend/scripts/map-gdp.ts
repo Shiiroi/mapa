@@ -54,6 +54,7 @@ function parseGdpThousand(raw: string | undefined): number | null {
     return Number.isFinite(n) ? Math.round(n * 1000) : null;
 }
 
+// Infers a PSA row's admin level (region/city/province) from its place name.
 function inferGdpLevel(name: string): PlaceRow["level"] {
     const upper = cleanGdpName(name).toUpperCase();
     if (
@@ -100,6 +101,7 @@ function matchGdpRow(row: PlaceRow, indexes: PsgcIndexes): string | null {
     return null;
 }
 
+// Parses the PSA GDP CSV into flat region/province/city rows, tracking the current region.
 function loadGdpRows(): GdpRawRow[] {
     const raw = fs.readFileSync(GDP_CSV, "utf8");
     const rows = parse(raw, { relax_column_count: true }) as string[][];
@@ -143,6 +145,7 @@ function loadGdpRows(): GdpRawRow[] {
     return out;
 }
 
+// Matches GDP rows to PSGC, adds a country total, and writes mapped/unmatched files.
 function main() {
     if (!fs.existsSync(GDP_CSV)) {
         console.error(`Missing ${GDP_CSV}`);

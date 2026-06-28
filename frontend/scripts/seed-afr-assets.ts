@@ -25,6 +25,7 @@ function chunks<T>(arr: T[], size: number): T[][] {
     return out;
 }
 
+// Upserts assets_2024 (thousand pesos × 1000) onto division_stats from the mapped AFR CSV.
 async function main() {
     if (!fs.existsSync(CSV_PATH)) {
         console.error(`Missing ${CSV_PATH}. Run: pnpm map:afr`);

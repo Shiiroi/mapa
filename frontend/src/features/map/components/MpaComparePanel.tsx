@@ -383,7 +383,7 @@ export function MpaComparePanel({
 
                         if (activeOverlay.kind === "series" && activeOverlay.series?.length) {
                             return (
-                                <CompareSection title="Custom data" nameA={displayA.name} nameB={displayB.name}>
+                                <CompareSection title={activeOverlay.meta.title} nameA={displayA.name} nameB={displayB.name}>
                                     {activeOverlay.series.map((def) => {
                                         const valA = cellA?.series?.[def.key] ?? null;
                                         const valB = cellB?.series?.[def.key] ?? null;
@@ -421,7 +421,7 @@ export function MpaComparePanel({
                         const catA = activeOverlay.kind === "categorical" ? (cellA?.category ?? "—") : null;
                         const catB = activeOverlay.kind === "categorical" ? (cellB?.category ?? "—") : null;
                         return (
-                            <CompareSection title="Custom data" nameA={displayA.name} nameB={displayB.name}>
+                            <CompareSection title={activeOverlay.meta.title} nameA={displayA.name} nameB={displayB.name}>
                                 {activeOverlay.kind === "numeric" ? (
                                     <MetricRow
                                         label={label}
