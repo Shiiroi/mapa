@@ -216,11 +216,11 @@ function loadAgeSexMap(csvPath: string): Map<string, { pop_male_2020: number | n
 
 // Loads every source CSV once into lookup maps for repeated attachStats calls.
 export function createStatsContext(publicDir: string): StatsContext {
-    const pop2024 = loadPop2024Map(path.join(publicDir, "psgc.csv"));
-    const { byPsgc, byCorrespondence } = loadHistoricalPopMaps(path.join(publicDir, "psgc0.csv"));
-    const assetsByPsgc = loadAssetsMap(path.join(publicDir, "lgu_finance_2024.csv"));
-    const gdpByPsgc = loadGdpMap(path.join(publicDir, "gdp_mapped.csv"));
-    const ageSexByPsgc = loadAgeSexMap(path.join(publicDir, "household_agesex_2020.csv"));
+    const pop2024 = loadPop2024Map(path.join(publicDir, "data/raw/psgc.csv"));
+    const { byPsgc, byCorrespondence } = loadHistoricalPopMaps(path.join(publicDir, "data/raw/psgc0.csv"));
+    const assetsByPsgc = loadAssetsMap(path.join(publicDir, "data/clean/lgu_finance_2024.csv"));
+    const gdpByPsgc = loadGdpMap(path.join(publicDir, "data/clean/gdp_mapped.csv"));
+    const ageSexByPsgc = loadAgeSexMap(path.join(publicDir, "data/clean/household_agesex_2020.csv"));
     return { pop2024, histByPsgc: byPsgc, histByCorrespondence: byCorrespondence, assetsByPsgc, gdpByPsgc, ageSexByPsgc };
 }
 

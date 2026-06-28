@@ -179,7 +179,7 @@ function votesFromResult(
 
 // Indexes psgc.csv barangays as municityPsgc → (normalized name → barangay PSGC).
 function loadBarangayIndex(): Map<string, Map<string, string>> {
-    const raw = fs.readFileSync(path.join(PUBLIC_DIR, "psgc.csv"), "latin1");
+    const raw = fs.readFileSync(path.join(PUBLIC_DIR, "data/raw/psgc.csv"), "latin1");
     const rows = parseCsv(raw, {
         columns: true,
         skip_empty_lines: true,
