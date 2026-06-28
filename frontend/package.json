@@ -34,6 +34,7 @@
         "csv-parse": "^6.2.1",
         "csv-stringify": "^6.7.0",
         "fast-csv": "^5.0.7",
+        "frontend": "link:",
         "h3-js": "^4.4.0",
         "leaflet": "^1.9.4",
         "pg": "^8.21.0",

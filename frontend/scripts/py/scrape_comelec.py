@@ -34,6 +34,7 @@ Usage:
 """
 
 import os
+import sys
 import json
 import time
 import logging
@@ -289,4 +290,8 @@ def main(base_dir, download_delay, max_rank, only_region, only_citymun, log_leve
 
 
 if __name__ == "__main__":
+    # pnpm forwards a literal "--" separator into the script (e.g. `pnpm scrape:comelec
+    # -- --max-rank barangay`). click would treat everything after "--" as positional
+    # args and reject them, so drop any bare "--" tokens before parsing.
+    sys.argv = [arg for arg in sys.argv if arg != "--"]
     main()

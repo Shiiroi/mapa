@@ -32,6 +32,9 @@ importers:
       fast-csv:
         specifier: ^5.0.7
         version: 5.0.7
+      frontend:
+        specifier: 'link:'
+        version: 'link:'
       h3-js:
         specifier: ^4.4.0
         version: 4.4.0
