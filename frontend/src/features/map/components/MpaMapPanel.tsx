@@ -93,7 +93,8 @@ interface MpaMapPanelProps {
     overlayView?: SeriesViewState;
 }
 
-// Shared legend box with a collapse toggle. Only the title row shows when collapsed.
+// Shared legend box with a collapse toggle styled like the Controls pill for UI
+// consistency. Collapsed shows just the "Legend" pill; the title moves into the panel.
 function LegendShell({
     title,
     collapsed,
@@ -106,15 +107,23 @@ function LegendShell({
     children: ReactNode;
 }) {
     return (
-        <div className="absolute bottom-6 left-3 z-[1000] rounded-lg border border-border-light bg-white/95 px-3 py-2.5 text-[11px] shadow-soft">
+        <div className="absolute bottom-6 left-3 z-[1000] flex flex-col items-start gap-2">
             <button
                 type="button"
                 onClick={onToggle}
                 aria-expanded={!collapsed}
                 title={collapsed ? "Show legend" : "Hide legend"}
-                className="flex w-full items-center justify-between gap-3 text-left"
+                className="flex items-center gap-1.5 rounded-lg border border-border-light bg-white px-2 py-1.5 text-[10px] font-medium uppercase tracking-wide text-muted shadow-soft transition-colors hover:bg-surface hover:text-primary"
             >
-                <span className="font-medium text-primary">{title}</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <line x1="10" y1="6" x2="20" y2="6" />
+                    <line x1="10" y1="12" x2="20" y2="12" />
+                    <line x1="10" y1="18" x2="20" y2="18" />
+                    <circle cx="4.5" cy="6" r="1.5" />
+                    <circle cx="4.5" cy="12" r="1.5" />
+                    <circle cx="4.5" cy="18" r="1.5" />
+                </svg>
+                <span>Legend</span>
                 <svg
                     width="12"
                     height="12"
@@ -125,12 +134,17 @@ function LegendShell({
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     aria-hidden="true"
-                    className={cn("shrink-0 text-muted transition-transform", collapsed ? "" : "rotate-180")}
+                    className={cn("transition-transform", collapsed ? "" : "rotate-180")}
                 >
                     <polyline points="6 9 12 15 18 9" />
                 </svg>
             </button>
-            {!collapsed && <div className="mt-1.5">{children}</div>}
+            {!collapsed && (
+                <div className="rounded-lg border border-border-light bg-white/95 px-3 py-2.5 text-[11px] shadow-soft">
+                    <p className="mb-1.5 font-medium text-primary">{title}</p>
+                    {children}
+                </div>
+            )}
         </div>
     );
 }

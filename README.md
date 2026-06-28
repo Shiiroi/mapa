@@ -103,7 +103,7 @@ mapa/
 
 - Node.js 20+
 - pnpm
-- Python 3.11+ (for shapefile pipeline)
+- Python 3.11+ (optional — only for the COMELEC election scraper)
 - A Supabase project
 
 ### 1. Install
