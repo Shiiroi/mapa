@@ -177,6 +177,10 @@ function votesFromResult(
 
 // ---------- barangay PSGC index from psgc.csv ----------
 
+// City of Manila: its barangays are stored under SubMun district codes
+// (1380601000…1380614000), not directly under the city, so they need rolling up.
+const MANILA_CITY_PSGC = "1380600000";
+
 // Indexes psgc.csv barangays as municityPsgc → (normalized name → barangay PSGC).
 function loadBarangayIndex(): Map<string, Map<string, string>> {
     const raw = fs.readFileSync(path.join(PUBLIC_DIR, "data/raw/psgc.csv"), "latin1");
@@ -186,14 +190,23 @@ function loadBarangayIndex(): Map<string, Map<string, string>> {
         relax_column_count: true,
     }) as Record<string, string>[];
     const byMuni = new Map<string, Map<string, string>>();
+    const add = (muni: string, norm: string, psgc: string) => {
+        if (!byMuni.has(muni)) byMuni.set(muni, new Map());
+        byMuni.get(muni)!.set(norm, psgc);
+    };
     for (const row of rows) {
         if (row["Geographic Level"]?.trim() !== "Bgy") continue;
         const psgc = row["10-digit PSGC"]?.trim().padStart(10, "0");
         if (!psgc) continue;
         const muni = `${psgc.slice(0, 7)}000`;
         const norm = normalizePsgcName(row.Name ?? "");
-        if (!byMuni.has(muni)) byMuni.set(muni, new Map());
-        byMuni.get(muni)!.set(norm, psgc);
+        add(muni, norm, psgc);
+        // COMELEC nests Manila as NCR - MANILA → SubMun → barangay, and we resolve
+        // the parent to the City of Manila. Index Manila barangays under the city
+        // code too so that lookup succeeds (barangay numbers are unique citywide).
+        if (psgc.startsWith("13806") && muni !== MANILA_CITY_PSGC) {
+            add(MANILA_CITY_PSGC, norm, psgc);
+        }
     }
     return byMuni;
 }
@@ -203,6 +216,9 @@ function loadBarangayIndex(): Map<string, Map<string, string>> {
 interface Ctx {
     region: string;
     province: string;
+    // Set once we descend into the City of Manila, whose COMELEC SubMun children
+    // (tagged "City/Municipality") and barangays all belong to this one city.
+    municityPsgc?: string;
 }
 
 // Exact PSGC overrides for nodes that name-matching cannot resolve, due to
@@ -285,9 +301,10 @@ function walk(
             if (part) for (const [k, v] of Object.entries(part)) merged[k] = (merged[k] ?? 0) + v;
         }
         if (Object.keys(merged).length) {
-            // A barangay's parent city/municipality is its parent directory name.
+            // Inside Manila, every barangay belongs to the City of Manila; elsewhere
+            // a barangay's parent city/municipality is its parent directory name.
             const parentName = path.basename(path.dirname(absDir));
-            const muni = matchCityMun(nextCtx.region, nextCtx.province, parentName, idx);
+            const muni = nextCtx.municityPsgc ?? matchCityMun(nextCtx.region, nextCtx.province, parentName, idx);
             const bgyPsgc = muni ? bgyIdx.get(muni)?.get(normalizePsgcName(name)) : undefined;
             if (bgyPsgc) tiers.barangay.push({ psgc: bgyPsgc, label: name, votes: merged });
             else unmatched.push({ tier: "barangay", region: nextCtx.region, province: nextCtx.province, name });
@@ -313,11 +330,17 @@ function walk(
                     psgc = cityPsgc;
                     tier = "citymun";
                     label = cleaned;
+                    // Carry the city down: Manila's SubMun + barangay children all
+                    // belong to this PSGC (e.g. NCR - MANILA → 1380600000).
+                    nextCtx.municityPsgc = cityPsgc;
                 }
             }
             // Non-NCR province COCs are skipped — province totals are derived
             // from city/municipality aggregation (2024 PSGC boundaries).
-        } else if (can !== "Country") {
+        } else if (can !== "Country" && !nextCtx.municityPsgc) {
+            // Skipped when inside Manila: its SubMun nodes are tagged
+            // "City/Municipality" but are not real municities (the city COC was
+            // already emitted at the NCR - MANILA node above).
             psgc = matchCityMun(nextCtx.region, nextCtx.province, name, idx);
             tier = "citymun";
         }
