@@ -139,7 +139,9 @@ pnpm restore
 | `pnpm db:export` | Dump current DB to `public/backup/*.csv` |
 | `pnpm db:restore` | Restore Postgres from backup CSVs only |
 
-Individual seeders, for partial updates: `seed:db`, `seed:bgy`, `seed:stats`, `seed:extrapop`, `seed:gdp`, `seed:afr`, `seed:custom-elections`.
+Individual seeders, for partial updates: `seed:db`, `seed:bgy`, `seed:stats`, `seed:pop`, `seed:agesex`, `seed:gdp`, `seed:afr`, `seed:custom-elections`.
+
+Population is owned by `seed:pop`, which reads `public/data/clean/popcen_2010_2024.csv` (2010/2015/2020/2024 census counts down to city/municipality, plus 2024 down to barangay) and recomputes `density_2024` and `pct_change_2020_2024`. That CSV is regenerated from the two PSA workbooks in `public/source/` with `pnpm convert:pop`; run it after `seed:stats`, which owns geometry-derived `area_km2`.
 
 `setup` needs `public/geo/` and `public/data/clean/`; `restore` needs `public/geo/` and `public/backup/`. `public/data/raw/` and `public/source/` are provenance only.
 
@@ -152,16 +154,19 @@ pnpm dev
 ## Data pipeline
 
 ```
-public/geo/                    # Boundaries + embedded pop/area stats (committed)
+public/source/*.xlsx           # PSA source workbooks (provenance)
+        │   convert:pop ──► public/data/clean/popcen_2010_2024.csv
+        ▼
+public/geo/                    # Boundaries + geometry-derived area (committed)
 public/data/clean/*.csv        # PSGC-keyed stats overlays (committed)
         │
-        ├── seed:db / seed:bgy / seed:stats / seed:extrapop / seed:gdp / seed:afr
+        ├── seed:db / seed:bgy / seed:stats / seed:pop / seed:agesex / seed:gdp / seed:afr
         │       └──► Postgres (metadata + division_stats + custom_datasets)
         │
         └── upload:geo ────────► Supabase Storage (CDN)
 
 Optional regeneration (elections):
-  scrape:comelec → map:comelec → public/data/clean/elections_*.csv → seed:custom-elections → db:export
+  scrape:comelec → map:comelec → public/data/clean/elections_2022_president_all.csv → seed:custom-elections → db:export
 
 Backup snapshot:
   db:export → public/backup/*.csv  (refresh after DB changes; used by pnpm restore)

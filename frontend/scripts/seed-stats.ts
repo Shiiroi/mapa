@@ -44,17 +44,14 @@ function levelFromGeoLvl(geoLvl: string | undefined): string {
     }
 }
 
-// Projects an enriched geo row to the division_stats columns.
+// Projects an enriched geo row to division_stats. Only level + geometry-derived
+// area_km2 come from geo; population (and the derived density_2024 /
+// pct_change_2020_2024) are owned by seed-pop from the census CSV.
 function toDbRow(row: StatsRow): Record<string, unknown> {
     return {
         psgc: row.psgc,
         level: levelFromGeoLvl(row.geo_lvl),
-        pop_2015: row.pop_2015,
-        pop_2020: row.pop_2020,
-        pop_2024: row.pop_2024,
         area_km2: row.area_km2,
-        density_2024: row.density_2024,
-        pct_change_2020_2024: row.pct_change_2020_2024,
     };
 }
 

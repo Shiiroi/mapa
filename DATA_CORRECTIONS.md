@@ -50,19 +50,25 @@ as a separate optional grouping, not folded into the core hierarchy.
 
 ### Population and density stats
 
-Mapa enriches every administrative level with population and density from PSA
-PSGC publications:
+Mapa attaches population and density to every administrative level from PSA
+census data:
 
 | Field | Source | Notes |
 |-------|--------|-------|
-| `pop_2024` | `public/data/raw/psgc.csv` | Current PSGC publication |
-| `pop_2020`, `pop_2015` | `public/data/raw/psgc0.csv` | Joined by PSGC, fallback by correspondence code |
+| `pop_2010`, `pop_2015`, `pop_2020`, `pop_2024` | `public/data/clean/popcen_2010_2024.csv` | Region/province/city/municipality from PSA Table B; 2024 down to barangay from the PSGC datafile |
 | `area_km2` | Computed from boundary GeoJSON (`@turf/area`, WGS84) | Estimate from polygon |
 | `density_2024` | `pop_2024 / area_km2` | Null when area unavailable |
 | `pct_change_2020_2024` | Derived when both vintages present | Null after boundary/code changes |
 
-Stats are attached to the committed geo JSON and also upserted into the
-`division_stats` table for API fallback.
+`popcen_2010_2024.csv` is built by `pnpm convert:pop` from the two PSA workbooks
+in `public/source/`. The PSGC datafile is the code/name/2024 spine; Table B is
+name-keyed only, so its 2010–2020 counts are matched back to PSGC codes by region
+plus name, with the shared 2024 population as the authoritative tiebreaker (this
+is what fixes places that were previously missing 2015/2020 figures). Province
+totals are accepted only when the row's 2024 value equals the PSGC province total,
+which keeps same-named cities (e.g. "City of Cebu" vs. Cebu province) separate.
+`area_km2` is owned by `seed:stats`; the population fields and their derived
+density/change are owned by `seed:pop`.
 
 > **Area is computed from geospatial shapes.** Population counts come from PSA
 > PSGC publications, but `area_km2` is **not** an official figure — it is

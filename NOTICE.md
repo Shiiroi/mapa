@@ -92,7 +92,9 @@ SOFTWARE.
 
 ## 4. PSA statistics (population, age/sex, GDP)
 
-- **Population (2024 census):** PSA PSGC & 2024 Census of Population
+- **Population (2010, 2015, 2020, 2024 censuses):** PSA PSGC publication datafile
+  (2024 counts, down to barangay) and PSA Table B — Population by Province, City,
+  and Municipality (2010/2015/2020/2024 counts down to city/municipality)
   (https://psa.gov.ph/content/2024-census-population-popcen-population-counts-declared-official-president)
 - **Age & sex distribution:** PSA 2020 Census of Population and Housing
   (https://psa.gov.ph/content/age-and-sex-distribution-philippine-population-2020-census-population-and-housing)

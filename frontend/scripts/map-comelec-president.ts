@@ -1,11 +1,10 @@
 #!/usr/bin/env tsx
-// Parse a local COMELEC 2022 scrape (scripts/py/scrape_comelec.py output) into
-// multi-series CSVs (one per tier) that the custom-overlay uploader understands.
+// Parse a local COMELEC 2022 scrape (scripts/py/scrape_comelec.py output) into a
+// single multi-level, multi-series CSV that the custom-overlay uploader (and
+// seed-custom-elections.ts) understand:
 //
-//   region   -> public/data/clean/elections_2022_president_region.csv
-//   province -> public/data/clean/elections_2022_president_province.csv
-//   citymun  -> public/data/clean/elections_2022_president_citymun.csv
-//   barangay -> public/data/clean/elections_2022_president_barangay.csv   (if scraped)
+//   public/data/clean/elections_2022_president_all.csv
+//       region + province + city/municipality + barangay rows in one file.
 //
 // The COMELEC JSON field names are not publicly documented, so this script
 // auto-detects them:
@@ -444,39 +443,6 @@ function orderedCandidates(rows: SeriesRow[]): { display: string; color: string 
         }));
 }
 
-// Writes one tier's rows to a directive-prefixed custom-overlay CSV.
-function writeTierCsv(
-    tier: string,
-    rows: SeriesRow[],
-    title: string,
-    cands?: { display: string; color: string }[],
-) {
-    if (!rows.length) return;
-    const candidates = cands ?? orderedCandidates(rows);
-    const safe = (s: string) => s.replace(/,/g, "");
-    const header = ["psgc", "label", ...candidates.map((c) => safe(c.display))];
-    // Use "; " in directives so the comment stays in one cell when opened in a spreadsheet.
-    const colors = candidates.map((c) => `${safe(c.display)}=${c.color}`).join("; ");
-    const series = candidates.map((c) => safe(c.display)).join("; ");
-
-    const lines = [
-        `# title: ${title}`,
-        `# unit: votes`,
-        `# mode: lead`,
-        `# colors: ${colors}`,
-        `# series: ${series}`,
-        `# Source: COMELEC 2022 transparency results (public domain, RA 8293 s.176)`,
-        header.join(","),
-    ];
-    for (const r of rows) {
-        const cols = [r.psgc, safe(r.label), ...candidates.map((c) => String(r.votes[c.display] ?? 0))];
-        lines.push(cols.join(","));
-    }
-    const out = path.join(CLEAN_DIR, `elections_2022_president_${tier}.csv`);
-    fs.writeFileSync(out, lines.join("\n") + "\n");
-    console.log(`  ${tier}: ${rows.length} areas, ${candidates.length} candidates -> ${path.basename(out)}`);
-}
-
 // Writes all tiers (region→barangay) into a single combined custom-overlay CSV.
 function writeUniversalCsv(
     tiers: Record<string, SeriesRow[]>,
@@ -588,11 +554,7 @@ function main() {
     const allRows = [...tiers.region, ...tiers.province, ...tiers.citymun, ...tiers.barangay];
     const cands = orderedCandidates(allRows);
 
-    console.log("Writing CSVs:");
-    writeTierCsv("region", tiers.region, "2022 President by Region", cands);
-    writeTierCsv("province", tiers.province, "2022 President by Province", cands);
-    writeTierCsv("citymun", tiers.citymun, "2022 President by City/Municipality", cands);
-    writeTierCsv("barangay", tiers.barangay, "2022 President by Barangay", cands);
+    console.log("Writing CSV:");
     writeUniversalCsv(tiers, "2022 President (all levels)", cands);
 
     if (unmatched.length) {
