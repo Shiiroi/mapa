@@ -107,7 +107,7 @@ function LegendShell({
     children: ReactNode;
 }) {
     return (
-        <div className="absolute bottom-6 left-3 z-[1000] flex flex-col items-start gap-2">
+        <div className="absolute bottom-6 left-3 z-[1000] flex flex-col-reverse items-start gap-2">
             <button
                 type="button"
                 onClick={onToggle}
@@ -134,7 +134,7 @@ function LegendShell({
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     aria-hidden="true"
-                    className={cn("transition-transform", collapsed ? "" : "rotate-180")}
+                    className={cn("transition-transform", collapsed ? "rotate-180" : "")}
                 >
                     <polyline points="6 9 12 15 18 9" />
                 </svg>
