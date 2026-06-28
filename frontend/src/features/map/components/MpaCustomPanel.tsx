@@ -204,6 +204,18 @@ export function MpaCustomPanel({
                                                     {dataset.description}
                                                 </p>
                                             )}
+                                            {dataset.source_name && dataset.source_url && (
+                                                <p className="mt-1 text-[11px] leading-relaxed">
+                                                    <a
+                                                        href={dataset.source_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-accent underline"
+                                                    >
+                                                        {dataset.source_name}
+                                                    </a>
+                                                </p>
+                                            )}
                                             {isLoading && (
                                                 <p className="mt-1 text-xs text-muted">Loading values…</p>
                                             )}

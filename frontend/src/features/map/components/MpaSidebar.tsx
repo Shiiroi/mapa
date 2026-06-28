@@ -173,7 +173,26 @@ export function MpaSidebar(props: MpaSidebarProps) {
                 )}
             </div>
 
-            {tab !== "geojson" && (
+            {tab === "custom" && (
+                <footer className="space-y-1 border-t border-border-light px-5 py-4 text-xs leading-relaxed text-muted">
+                    <p className="font-medium uppercase tracking-wide">Sources</p>
+                    <p>
+                        2022 presidential results: Commission on Elections (COMELEC) — 2022 National &amp;
+                        Local Elections,{" "}
+                        <a
+                            href="https://2022electionresults.comelec.gov.ph/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent underline"
+                        >
+                            transparency (mirror) results
+                        </a>
+                        .
+                    </p>
+                </footer>
+            )}
+
+            {(tab === "info" || tab === "compare") && (
                 <footer className="space-y-1 border-t border-border-light px-5 py-4 text-xs leading-relaxed text-muted">
                     <p className="font-medium uppercase tracking-wide">Sources</p>
                     <p>
@@ -228,18 +247,6 @@ export function MpaSidebar(props: MpaSidebarProps) {
                         >
                             Commission on Audit (CY 2024 AFR, Local Government)
                         </a>
-                    </p>
-                    <p>
-                        2022 election results:{" "}
-                        <a
-                            href="https://2022electionresults.comelec.gov.ph/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-accent underline"
-                        >
-                            Commission on Elections — 2022 transparency results
-                        </a>{" "}
-                        (public domain).
                     </p>
                     <p>Area &amp; density: derived by Mapa from PSA boundary geometry (approximate).</p>
                 </footer>
