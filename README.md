@@ -1,19 +1,15 @@
 # Mapa
 
-**Free, interactive maps and downloadable GeoJSON for every Philippine administrative division — country, region, province, city/municipality, and barangay.**
+Mapa is an interactive map and GeoJSON download tool for Philippine administrative divisions — country, region, province, city/municipality, and barangay. It overlays census, economic, and election statistics on those boundaries, supports side-by-side comparison of places, and exports standards-compliant GeoJSON.
 
-Mapa lets you browse the Philippines on a map, overlay census and election data, compare places side by side, and download standards-compliant GeoJSON.
+Live: https://mapa.shhiroi.me
 
-🌐 Live: https://mapa.shhiroi.me · Part of [shhiroi.me](https://shhiroi.me)
-
-> Mapa is an independent project. It is **not** affiliated with or endorsed by the Philippine Statistics Authority (PSA) or any government agency.
-
----
+> Mapa is an independent project. It is not affiliated with or endorsed by the Philippine Statistics Authority (PSA) or any government agency.
 
 ## Table of contents
 
-- [What is Mapa](#what-is-mapa)
 - [Features](#features)
+- [Architecture](#architecture)
 - [Tech stack](#tech-stack)
 - [Project structure](#project-structure)
 - [Getting started](#getting-started)
@@ -21,50 +17,29 @@ Mapa lets you browse the Philippines on a map, overlay census and election data,
 - [GeoJSON format](#geojson-format)
 - [Data sources & licenses](#data-sources--licenses)
 - [Data corrections](#data-corrections)
-- [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
 
----
-
-## What is Mapa
-
-Mapa is a Philippines-focused geographic reference site. The core experience is an **interactive map** paired with a **download panel**:
-
-- Explore administrative boundaries from **country → region → province → city/municipality → barangay**.
-- View **population, age/sex, GDP, and LGU assets** by place; overlay **2022 presidential election results** or your own CSV.
-- **Compare any two places** side by side.
-- **Download GeoJSON** scoped by country, region, province, municipality, or barangay.
-
-Architecture: **administrative metadata in Postgres (Supabase)**, **boundary geometry as chunked GeoJSON from object storage / CDN**.
-
----
-
 ## Features
 
-| Status | Feature |
-|--------|---------|
-| ✅ | Interactive Leaflet map with country / region / province / municipality / barangay view switching |
-| ✅ | GeoJSON downloads by country, region, province, municipality, and barangay |
-| ✅ | Standards-compliant GeoJSON (RFC 7946) with rich PSGC properties |
-| ✅ | Population, age/sex, GDP (constant 2018 prices), and LGU total assets |
-| ✅ | Built-in COMELEC 2022 presidential election overlay + custom CSV uploads |
-| ✅ | Side-by-side place comparison |
-| 🔜 | Population density heatmap with filters |
-| 🔜 | Island-group browse |
+- Interactive Leaflet map with level switching across country, region, province, city/municipality, and barangay.
+- GeoJSON downloads scoped to any level, in RFC 7946 / WGS 84 with PSGC-keyed feature properties.
+- Per-place statistics: population, age and sex distribution, GDP (PSA constant 2018 prices), and LGU total assets.
+- Built-in COMELEC 2022 presidential results overlay, plus custom CSV overlay uploads keyed by PSGC.
+- Side-by-side comparison of any two places.
 
----
+## Architecture
+
+Administrative metadata (names, hierarchy, statistics, overlays) is stored in Postgres through Supabase. Boundary geometry is served as chunked GeoJSON from a public Supabase Storage bucket (CDN), with a bundled fallback under `public/geo/`. The frontend is a static single-page application and all runtime queries are read-only; data is written only by the seed scripts in `frontend/scripts/`.
 
 ## Tech stack
 
-- **Frontend:** Vite + React + TypeScript + Tailwind CSS
-- **Map:** Leaflet / react-leaflet
-- **Data fetching:** TanStack Query
-- **Backend:** Supabase (Postgres for metadata, public Storage bucket for GeoJSON)
-- **Package manager:** pnpm
-- **Hosting:** Vercel (subdomain `mapa.shhiroi.me`)
-
----
+- Frontend: Vite, React, TypeScript, Tailwind CSS
+- Map: Leaflet / react-leaflet
+- Data fetching: TanStack Query
+- Backend: Supabase (Postgres for metadata, public Storage bucket for GeoJSON)
+- Package manager: pnpm
+- Hosting: Vercel
 
 ## Project structure
 
@@ -94,8 +69,6 @@ mapa/
 ├── NOTICE.md                        # Third-party licenses
 └── LICENSE
 ```
-
----
 
 ## Getting started
 
@@ -139,23 +112,23 @@ Run the migrations in `supabase/migrations/` against your Supabase project.
 
 ### 4. Seed database and upload geo
 
-**Clean (from source — recommended for self-hosters):**
+Clean — seeds from source CSVs; recommended for self-hosters who want transparent, reproducible data:
 
 ```bash
 cd frontend
 pnpm setup
 ```
 
-`setup` = `upload:geo` + `seed:all`. Reads `public/geo/` and `public/data/clean/*.csv`.
+`setup` runs `upload:geo` then `seed:all`, reading `public/geo/` and `public/data/clean/*.csv`.
 
-**Restore (fast clone — exact mirror from committed CSV snapshots):**
+Restore — mirrors the database from committed CSV snapshots; faster for a clone:
 
 ```bash
 cd frontend
 pnpm restore
 ```
 
-`restore` = `upload:geo` + `db:restore`. Reads `public/backup/<table>.csv`.
+`restore` runs `upload:geo` then `db:restore`, reading `public/backup/<table>.csv`.
 
 | Command | What it does |
 |---------|----------------|
@@ -163,20 +136,18 @@ pnpm restore
 | `pnpm restore` | Upload geo + restore from `public/backup/*.csv` |
 | `pnpm seed:all` | Seed Postgres only (no geo upload) |
 | `pnpm upload:geo` | Upload `public/geo/**` to Supabase Storage |
-| `pnpm db:export` | Dump current DB → refresh `public/backup/*.csv` |
+| `pnpm db:export` | Dump current DB to `public/backup/*.csv` |
 | `pnpm db:restore` | Restore Postgres from backup CSVs only |
 
-Individual seeders (partial updates): `seed:db`, `seed:bgy`, `seed:stats`, `seed:extrapop`, `seed:gdp`, `seed:afr`, `seed:custom-elections`.
+Individual seeders, for partial updates: `seed:db`, `seed:bgy`, `seed:stats`, `seed:extrapop`, `seed:gdp`, `seed:afr`, `seed:custom-elections`.
 
-You only need **`public/geo/`** + **`public/data/clean/`** for `setup`, or **`public/geo/`** + **`public/backup/`** for `restore`. `public/data/raw/` and `public/source/` are provenance only.
+`setup` needs `public/geo/` and `public/data/clean/`; `restore` needs `public/geo/` and `public/backup/`. `public/data/raw/` and `public/source/` are provenance only.
 
 ### 5. Run the app
 
 ```bash
 pnpm dev
 ```
-
----
 
 ## Data pipeline
 
@@ -189,48 +160,40 @@ public/data/clean/*.csv        # PSGC-keyed stats overlays (committed)
         │
         └── upload:geo ────────► Supabase Storage (CDN)
 
-Optional regen (elections):
+Optional regeneration (elections):
   scrape:comelec → map:comelec → public/data/clean/elections_*.csv → seed:custom-elections → db:export
 
 Backup snapshot:
   db:export → public/backup/*.csv  (refresh after DB changes; used by pnpm restore)
 ```
 
-GDP values use **PSA constant 2018 prices** (real terms, correct for trend lines and growth rates).
+GDP values use PSA constant 2018 prices (real terms), which are appropriate for trend lines and growth rates.
+
+Boundaries are split into per-province and per-municity files with manifest indexes so the app loads only the geometry the current view needs.
 
 ### Incremental barangay election results
 
-Barangay **geometry metadata** is seeded once via `seed:bgy` (included in `setup` / `restore`). Barangay **election overlay rows** grow as you scrape COMELEC; re-seed and refresh backup after each stage:
+Barangay geometry metadata is seeded once via `seed:bgy` (included in `setup` and `restore`). Barangay election rows grow as you scrape COMELEC. The scraper is resumable, so you can stage the crawl by region and re-seed after each stage. All seed and restore commands are upserts and never wipe the database.
 
 ```bash
 cd frontend
 
-# Stage 1 — Manila barangays (resumable)
-pnpm scrape:comelec -- --max-rank barangay --only-region NCR --only-citymun MANILA
+# One region at a time (COMELEC region label; resumable)
+pnpm scrape:comelec -- --max-rank barangay --only-region "NATIONAL CAPITAL REGION"
 pnpm map:comelec
 pnpm seed:custom-elections
-pnpm db:export
+pnpm db:export        # refresh the committed backup snapshot
 
-# Stage 2 — whole NCR (skips Manila files already on disk)
-pnpm scrape:comelec -- --max-rank barangay --only-region NCR
-pnpm map:comelec && pnpm seed:custom-elections && pnpm db:export
-
-# Stage 3 — whole Philippines
+# Or the whole country in one crawl
 pnpm scrape:comelec -- --max-rank barangay
 pnpm map:comelec && pnpm seed:custom-elections && pnpm db:export
 ```
 
-All seed/restore commands are **upserts** — they never wipe the whole DB.
-
-**Why chunked?** City/municipality and barangay boundaries are large. Splitting into per-province and per-municity files with manifest indexes lets the app load only what the user needs.
-
----
+Region names must match COMELEC's labels (for example `NATIONAL CAPITAL REGION`, not `NCR`).
 
 ## GeoJSON format
 
-All exported files are **RFC 7946 GeoJSON** `FeatureCollection`s in **WGS 84 (EPSG:4326)**.
-
-Each feature carries PSGC-keyed properties (10-digit string `psgc`):
+All exported files are RFC 7946 GeoJSON `FeatureCollection`s in WGS 84 (EPSG:4326). Each feature carries PSGC-keyed properties (10-digit string `psgc`):
 
 ```json
 {
@@ -258,9 +221,7 @@ Each feature carries PSGC-keyed properties (10-digit string `psgc`):
 | City/Municipality | `City` / `Mun` | `1830200000` |
 | Barangay | `Bgy` | `1830200001` |
 
-Downloaded files follow: `mapa-{level}-{slug}-{date}.json`.
-
----
+Downloaded files are named `mapa-{level}-{slug}-{date}.json`.
 
 ## Data sources & licenses
 
@@ -275,37 +236,17 @@ Downloaded files follow: `mapa-{level}-{slug}-{date}.json`.
 | [COA CY 2024 AFR (Local Government)](https://www.coa.gov.ph/reports/annual-financial-reports/afr-local-government-units/) | LGU total assets | Public (attribution required) |
 | [COMELEC 2022 transparency results](https://2022electionresults.comelec.gov.ph/) | Presidential election results | Public domain (RA 8293 s.176) |
 
-Full third-party license texts are in [`NOTICE.md`](./NOTICE.md).
-
-> Mapa adds value on top of these datasets (PSGC re-keying, hierarchy linking, downloads, corrections, and tooling). It does not claim ownership of the underlying boundary or statistical data.
-
----
+Full third-party license texts are in [`NOTICE.md`](./NOTICE.md). Mapa re-keys, links, corrects, and packages these datasets; it does not claim ownership of the underlying boundary or statistical data.
 
 ## Data corrections
 
-Open datasets and shapefile joins occasionally have gaps or code mismatches. Mapa applies deterministic corrections before committing GeoJSON — see [`DATA_CORRECTIONS.md`](./DATA_CORRECTIONS.md).
-
-Current result: **42,000 of 42,017** barangay features matched or merged.
-
----
-
-## Roadmap
-
-1. **Foundation** — Supabase schema, PSGC-keyed GeoJSON ✅
-2. **Map + downloads** — Country through barangay levels ✅
-3. **Statistics & overlays** — Population, GDP, assets, elections, custom CSV ✅
-4. **Density heatmap** — Population-density choropleth
-5. **PH-specific tools** — Island-group browse
-
----
+Open datasets and shapefile joins occasionally have gaps or code mismatches. Mapa applies deterministic corrections before committing GeoJSON; see [`DATA_CORRECTIONS.md`](./DATA_CORRECTIONS.md) for details. Current result: 42,000 of 42,017 barangay features matched or merged.
 
 ## Contributing
 
-Issues and data corrections are welcome — especially boundary errors, missing divisions, and PSGC mismatches. Please open an issue with the problem and, where possible, an authoritative source.
-
----
+Issues and data corrections are welcome, especially boundary errors, missing divisions, and PSGC mismatches. Please open an issue describing the problem with an authoritative source where possible.
 
 ## License
 
-- **Mapa source code:** MIT — see [`LICENSE`](./LICENSE)
-- **Boundary data:** derived from MIT-licensed sources above — see [`NOTICE.md`](./NOTICE.md). Attribution required when redistributing GeoJSON.
+- Source code: MIT — see [`LICENSE`](./LICENSE).
+- Boundary data: derived from the MIT-licensed sources above — see [`NOTICE.md`](./NOTICE.md). Attribution is required when redistributing GeoJSON.
