@@ -48,7 +48,7 @@ SOFTWARE.
 - **Source:** https://github.com/altcoder/philippines-psgc-shapefiles
 - **License:** MIT
 - **Usage in Mapa:** Barangay (Adm4) and country (Adm0) boundary shapefiles
-  were joined to PSA PSGC codes and committed as GeoJSON under `frontend/public/geo/`.
+  were joined to PSA PSGC codes and committed as GeoJSON under `frontend/data-sets/geo/`.
   Corrections are documented in [`DATA_CORRECTIONS.md`](./DATA_CORRECTIONS.md).
 
 ```
@@ -82,7 +82,7 @@ SOFTWARE.
 - **Publisher:** Philippine Statistics Authority (PSA)
 - **Source:** https://psa.gov.ph/classification/psgc/
 - **Usage in Mapa:** Administrative codes, names, hierarchy, and population
-  counts (`frontend/public/data/raw/psgc.csv`). Census and economic statistics
+  counts (`frontend/data-sets/data/raw/psgc.csv`). Census and economic statistics
   are sourced from PSA publications (see sections 4–5 below).
 
 > Mapa is an independent project and is not affiliated with, endorsed by, or an
@@ -118,7 +118,7 @@ SOFTWARE.
 - **License:** Public domain (Republic Act No. 8293, Section 176 — works of the
   Philippine government)
 - **Usage in Mapa:** Built-in presidential election overlay (`custom_datasets` /
-  `custom_stats`), seeded from `public/data/clean/elections_2022_president_all.csv`.
+  `custom_stats`), seeded from `data-sets/data/clean/elections_2022_president_all.csv`.
 - **Scraper credit:** Download tooling is vendored and adapted from
   [ianalis/scraper2022](https://github.com/ianalis/scraper2022) (MIT). See
   `frontend/scripts/py/COMELEC_SCRAPER_LICENSE.txt`.

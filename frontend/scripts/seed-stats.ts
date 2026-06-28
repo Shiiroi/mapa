@@ -1,4 +1,4 @@
-// Seeds division_stats from enriched public/geo JSON (pop, area, density).
+// Seeds division_stats from enriched data-sets/geo JSON (pop, area, density).
 
 import { createClient } from "@supabase/supabase-js";
 import * as fs from "fs";
@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 import type { DivisionStatsFields } from "./lib/stats.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const GEO_DIR = path.join(__dirname, "../public/geo");
+const GEO_DIR = path.join(__dirname, "../data-sets/geo");
 const MUNI_DIR = path.join(GEO_DIR, "municities");
 const BGY_DIR = path.join(MUNI_DIR, "bgy");
 
@@ -72,7 +72,7 @@ async function upsertChunk(rows: Record<string, unknown>[]) {
 
 // Collects stats from all geo files (deduped by psgc) and upserts division_stats.
 async function main() {
-    console.log("Seeding division_stats from public/geo…");
+    console.log("Seeding division_stats from data-sets/geo…");
     const allRows: Record<string, unknown>[] = [];
     const seen = new Set<string>();
 

@@ -10,7 +10,7 @@ import { fileURLToPath } from "url";
 import { computeDensity, computePctChange } from "./lib/stats.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const POPCEN_CSV = path.join(__dirname, "../public/data/clean/popcen_2010_2024.csv");
+const POPCEN_CSV = path.join(__dirname, "../data-sets/data/clean/popcen_2010_2024.csv");
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;

@@ -3,7 +3,7 @@
 This document tracks corrections and derivations Mapa applies on top of upstream
 open-source boundary data. Every entry records **what** was changed, **why**, and
 the **basis** for the change. The corrected geometry is committed as GeoJSON under
-`frontend/public/geo/`.
+`frontend/data-sets/geo/`.
 
 ## Base datasets
 
@@ -11,7 +11,7 @@ the **basis** for the change. The corrected geometry is committed as GeoJSON und
 |-------|--------|-------|
 | Region / province / municipality | [faeldon/philippines-json-maps](https://github.com/faeldon/philippines-json-maps) (2023 GeoJSON, MIT) | Re-keyed to PSGC |
 | Barangay + country | [altcoder/philippines-psgc-shapefiles](https://github.com/altcoder/philippines-psgc-shapefiles) (Adm0, Adm4, MIT) | Converted from shapefile to GeoJSON |
-| Codes & names | [PSA PSGC](https://psa.gov.ph/classification/psgc/) | `public/data/raw/psgc.csv` |
+| Codes & names | [PSA PSGC](https://psa.gov.ph/classification/psgc/) | `data-sets/data/raw/psgc.csv` |
 
 Unless listed below, geometry and attributes come unmodified aside from
 reformatting and PSGC property normalization.
@@ -55,13 +55,13 @@ census data:
 
 | Field | Source | Notes |
 |-------|--------|-------|
-| `pop_2010`, `pop_2015`, `pop_2020`, `pop_2024` | `public/data/clean/popcen_2010_2024.csv` | Region/province/city/municipality from PSA Table B; 2024 down to barangay from the PSGC datafile |
+| `pop_2010`, `pop_2015`, `pop_2020`, `pop_2024` | `data-sets/data/clean/popcen_2010_2024.csv` | Region/province/city/municipality from PSA Table B; 2024 down to barangay from the PSGC datafile |
 | `area_km2` | Computed from boundary GeoJSON (`@turf/area`, WGS84) | Estimate from polygon |
 | `density_2024` | `pop_2024 / area_km2` | Null when area unavailable |
 | `pct_change_2020_2024` | Derived when both vintages present | Null after boundary/code changes |
 
 `popcen_2010_2024.csv` is built by `pnpm convert:pop` from the two PSA workbooks
-in `public/source/`. The PSGC datafile is the code/name/2024 spine; Table B is
+in `data-sets/source/`. The PSGC datafile is the code/name/2024 spine; Table B is
 name-keyed only, so its 2010–2020 counts are matched back to PSGC codes by region
 plus name, with the shared 2024 population as the authoritative tiebreaker (this
 is what fixes places that were previously missing 2015/2020 figures). Province
@@ -195,7 +195,7 @@ shapefile slivers. The shapefile features remain dropped (no PSGC match).
 
 ## COA CY2024 AFR total assets (LG financial profile)
 
-- **Source:** Commission on Audit (COA) CY 2024 Annual Financial Report (Local Government), Volume I, **Part III: Financial Profile** (`frontend/public/source/afr.pdf`, PDF viewer pages 172–234).
+- **Source:** Commission on Audit (COA) CY 2024 Annual Financial Report (Local Government), Volume I, **Part III: Financial Profile** (`frontend/data-sets/source/afr.pdf`, PDF viewer pages 172–234).
 - **Mapping:** Name normalization and alias table in `frontend/scripts/lib/afrMatch.ts`; results seeded via `pnpm seed:afr` into `division_stats.assets_2024`.
 - **Units:** Report tables are in **thousand pesos**; Mapa stores and displays **actual pesos** (`value × 1000` as `bigint`).
 - **Coverage:** ~98.5% of LGUs submitted financial statements; rows with all `-` in the PDF are stored as null. Component units (city colleges, hospitals, etc.) are skipped during extraction.
@@ -207,7 +207,7 @@ shapefile slivers. The shapefile features remain dropped (no PSGC match).
 ## How corrections are applied
 
 Corrections are deterministic and baked into the committed GeoJSON under
-`frontend/public/geo/`. The boundary build pipeline that originally produced
+`frontend/data-sets/geo/`. The boundary build pipeline that originally produced
 these files (shapefile → GeoJSON conversion) is no longer part of the repo;
 self-hosters consume the committed geo directly via `pnpm upload:geo` and
 `pnpm seed:bgy`.

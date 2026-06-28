@@ -1,4 +1,4 @@
-// Fetches geo JSON from Supabase Storage, with /geo/ local fallback.
+// Fetches geo JSON from the Supabase Storage geo bucket (CDN).
 
 import { supabase } from "../../../config/supabase";
 import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
@@ -19,29 +19,15 @@ export function getGeoStoragePublicUrl(fileName: string): string {
     return withGeoVersion(data.publicUrl);
 }
 
-// Fetches a geo file from the bundled public/geo/ fallback path.
-async function fetchFromLocal<T>(fileName: string, label: string): Promise<T> {
-    const res = await fetch(withGeoVersion(`/geo/${fileName}`));
+// Fetches a geo file from the Supabase Storage geo bucket. Geometry lives only in
+// Storage (run `pnpm upload:geo` to populate it); there is no bundled fallback.
+export async function fetchGeoLayerFromStorage<T>(fileName: string, label: string): Promise<T> {
+    const url = getGeoStoragePublicUrl(fileName);
+    const res = await fetch(url);
     if (!res.ok) {
-        throw new Error(`Local ${label} failed: ${res.status} ${res.statusText}`);
+        throw new Error(`Storage ${label} failed: ${res.status} ${res.statusText}`);
     }
     return (await res.json()) as T;
-}
-
-// Tries Supabase Storage first, then static files under public/geo/.
-export async function fetchGeoLayerFromStorage<T>(fileName: string, label: string): Promise<T> {
-    try {
-        const url = getGeoStoragePublicUrl(fileName);
-        const res = await fetch(url);
-        if (res.ok) {
-            return (await res.json()) as T;
-        }
-        console.warn(`[geoStorage] Supabase ${label} failed (${res.status}), trying local fallback`);
-    } catch (err) {
-        console.warn(`[geoStorage] Supabase ${label} error, trying local fallback:`, err);
-    }
-
-    return fetchFromLocal<T>(fileName, label);
 }
 
 export async function fetchRegionsFromStorage(): Promise<Region[]> {

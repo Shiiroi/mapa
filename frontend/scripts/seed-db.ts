@@ -1,4 +1,4 @@
-// Seeds regions, provinces, and municities metadata from public/geo into Supabase.
+// Seeds regions, provinces, and municities metadata from data-sets/geo into Supabase.
 
 import { createClient } from "@supabase/supabase-js";
 import * as fs from "fs";
@@ -6,7 +6,7 @@ import * as path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const GEO_DIR = path.join(__dirname, "../public/geo");
+const GEO_DIR = path.join(__dirname, "../data-sets/geo");
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -60,7 +60,7 @@ async function upsertTable(table: string, rows: Record<string, unknown>[]) {
 
 // Seeds regions, provinces, and (chunked) municities metadata into Supabase.
 async function main() {
-    console.log("Seeding database from public/geo…");
+    console.log("Seeding database from data-sets/geo…");
 
     const regions = dedupeByPsgc(stripGeometry(readJson<Array<Record<string, unknown>>>("regions.json")));
     const provinces = dedupeByPsgc(stripGeometry(readJson<Array<Record<string, unknown>>>("provinces.json")));

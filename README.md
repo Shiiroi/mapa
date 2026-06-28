@@ -30,7 +30,7 @@ Live: https://mapa.shhiroi.me
 
 ## Architecture
 
-Administrative metadata (names, hierarchy, statistics, overlays) is stored in Postgres through Supabase. Boundary geometry is served as chunked GeoJSON from a public Supabase Storage bucket (CDN), with a bundled fallback under `public/geo/`. The frontend is a static single-page application and all runtime queries are read-only; data is written only by the seed scripts in `frontend/scripts/`.
+Administrative metadata (names, hierarchy, statistics, overlays) is stored in Postgres through Supabase. Boundary geometry is served as chunked GeoJSON from a public Supabase Storage bucket (CDN); the committed source GeoJSON lives under `data-sets/geo/` and is uploaded there by `pnpm upload:geo`. The frontend is a static single-page application and all runtime queries are read-only; data is written only by the seed scripts in `frontend/scripts/`.
 
 ## Tech stack
 
@@ -46,7 +46,8 @@ Administrative metadata (names, hierarchy, statistics, overlays) is stored in Po
 ```
 mapa/
 ├── frontend/
-│   ├── public/
+│   ├── public/                      # Web-served static assets (favicon, etc.)
+│   ├── data-sets/                   # Source data + DB snapshots (not web-served)
 │   │   ├── geo/                     # GeoJSON — uploaded to Supabase Storage
 │   │   │   ├── country.json, regions.json, provinces.json
 │   │   │   └── municities/          # meta.json, manifest, province-*.json, bgy/
@@ -56,8 +57,8 @@ mapa/
 │   │   ├── source/                  # Original xlsx/pdf sources (provenance only)
 │   │   └── backup/                  # DB CSV snapshots — input to pnpm restore
 │   ├── scripts/
-│   │   ├── seed-*.ts                # Seed Postgres from public/data/clean + geo
-│   │   ├── upload-geo.ts            # Upload public/geo/** to Supabase Storage
+│   │   ├── seed-*.ts                # Seed Postgres from data-sets/data/clean + geo
+│   │   ├── upload-geo.ts            # Upload data-sets/geo/** to Supabase Storage
 │   │   ├── db-export.ts / db-restore.ts
 │   │   ├── map-comelec-president.ts # COMELEC scrape → clean election CSVs
 │   │   └── py/scrape_comelec.py     # Download COMELEC 2022 results (optional regen)
@@ -119,7 +120,7 @@ cd frontend
 pnpm setup
 ```
 
-`setup` runs `upload:geo` then `seed:all`, reading `public/geo/` and `public/data/clean/*.csv`.
+`setup` runs `upload:geo` then `seed:all`, reading `data-sets/geo/` and `data-sets/data/clean/*.csv`.
 
 Restore — mirrors the database from committed CSV snapshots; faster for a clone:
 
@@ -128,22 +129,22 @@ cd frontend
 pnpm restore
 ```
 
-`restore` runs `upload:geo` then `db:restore`, reading `public/backup/<table>.csv`.
+`restore` runs `upload:geo` then `db:restore`, reading `data-sets/backup/<table>.csv`.
 
 | Command | What it does |
 |---------|----------------|
 | `pnpm setup` | Upload geo + seed from clean source data |
-| `pnpm restore` | Upload geo + restore from `public/backup/*.csv` |
+| `pnpm restore` | Upload geo + restore from `data-sets/backup/*.csv` |
 | `pnpm seed:all` | Seed Postgres only (no geo upload) |
-| `pnpm upload:geo` | Upload `public/geo/**` to Supabase Storage |
-| `pnpm db:export` | Dump current DB to `public/backup/*.csv` |
+| `pnpm upload:geo` | Upload `data-sets/geo/**` to Supabase Storage |
+| `pnpm db:export` | Dump current DB to `data-sets/backup/*.csv` |
 | `pnpm db:restore` | Restore Postgres from backup CSVs only |
 
 Individual seeders, for partial updates: `seed:db`, `seed:bgy`, `seed:stats`, `seed:pop`, `seed:agesex`, `seed:gdp`, `seed:afr`, `seed:custom-elections`.
 
-Population is owned by `seed:pop`, which reads `public/data/clean/popcen_2010_2024.csv` (2010/2015/2020/2024 census counts down to city/municipality, plus 2024 down to barangay) and recomputes `density_2024` and `pct_change_2020_2024`. That CSV is regenerated from the two PSA workbooks in `public/source/` with `pnpm convert:pop`; run it after `seed:stats`, which owns geometry-derived `area_km2`.
+Population is owned by `seed:pop`, which reads `data-sets/data/clean/popcen_2010_2024.csv` (2010/2015/2020/2024 census counts down to city/municipality, plus 2024 down to barangay) and recomputes `density_2024` and `pct_change_2020_2024`. That CSV is regenerated from the two PSA workbooks in `data-sets/source/` with `pnpm convert:pop`; run it after `seed:stats`, which owns geometry-derived `area_km2`.
 
-`setup` needs `public/geo/` and `public/data/clean/`; `restore` needs `public/geo/` and `public/backup/`. `public/data/raw/` and `public/source/` are provenance only.
+`setup` needs `data-sets/geo/` and `data-sets/data/clean/`; `restore` needs `data-sets/geo/` and `data-sets/backup/`. `data-sets/data/raw/` and `data-sets/source/` are provenance only.
 
 ### 5. Run the app
 
@@ -154,11 +155,11 @@ pnpm dev
 ## Data pipeline
 
 ```
-public/source/*.xlsx           # PSA source workbooks (provenance)
-        │   convert:pop ──► public/data/clean/popcen_2010_2024.csv
+data-sets/source/*.xlsx        # PSA source workbooks (provenance)
+        │   convert:pop ──► data-sets/data/clean/popcen_2010_2024.csv
         ▼
-public/geo/                    # Boundaries + geometry-derived area (committed)
-public/data/clean/*.csv        # PSGC-keyed stats overlays (committed)
+data-sets/geo/                 # Boundaries + geometry-derived area (committed)
+data-sets/data/clean/*.csv     # PSGC-keyed stats overlays (committed)
         │
         ├── seed:db / seed:bgy / seed:stats / seed:pop / seed:agesex / seed:gdp / seed:afr
         │       └──► Postgres (metadata + division_stats + custom_datasets)
@@ -166,10 +167,10 @@ public/data/clean/*.csv        # PSGC-keyed stats overlays (committed)
         └── upload:geo ────────► Supabase Storage (CDN)
 
 Optional regeneration (elections):
-  scrape:comelec → map:comelec → public/data/clean/elections_2022_president_all.csv → seed:custom-elections → db:export
+  scrape:comelec → map:comelec → data-sets/data/clean/elections_2022_president_all.csv → seed:custom-elections → db:export
 
 Backup snapshot:
-  db:export → public/backup/*.csv  (refresh after DB changes; used by pnpm restore)
+  db:export → data-sets/backup/*.csv  (refresh after DB changes; used by pnpm restore)
 ```
 
 GDP values use PSA constant 2018 prices (real terms), which are appropriate for trend lines and growth rates.

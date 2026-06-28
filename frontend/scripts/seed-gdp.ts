@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 import { parse } from "csv-parse/sync";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CSV_PATH = path.join(__dirname, "../public/data/clean/gdp_mapped.csv");
+const CSV_PATH = path.join(__dirname, "../data-sets/data/clean/gdp_mapped.csv");
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -47,7 +47,7 @@ async function fetchAllDivisionPsgc(): Promise<Map<string, string>> {
 // Upserts GDP columns onto existing division_stats rows from the mapped GDP CSV.
 async function main() {
     if (!fs.existsSync(CSV_PATH)) {
-        console.error(`Missing ${CSV_PATH}. Regenerate from public/data/raw/gdp.csv or use the committed clean file.`);
+        console.error(`Missing ${CSV_PATH}. Regenerate from data-sets/data/raw/gdp.csv or use the committed clean file.`);
         process.exit(1);
     }
 

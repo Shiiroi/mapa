@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build public/data/clean/popcen_2010_2024.csv from the two PSA workbooks.
+"""Build data-sets/data/clean/popcen_2010_2024.csv from the two PSA workbooks.
 
 Spine (PSGC code + name + level + 2024 population, down to barangay) comes from
 the PSGC publication datafile. The 2010/2015/2020 census counts (down to
@@ -20,8 +20,8 @@ import openpyxl
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FRONTEND = os.path.abspath(os.path.join(HERE, "..", ".."))
-SOURCE = os.path.join(FRONTEND, "public", "source")
-OUT = os.path.join(FRONTEND, "public", "data", "clean", "popcen_2010_2024.csv")
+SOURCE = os.path.join(FRONTEND, "data-sets", "source")
+OUT = os.path.join(FRONTEND, "data-sets", "data", "clean", "popcen_2010_2024.csv")
 
 PSGC_XLSX = os.path.join(SOURCE, "PSGC-1Q-2026-Publication-Datafile-2.xlsx")
 TABLEB_XLSX = os.path.join(

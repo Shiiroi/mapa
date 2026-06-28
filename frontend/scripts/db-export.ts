@@ -1,4 +1,4 @@
-// Export all Mapa Postgres tables to public/backup/<table>.csv for fast db:restore.
+// Export all Mapa Postgres tables to data-sets/backup/<table>.csv for fast db:restore.
 
 import { createClient } from "@supabase/supabase-js";
 import { stringify } from "csv-stringify/sync";
@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 import { DB_TABLES } from "./lib/dbTables.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const BACKUP_DIR = path.join(__dirname, "../public/backup");
+const BACKUP_DIR = path.join(__dirname, "../data-sets/backup");
 const PAGE_SIZE = 1000;
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;

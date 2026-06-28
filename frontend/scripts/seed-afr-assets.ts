@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 import { parse } from "csv-parse/sync";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CSV_PATH = path.join(__dirname, "../public/data/clean/lgu_finance_2024.csv");
+const CSV_PATH = path.join(__dirname, "../data-sets/data/clean/lgu_finance_2024.csv");
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;

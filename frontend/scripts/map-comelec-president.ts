@@ -3,7 +3,7 @@
 // single multi-level, multi-series CSV that the custom-overlay uploader (and
 // seed-custom-elections.ts) understand:
 //
-//   public/data/clean/elections_2022_president_all.csv
+//   data-sets/data/clean/elections_2022_president_all.csv
 //       region + province + city/municipality + barangay rows in one file.
 //
 // The COMELEC JSON field names are not publicly documented, so this script
@@ -26,8 +26,8 @@ import {
 } from "./lib/afrMatch.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PUBLIC_DIR = path.join(__dirname, "../public");
-const CLEAN_DIR = path.join(PUBLIC_DIR, "data/clean");
+const DATASETS_DIR = path.join(__dirname, "../data-sets");
+const CLEAN_DIR = path.join(DATASETS_DIR, "data/clean");
 const DATA_DIR = path.join(__dirname, "py", "data");
 const RESULTS_DIR = path.join(DATA_DIR, "results");
 const CONTESTS_DIR = path.join(DATA_DIR, "contests");
@@ -182,7 +182,7 @@ const MANILA_CITY_PSGC = "1380600000";
 
 // Indexes psgc.csv barangays as municityPsgc → (normalized name → barangay PSGC).
 function loadBarangayIndex(): Map<string, Map<string, string>> {
-    const raw = fs.readFileSync(path.join(PUBLIC_DIR, "data/raw/psgc.csv"), "latin1");
+    const raw = fs.readFileSync(path.join(DATASETS_DIR, "data/raw/psgc.csv"), "latin1");
     const rows = parseCsv(raw, {
         columns: true,
         skip_empty_lines: true,
@@ -519,7 +519,7 @@ function main() {
     }
     console.log(`President contest cc=${pres.cc}, candidates: ${pres.boToDisplay.size}`);
 
-    const idx = loadPsgcIndexes(PUBLIC_DIR);
+    const idx = loadPsgcIndexes(DATASETS_DIR);
     const bgyIdx = loadBarangayIndex();
     const voteKeyRef = { key: null as string | null };
     const unmatched: { tier: string; region: string; province: string; name: string }[] = [];
@@ -538,9 +538,9 @@ function main() {
         }
     }
 
-    const lguParents = loadLguParents(PUBLIC_DIR);
-    const regionLabels = loadRegionLabels(PUBLIC_DIR);
-    const provinceLabels = loadProvinceLabels(PUBLIC_DIR);
+    const lguParents = loadLguParents(DATASETS_DIR);
+    const regionLabels = loadRegionLabels(DATASETS_DIR);
+    const provinceLabels = loadProvinceLabels(DATASETS_DIR);
 
     tiers.province = dedupeRows(
         aggregateByParent(tiers.citymun, (p) => p.provincePsgc, lguParents, provinceLabels),

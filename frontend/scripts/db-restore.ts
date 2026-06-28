@@ -1,4 +1,4 @@
-// Restore Postgres tables from public/backup/<table>.csv (row-for-row upsert, FK-safe order).
+// Restore Postgres tables from data-sets/backup/<table>.csv (row-for-row upsert, FK-safe order).
 
 import { createClient } from "@supabase/supabase-js";
 import { parse } from "csv-parse/sync";
@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 import { DB_TABLES } from "./lib/dbTables.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const BACKUP_DIR = path.join(__dirname, "../public/backup");
+const BACKUP_DIR = path.join(__dirname, "../data-sets/backup");
 const CHUNK_SIZE = 500;
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;

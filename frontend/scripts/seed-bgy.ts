@@ -1,4 +1,4 @@
-// Seeds barangay metadata from public/geo/municities/bgy/meta.json into Supabase.
+// Seeds barangay metadata from data-sets/geo/municities/bgy/meta.json into Supabase.
 
 import { createClient } from "@supabase/supabase-js";
 import * as fs from "fs";
@@ -6,7 +6,7 @@ import * as path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const GEO_DIR = path.join(__dirname, "../public/geo");
+const GEO_DIR = path.join(__dirname, "../data-sets/geo");
 const BGY_META = path.join(GEO_DIR, "municities/bgy/meta.json");
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;

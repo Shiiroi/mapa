@@ -1,0 +1,464 @@
+[
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "ABRA",
+    "name": "BAÑACAO"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "ABRA",
+    "name": "LINGAY"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "ABRA",
+    "name": "LAMAO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "ABRA",
+    "name": "TUI (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "ABRA",
+    "name": "CAUPASAN (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "ABRA",
+    "name": "MALIBCONG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "ABRA",
+    "name": "AYYENG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "ABRA",
+    "name": "GANGAL (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "BENGUET",
+    "name": "AMBUCLAO"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "BENGUET",
+    "name": "DACLAN"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "BENGUET",
+    "name": "GASWELING"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "BENGUET",
+    "name": "CAPONGA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "KALINGA",
+    "name": "GUINA-ANG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "KALINGA",
+    "name": "TAGA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "KALINGA",
+    "name": "BABALAG EAST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "KALINGA",
+    "name": "BABALAG WEST (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "KALINGA",
+    "name": "DAGUPAN CENTRO (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "MOUNTAIN PROVINCE",
+    "name": "GAWANA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "MOUNTAIN PROVINCE",
+    "name": "KIN-IWAY (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "MOUNTAIN PROVINCE",
+    "name": "DAGDAG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "MOUNTAIN PROVINCE",
+    "name": "DEMANG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "APAYAO",
+    "name": "DOÑA LORETA"
+  },
+  {
+    "tier": "barangay",
+    "region": "CORDILLERA ADMINISTRATIVE REGION",
+    "province": "APAYAO",
+    "name": "MARCELA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "NEW ZAÑIGA"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "OLD ZAÑIGA"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "JESUS DE LA PEÑA"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "SANTA ELENA (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "TAÑONG"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "SAN NICOLAS (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "DOÑA IMELDA"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "DOÑA JOSEFA"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "ERMITAÑO"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "PASADEÑA"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "BARANGAY 176"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "TAÑONG (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "NORTH BAY BLVD., NORTH"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "SAN JOSE (POB.)"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "HEN. T. DE LEON"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "CEMBO"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "COMEMBO"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "DASMARIÑAS"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "EAST REMBO"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "PEMBO"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "PITOGO"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "POST PROPER NORTHSIDE"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "POST PROPER SOUTHSIDE"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "SOUTH CEMBO"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "WEST REMBO"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "RIZAL"
+  },
+  {
+    "tier": "barangay",
+    "region": "NATIONAL CAPITAL REGION",
+    "province": "",
+    "name": "SANTO NIÑO"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "ASIA PACIFIC",
+    "name": "NEGARA BRUNEI DARUSSALAM"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "ASIA PACIFIC",
+    "name": "KINGDOM OF THAILAND"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "ASIA PACIFIC",
+    "name": "PEOPLES REPUBLIC OF CHINA"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "ASIA PACIFIC",
+    "name": "TAIWAN, ROC"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "ASIA PACIFIC",
+    "name": "AUSTRALIA"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "ASIA PACIFIC",
+    "name": "MALAYSIA"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "ASIA PACIFIC",
+    "name": "REPUBLIC OF KOREA"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "ASIA PACIFIC",
+    "name": "REPUBLIC OF SINGAPORE"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "ASIA PACIFIC",
+    "name": "JAPAN"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "ASIA PACIFIC",
+    "name": "NEW ZEALAND"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "AMERICAS",
+    "name": "AGANA"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "AMERICAS",
+    "name": "CANADA"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "AMERICAS",
+    "name": "UNITED STATES OF AMERICA"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "MIDDLE EAST AND AFRICAS",
+    "name": "UNITED ARAB EMIRATES"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "MIDDLE EAST AND AFRICAS",
+    "name": "REPUBLIC OF LEBANON"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "MIDDLE EAST AND AFRICAS",
+    "name": "STATE OF QATAR"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "MIDDLE EAST AND AFRICAS",
+    "name": "STATE OF KUWAIT"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "MIDDLE EAST AND AFRICAS",
+    "name": "KINGDOM OF BAHRAIN"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "MIDDLE EAST AND AFRICAS",
+    "name": "SULTANATE OF OMAN"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "MIDDLE EAST AND AFRICAS",
+    "name": "KINGDOM OF SAUDI ARABIA"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "MIDDLE EAST AND AFRICAS",
+    "name": "ISRAEL"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "EUROPE",
+    "name": "ATHENS"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "EUROPE",
+    "name": "UNITED KINGDOM OF GREAT BRITAIN"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "EUROPE",
+    "name": "KINGDOM OF SPAIN"
+  },
+  {
+    "tier": "citymun",
+    "region": "OAV",
+    "province": "EUROPE",
+    "name": "ITALY"
+  }
+]

@@ -1,4 +1,4 @@
-// Uploads public/geo JSON files to the Supabase Storage geo bucket.
+// Uploads data-sets/geo JSON files to the Supabase Storage geo bucket.
 
 import { createClient } from "@supabase/supabase-js";
 import * as fs from "fs";
@@ -6,7 +6,7 @@ import * as path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const GEO_DIR = path.join(__dirname, "../public/geo");
+const GEO_DIR = path.join(__dirname, "../data-sets/geo");
 const BUCKET = "geo";
 const CONCURRENCY = 4;
 const MAX_RETRIES = 4;
