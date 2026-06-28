@@ -229,6 +229,18 @@ export function MpaSidebar(props: MpaSidebarProps) {
                             Commission on Audit (CY 2024 AFR, Local Government)
                         </a>
                     </p>
+                    <p>
+                        2022 election results:{" "}
+                        <a
+                            href="https://2022electionresults.comelec.gov.ph/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent underline"
+                        >
+                            Commission on Elections — 2022 transparency results
+                        </a>{" "}
+                        (public domain).
+                    </p>
                     <p>Area &amp; density: derived by Mapa from PSA boundary geometry (approximate).</p>
                 </footer>
             )}

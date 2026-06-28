@@ -1,6 +1,42 @@
+# Dependencies & build output
 node_modules/
-.env
 dist/
-.DS_Store
+dist-ssr/
+
+# Environment & secrets
+.env
+.env.keys
+.env.*.local
 *.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# TypeScript build artifacts
+*.tsbuildinfo
+
+# OS & editor
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Supabase local
 .supabase/
+.branches/
+.temp/
+
+# COMELEC scraper (large, regenerable)
+frontend/scripts/py/data/
+frontend/scripts/py/.venv/

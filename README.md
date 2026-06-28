@@ -2,7 +2,7 @@
 
 **Free, interactive maps and downloadable GeoJSON for every Philippine administrative division — country, region, province, city/municipality, and barangay.**
 
-Mapa lets you browse the Philippines on a map, switch between administrative levels, and download standards-compliant GeoJSON. Built for students, developers, researchers, LGUs, and the curious.
+Mapa lets you browse the Philippines on a map, overlay census and election data, compare places side by side, and download standards-compliant GeoJSON.
 
 🌐 Live: https://mapa.shhiroi.me · Part of [shhiroi.me](https://shhiroi.me)
 
@@ -32,11 +32,11 @@ Mapa lets you browse the Philippines on a map, switch between administrative lev
 Mapa is a Philippines-focused geographic reference site. The core experience is an **interactive map** paired with a **download panel**:
 
 - Explore administrative boundaries from **country → region → province → city/municipality → barangay**.
+- View **population, age/sex, GDP, and LGU assets** by place; overlay **2022 presidential election results** or your own CSV.
+- **Compare any two places** side by side.
 - **Download GeoJSON** scoped by country, region, province, municipality, or barangay.
-- Barangay view appears only after a municipality/city is selected (e.g. select Manila → Barangay tab shows).
-- Later phases add **population statistics**, **density heatmaps**, and PH-specific tools.
 
-Architecture keeps a clean separation: **administrative metadata lives in Postgres (Supabase)**, while **boundary geometry is served as chunked GeoJSON from object storage / CDN**.
+Architecture: **administrative metadata in Postgres (Supabase)**, **boundary geometry as chunked GeoJSON from object storage / CDN**.
 
 ---
 
@@ -47,11 +47,11 @@ Architecture keeps a clean separation: **administrative metadata lives in Postgr
 | ✅ | Interactive Leaflet map with country / region / province / municipality / barangay view switching |
 | ✅ | GeoJSON downloads by country, region, province, municipality, and barangay |
 | ✅ | Standards-compliant GeoJSON (RFC 7946) with rich PSGC properties |
-| ✅ | Barangay layer (per-municity chunked boundaries + downloads) |
-| ✅ | Whole-Philippines country boundary download |
-| 🔜 | Population statistics and place detail pages |
+| ✅ | Population, age/sex, GDP (constant 2018 prices), and LGU total assets |
+| ✅ | Built-in COMELEC 2022 presidential election overlay + custom CSV uploads |
+| ✅ | Side-by-side place comparison |
 | 🔜 | Population density heatmap with filters |
-| 🔜 | PSGC code lookup, place comparison, island-group browse |
+| 🔜 | Island-group browse |
 
 ---
 
@@ -72,25 +72,25 @@ Architecture keeps a clean separation: **administrative metadata lives in Postgr
 mapa/
 ├── frontend/
 │   ├── public/
-│   │   ├── geo/                     # GeoJSON (uploaded to Supabase Storage)
+│   │   ├── geo/                     # GeoJSON — uploaded to Supabase Storage
 │   │   │   ├── country.json, regions.json, provinces.json
 │   │   │   └── municities/          # meta.json, manifest, province-*.json, bgy/
 │   │   ├── data/
 │   │   │   ├── clean/               # PSGC-keyed CSVs — seed scripts read these
 │   │   │   └── raw/                 # Provenance extracts (not needed to run the app)
 │   │   ├── source/                  # Original xlsx/pdf sources (provenance only)
-│   │   └── backup/                  # DB dumps (gitignored; optional local mirror)
+│   │   └── backup/                  # DB CSV snapshots — input to pnpm restore
 │   ├── scripts/
 │   │   ├── seed-*.ts                # Seed Postgres from public/data/clean + geo
 │   │   ├── upload-geo.ts            # Upload public/geo/** to Supabase Storage
+│   │   ├── db-export.ts / db-restore.ts
 │   │   ├── map-comelec-president.ts # COMELEC scrape → clean election CSVs
-│   │   ├── lib/afrMatch.ts          # PSGC name matching for elections pipeline
 │   │   └── py/scrape_comelec.py     # Download COMELEC 2022 results (optional regen)
 │   └── src/
 │       ├── features/map/            # Map rendering, layers, download UI
 │       └── pages/
 ├── supabase/migrations/             # Schema: regions, provinces, municities, barangays
-├── DATA_CORRECTIONS.md              # Manual corrections & join derivations
+├── DATA_CORRECTIONS.md              # Boundary corrections summary
 ├── NOTICE.md                        # Third-party licenses
 └── LICENSE
 ```
@@ -113,7 +113,7 @@ cd frontend
 pnpm install
 ```
 
-For the COMELEC scraper (optional — only if regenerating election data):
+For the COMELEC scraper (optional):
 
 ```bash
 cd frontend/scripts/py
@@ -139,16 +139,14 @@ Run the migrations in `supabase/migrations/` against your Supabase project.
 
 ### 4. Seed database and upload geo
 
-After applying migrations, pick one path:
-
-**Clean (from source — recommended for self-hosters who want transparent, reproducible data):**
+**Clean (from source — recommended for self-hosters):**
 
 ```bash
 cd frontend
 pnpm setup
 ```
 
-`setup` = `upload:geo` + `seed:all`. Reads `public/geo/` and `public/data/clean/*.csv`, transforms via seed scripts, upserts into Postgres.
+`setup` = `upload:geo` + `seed:all`. Reads `public/geo/` and `public/data/clean/*.csv`.
 
 **Restore (fast clone — exact mirror from committed CSV snapshots):**
 
@@ -157,17 +155,18 @@ cd frontend
 pnpm restore
 ```
 
-`restore` = `upload:geo` + `db:restore`. Reads `public/backup/<table>.csv` row-for-row (includes whatever election barangay rows were last exported).
+`restore` = `upload:geo` + `db:restore`. Reads `public/backup/<table>.csv`.
 
 | Command | What it does |
 |---------|----------------|
 | `pnpm setup` | Upload geo + seed from clean source data |
 | `pnpm restore` | Upload geo + restore from `public/backup/*.csv` |
 | `pnpm seed:all` | Seed Postgres only (no geo upload) |
+| `pnpm upload:geo` | Upload `public/geo/**` to Supabase Storage |
 | `pnpm db:export` | Dump current DB → refresh `public/backup/*.csv` |
 | `pnpm db:restore` | Restore Postgres from backup CSVs only |
 
-Individual seeders (for partial updates): `seed:db`, `seed:bgy`, `seed:stats`, `seed:extrapop`, `seed:gdp`, `seed:afr`, `seed:custom-elections`.
+Individual seeders (partial updates): `seed:db`, `seed:bgy`, `seed:stats`, `seed:extrapop`, `seed:gdp`, `seed:afr`, `seed:custom-elections`.
 
 You only need **`public/geo/`** + **`public/data/clean/`** for `setup`, or **`public/geo/`** + **`public/backup/`** for `restore`. `public/data/raw/` and `public/source/` are provenance only.
 
@@ -206,7 +205,7 @@ Barangay **geometry metadata** is seeded once via `seed:bgy` (included in `setup
 ```bash
 cd frontend
 
-# Stage 1 — Manila barangays (resumable; same command to continue)
+# Stage 1 — Manila barangays (resumable)
 pnpm scrape:comelec -- --max-rank barangay --only-region NCR --only-citymun MANILA
 pnpm map:comelec
 pnpm seed:custom-elections
@@ -269,7 +268,12 @@ Downloaded files follow: `mapa-{level}-{slug}-{date}.json`.
 |--------|----------|---------|
 | [faeldon/philippines-json-maps](https://github.com/faeldon/philippines-json-maps) | Region, province, municipality GeoJSON (re-keyed to PSGC) | MIT © James Faeldon |
 | [altcoder/philippines-psgc-shapefiles](https://github.com/altcoder/philippines-psgc-shapefiles) | Barangay + country shapefiles (Adm0, Adm4) | MIT © James Faeldon |
-| [PSA PSGC](https://psa.gov.ph/classification/psgc/) | Administrative codes, names, hierarchy | Public (attribution required) |
+| [PSA PSGC](https://psa.gov.ph/classification/psgc/) | Administrative codes, names, hierarchy, population | Public (attribution required) |
+| [PSA 2024 Census](https://psa.gov.ph/content/2024-census-population-popcen-population-counts-declared-official-president) | Population counts | Public (attribution required) |
+| [PSA 2020 Census](https://psa.gov.ph/content/age-and-sex-distribution-philippine-population-2020-census-population-and-housing) | Age & sex distribution | Public (attribution required) |
+| [PSA Subnational Economic Accounts](https://openstat.psa.gov.ph/PXWeb/pxweb/en/DB/DB__2B__GP__RG__GRD/0012B5CPGD1.px/) | GDP (constant 2018 prices) | Public (attribution required) |
+| [COA CY 2024 AFR (Local Government)](https://www.coa.gov.ph/reports/annual-financial-reports/afr-local-government-units/) | LGU total assets | Public (attribution required) |
+| [COMELEC 2022 transparency results](https://2022electionresults.comelec.gov.ph/) | Presidential election results | Public domain (RA 8293 s.176) |
 
 Full third-party license texts are in [`NOTICE.md`](./NOTICE.md).
 
@@ -279,7 +283,7 @@ Full third-party license texts are in [`NOTICE.md`](./NOTICE.md).
 
 ## Data corrections
 
-Open datasets and shapefile joins occasionally have gaps or code mismatches. Mapa applies deterministic corrections during the barangay pipeline — see [`DATA_CORRECTIONS.md`](./DATA_CORRECTIONS.md) for the full log.
+Open datasets and shapefile joins occasionally have gaps or code mismatches. Mapa applies deterministic corrections before committing GeoJSON — see [`DATA_CORRECTIONS.md`](./DATA_CORRECTIONS.md).
 
 Current result: **42,000 of 42,017** barangay features matched or merged.
 
@@ -287,11 +291,11 @@ Current result: **42,000 of 42,017** barangay features matched or merged.
 
 ## Roadmap
 
-1. **Foundation** — Supabase schema, PSGC-keyed GeoJSON, pipeline ✅
+1. **Foundation** — Supabase schema, PSGC-keyed GeoJSON ✅
 2. **Map + downloads** — Country through barangay levels ✅
-3. **Population & place pages** — PSA census in `division_stats`
+3. **Statistics & overlays** — Population, GDP, assets, elections, custom CSV ✅
 4. **Density heatmap** — Population-density choropleth
-5. **PH-specific tools** — PSGC lookup, place comparison, island-group browse
+5. **PH-specific tools** — Island-group browse
 
 ---
 
