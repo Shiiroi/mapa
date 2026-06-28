@@ -1,6 +1,6 @@
 // Leaflet map; view mode driven by sidebar; click selects a division.
 
-import { useMemo, useCallback, useState, type ReactNode } from "react";
+import { useMemo, useCallback, useState, useEffect, useRef, type ReactNode } from "react";
 import { MapContainer, TileLayer, GeoJSON, ZoomControl } from "react-leaflet";
 import L from "leaflet";
 import type { Feature, Geometry } from "geojson";
@@ -192,11 +192,25 @@ export function MpaMapPanel({
     const [legendCollapsed, setLegendCollapsed] = useState(false);
     const toggleLegend = useCallback(() => setLegendCollapsed((v) => !v), []);
 
+    // The user's shading choice wins; "custom" only applies while an overlay is
+    // loaded (otherwise fall back to outline). This lets you flip between built-in
+    // shadings and the custom overlay without first clearing the loaded dataset.
     const displayMode = useMemo((): DisplayMode => {
-        if (overlay) return "custom";
-        if (userDisplayMode === "custom") return "outline";
+        if (userDisplayMode === "custom") return overlay ? "custom" : "outline";
         return userDisplayMode;
     }, [overlay, userDisplayMode]);
+
+    // When a new overlay (uploaded or built-in) loads, default the shading to
+    // "custom" so it's immediately visible. Keyed on the dataset so switching
+    // away to GDP/density/etc. afterward sticks until a different dataset loads.
+    const lastOverlayKeyRef = useRef<string | null>(null);
+    useEffect(() => {
+        const key = overlay ? overlay.meta.title : null;
+        if (key && key !== lastOverlayKeyRef.current) {
+            setUserDisplayMode("custom");
+        }
+        lastOverlayKeyRef.current = key;
+    }, [overlay]);
 
     const levelOptions = [...BASE_LEVELS, { level: "barangay" as MpaLevel, label: "Barangay" }];
 
