@@ -1,7 +1,7 @@
 // TypeScript types for regions, provinces, and municipalities (PSGC-keyed).
 
 import type { Geometry } from "geojson";
-import type { MpaLevel } from "./constants";
+import type { MapLevel } from "./constants";
 
 export type GeoLevel = "Reg" | "Prov" | "City" | "Mun" | "SubMun" | "Bgy" | "Country" | "Special";
 export type CityLevel = "HUC" | "CC" | "ICC";
@@ -109,11 +109,11 @@ export interface CustomOverlay {
     source: "builtin" | "upload";
     kind: "numeric" | "categorical" | "series";
     /** Primary level (first in `levels`; kept for backward-compatible labels). */
-    level: MpaLevel;
+    level: MapLevel;
     /** Administrative tiers present in this dataset. */
-    levels: MpaLevel[];
+    levels: MapLevel[];
     /** Values keyed by tier, then PSGC. Only the bucket matching the map view is rendered. */
-    valuesByLevel: Partial<Record<MpaLevel, Record<string, CustomOverlayValue>>>;
+    valuesByLevel: Partial<Record<MapLevel, Record<string, CustomOverlayValue>>>;
     /** Flat union of all tiers (used for tooltips and compare). */
     valuesByPsgc: Record<string, CustomOverlayValue>;
     /** Ordered series definitions (required when kind === "series"). */
@@ -134,7 +134,7 @@ export interface CustomDataset {
     description: string | null;
     category: string;
     kind: "numeric" | "categorical" | "series";
-    level: MpaLevel;
+    level: MapLevel;
     unit: string | null;
     value_label: string | null;
     source_name: string | null;

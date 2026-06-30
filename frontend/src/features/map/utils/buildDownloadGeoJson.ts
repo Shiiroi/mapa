@@ -1,7 +1,7 @@
 // Builds scoped GeoJSON FeatureCollections; uses province region_psgc for correct filtering.
 
 import type { Feature, FeatureCollection, Geometry } from "geojson";
-import type { MpaLevel } from "../constants";
+import type { MapLevel } from "../constants";
 import { slugifyDivisionName } from "./slugifyDivisionName";
 import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
 import {
@@ -21,7 +21,7 @@ export type DownloadScope =
     | { kind: "bgysInMunicity"; municityPsgc: string };
 
 export interface BuildDownloadInput {
-    level: MpaLevel;
+    level: MapLevel;
     scope: DownloadScope;
     regions: Region[];
     provinces: ProvinceGeoJSON[];
@@ -48,7 +48,7 @@ function toFeature(
 }
 
 // Composes a dated, slugified export filename like "mapa-province-cebu-2026-06-28.json".
-function buildFilename(level: MpaLevel, slug: string): string {
+function buildFilename(level: MapLevel, slug: string): string {
     const date = new Date().toISOString().slice(0, 10);
     return `mapa-${level}-${slugifyDivisionName(slug)}-${date}.json`;
 }

@@ -1,24 +1,24 @@
 // Parse uploaded custom CSV (single-value or multi-series) into overlay-ready structures.
 
-import type { MpaLevel } from "../constants";
+import type { MapLevel } from "../constants";
 import type { CustomOverlay, CustomSeriesDef, SeriesViewMode } from "../types";
 import { sortLevels, resolveTiersForPsgc, primaryTier } from "./customOverlay";
 
 export interface ParsedNumericCsv {
     kind: "numeric";
     title?: string;
-    levels: MpaLevel[];
+    levels: MapLevel[];
     unit?: string;
-    rows: { psgc: string; value: number; label?: string; level: MpaLevel; tiers: MpaLevel[] }[];
+    rows: { psgc: string; value: number; label?: string; level: MapLevel; tiers: MapLevel[] }[];
 }
 
 export interface ParsedSeriesCsv {
     kind: "series";
     title?: string;
-    levels: MpaLevel[];
+    levels: MapLevel[];
     unit?: string;
     series: CustomSeriesDef[];
-    rows: { psgc: string; label?: string; series: Record<string, number>; level: MpaLevel; tiers: MpaLevel[] }[];
+    rows: { psgc: string; label?: string; series: Record<string, number>; level: MapLevel; tiers: MapLevel[] }[];
     defaultView?: SeriesViewMode;
 }
 
@@ -115,7 +115,7 @@ function parseCsvLines(text: string): { directives: CsvDirectives; dataLines: st
     return { directives, dataLines };
 }
 
-function validatePsgc(rawPsgc: string, lineNum: number, knownPsgcs: Set<string>, level: MpaLevel | null): string | null {
+function validatePsgc(rawPsgc: string, lineNum: number, knownPsgcs: Set<string>, level: MapLevel | null): string | null {
     const psgc = rawPsgc.replace(/\D/g, "").padStart(10, "0");
     if (psgc.length !== 10) {
         return `Line ${lineNum}: invalid PSGC "${rawPsgc}".`;
@@ -158,8 +158,8 @@ function buildSeriesDefs(
 export function parseCustomCsv(
     text: string,
     knownPsgcs: Set<string>,
-    psgcLevels?: ReadonlyMap<string, MpaLevel>,
-    psgcLevelsByTier?: Partial<Record<MpaLevel, ReadonlySet<string>>>,
+    psgcLevels?: ReadonlyMap<string, MapLevel>,
+    psgcLevelsByTier?: Partial<Record<MapLevel, ReadonlySet<string>>>,
 ): ParseCustomCsvResult | ParseCustomCsvError {
     const { directives, dataLines } = parseCsvLines(text);
 
@@ -194,7 +194,7 @@ export function parseCustomCsv(
 
     if (isNumeric) {
         const rows: ParsedNumericCsv["rows"] = [];
-        const levelsSet = new Set<MpaLevel>();
+        const levelsSet = new Set<MapLevel>();
 
         for (let i = 1; i < dataLines.length; i++) {
             const cols = dataLines[i].split(",").map((c) => c.trim());
@@ -250,7 +250,7 @@ export function parseCustomCsv(
         seriesKeyToCol.set(seriesKeyFromHeader(header[idx]), idx);
     }
     const rows: ParsedSeriesCsv["rows"] = [];
-    const levelsSet = new Set<MpaLevel>();
+    const levelsSet = new Set<MapLevel>();
 
     for (let i = 1; i < dataLines.length; i++) {
         const cols = dataLines[i].split(",").map((c) => c.trim());

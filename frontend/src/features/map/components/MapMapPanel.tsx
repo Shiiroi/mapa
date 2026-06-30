@@ -5,7 +5,7 @@ import { MapContainer, TileLayer, GeoJSON, ZoomControl } from "react-leaflet";
 import L from "leaflet";
 import type { Feature, Geometry } from "geojson";
 import { cn } from "../../../lib/cn";
-import type { MpaLevel } from "../constants";
+import type { MapLevel } from "../constants";
 import type { CustomOverlay, SeriesViewState } from "../types";
 import { colorForDensity, densityLegendItems, NO_DATA_COLOR } from "../utils/densityScale";
 import { colorForPopulation, populationLegendItems, POPULATION_RAMP } from "../utils/populationScale";
@@ -55,7 +55,7 @@ const SHADING_OPTIONS: { mode: DisplayMode; label: string; requiresOverlay?: boo
     { mode: "custom", label: "Custom", requiresOverlay: true },
 ];
 
-const BASE_LEVELS: { level: MpaLevel; label: string }[] = [
+const BASE_LEVELS: { level: MapLevel; label: string }[] = [
     { level: "country", label: "Philippines" },
     { level: "region", label: "Region" },
     { level: "province", label: "Province" },
@@ -76,15 +76,15 @@ export interface MapEntity {
     assets_2024?: number | null;
 }
 
-interface MpaMapPanelProps {
+interface MapMapPanelProps {
     country?: MapEntity | null;
     provinces?: MapEntity[];
     regions?: MapEntity[];
     municities?: MapEntity[];
     barangays?: MapEntity[];
-    mode: MpaLevel;
-    onFeatureClick?: (entityPsgc: string, mode: MpaLevel) => void;
-    onLevelChange?: (level: MpaLevel) => void;
+    mode: MapLevel;
+    onFeatureClick?: (entityPsgc: string, mode: MapLevel) => void;
+    onLevelChange?: (level: MapLevel) => void;
     /** Barangay view is only selectable once a municipality is chosen. */
     barangayAvailable?: boolean;
     loading?: boolean;
@@ -171,7 +171,7 @@ function featureStyle(
     };
 }
 
-export function MpaMapPanel({
+export function MapMapPanel({
     country = null,
     provinces = [],
     regions = [],
@@ -185,7 +185,7 @@ export function MpaMapPanel({
     error,
     overlay = null,
     overlayView = { mode: "lead" },
-}: MpaMapPanelProps) {
+}: MapMapPanelProps) {
     const [userDisplayMode, setUserDisplayMode] = useState<DisplayMode>("outline");
     const [fillOpacity, setFillOpacity] = useState(0.7);
     const [controlsCollapsed, setControlsCollapsed] = useState(false);
@@ -212,7 +212,7 @@ export function MpaMapPanel({
         lastOverlayKeyRef.current = key;
     }, [overlay]);
 
-    const levelOptions = [...BASE_LEVELS, { level: "barangay" as MpaLevel, label: "Barangay" }];
+    const levelOptions = [...BASE_LEVELS, { level: "barangay" as MapLevel, label: "Barangay" }];
 
     const currentData = useMemo(() => {
         let entities: MapEntity[] = [];

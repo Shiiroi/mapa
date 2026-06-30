@@ -1,6 +1,6 @@
 // Resolves the currently selected administrative place for the Info tab.
 
-import type { MpaLevel } from "../constants";
+import type { MapLevel } from "../constants";
 import type {
     BarangayGeoJSON,
     CountryGeoJSON,
@@ -14,14 +14,14 @@ import type {
 export interface ResolvedPlace extends DivisionStatsFields {
     psgc: string;
     name: string;
-    level: MpaLevel;
+    level: MapLevel;
     geo_lvl: string;
     breadcrumb: string;
     note?: string | null;
 }
 
 interface ResolvePlaceInput {
-    level: MpaLevel;
+    level: MapLevel;
     country: CountryGeoJSON | null;
     regions: Region[];
     provinces: ProvinceGeoJSON[];
@@ -61,7 +61,7 @@ function findMunicity(psgc: string, municities: MunicityGeoJSON[], meta: Municit
 
 // Builds the "Philippines › Region › Province › City" breadcrumb for a place.
 function breadcrumbFor(
-    level: MpaLevel,
+    level: MapLevel,
     regions: Region[],
     provinces: ProvinceGeoJSON[],
     municity: MunicityGeoJSON | MunicityMeta | undefined,

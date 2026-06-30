@@ -2,20 +2,20 @@
 
 import { useState } from "react";
 import { cn } from "../../../lib/cn";
-import type { MpaLevel } from "../constants";
-import type { ExportKind } from "../hooks/useMpaDownload";
+import type { MapLevel } from "../constants";
+import type { ExportKind } from "../hooks/useMapDownload";
 import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
 import { resolveSelectedPlace } from "../utils/resolvePlace";
-import { MpaComparePanel, type CompareSelection } from "./MpaComparePanel";
-import { MpaCustomPanel } from "./MpaCustomPanel";
-import { MpaDownloadPanel } from "./MpaDownloadPanel";
-import { MpaInfoPanel } from "./MpaInfoPanel";
+import { MapComparePanel, type CompareSelection } from "./MapComparePanel";
+import { MapCustomPanel } from "./MapCustomPanel";
+import { MapDownloadPanel } from "./MapDownloadPanel";
+import { MapInfoPanel } from "./MapInfoPanel";
 import type { CustomOverlay, SeriesViewState } from "../types";
 
 export type SidebarTab = "geojson" | "info" | "compare" | "custom";
 
-interface MpaSidebarProps {
-    level: MpaLevel;
+interface MapSidebarProps {
+    level: MapLevel;
     regions: Region[];
     provinces: ProvinceGeoJSON[];
     municities: MunicityGeoJSON[];
@@ -45,8 +45,8 @@ interface MpaSidebarProps {
     overlayView: SeriesViewState;
     onOverlayViewChange: (view: SeriesViewState) => void;
     knownPsgcs: Set<string>;
-    psgcLevels: ReadonlyMap<string, MpaLevel>;
-    psgcLevelsByTier: Partial<Record<MpaLevel, ReadonlySet<string>>>;
+    psgcLevels: ReadonlyMap<string, MapLevel>;
+    psgcLevelsByTier: Partial<Record<MapLevel, ReadonlySet<string>>>;
 }
 
 const TABS: { id: SidebarTab; label: string }[] = [
@@ -56,7 +56,7 @@ const TABS: { id: SidebarTab; label: string }[] = [
     { id: "custom", label: "Custom" },
 ];
 
-export function MpaSidebar(props: MpaSidebarProps) {
+export function MapSidebar(props: MapSidebarProps) {
     const [tab, setTab] = useState<SidebarTab>("geojson");
 
     const selectedPlace = resolveSelectedPlace({
@@ -86,7 +86,20 @@ export function MpaSidebar(props: MpaSidebarProps) {
     return (
         <aside className="flex h-full min-h-0 flex-col overflow-hidden border-l border-border bg-white">
             <header className="shrink-0 border-b border-border-light px-4 py-3 lg:px-5 lg:py-4">
-                <h1 className="text-xl font-semibold tracking-tight text-primary lg:text-2xl">Mapa</h1>
+                <div className="flex items-center justify-between">
+                    <h1 className="text-xl font-semibold tracking-tight text-primary lg:text-2xl">Mapa</h1>
+                    <a
+                        href="https://github.com/Shiiroi/mapa"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted hover:text-accent transition-colors"
+                        aria-label="GitHub Repository"
+                    >
+                        <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+                        </svg>
+                    </a>
+                </div>
                 <div className="mt-2 flex gap-1 rounded-lg border border-border-light bg-surface p-1 lg:mt-3">
                     {TABS.map((t) => (
                         <button
@@ -108,7 +121,7 @@ export function MpaSidebar(props: MpaSidebarProps) {
 
             <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
                 {tab === "geojson" && (
-                    <MpaDownloadPanel
+                    <MapDownloadPanel
                         level={props.level}
                         regions={props.regions}
                         provinces={props.provinces}
@@ -137,13 +150,13 @@ export function MpaSidebar(props: MpaSidebarProps) {
 
                 {tab === "info" && (
                     <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 lg:px-5 lg:py-5">
-                        <MpaInfoPanel place={selectedPlace} />
+                        <MapInfoPanel place={selectedPlace} />
                     </div>
                 )}
 
                 {tab === "compare" && (
                     <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 lg:px-5 lg:py-5">
-                        <MpaComparePanel
+                        <MapComparePanel
                             country={props.country}
                             regions={props.regions}
                             provinces={props.provinces}
@@ -158,7 +171,7 @@ export function MpaSidebar(props: MpaSidebarProps) {
 
                 {tab === "custom" && (
                     <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 lg:px-5 lg:py-5">
-                        <MpaCustomPanel
+                        <MapCustomPanel
                             mapLevel={props.level}
                             activeOverlay={props.activeOverlay}
                             onOverlayChange={props.onOverlayChange}

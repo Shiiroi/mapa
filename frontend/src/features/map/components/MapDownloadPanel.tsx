@@ -1,13 +1,13 @@
 // Sidebar: scope pickers, download trigger, and attribution. View level is
-// chosen on the map overlay (MpaMapPanel).
+// chosen on the map overlay (MapMapPanel).
 
 import { cn } from "../../../lib/cn";
-import type { MpaLevel } from "../constants";
-import type { ExportKind } from "../hooks/useMpaDownload";
+import type { MapLevel } from "../constants";
+import type { ExportKind } from "../hooks/useMapDownload";
 import type { BarangayGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
 
-interface MpaDownloadPanelProps {
-    level: MpaLevel;
+interface MapDownloadPanelProps {
+    level: MapLevel;
     regions: Region[];
     provinces: ProvinceGeoJSON[];
     municityMeta: MunicityMeta[];
@@ -34,7 +34,7 @@ interface MpaDownloadPanelProps {
 
 // Per level: the single sub-level a download can target ("self" = the unit's own
 // boundary). Barangays are only exportable within a single municipality.
-const EXPORT_OPTIONS: Partial<Record<MpaLevel, { kind: ExportKind; label: string }[]>> = {
+const EXPORT_OPTIONS: Partial<Record<MapLevel, { kind: ExportKind; label: string }[]>> = {
     region: [
         { kind: "self", label: "Region outline" },
         { kind: "provinces", label: "All provinces" },
@@ -50,7 +50,7 @@ const EXPORT_OPTIONS: Partial<Record<MpaLevel, { kind: ExportKind; label: string
     ],
 };
 
-export function MpaDownloadPanel({
+export function MapDownloadPanel({
     level,
     regions,
     provinces,
@@ -74,7 +74,7 @@ export function MpaDownloadPanel({
     onDownload,
     downloading,
     error,
-}: MpaDownloadPanelProps) {
+}: MapDownloadPanelProps) {
     const filteredProvinces = regionFilterPsgc
         ? provinces.filter((p) => p.region_psgc === regionFilterPsgc)
         : provinces;
@@ -261,12 +261,6 @@ export function MpaDownloadPanel({
                         </a>
                     </p>
                 </div>
-                <p>
-                    Part of{" "}
-                    <a href="https://shhiroi.me" target="_blank" rel="noopener noreferrer" className="text-accent underline">
-                        shhiroi.me
-                    </a>
-                </p>
             </footer>
         </div>
     );

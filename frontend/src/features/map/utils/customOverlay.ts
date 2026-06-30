@@ -1,24 +1,24 @@
 // Build CustomOverlay objects from DB rows or CSV uploads; resolve PSGC tiers for multi-level data.
 
-import type { MpaLevel } from "../constants";
+import type { MapLevel } from "../constants";
 import type { CustomDataset, CustomDatasetValueRow, CustomOverlay, CustomOverlayValue, CustomSeriesDef } from "../types";
 
-export const LEVEL_ORDER: MpaLevel[] = ["country", "region", "province", "municipality", "barangay"];
+export const LEVEL_ORDER: MapLevel[] = ["country", "region", "province", "municipality", "barangay"];
 
 // Sort admin tiers from country down to barangay for stable legend and level lists.
-export function sortLevels(levels: MpaLevel[]): MpaLevel[] {
+export function sortLevels(levels: MapLevel[]): MapLevel[] {
     return [...levels].sort((a, b) => LEVEL_ORDER.indexOf(a) - LEVEL_ORDER.indexOf(b));
 }
 
 // True when the overlay has values for the current map view level.
-export function overlayActiveAtLevel(overlay: CustomOverlay, mapLevel: MpaLevel): boolean {
+export function overlayActiveAtLevel(overlay: CustomOverlay, mapLevel: MapLevel): boolean {
     if (!overlay.levels.includes(mapLevel)) return false;
     const bucket = overlay.valuesByLevel[mapLevel];
     return bucket != null && Object.keys(bucket).length > 0;
 }
 
 // Infers administrative level from a 10-digit PSGC code.
-export function inferLevelFromPsgc(psgc: string): MpaLevel | null {
+export function inferLevelFromPsgc(psgc: string): MapLevel | null {
     const code = psgc.padStart(10, "0");
     if (code === "0000000000") return "country";
     if (code.endsWith("00000000")) return "region";
@@ -30,11 +30,11 @@ export function inferLevelFromPsgc(psgc: string): MpaLevel | null {
 // Resolve which admin tiers a PSGC belongs to (handles NCR dual region/province).
 export function resolveTiersForPsgc(
     psgc: string,
-    psgcLevels?: ReadonlyMap<string, MpaLevel>,
-    psgcLevelsByTier?: Partial<Record<MpaLevel, ReadonlySet<string>>>,
-): MpaLevel[] {
+    psgcLevels?: ReadonlyMap<string, MapLevel>,
+    psgcLevelsByTier?: Partial<Record<MapLevel, ReadonlySet<string>>>,
+): MapLevel[] {
     if (psgcLevelsByTier) {
-        const tiers: MpaLevel[] = [];
+        const tiers: MapLevel[] = [];
         for (const level of LEVEL_ORDER) {
             if (psgcLevelsByTier[level]?.has(psgc)) tiers.push(level);
         }
@@ -45,7 +45,7 @@ export function resolveTiersForPsgc(
 }
 
 // Pick the most specific tier when a PSGC maps to multiple levels (e.g. NCR).
-export function primaryTier(tiers: MpaLevel[]): MpaLevel {
+export function primaryTier(tiers: MapLevel[]): MapLevel {
     return tiers.reduce(
         (best, tier) => (LEVEL_ORDER.indexOf(tier) > LEVEL_ORDER.indexOf(best) ? tier : best),
         tiers[0],
@@ -91,13 +91,13 @@ export function rowsToValuesByPsgc(
 export function buildOverlayFromDataset(
     dataset: CustomDataset,
     rows: CustomDatasetValueRow[],
-    psgcLevels?: ReadonlyMap<string, MpaLevel>,
-    psgcLevelsByTier?: Partial<Record<MpaLevel, ReadonlySet<string>>>,
+    psgcLevels?: ReadonlyMap<string, MapLevel>,
+    psgcLevelsByTier?: Partial<Record<MapLevel, ReadonlySet<string>>>,
     source: CustomOverlay["source"] = "builtin",
 ): CustomOverlay {
     const valuesByLevel: CustomOverlay["valuesByLevel"] = {};
     const valuesByPsgc: CustomOverlay["valuesByPsgc"] = {};
-    const levelsSet = new Set<MpaLevel>();
+    const levelsSet = new Set<MapLevel>();
 
     for (const row of rows) {
         const psgc = row.psgc.padStart(10, "0");

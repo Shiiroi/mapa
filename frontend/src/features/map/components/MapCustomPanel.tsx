@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "../../../lib/cn";
 import { downloadTextFile } from "../../../lib/downloadFile";
-import type { MpaLevel } from "../constants";
+import type { MapLevel } from "../constants";
 import { SCALE_LEVEL_LABELS } from "../constants";
 import { useCustomDatasetValues, useCustomDatasets } from "../hooks/useCustomDatasets";
 import type { CustomDataset, CustomOverlay, SeriesViewMode, SeriesViewState } from "../types";
@@ -25,16 +25,16 @@ import {
     seriesTotal,
 } from "../utils/seriesScale";
 
-interface MpaCustomPanelProps {
-    mapLevel: MpaLevel;
+interface MapCustomPanelProps {
+    mapLevel: MapLevel;
     activeOverlay: CustomOverlay | null;
     onOverlayChange: (overlay: CustomOverlay | null) => void;
     overlayView: SeriesViewState;
     onOverlayViewChange: (view: SeriesViewState) => void;
     selectedPlace: ResolvedPlace | null;
     knownPsgcs: Set<string>;
-    psgcLevels: ReadonlyMap<string, MpaLevel>;
-    psgcLevelsByTier: Partial<Record<MpaLevel, ReadonlySet<string>>>;
+    psgcLevels: ReadonlyMap<string, MapLevel>;
+    psgcLevelsByTier: Partial<Record<MapLevel, ReadonlySet<string>>>;
 }
 
 const SERIES_MODES: { mode: SeriesViewMode; label: string; minSeries: number }[] = [
@@ -96,7 +96,7 @@ function DatasetToggle({
     );
 }
 
-export function MpaCustomPanel({
+export function MapCustomPanel({
     mapLevel,
     activeOverlay,
     onOverlayChange,
@@ -106,7 +106,7 @@ export function MpaCustomPanel({
     knownPsgcs,
     psgcLevels,
     psgcLevelsByTier,
-}: MpaCustomPanelProps) {
+}: MapCustomPanelProps) {
     const datasetsQuery = useCustomDatasets();
     const [selectedDatasetId, setSelectedDatasetId] = useState<string | null>(null);
     const [uploadError, setUploadError] = useState<string | null>(null);

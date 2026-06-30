@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { downloadJsonFile } from "../../../lib/downloadFile";
-import type { MpaLevel } from "../constants";
+import type { MapLevel } from "../constants";
 import { buildDownloadGeoJson, type DownloadScope } from "../utils/buildDownloadGeoJson";
 import type { CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
 
@@ -10,7 +10,7 @@ import type { CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Re
 // boundary; the others export one child level (single level per file).
 export type ExportKind = "self" | "provinces" | "municipalities" | "barangays";
 
-interface UseMpaDownloadOptions {
+interface UseMapDownloadOptions {
     regions: Region[];
     provinces: ProvinceGeoJSON[];
     municities: MunicityGeoJSON[];
@@ -19,8 +19,8 @@ interface UseMpaDownloadOptions {
 }
 
 // Manages the download panel's selection state and runs the scoped GeoJSON export.
-export function useMpaDownload({ regions, provinces, municities, municityMeta, country }: UseMpaDownloadOptions) {
-    const [level, setLevelState] = useState<MpaLevel>("province");
+export function useMapDownload({ regions, provinces, municities, municityMeta, country }: UseMapDownloadOptions) {
+    const [level, setLevelState] = useState<MapLevel>("province");
     const [selectedRegionPsgc, setSelectedRegionPsgc] = useState<string | null>(null);
     const [selectedProvincePsgc, setSelectedProvincePsgc] = useState<string | null>(null);
     const [selectedMunicityPsgc, setSelectedMunicityPsgcState] = useState<string | null>(null);
@@ -42,7 +42,7 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta, c
     }, [level]);
 
     // Switches the export level, ignoring barangay until a municity is selected.
-    const setLevel = useCallback((next: MpaLevel) => {
+    const setLevel = useCallback((next: MapLevel) => {
         if (next === "barangay" && !selectedMunicityPsgc) {
             return;
         }
@@ -52,7 +52,7 @@ export function useMpaDownload({ regions, provinces, municities, municityMeta, c
 
     // Syncs the download selection (and parent filters) when the user clicks the map.
     const setSelectionFromMap = useCallback(
-        (mode: MpaLevel, entityPsgc: string) => {
+        (mode: MapLevel, entityPsgc: string) => {
             setLevelState(mode);
             setExportKind("self");
             if (mode === "country") {

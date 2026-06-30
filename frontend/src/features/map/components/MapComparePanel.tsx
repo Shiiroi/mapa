@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { cn } from "../../../lib/cn";
 import { useDivisionStats } from "../hooks/useDivisionStats";
 import { fetchBarangaysByMunicity } from "../services/mapApi";
-import type { MpaLevel } from "../constants";
+import type { MapLevel } from "../constants";
 import type { BarangayGeoJSON, CountryGeoJSON, CustomOverlay, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
 import { broadAgeGroups } from "../utils/ageSex";
 import {
@@ -20,7 +20,7 @@ import { mergePlaceStats } from "../utils/mergePlaceStats";
 import { resolveSelectedPlace, type ResolvedPlace } from "../utils/resolvePlace";
 
 export interface CompareSelection {
-    level: MpaLevel;
+    level: MapLevel;
     regionPsgc: string | null;
     provincePsgc: string | null;
     municityPsgc: string | null;
@@ -35,7 +35,7 @@ const DEFAULT_SELECTION: CompareSelection = {
     barangayPsgc: null,
 };
 
-interface MpaComparePanelProps {
+interface MapComparePanelProps {
     country: CountryGeoJSON | null;
     regions: Region[];
     provinces: ProvinceGeoJSON[];
@@ -49,13 +49,13 @@ interface MpaComparePanelProps {
     activeOverlay?: CustomOverlay | null;
 }
 
-function emptySelection(level: MpaLevel): CompareSelection {
+function emptySelection(level: MapLevel): CompareSelection {
     return { ...DEFAULT_SELECTION, level };
 }
 
 function resolveComparePlace(
     sel: CompareSelection,
-    ctx: Omit<MpaComparePanelProps, "currentSelection" | "currentSelectionName"> & {
+    ctx: Omit<MapComparePanelProps, "currentSelection" | "currentSelectionName"> & {
         barangays: BarangayGeoJSON[];
     },
 ): ResolvedPlace | null {
@@ -95,7 +95,7 @@ function ComparePicker({
     onUseMapSelection?: () => void;
     mapSelectionName: string | null;
 }) {
-    const levels: MpaLevel[] = ["country", "region", "province", "municipality", "barangay"];
+    const levels: MapLevel[] = ["country", "region", "province", "municipality", "barangay"];
     const filteredMunis = selection.provincePsgc
         ? municityMeta.filter((m) => m.province_psgc === selection.provincePsgc)
         : municityMeta;
@@ -118,7 +118,7 @@ function ComparePicker({
             </div>
             <select
                 value={selection.level}
-                onChange={(e) => onChange(emptySelection(e.target.value as MpaLevel))}
+                onChange={(e) => onChange(emptySelection(e.target.value as MapLevel))}
                 className="w-full rounded-md border border-border-light bg-white px-2 py-1.5 text-sm"
             >
                 {levels.map((l) => (
@@ -260,7 +260,7 @@ function formatDensityPerKm2(n: number | null): string {
     return `${formatDensity(n)}/km²`;
 }
 
-export function MpaComparePanel({
+export function MapComparePanel({
     country,
     regions,
     provinces,
@@ -269,7 +269,7 @@ export function MpaComparePanel({
     currentSelection,
     currentSelectionName,
     activeOverlay = null,
-}: MpaComparePanelProps) {
+}: MapComparePanelProps) {
     const [selA, setSelA] = useState<CompareSelection>({ ...DEFAULT_SELECTION, level: "municipality" });
     const [selB, setSelB] = useState<CompareSelection>({ ...DEFAULT_SELECTION, level: "municipality" });
 
