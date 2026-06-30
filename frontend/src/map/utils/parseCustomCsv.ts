@@ -47,7 +47,8 @@ function seriesKeyFromHeader(header: string): string {
 }
 
 function parseDirectiveLine(line: string): Partial<CsvDirectives> | null {
-    const trimmed = line.replace(/^#\s*/, "").trim();
+    // Strip leading '#' and trailing commas/spaces appended by spreadsheet exports.
+    const trimmed = line.replace(/^#\s*/, "").replace(/[\s,]+$/, "");
     const colonIdx = trimmed.indexOf(":");
     if (colonIdx === -1) return null;
     const key = trimmed.slice(0, colonIdx).trim().toLowerCase();
