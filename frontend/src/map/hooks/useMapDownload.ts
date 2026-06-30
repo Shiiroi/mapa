@@ -1,7 +1,7 @@
 // Download selection state; resolves scope and triggers export.
 
 import { useCallback, useState } from "react";
-import { downloadJsonFile } from "../../../lib/downloadFile";
+import { downloadJsonFile } from "../../lib/downloadFile";
 import type { MapLevel } from "../constants";
 import { buildDownloadGeoJson, type DownloadScope } from "../utils/buildDownloadGeoJson";
 import type { CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";

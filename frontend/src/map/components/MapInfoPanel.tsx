@@ -1,8 +1,8 @@
 // Place detail panel: population, area, density, and downloadable stats (no geometry).
 
 import { useMemo } from "react";
-import { cn } from "../../../lib/cn";
-import { downloadJsonFile, downloadTextFile, slugifyFilename } from "../../../lib/downloadFile";
+import { cn } from "../../lib/cn";
+import { downloadJsonFile, downloadTextFile, slugifyFilename } from "../../lib/downloadFile";
 import { useDivisionStats } from "../hooks/useDivisionStats";
 import {
     changeToneClass,

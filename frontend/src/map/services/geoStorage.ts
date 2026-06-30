@@ -1,6 +1,6 @@
 // Fetches geo JSON from the Supabase Storage geo bucket (CDN).
 
-import { supabase } from "../../../config/supabase";
+import { supabase } from "../../config/supabase";
 import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
 
 const GEO_BUCKET = "geo";

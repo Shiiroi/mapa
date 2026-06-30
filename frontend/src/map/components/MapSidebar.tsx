@@ -1,7 +1,7 @@
 // Sidebar shell: GeoJSON | Info | Compare tabs, attribution footer.
 
 import { useState } from "react";
-import { cn } from "../../../lib/cn";
+import { cn } from "../../lib/cn";
 import type { MapLevel } from "../constants";
 import type { ExportKind } from "../hooks/useMapDownload";
 import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";

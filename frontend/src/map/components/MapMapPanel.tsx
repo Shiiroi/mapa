@@ -4,7 +4,7 @@ import { useMemo, useCallback, useState, useEffect, useRef, type ReactNode } fro
 import { MapContainer, TileLayer, GeoJSON, ZoomControl } from "react-leaflet";
 import L from "leaflet";
 import type { Feature, Geometry } from "geojson";
-import { cn } from "../../../lib/cn";
+import { cn } from "../../lib/cn";
 import type { MapLevel } from "../constants";
 import type { CustomOverlay, SeriesViewState } from "../types";
 import { colorForDensity, densityLegendItems, NO_DATA_COLOR } from "../utils/densityScale";

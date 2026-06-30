@@ -1,7 +1,7 @@
 // Sidebar: scope pickers, download trigger, and attribution. View level is
 // chosen on the map overlay (MapMapPanel).
 
-import { cn } from "../../../lib/cn";
+import { cn } from "../../lib/cn";
 import type { MapLevel } from "../constants";
 import type { ExportKind } from "../hooks/useMapDownload";
 import type { BarangayGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";

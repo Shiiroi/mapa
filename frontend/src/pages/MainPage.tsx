@@ -2,14 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { MapMapPanel } from "../features/map/components/MapMapPanel";
-import { MapSidebar } from "../features/map/components/MapSidebar";
-import { useMapDownload } from "../features/map/hooks/useMapDownload";
-import { useMapLayers } from "../features/map/hooks/useMapLayers";
-import { fetchBarangaysByMunicity } from "../features/map/services/mapApi";
-import type { MapLevel } from "../features/map/constants";
-import type { CustomOverlay, SeriesViewState } from "../features/map/types";
-import { defaultSeriesViewState } from "../features/map/utils/seriesScale";
+import { MapMapPanel } from "../map/components/MapMapPanel";
+import { MapSidebar } from "../map/components/MapSidebar";
+import { useMapDownload } from "../map/hooks/useMapDownload";
+import { useMapLayers } from "../map/hooks/useMapLayers";
+import { fetchBarangaysByMunicity } from "../map/services/mapApi";
+import type { MapLevel } from "../map/constants";
+import type { CustomOverlay, SeriesViewState } from "../map/types";
+import { defaultSeriesViewState } from "../map/utils/seriesScale";
 
 export default function MainPage() {
     const [activeOverlay, setActiveOverlay] = useState<CustomOverlay | null>(null);

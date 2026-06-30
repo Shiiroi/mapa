@@ -1,6 +1,6 @@
 // Public API for map layers; PostgREST fallback for municity metadata only.
 
-import { supabase } from "../../../config/supabase";
+import { supabase } from "../../config/supabase";
 import type { BarangayGeoJSON, CountryGeoJSON, CustomDataset, CustomDatasetValueRow, DivisionStats, ProvinceGeoJSON, MunicityGeoJSON, MunicityMeta, Region } from "../types";
 import {
     fetchBarangaysByMunicityFromStorage,

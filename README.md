@@ -63,7 +63,7 @@ mapa/
 │   │   ├── map-comelec-president.ts # COMELEC scrape → clean election CSVs
 │   │   └── py/scrape_comelec.py     # Download COMELEC 2022 results (optional regen)
 │   └── src/
-│       ├── features/map/            # Map rendering, layers, download UI
+│       ├── map/                     # Map rendering, layers, download UI
 │       └── pages/
 ├── supabase/migrations/             # Schema: regions, provinces, municities, barangays
 ├── DATA_CORRECTIONS.md              # Boundary corrections summary

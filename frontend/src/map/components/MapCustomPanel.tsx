@@ -1,8 +1,8 @@
 // Custom tab: built-in overlay datasets + session-only CSV upload.
 
 import { useEffect, useMemo, useState } from "react";
-import { cn } from "../../../lib/cn";
-import { downloadTextFile } from "../../../lib/downloadFile";
+import { cn } from "../../lib/cn";
+import { downloadTextFile } from "../../lib/downloadFile";
 import type { MapLevel } from "../constants";
 import { SCALE_LEVEL_LABELS } from "../constants";
 import { useCustomDatasetValues, useCustomDatasets } from "../hooks/useCustomDatasets";

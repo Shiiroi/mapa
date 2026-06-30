@@ -2,7 +2,7 @@
 
 import { useMemo, useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { cn } from "../../../lib/cn";
+import { cn } from "../../lib/cn";
 import { useDivisionStats } from "../hooks/useDivisionStats";
 import { fetchBarangaysByMunicity } from "../services/mapApi";
 import type { MapLevel } from "../constants";
