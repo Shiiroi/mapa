@@ -108,13 +108,17 @@ async function main() {
         id: "elections-2022-president",
         title: "2022 presidential results",
         description:
-            "Presidential vote totals by region, province, city/municipality, and barangay from official COMELEC 2022 transparency results. Metro Manila and the Negros Island Region are derived from their cities/municipalities. Barangay coverage grows as more areas are scraped.",
+            "Country-level results match the final Congressional canvass proclamation (53,815,469 total votes). " +
+            "Sub-national results (province, city/municipality, barangay) are from the COMELEC transparency server " +
+            "(98.92% of local ERs received — 105,035 of 106,174 expected). " +
+            "Region totals are derived by summing their constituent municipalities. " +
+            "NCR cities attach directly to the region; NIR is derived from its provinces; HUCs are grouped under their geographical provinces.",
         category: "Elections",
         kind: "series" as const,
         level: "region",
         unit: "votes",
         value_label: null,
-        source_name: "COMELEC 2022 transparency results",
+        source_name: "COMELEC 2022 transparency results + Congressional canvass",
         source_url: "https://2022electionresults.comelec.gov.ph/",
         series,
     };
@@ -146,6 +150,14 @@ async function main() {
 
     // NCR (1300000000) may appear as both region and province in the all CSV; keep one row per PSGC.
     const deduped = [...new Map(values.map((row) => [row.psgc, row])).values()];
+
+    // Revert back to upserting directly without clearing/deleting, supporting incremental/staged runs
+    // console.log(`Clearing existing values for dataset ${DATASET.id}…`);
+    // const { error: delErr } = await supabase
+    //     .from("custom_dataset_values")
+    //     .delete()
+    //     .eq("dataset_id", DATASET.id);
+    // if (delErr) throw new Error(delErr.message);
 
     console.log(`Upserting ${deduped.length} values…`);
     for (const batch of chunks(deduped, 200)) {

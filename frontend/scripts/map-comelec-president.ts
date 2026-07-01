@@ -49,23 +49,6 @@ const CANDIDATE_META: { match: string; display: string; color: string }[] = [
     { match: "MONTEMAYOR", display: "Jose Montemayor", color: "#b15928" },
 ];
 
-// Official national totals (0000000000 country row), hardcoded so the Philippines
-// view always shows the canonical headline numbers instead of a sum of whatever
-// barangays happen to be scraped. Source: COMELEC 2022 transparency results,
-// partial/unofficial as of May 13, 2022 (98.35% of ERs).
-const COUNTRY_TOTALS: Record<string, number> = {
-    "Bongbong Marcos": 31104175,
-    "Leni Robredo": 14822051,
-    "Manny Pacquiao": 3629805,
-    "Isko Moreno": 1900010,
-    "Ping Lacson": 882236,
-    "Faisal Mangondato": 259576,
-    "Ernesto Abella": 113242,
-    "Leody de Guzman": 92070,
-    "Norberto Gonzales": 89097,
-    "Jose Montemayor": 59944,
-};
-
 interface NodeInfo {
     can?: string; // category / level: Country|Region|Province|Municipality|City|Barangay
     rn?: string; // region/name of this node
@@ -276,6 +259,8 @@ const tiers: Record<string, SeriesRow[]> = {
     barangay: [],
 };
 
+const unmatchedMunicipalVotes: Record<string, number>[] = [];
+
 let inspected = 0;
 
 // Recursively walks the scraped result tree, collecting per-city/municipality and
@@ -362,8 +347,14 @@ function walk(
             tier = "citymun";
         }
         if (tier) {
-            if (psgc) tiers[tier].push({ psgc, label, votes: coc });
-            else unmatched.push({ tier, region: nextCtx.region, province: nextCtx.province, name });
+            if (psgc) {
+                tiers[tier].push({ psgc, label, votes: coc });
+            } else {
+                unmatched.push({ tier, region: nextCtx.region, province: nextCtx.province, name });
+                if (tier === "citymun") {
+                    unmatchedMunicipalVotes.push(coc);
+                }
+            }
         }
     }
 
@@ -569,9 +560,22 @@ function main() {
         "region",
     );
 
-    // Whole-country row uses the hardcoded official national totals, not a sum of
-    // the scraped tiers (which are partial until every barangay is scraped).
-    tiers.country = [{ psgc: "0000000000", label: "Philippines", votes: { ...COUNTRY_TOTALS } }];
+    // Use the official Congress Proclamation final canvass counts for the national Country total.
+    // This includes Local Absentee Voting (LAV) and manual OAV results that are not present
+    // in any municipal/precinct transmission files on the COMELEC transparency server.
+    const countryVotes: Record<string, number> = {
+        "Bongbong Marcos": 31629783,
+        "Leni Robredo": 15035773,
+        "Manny Pacquiao": 3663113,
+        "Isko Moreno": 1933909,
+        "Ping Lacson": 892375,
+        "Faisal Mangondato": 301629,
+        "Ernesto Abella": 114627,
+        "Leody de Guzman": 93027,
+        "Norberto Gonzales": 90641,
+        "Jose Montemayor": 60592,
+    };
+    tiers.country = [{ psgc: "0000000000", label: "Philippines", votes: countryVotes }];
 
     const allRows = [...tiers.country, ...tiers.region, ...tiers.province, ...tiers.citymun, ...tiers.barangay];
     const cands = orderedCandidates(allRows);
