@@ -177,6 +177,38 @@ GDP values use PSA constant 2018 prices (real terms), which are appropriate for 
 
 Boundaries are split into per-province and per-municity files with manifest indexes so the app loads only the geometry the current view needs.
 
+## GeoJSON format
+
+All exported files are RFC 7946 GeoJSON `FeatureCollection`s in WGS 84 (EPSG:4326). Each feature carries PSGC-keyed properties (10-digit string `psgc`):
+
+```json
+{
+  "type": "Feature",
+  "properties": {
+    "psgc": "1830200001",
+    "correspondence": "064501001",
+    "name": "Alangilan",
+    "geo_lvl": "Bgy",
+    "city_lvl": null,
+    "municity_psgc": "1830200000",
+    "province_psgc": "1804500000",
+    "region_psgc": "1800000000",
+    "level": "barangay"
+  },
+  "geometry": { "type": "Polygon", "coordinates": [ ... ] }
+}
+```
+
+| Level | `geo_lvl` | Example `psgc` |
+|-------|-----------|----------------|
+| Country | `Country` | `0000000000` |
+| Region | `Reg` | `1300000000` (NCR) |
+| Province | `Prov` | `0128000000` |
+| City/Municipality | `City` / `Mun` | `1830200000` |
+| Barangay | `Bgy` | `1830200001` |
+
+Downloaded files are named `mapa-{level}-{slug}-{date}.json`.
+
 ### 2022 Presidential election data
 
 The repository ships with pre-built election results in `data-sets/data/clean/elections_2022_president_all.csv` and in `data-sets/backup/custom_dataset_values.csv`. Running `pnpm setup` or `pnpm restore` loads these results into the database automatically — **no scraping is required** for a standard deployment.
@@ -225,38 +257,6 @@ pnpm map:comelec && pnpm seed:custom-elections && pnpm db:export
 ```
 
 Region names must match COMELEC's labels (for example `NATIONAL CAPITAL REGION`, not `NCR`).
-
-## GeoJSON format
-
-All exported files are RFC 7946 GeoJSON `FeatureCollection`s in WGS 84 (EPSG:4326). Each feature carries PSGC-keyed properties (10-digit string `psgc`):
-
-```json
-{
-  "type": "Feature",
-  "properties": {
-    "psgc": "1830200001",
-    "correspondence": "064501001",
-    "name": "Alangilan",
-    "geo_lvl": "Bgy",
-    "city_lvl": null,
-    "municity_psgc": "1830200000",
-    "province_psgc": "1804500000",
-    "region_psgc": "1800000000",
-    "level": "barangay"
-  },
-  "geometry": { "type": "Polygon", "coordinates": [ ... ] }
-}
-```
-
-| Level | `geo_lvl` | Example `psgc` |
-|-------|-----------|----------------|
-| Country | `Country` | `0000000000` |
-| Region | `Reg` | `1300000000` (NCR) |
-| Province | `Prov` | `0128000000` |
-| City/Municipality | `City` / `Mun` | `1830200000` |
-| Barangay | `Bgy` | `1830200001` |
-
-Downloaded files are named `mapa-{level}-{slug}-{date}.json`.
 
 ## Data sources & licenses
 

@@ -40,3 +40,5 @@ lerna-debug.log*
 # COMELEC scraper (large, regenerable)
 frontend/scripts/py/data/
 frontend/scripts/py/.venv/
+/.venv
+
