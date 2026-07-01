@@ -1,4 +1,4 @@
-// Public API for map layers; PostgREST fallback for municity metadata only.
+// Public API for map layers with a PostgREST fallback for municipality metadata only
 
 import { supabase } from "../../config/supabase";
 import type { BarangayGeoJSON, CountryGeoJSON, CustomDataset, CustomDatasetValueRow, DivisionStats, ProvinceGeoJSON, MunicityGeoJSON, MunicityMeta, Region } from "../types";
@@ -12,17 +12,17 @@ import {
     fetchRegionsFromStorage,
 } from "./geoStorage";
 
-// All regions with geometry from storage.
+// Gets all regions with their shapes from storage
 export async function fetchRegions(): Promise<Region[]> {
     return fetchRegionsFromStorage();
 }
 
-// All provinces with geometry from storage.
+// Gets all provinces with their shapes from storage
 export async function fetchProvinces(): Promise<ProvinceGeoJSON[]> {
     return fetchProvincesFromStorage();
 }
 
-// Municity metadata (no geometry); falls back to PostgREST if storage is unavailable.
+// Gets municipality metadata without shapes, falls back to PostgREST if storage is down
 export async function fetchMunicitiesMeta(): Promise<MunicityMeta[]> {
     try {
         return await fetchMunicitiesMetaFromStorage();
@@ -32,7 +32,7 @@ export async function fetchMunicitiesMeta(): Promise<MunicityMeta[]> {
     }
 }
 
-// PostgREST fallback for municity metadata when Storage fetch fails.
+// Database query fallback for municipality metadata
 async function fetchMunicitiesMetaFromDb(): Promise<MunicityMeta[]> {
     const { data, error } = await supabase
         .from("municities")
@@ -43,20 +43,20 @@ async function fetchMunicitiesMetaFromDb(): Promise<MunicityMeta[]> {
     return (data ?? []) as MunicityMeta[];
 }
 
-// All municities with full geometry (loaded per-province and flattened).
+// Gets all municipality geometries by fetching each province file and flattening them
 export async function fetchMunicitiesGeometry(): Promise<MunicityGeoJSON[]> {
     const all = await fetchMunicitiesGeometryFromStorage();
     console.info(`[fetchMunicitiesGeometry] Loaded ${all.length} municities with geometry`);
     return all;
 }
 
-// Provinces belonging to a single region.
+// Filters loaded provinces to return only those belonging to a specific region
 export async function fetchProvincesByRegion(regionPsgc: string): Promise<ProvinceGeoJSON[]> {
     const provinces = await fetchProvincesFromStorage();
     return provinces.filter((p) => p.region_psgc === regionPsgc);
 }
 
-// Municities with geometry for a single province (per-province storage file).
+// Fetches municipality geometries for a single province on demand
 export async function fetchMunicitiesByProvince(provincePsgc: string): Promise<MunicityGeoJSON[]> {
     return fetchGeoLayerFromStorage<MunicityGeoJSON[]>(
         `municities/province-${provincePsgc}.json`,
@@ -64,24 +64,24 @@ export async function fetchMunicitiesByProvince(provincePsgc: string): Promise<M
     );
 }
 
-// National boundary with geometry.
+// Gets the national boundary shape from storage
 export async function fetchCountry(): Promise<CountryGeoJSON> {
     return fetchCountryFromStorage();
 }
 
-// Barangays with geometry for a single municity.
+// Fetches barangays with shapes for a specific municipality
 export async function fetchBarangaysByMunicity(municityPsgc: string): Promise<BarangayGeoJSON[]> {
     return fetchBarangaysByMunicityFromStorage(municityPsgc);
 }
 
-// Single division_stats row for a place, or null if none exists.
+// Retrieves stats like population and GDP for a single place from division_stats
 export async function fetchStatsByPsgc(psgc: string): Promise<DivisionStats | null> {
     const { data, error } = await supabase.from("division_stats").select("*").eq("psgc", psgc).maybeSingle();
     if (error) throw error;
     return (data as DivisionStats | null) ?? null;
 }
 
-// All user-facing custom dataset definitions (no values), ordered for the picker.
+// Loads definitions for all custom overlays ordered by category and title
 export async function fetchCustomDatasets(): Promise<CustomDataset[]> {
     const { data, error } = await supabase
         .from("custom_datasets")
@@ -92,7 +92,7 @@ export async function fetchCustomDatasets(): Promise<CustomDataset[]> {
     return (data ?? []) as CustomDataset[];
 }
 
-// All per-PSGC values for a dataset, paginated past PostgREST's 1k row cap.
+// Recursively fetches all data points for a dataset, bypasses the 1k row limit
 export async function fetchCustomDatasetValues(datasetId: string): Promise<CustomDatasetValueRow[]> {
     const pageSize = 1000;
     let from = 0;

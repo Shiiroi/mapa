@@ -5,7 +5,7 @@ import { fetchCountry, fetchProvinces, fetchMunicitiesMeta, fetchMunicitiesGeome
 import type { CountryGeoJSON, ProvinceGeoJSON, MunicityGeoJSON, MunicityMeta, Region } from "../types";
 
 interface UseMapLayersOptions {
-    /** When true, loads all municity geometries (heavy; only needed for city/mun map view). */
+    // When true, loads all municipality geometries (heavy, only needed for city or municipality views)
     loadMunicitiesGeometry?: boolean;
 }
 
@@ -15,9 +15,9 @@ interface UseMapLayersReturn {
     municityMeta: MunicityMeta[];
     regions: Region[];
     country: CountryGeoJSON | null;
-    /** True while core layers needed for country/region/province views are loading. */
+    // True while core layers needed for country, region, and province views are loading
     loading: boolean;
-    /** True while municity geometries are still loading (city/mun view only). */
+    // True while municipality geometries are still loading (city/municipality view only)
     municitiesLoading: boolean;
     error: Error | null;
 }

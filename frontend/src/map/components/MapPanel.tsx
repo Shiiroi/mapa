@@ -85,7 +85,7 @@ interface MapPanelProps {
     mode: MapLevel;
     onFeatureClick?: (entityPsgc: string, mode: MapLevel) => void;
     onLevelChange?: (level: MapLevel) => void;
-    /** Barangay view is only selectable once a municipality is chosen. */
+    // Barangay view is only selectable once a municipality is chosen
     barangayAvailable?: boolean;
     loading?: boolean;
     error?: Error | null;

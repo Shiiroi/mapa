@@ -1,12 +1,11 @@
 // Split-layout shell: map panel and download sidebar.
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { MapPanel } from "../map/components/MapPanel";
 import { Sidebar } from "../map/components/Sidebar";
+import { useBarangays } from "../map/hooks/useBarangays";
 import { useMapDownload } from "../map/hooks/useMapDownload";
 import { useMapLayers } from "../map/hooks/useMapLayers";
-import { fetchBarangaysByMunicity } from "../map/services/mapApi";
 import type { MapLevel } from "../map/constants";
 import type { CustomOverlay, SeriesViewState } from "../map/types";
 import { defaultSeriesViewState } from "../map/utils/seriesScale";
@@ -64,12 +63,10 @@ export default function MainPage() {
         [regions, provinces, municityMeta],
     );
 
-    const barangaysQuery = useQuery({
-        queryKey: ["barangays", download.selectedMunicityPsgc],
-        queryFn: () => fetchBarangaysByMunicity(download.selectedMunicityPsgc!),
-        enabled: download.level === "barangay" && !!download.selectedMunicityPsgc,
-        staleTime: 10 * 60 * 1000,
-    });
+    const barangaysQuery = useBarangays(
+        download.selectedMunicityPsgc,
+        download.level === "barangay",
+    );
 
     const barangays = barangaysQuery.data ?? [];
     const mapLoading =

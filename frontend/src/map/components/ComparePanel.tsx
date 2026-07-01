@@ -41,11 +41,11 @@ interface ComparePanelProps {
     provinces: ProvinceGeoJSON[];
     municities: MunicityGeoJSON[];
     municityMeta: MunicityMeta[];
-    /** Snapshot of the place currently selected on the map (null if none). */
+    // Snapshot of the place currently selected on the map (null if none)
     currentSelection: CompareSelection | null;
-    /** Name of the currently selected place, for the button label. */
+    // Name of the currently selected place for the button label
     currentSelectionName: string | null;
-    /** Active custom overlay from the Custom tab (null if none). */
+    // Active custom overlay from the Custom tab (null if none)
     activeOverlay?: CustomOverlay | null;
 }
 
