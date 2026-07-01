@@ -76,7 +76,7 @@ export interface MapEntity {
     assets_2024?: number | null;
 }
 
-interface MapMapPanelProps {
+interface MapPanelProps {
     country?: MapEntity | null;
     provinces?: MapEntity[];
     regions?: MapEntity[];
@@ -171,7 +171,7 @@ function featureStyle(
     };
 }
 
-export function MapMapPanel({
+export function MapPanel({
     country = null,
     provinces = [],
     regions = [],
@@ -185,7 +185,7 @@ export function MapMapPanel({
     error,
     overlay = null,
     overlayView = { mode: "lead" },
-}: MapMapPanelProps) {
+}: MapPanelProps) {
     const [userDisplayMode, setUserDisplayMode] = useState<DisplayMode>("outline");
     const [fillOpacity, setFillOpacity] = useState(0.7);
     const [controlsCollapsed, setControlsCollapsed] = useState(false);

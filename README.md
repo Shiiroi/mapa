@@ -177,21 +177,50 @@ GDP values use PSA constant 2018 prices (real terms), which are appropriate for 
 
 Boundaries are split into per-province and per-municity files with manifest indexes so the app loads only the geometry the current view needs.
 
-### Incremental barangay election results
+### 2022 Presidential election data
 
-Barangay geometry metadata is seeded once via `seed:bgy` (included in `setup` and `restore`). Barangay election rows grow as you scrape COMELEC. The scraper is resumable, so you can stage the crawl by region and re-seed after each stage. All seed and restore commands are upserts and never wipe the database.
+The repository ships with pre-built election results in `data-sets/data/clean/elections_2022_president_all.csv` and in `data-sets/backup/custom_dataset_values.csv`. Running `pnpm setup` or `pnpm restore` loads these results into the database automatically — **no scraping is required** for a standard deployment.
+
+The national (country-level) total is hardcoded to the official Congressional canvass proclamation (53,815,469 votes across 10 candidates), providing a **100% exact match** to the certified results. Sub-national rows (region, province, city/municipality, barangay) are aggregated from municipal Certificates of Canvass (COCs) scraped from the COMELEC transparency server. Province and region totals are derived by summing their constituent cities/municipalities, which correctly groups Highly Urbanized Cities (HUCs) under their geographical provinces and routes the Negros provinces to the Negros Island Region (NIR). See `DATA_CORRECTIONS.md` for full details.
+
+All seed commands, including `seed:custom-elections`, are upserts and never wipe the database. Re-running the seeder after a fresh scrape merges new data (e.g. additional barangays) with existing rows.
+
+#### Regenerating from scratch (optional)
+
+If you want to re-scrape and rebuild the election data yourself, use the pipeline below. Python 3.11+ and the scraper virtualenv are required (see Prerequisites).
+
+##### 1. Fast Scrape (Regions, Provinces, Cities/Municipalities only)
+By default, the scraper runs to the city/municipality tier (`--max-rank citymun`). This is a **fast crawl** taking only a few minutes. Because municipality COCs contain the fully aggregated votes of all underlying barangays, this is all that is required to generate 100% complete presidential maps for region, province, and city/municipality levels:
 
 ```bash
 cd frontend
 
-# One region at a time (COMELEC region label; resumable)
-pnpm scrape:comelec -- --max-rank barangay --only-region "NATIONAL CAPITAL REGION"
+# Scrape down to city/municipality COCs (fast crawl)
+pnpm scrape:comelec
 pnpm map:comelec
 pnpm seed:custom-elections
-pnpm db:export        # refresh the committed backup snapshot
+pnpm db:export                 # refresh committed database backup snapshot
+```
 
-# Or the whole country in one crawl
+##### 2. Heavy Scrape (Barangays & Precincts)
+If you need detailed spatial shading inside the **Barangay** view tier, execute the heavy scraper with `--max-rank barangay`. This crawls all individual clustered-precinct JSON files, taking several hours and requiring ~3.3GB of space:
+
+```bash
+cd frontend
+
+# Scrape all the way down to precinct results (heavy crawl)
 pnpm scrape:comelec -- --max-rank barangay
+pnpm map:comelec && pnpm seed:custom-elections && pnpm db:export
+```
+
+##### 3. Staged Scrape by Region
+Because the scraper is **resumable** (it automatically skips files already present on disk), you can stage the heavy barangay crawl one region at a time:
+
+```bash
+cd frontend
+
+# Crawl NCR barangays only
+pnpm scrape:comelec -- --max-rank barangay --only-region "NATIONAL CAPITAL REGION"
 pnpm map:comelec && pnpm seed:custom-elections && pnpm db:export
 ```
 

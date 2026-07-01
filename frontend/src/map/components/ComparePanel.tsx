@@ -35,7 +35,7 @@ const DEFAULT_SELECTION: CompareSelection = {
     barangayPsgc: null,
 };
 
-interface MapComparePanelProps {
+interface ComparePanelProps {
     country: CountryGeoJSON | null;
     regions: Region[];
     provinces: ProvinceGeoJSON[];
@@ -55,7 +55,7 @@ function emptySelection(level: MapLevel): CompareSelection {
 
 function resolveComparePlace(
     sel: CompareSelection,
-    ctx: Omit<MapComparePanelProps, "currentSelection" | "currentSelectionName"> & {
+    ctx: Omit<ComparePanelProps, "currentSelection" | "currentSelectionName"> & {
         barangays: BarangayGeoJSON[];
     },
 ): ResolvedPlace | null {
@@ -260,7 +260,7 @@ function formatDensityPerKm2(n: number | null): string {
     return `${formatDensity(n)}/km²`;
 }
 
-export function MapComparePanel({
+export function ComparePanel({
     country,
     regions,
     provinces,
@@ -269,7 +269,7 @@ export function MapComparePanel({
     currentSelection,
     currentSelectionName,
     activeOverlay = null,
-}: MapComparePanelProps) {
+}: ComparePanelProps) {
     const [selA, setSelA] = useState<CompareSelection>({ ...DEFAULT_SELECTION, level: "municipality" });
     const [selB, setSelB] = useState<CompareSelection>({ ...DEFAULT_SELECTION, level: "municipality" });
 

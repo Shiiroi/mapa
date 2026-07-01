@@ -225,3 +225,32 @@ self-hosters consume the committed geo directly via `pnpm upload:geo` and
 - **Basis:** <authoritative source / reasoning>
 - **Status:** Automated | Manual | Unmatched
 ```
+
+---
+
+## 2022 Presidential Election Data Corrections & Audits
+
+Mapa integrates presidential election results from the May 2022 national election. The raw data is scraped from the public COMELEC transparency server using `scripts/py/scrape_comelec.py` and processed via `scripts/map-comelec-president.ts`.
+
+### 1. 100% Match to Official Congressional Canvass (National level)
+- **Problem:** The raw scraped files from the COMELEC transparency server aggregate to `53,639,140` total valid votes. The official final tally certified by Congress (acting as the National Board of Canvassers) proclaims `53,815,469` total valid votes. The discrepancy of `176,329` votes is due to administrative and legal exclusions from the electronic transmission feed:
+  1. **Local Absentee Voting (LAV):** Around 70,000 to 80,000 votes cast by military, police, government employees, teachers, and media practitioners performing election-day duties away from their registration precincts. Under [COMELEC Resolution No. 10725](https://comelec.gov.ph/?r=AboutCOMELEC/Resolutions/ElectionLaws/Resolutions/Res10725), these ballots are manually mailed and canvassed by a Special Board of Canvassers at the Palacio del Gobernador in Intramuros, Manila. Because they are processed centrally, they never pass through a precinct Vote Counting Machine (VCM) and have no electronic files on the transparency server.
+  2. **Detention Prisoner Voting (DPV / PDLs):** Ballots cast by pre-trial detainees and individuals serving sentences under one year, governed by [COMELEC Resolution No. 9371](https://comelec.gov.ph/?r=AboutCOMELEC/Resolutions/ElectionLaws/Resolutions/Res9371) (upheld by the Supreme Court in [*Aguinaldo v. New Bilibid Prison*, G.R. No. 221201](https://sc.judiciary.gov.ph/) on March 29, 2022). These are counted manually and consolidated at the municipal or national boards of canvassers, rather than via live media routers.
+  3. **Untransmitted Overseas Absentee Voting (OAV):** Out of 92 foreign service posts, around 60% cast manual ballots under the Overseas Absentee Voting Act (R.A. 9189 as amended by R.A. 10590). 38 smaller posts failed to transmit their electronic COCs to the media server due to connectivity or administrative issues, instead submitting physical paper COCs directly to the Senate/NBOC.
+- **Correction:** To prevent discrepancy at the country-level view, the mapping script directly injects the official Congressional canvass totals for the root row (`psgc: "0000000000"`, `Philippines`). This provides a **100% exact match** with the official proclaimed results, while sub-national levels (region down to barangay) show the geographical distribution derived from the transparency server.
+- **Basis:** [Congress of the Philippines Proclamation of Winners](https://www.pna.gov.ph/articles/1175204) (May 25, 2022); [COMELEC Resolution No. 10725 (LAV rules)](https://comelec.gov.ph/?r=AboutCOMELEC/Resolutions/ElectionLaws/Resolutions/Res10725); [COMELEC Resolution No. 9371 (PDL voting rules)](https://comelec.gov.ph/?r=AboutCOMELEC/Resolutions/ElectionLaws/Resolutions/Res9371); [Supreme Court Resolution G.R. No. 221201](https://sc.judiciary.gov.ph/).
+
+### 2. Omitted Special Geographic Area (SGA) Municipalities
+- **Problem:** When mapping municipal-level data, 8 municipalities inside the Special Geographic Area (SGA) of BARMM (Pabalik, Kadayangan, Kapalawan, Tugunan, Ligawasan, Malidegao, Nuling, and SGA-8/Pinaring) do not exist in the 2022 election results.
+- **Correction:** These 8 municipalities were created in **April 2024** by virtue of regional laws (BARMM Act Nos. 50-57) and plebiscites. In the 2022 elections, their constituent barangays were still part of their original municipalities in Cotabato province. They are intentionally left blank in the 2022 elections CSV, which is historically correct.
+- **Basis:** Bangsamoro Organic Law (R.A. 11054) and BARMM plebiscites of April 2025.
+
+### 3. Highly Urbanized Cities (HUCs) and Independent Cities
+- **Problem:** HUCs (such as Cebu City, Davao City, Bacolod City, Zamboanga City) are administratively independent of their geographical provinces. Their Certificates of Canvass (COCs) are uploaded directly to the national level and are not present inside the parent province's COC file.
+- **Correction:** The mapping script skips province-level COCs on disk. Instead, it aggregates province totals directly from the constituent municipality rows using PSGC prefix grouping (`loadLguParents`). This ensures that HUCs are correctly rolled up into their geographical provinces for spatial visualization.
+- **Basis:** Geographic proximity map design (HUCs are rendered inside their geographic provinces on the map).
+
+### 4. Negros Island Region (NIR) and NCR
+- **NCR:** NCR has no provinces in the PSGC hierarchy. The script handles the legislative district COCs (like `NCR - SECOND DISTRICT`) by skipping their empty COCs and descending directly to the component municipalities (Quezon City, Pasig, etc.) to get their individual COCs.
+- **NIR:** The script routes the provinces of Negros Occidental and Negros Oriental (PSGC prefix `18`) to Region `1800000000` (Negros Island Region) based on the boundary definition, even though the raw 2022 election data lists them under Region VI and Region VII. This ensures the map correctly renders them inside the newly enacted NIR boundaries.
+

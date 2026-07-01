@@ -6,15 +6,15 @@ import type { MapLevel } from "../constants";
 import type { ExportKind } from "../hooks/useMapDownload";
 import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
 import { resolveSelectedPlace } from "../utils/resolvePlace";
-import { MapComparePanel, type CompareSelection } from "./MapComparePanel";
-import { MapCustomPanel } from "./MapCustomPanel";
-import { MapDownloadPanel } from "./MapDownloadPanel";
-import { MapInfoPanel } from "./MapInfoPanel";
+import { ComparePanel, type CompareSelection } from "./ComparePanel";
+import { CustomPanel } from "./CustomPanel";
+import { DownloadPanel } from "./DownloadPanel";
+import { InfoPanel } from "./InfoPanel";
 import type { CustomOverlay, SeriesViewState } from "../types";
 
 export type SidebarTab = "geojson" | "info" | "compare" | "custom";
 
-interface MapSidebarProps {
+interface SidebarProps {
     level: MapLevel;
     regions: Region[];
     provinces: ProvinceGeoJSON[];
@@ -56,7 +56,7 @@ const TABS: { id: SidebarTab; label: string }[] = [
     { id: "custom", label: "Custom" },
 ];
 
-export function MapSidebar(props: MapSidebarProps) {
+export function Sidebar(props: SidebarProps) {
     const [tab, setTab] = useState<SidebarTab>("geojson");
 
     const selectedPlace = resolveSelectedPlace({
@@ -121,7 +121,7 @@ export function MapSidebar(props: MapSidebarProps) {
 
             <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
                 {tab === "geojson" && (
-                    <MapDownloadPanel
+                    <DownloadPanel
                         level={props.level}
                         regions={props.regions}
                         provinces={props.provinces}
@@ -150,13 +150,13 @@ export function MapSidebar(props: MapSidebarProps) {
 
                 {tab === "info" && (
                     <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 lg:px-5 lg:py-5">
-                        <MapInfoPanel place={selectedPlace} />
+                        <InfoPanel place={selectedPlace} />
                     </div>
                 )}
 
                 {tab === "compare" && (
                     <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 lg:px-5 lg:py-5">
-                        <MapComparePanel
+                        <ComparePanel
                             country={props.country}
                             regions={props.regions}
                             provinces={props.provinces}
@@ -171,7 +171,7 @@ export function MapSidebar(props: MapSidebarProps) {
 
                 {tab === "custom" && (
                     <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 lg:px-5 lg:py-5">
-                        <MapCustomPanel
+                        <CustomPanel
                             mapLevel={props.level}
                             activeOverlay={props.activeOverlay}
                             onOverlayChange={props.onOverlayChange}

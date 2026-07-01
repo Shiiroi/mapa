@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { MapMapPanel } from "../map/components/MapMapPanel";
-import { MapSidebar } from "../map/components/MapSidebar";
+import { MapPanel } from "../map/components/MapPanel";
+import { Sidebar } from "../map/components/Sidebar";
 import { useMapDownload } from "../map/hooks/useMapDownload";
 import { useMapLayers } from "../map/hooks/useMapLayers";
 import { fetchBarangaysByMunicity } from "../map/services/mapApi";
@@ -87,7 +87,7 @@ export default function MainPage() {
     return (
         <div className="flex h-dvh flex-col overflow-hidden lg:grid lg:grid-cols-2">
             <div className="h-[min(52dvh,28rem)] shrink-0 lg:h-full lg:min-h-0">
-                <MapMapPanel
+                <MapPanel
                     country={country}
                     provinces={provinces}
                     regions={regions}
@@ -104,7 +104,7 @@ export default function MainPage() {
                 />
             </div>
             <div className="min-h-0 flex-1 overflow-hidden border-t border-border-light lg:border-t-0">
-                <MapSidebar
+                <Sidebar
                     level={download.level}
                     regions={regions}
                     provinces={provinces}

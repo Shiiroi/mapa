@@ -22,7 +22,7 @@ import { mergePlaceStats } from "../utils/mergePlaceStats";
 import type { AgeSexBand } from "../types";
 import type { ResolvedPlace } from "../utils/resolvePlace";
 
-interface MapInfoPanelProps {
+interface InfoPanelProps {
     place: ResolvedPlace | null;
 }
 
@@ -290,7 +290,7 @@ function StatCard({
     );
 }
 
-export function MapInfoPanel({ place }: MapInfoPanelProps) {
+export function InfoPanel({ place }: InfoPanelProps) {
     const statsQuery = useDivisionStats(place?.psgc ?? null);
     const displayPlace = useMemo(
         () => (place ? mergePlaceStats(place, statsQuery.data) : null),

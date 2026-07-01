@@ -25,7 +25,7 @@ import {
     seriesTotal,
 } from "../utils/seriesScale";
 
-interface MapCustomPanelProps {
+interface CustomPanelProps {
     mapLevel: MapLevel;
     activeOverlay: CustomOverlay | null;
     onOverlayChange: (overlay: CustomOverlay | null) => void;
@@ -96,7 +96,7 @@ function DatasetToggle({
     );
 }
 
-export function MapCustomPanel({
+export function CustomPanel({
     mapLevel,
     activeOverlay,
     onOverlayChange,
@@ -106,7 +106,7 @@ export function MapCustomPanel({
     knownPsgcs,
     psgcLevels,
     psgcLevelsByTier,
-}: MapCustomPanelProps) {
+}: CustomPanelProps) {
     const datasetsQuery = useCustomDatasets();
     const [selectedDatasetId, setSelectedDatasetId] = useState<string | null>(null);
     const [uploadError, setUploadError] = useState<string | null>(null);

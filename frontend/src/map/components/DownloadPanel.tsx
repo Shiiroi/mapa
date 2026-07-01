@@ -1,12 +1,12 @@
 // Sidebar: scope pickers, download trigger, and attribution. View level is
-// chosen on the map overlay (MapMapPanel).
+// chosen on the map overlay (MapPanel).
 
 import { cn } from "../../lib/cn";
 import type { MapLevel } from "../constants";
 import type { ExportKind } from "../hooks/useMapDownload";
 import type { BarangayGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
 
-interface MapDownloadPanelProps {
+interface DownloadPanelProps {
     level: MapLevel;
     regions: Region[];
     provinces: ProvinceGeoJSON[];
@@ -50,7 +50,7 @@ const EXPORT_OPTIONS: Partial<Record<MapLevel, { kind: ExportKind; label: string
     ],
 };
 
-export function MapDownloadPanel({
+export function DownloadPanel({
     level,
     regions,
     provinces,
@@ -74,7 +74,7 @@ export function MapDownloadPanel({
     onDownload,
     downloading,
     error,
-}: MapDownloadPanelProps) {
+}: DownloadPanelProps) {
     const filteredProvinces = regionFilterPsgc
         ? provinces.filter((p) => p.region_psgc === regionFilterPsgc)
         : provinces;
