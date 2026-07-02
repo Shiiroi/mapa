@@ -17,13 +17,7 @@ interface UseStateToUrlSyncOptions {
     level: "country" | "region" | "province" | "municipality" | "barangay";
 }
 
-export function useStateToUrlSync({
-    regions,
-    provinces,
-    selectedRegionPsgc,
-    selectedProvincePsgc,
-    level,
-}: UseStateToUrlSyncOptions) {
+export function useStateToUrlSync({ regions, provinces, selectedRegionPsgc, selectedProvincePsgc, level }: UseStateToUrlSyncOptions) {
     const navigate = useNavigate();
     const lastNavigatedPathRef = useRef<string>("");
 

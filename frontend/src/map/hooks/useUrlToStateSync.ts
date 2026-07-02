@@ -18,13 +18,7 @@ interface UseUrlToStateSyncOptions {
     onSetLevel: (level: MapLevel) => void;
 }
 
-export function useUrlToStateSync({
-    regions,
-    provinces,
-    onSetRegion,
-    onSetProvince,
-    onSetLevel,
-}: UseUrlToStateSyncOptions) {
+export function useUrlToStateSync({ regions, provinces, onSetRegion, onSetProvince, onSetLevel }: UseUrlToStateSyncOptions) {
     const location = useLocation();
     const navigate = useNavigate();
     const lastSyncedPathRef = useRef<string>("");
