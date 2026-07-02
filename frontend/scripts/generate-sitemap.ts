@@ -6,6 +6,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const BASE_URL = "https://mapa.shhiroi.me";
 
+const LASTMOD = new Date().toISOString().slice(0, 10);
+
 function slugify(name: string) {
     return (
         name
@@ -60,9 +62,25 @@ async function build() {
 
     const items = Array.from(urls).sort();
 
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${items
-        .map((u) => `  <url>\n    <loc>${u}</loc>\n  </url>`)
-        .join("\n")}\n</urlset>\n`;
+    const xmlEntries = items
+        .map((url) => {
+            const pathName = new URL(url).pathname;
+            const isHomePage = pathName === "/";
+            const changefreq = isHomePage ? "weekly" : "monthly";
+            const priority = isHomePage ? "1.0" : "0.8";
+
+            return [
+                "  <url>",
+                `    <loc>${url}</loc>`,
+                `    <lastmod>${LASTMOD}</lastmod>`,
+                `    <changefreq>${changefreq}</changefreq>`,
+                `    <priority>${priority}</priority>`,
+                "  </url>",
+            ].join("\n");
+        })
+        .join("\n");
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${xmlEntries}\n</urlset>\n`;
 
     const outPath = path.resolve(__dirname, "../public/sitemap.xml");
     await fs.writeFile(outPath, xml, "utf8");
