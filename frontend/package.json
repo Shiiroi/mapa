@@ -13,6 +13,8 @@
         "seed:custom-elections": "tsx --env-file=.env scripts/seed-custom-elections.ts",
         "seed:afr": "tsx --env-file=.env scripts/seed-afr-assets.ts",
         "convert:pop": "scripts/py/.venv/bin/python scripts/py/convert_population.py",
+        "convert:area": "scripts/py/.venv/bin/python scripts/py/extract_area.py",
+        "enrich:area": "tsx scripts/enrich-geo-area.ts",
         "seed:pop": "tsx --env-file=.env scripts/seed-pop.ts",
         "seed:agesex": "tsx --env-file=.env scripts/seed-agesex.ts",
         "seed:gdp": "tsx --env-file=.env scripts/seed-gdp.ts",

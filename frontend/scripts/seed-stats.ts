@@ -4,7 +4,8 @@ import { createClient } from "@supabase/supabase-js";
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
-import type { DivisionStatsFields } from "./lib/stats.js";
+import { type DivisionStatsFields, geoAreaKm2 } from "./lib/stats.js";
+import type { Geometry } from "geojson";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const GEO_DIR = path.join(__dirname, "../data-sets/geo");
@@ -22,6 +23,12 @@ if (!supabaseUrl || !serviceKey) {
 const supabase = createClient(supabaseUrl, serviceKey);
 
 type StatsRow = DivisionStatsFields & { psgc: string; geo_lvl?: string };
+
+// Load PDF land area mappings
+const PDF_LAND_AREA_JSON = path.join(__dirname, "../data-sets/data/clean/pdf_land_area.json");
+const pdfLandArea = fs.existsSync(PDF_LAND_AREA_JSON)
+    ? (JSON.parse(fs.readFileSync(PDF_LAND_AREA_JSON, "utf8")) as Record<string, number>)
+    : {};
 
 // Maps a geo_lvl code (Reg, Prov, City…) to the division_stats level string.
 function levelFromGeoLvl(geoLvl: string | undefined): string {
@@ -48,10 +55,23 @@ function levelFromGeoLvl(geoLvl: string | undefined): string {
 // area_km2 come from geo; population (and the derived density_2024 /
 // pct_change_2020_2024) are owned by seed-pop from the census CSV.
 function toDbRow(row: StatsRow): Record<string, unknown> {
+    const psgc = row.psgc;
+    
+    let area = pdfLandArea[psgc];
+    if (area === undefined || area === null || area <= 0) {
+        // Fall back to computing geodesic area from geometry
+        const computedArea = geoAreaKm2((row as unknown as { geometry: Geometry }).geometry);
+        if (computedArea != null && computedArea > 0) {
+            area = computedArea;
+        } else {
+            area = row.area_km2 ?? 0;
+        }
+    }
+
     return {
-        psgc: row.psgc,
+        psgc,
         level: levelFromGeoLvl(row.geo_lvl),
-        area_km2: row.area_km2,
+        area_km2: area > 0 ? area : null,
     };
 }
 

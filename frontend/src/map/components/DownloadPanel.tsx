@@ -225,43 +225,7 @@ export function DownloadPanel({
                 </button>
             </div>
 
-            <footer className="space-y-3 border-t border-border-light px-5 py-4 text-xs leading-relaxed text-muted">
-                <div>
-                    <p className="font-medium text-primary">Attribution</p>
-                    <p>
-                        Boundaries:{" "}
-                        <a
-                            href="https://github.com/altcoder/philippines-psgc-shapefiles"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-accent underline"
-                        >
-                            philippines-psgc-shapefiles
-                        </a>{" "}
-                        and{" "}
-                        <a
-                            href="https://github.com/faeldon/philippines-json-maps"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-accent underline"
-                        >
-                            philippines-json-maps
-                        </a>{" "}
-                        © James Faeldon, MIT
-                    </p>
-                    <p>
-                        PSGC codes/names:{" "}
-                        <a
-                            href="https://psa.gov.ph/classification/psgc/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-accent underline"
-                        >
-                            Philippine Statistics Authority
-                        </a>
-                    </p>
-                </div>
-            </footer>
+
         </div>
     );
 }

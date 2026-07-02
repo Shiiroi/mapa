@@ -425,7 +425,13 @@ export function InfoPanel({ place }: InfoPanelProps) {
                 <StatCard
                     label="Area (km²)"
                     value={formatAreaKm2(displayPlace.area_km2)}
-                    sub={displayPlace.area_km2 != null ? "Estimated from boundary polygon" : "No boundary loaded"}
+                    sub={
+                        displayPlace.area_km2 == null
+                            ? "No boundary loaded"
+                            : displayPlace.level === "barangay"
+                            ? "Estimated from boundary polygon"
+                            : "Official statutory area (PSA)"
+                    }
                 />
                 <StatCard
                     label="Total assets [2024]"
@@ -439,10 +445,11 @@ export function InfoPanel({ place }: InfoPanelProps) {
                 />
             </div>
 
-            <p className="text-xs text-muted">
-                Area is computed from the boundary geometry (geodesic), not an official figure, so
-                it is approximate; density is derived from it.
-            </p>
+            {displayPlace.level === "barangay" && (
+                <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-2">
+                    ⚠️ Note: Barangay land area and population density metrics are computationally derived geographic approximations by Mapa. Official PSA Table A statutory breakdowns are unavailable at this resolution.
+                </p>
+            )}
 
             {(displayPlace.pop_2010 != null ||
                 displayPlace.pop_2015 != null ||

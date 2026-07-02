@@ -236,7 +236,18 @@ export function attachStats<T extends { psgc: string; correspondence?: string | 
     const correspondence = row.correspondence ?? popRow?.correspondence ?? null;
     const hist = resolveHistoricalPop(psgc, correspondence, ctx.histByPsgc, ctx.histByCorrespondence);
     const pop_2024 = popRow?.pop_2024 ?? null;
+    
+    // Old geometry-based area and density calculation logic (commented out for backward compatibility):
+    /*
     const area_km2 = existingArea ?? geoAreaKm2(row.geometry as Geometry | undefined);
+    const density_2024 = computeDensity(pop_2024, area_km2);
+    */
+
+    // Active calculations: PDF-derived area is loaded from the files enriched by enrich-geo-area.ts.
+    // If not present in JSON/existingArea, it falls back to geometry-derived area.
+    const area_km2 = existingArea ?? geoAreaKm2(row.geometry as Geometry | undefined);
+    const density_2024 = computeDensity(pop_2024, area_km2);
+
     const gdpRow = ctx.gdpByPsgc.get(psgc);
     const ageSexRow = ctx.ageSexByPsgc.get(psgc);
     return {
@@ -249,7 +260,7 @@ export function attachStats<T extends { psgc: string; correspondence?: string | 
         pop_female_2020: ageSexRow?.pop_female_2020 ?? null,
         age_sex_2020: (ageSexRow?.age_sex_2020 as { age: string; both: number; male: number; female: number }[] | null) ?? null,
         area_km2,
-        density_2024: computeDensity(pop_2024, area_km2),
+        density_2024,
         pct_change_2020_2024: computePctChange(hist.pop_2020, pop_2024),
         assets_2024: ctx.assetsByPsgc.get(psgc) ?? null,
         gdp_2022: gdpRow?.gdp_2022 ?? null,

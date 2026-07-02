@@ -35,6 +35,7 @@ interface CustomPanelProps {
     knownPsgcs: Set<string>;
     psgcLevels: ReadonlyMap<string, MapLevel>;
     psgcLevelsByTier: Partial<Record<MapLevel, ReadonlySet<string>>>;
+    onOpenNotesModal: () => void;
 }
 
 const SERIES_MODES: { mode: SeriesViewMode; label: string; minSeries: number }[] = [
@@ -106,11 +107,13 @@ export function CustomPanel({
     knownPsgcs,
     psgcLevels,
     psgcLevelsByTier,
+    onOpenNotesModal,
 }: CustomPanelProps) {
     const datasetsQuery = useCustomDatasets();
     const [selectedDatasetId, setSelectedDatasetId] = useState<string | null>(null);
     const [uploadError, setUploadError] = useState<string | null>(null);
     const [uploadTitle, setUploadTitle] = useState("");
+    const [isDragging, setIsDragging] = useState(false);
     const valuesQuery = useCustomDatasetValues(selectedDatasetId);
 
     const hasBuiltinDatasets = (datasetsQuery.data?.length ?? 0) > 0;
@@ -160,6 +163,22 @@ export function CustomPanel({
         onOverlayChange(overlayFromParsedCsv(result.data, finalTitle));
     };
 
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = () => {
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+        const file = e.dataTransfer.files?.[0] ?? null;
+        void handleFileUpload(file);
+    };
+
     const selectedValue =
         selectedPlace && activeOverlay
             ? activeOverlay.valuesByPsgc[selectedPlace.psgc.padStart(10, "0")]
@@ -171,12 +190,14 @@ export function CustomPanel({
 
     return (
         <div className="space-y-5">
-            <p className="text-sm text-muted">
-                Upload a CSV to color the map with your own data (session only — not saved). Use a single{" "}
-                <code className="text-primary">value</code> column for one number per area, or multiple series
-                columns for breakdowns (elections, budgets, land use, etc.).
-                {hasBuiltinDatasets ? " Or pick a built-in dataset below." : ""}
-            </p>
+            <div className="space-y-2">
+                <h3 className="text-base font-bold text-primary">
+                    Map Your Own Datasets
+                </h3>
+                <p className="text-xs text-muted leading-relaxed">
+                    Upload a custom CSV file to dynamically color and visualize your data across geographic boundaries. All processing happens locally within your web browser—your data is never sent to or stored on an external server.
+                </p>
+            </div>
 
             {hasBuiltinDatasets && (
                 <section className="space-y-3">
@@ -198,12 +219,25 @@ export function CustomPanel({
                                     >
                                         <div className="min-w-0 flex-1">
                                             <p className="text-sm font-medium text-primary">{dataset.title}</p>
-                                            {dataset.description && (
+                                            {dataset.id === "elections-2022-president" ? (
                                                 <p className="mt-0.5 text-xs leading-relaxed text-muted">
-                                                    {dataset.description}
+                                                    Data Context: National totals match the certified Congressional canvass exactly. Sub-national data is aggregated from the COMELEC transparency server.{" "}
+                                                    <button
+                                                        type="button"
+                                                        onClick={onOpenNotesModal}
+                                                        className="text-accent underline hover:text-primary font-medium transition-colors cursor-pointer"
+                                                    >
+                                                        [Click to view full election dataset audit details]
+                                                    </button>
                                                 </p>
+                                            ) : (
+                                                dataset.description && (
+                                                    <p className="mt-0.5 text-xs leading-relaxed text-muted">
+                                                        {dataset.description}
+                                                    </p>
+                                                )
                                             )}
-                                            {dataset.source_name && dataset.source_url && (
+                                            {dataset.id !== "elections-2022-president" && dataset.source_name && dataset.source_url && (
                                                 <p className="mt-1 text-[11px] leading-relaxed">
                                                     <a
                                                         href={dataset.source_url}
@@ -233,69 +267,69 @@ export function CustomPanel({
                 </section>
             )}
 
-            <section className="space-y-2 rounded-lg border border-border-light bg-surface p-3">
-                <p className="text-xs font-medium uppercase tracking-wide text-muted">Upload CSV</p>
-                <p className="text-xs text-muted">
-                    Every row is matched to the map by its <code className="text-primary">psgc</code> code. Pick one of
-                    two shapes:
-                </p>
-                <ul className="space-y-1 text-xs text-muted">
-                    <li>
-                        <span className="font-medium text-primary">One number per area</span> —{" "}
-                        <code className="text-primary">psgc,value,label</code>
-                    </li>
-                    <li>
-                        <span className="font-medium text-primary">Breakdown per area</span> (elections, budgets…) —{" "}
-                        <code className="text-primary">psgc,label,SeriesA,SeriesB,…</code>
-                    </li>
-                </ul>
-                <details className="text-xs text-muted">
-                    <summary className="cursor-pointer font-medium text-primary">How the CSV is structured</summary>
-                    <div className="mt-1.5 space-y-1.5 border-l-2 border-border-light pl-2.5">
-                        <p>
-                            <span className="font-medium text-primary">psgc</span> is the 10-digit code (region,
-                            province, city/municipality, or barangay). The map reads the level from the code, so you can
-                            mix all levels in one file — it shows the right rows as you switch the View by level.
+            <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={cn(
+                    "border-2 border-dashed rounded-xl p-5 flex flex-col items-center justify-center transition-all cursor-pointer",
+                    isDragging
+                        ? "border-accent bg-accent/5 scale-[1.01]"
+                        : "border-border hover:border-accent hover:bg-surface/50"
+                )}
+                onClick={() => {
+                    document.getElementById("csv-file-input")?.click();
+                }}
+            >
+                <input
+                    id="csv-file-input"
+                    type="file"
+                    accept=".csv,text/csv"
+                    className="hidden"
+                    onChange={(e) => void handleFileUpload(e.target.files?.[0] ?? null)}
+                />
+                
+                <div className="text-center space-y-4">
+                    <p className="text-sm font-semibold text-primary">
+                        Click to upload or drag &amp; drop your CSV file here
+                    </p>
+                    
+                    <div className="text-left max-w-md mx-auto space-y-2 border-t border-border-light pt-3 text-[11px] text-muted">
+                        <p className="font-semibold text-primary">
+                            Data Format Requirements:
                         </p>
-                        <p>
-                            The map only colors areas you provide rows for — anything missing stays blank. The{" "}
-                            <span className="font-medium text-primary">Philippines</span> view needs a single{" "}
-                            <code className="text-primary">0000000000</code> whole-country row, or it stays blank
-                            (switch to the region view to see region rows).
-                        </p>
-                        <p>
-                            <span className="font-medium text-primary">label</span> is optional and only shown in
-                            tooltips. For breakdowns, the column headers become the series names.
-                        </p>
-                        <p>
-                            Lines starting with <code className="text-primary">#</code> are optional settings:{" "}
-                            <code className="text-primary">title</code>, <code className="text-primary">unit</code>, and
-                            (for breakdowns) <code className="text-primary">colors</code>,{" "}
-                            <code className="text-primary">mode</code>. They work in both shapes.
-                        </p>
-                        <p>
-                            Avoid commas inside names/labels. In <code className="text-primary">#</code> settings,
-                            separate items with <code className="text-primary">;</code> so a spreadsheet keeps them in
-                            one cell.
-                        </p>
-                        <p>Download a template below for a ready-to-edit example.</p>
+                        <ul className="space-y-1.5 list-none pl-0">
+                            <li>
+                                • Key Column: Must include an identifier column named exactly "psgc", "province", or "city_mun".
+                            </li>
+                            <li>
+                                • Simple Shading: Include a single value column (e.g., "value" or "total") to shade maps linearly.
+                            </li>
+                            <li>
+                                • Data Breakdowns: Supply multiple series columns to visualize distributions (e.g., election metrics, budgets).
+                            </li>
+                        </ul>
                     </div>
-                </details>
+                </div>
+            </div>
+
+            <div className="space-y-3 rounded-lg border border-border-light bg-surface/30 p-3">
                 <label className="block space-y-1">
-                    <span className="text-xs text-muted">Dataset title</span>
+                    <span className="text-xs font-semibold text-primary">Custom Dataset Title</span>
                     <input
                         type="text"
                         value={uploadTitle}
                         onChange={(e) => setUploadTitle(e.target.value)}
-                        placeholder="Defaults to filename when you upload"
-                        className="w-full rounded-md border border-border-light bg-white px-2 py-1.5 text-sm text-primary"
+                        placeholder="Defaults to filename if left blank"
+                        className="w-full rounded-lg border border-border bg-white px-2.5 py-1.5 text-xs text-primary outline-none focus:border-accent"
                     />
                 </label>
-                <div className="flex flex-wrap gap-2">
+                
+                <div className="flex gap-2">
                     <button
                         type="button"
                         onClick={() => downloadTextFile(CUSTOM_CSV_TEMPLATE, "custom-overlay-template.csv", "text/csv")}
-                        className="rounded-md border border-accent/40 px-2 py-1 text-xs font-medium text-accent hover:bg-accent/10"
+                        className="flex-1 rounded-lg border border-border bg-white py-1.5 text-xs font-medium text-primary hover:bg-surface"
                     >
                         Single-value template
                     </button>
@@ -308,22 +342,13 @@ export function CustomPanel({
                                 "text/csv",
                             )
                         }
-                        className="rounded-md border border-accent/40 px-2 py-1 text-xs font-medium text-accent hover:bg-accent/10"
+                        className="flex-1 rounded-lg border border-border bg-white py-1.5 text-xs font-medium text-primary hover:bg-surface"
                     >
                         Multi-series template
                     </button>
-                    <label className="cursor-pointer rounded-md border border-border-light bg-white px-2 py-1 text-xs font-medium text-primary hover:bg-white/80">
-                        Choose file…
-                        <input
-                            type="file"
-                            accept=".csv,text/csv"
-                            className="hidden"
-                            onChange={(e) => void handleFileUpload(e.target.files?.[0] ?? null)}
-                        />
-                    </label>
                 </div>
-                {uploadError && <p className="text-xs text-rose-600">{uploadError}</p>}
-            </section>
+                {uploadError && <p className="text-xs text-rose-600 mt-1 font-medium">{uploadError}</p>}
+            </div>
 
             {activeOverlay && (
                 <section className="space-y-2 rounded-lg border border-border-light p-3">

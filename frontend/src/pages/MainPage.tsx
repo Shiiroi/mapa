@@ -1,6 +1,7 @@
 // Split-layout shell: map panel and download sidebar.
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { track } from "@vercel/analytics";
 import { MapPanel } from "../map/components/MapPanel";
 import { Sidebar, type SidebarTab } from "../map/components/Sidebar";
 import { useBarangays } from "../map/hooks/useBarangays";
@@ -93,6 +94,7 @@ export default function MainPage() {
 
     const handleFeatureClick = useCallback(
         (entityPsgc: string, mode: MapLevel) => {
+            track("select_shape", { psgc: entityPsgc, level: mode });
             download.setSelectionFromMap(mode, entityPsgc);
             // On mobile: expand info tab so user sees details. Otherwise, do not alter collapse state.
             if (activeTab === "info") {
@@ -101,6 +103,16 @@ export default function MainPage() {
         },
         [download, activeTab],
     );
+
+    const handleLevelChange = useCallback((level: MapLevel) => {
+        track("toggle_map_view_mode", { level });
+        download.setLevel(level);
+    }, [download]);
+
+    const handleTabChange = useCallback((tab: SidebarTab) => {
+        track("switch_sidebar_tab", { tab });
+        setActiveTab(tab);
+    }, []);
 
     const handleDrawerExpand = useCallback(() => {
         setIsSidebarCollapsed(false);
@@ -144,7 +156,7 @@ export default function MainPage() {
                     barangays={download.level === "barangay" ? barangays : []}
                     mode={download.level}
                     onFeatureClick={handleFeatureClick}
-                    onLevelChange={download.setLevel}
+                    onLevelChange={handleLevelChange}
                     barangayAvailable={!!download.selectedMunicityPsgc}
                     loading={mapLoading}
                     error={error ?? (barangaysQuery.error as Error | null)}
@@ -199,7 +211,7 @@ export default function MainPage() {
                     psgcLevels={psgcLevels}
                     psgcLevelsByTier={psgcLevelsByTier}
                     activeTab={activeTab}
-                    onTabChange={setActiveTab}
+                    onTabChange={handleTabChange}
                     isCollapsed={isSidebarCollapsed}
                     isDesktopViewport={isDesktopViewport}
                     onToggleCollapse={handleDrawerToggle}

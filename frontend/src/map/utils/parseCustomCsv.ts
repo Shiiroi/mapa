@@ -170,15 +170,17 @@ export function parseCustomCsv(
 
     const header = dataLines[0].split(",").map((h) => h.trim());
     const headerLower = header.map((h) => h.toLowerCase());
-    const psgcIdx = headerLower.indexOf("psgc");
+    let psgcIdx = headerLower.indexOf("psgc");
+    if (psgcIdx === -1) psgcIdx = headerLower.indexOf("province");
+    if (psgcIdx === -1) psgcIdx = headerLower.indexOf("city_mun");
     const valueIdx = headerLower.indexOf("value");
     const labelIdx = headerLower.indexOf("label");
 
     if (psgcIdx === -1) {
-        return { ok: false, error: 'Header must include column "psgc".' };
+        return { ok: false, error: 'Header must include a key column: "psgc", "province", or "city_mun".' };
     }
 
-    const reserved = new Set(["psgc", "value", "label"]);
+    const reserved = new Set(["psgc", "province", "city_mun", "value", "label"]);
     const seriesColumnIndices = headerLower
         .map((h, i) => (reserved.has(h) ? -1 : i))
         .filter((i) => i >= 0);

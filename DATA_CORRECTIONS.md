@@ -56,8 +56,8 @@ census data:
 | Field | Source | Notes |
 |-------|--------|-------|
 | `pop_2010`, `pop_2015`, `pop_2020`, `pop_2024` | `data-sets/data/clean/popcen_2010_2024.csv` | Region/province/city/municipality from PSA Table B; 2024 down to barangay from the PSGC datafile |
-| `area_km2` | Computed from boundary GeoJSON (`@turf/area`, WGS84) | Estimate from polygon |
-| `density_2024` | `pop_2024 / area_km2` | Null when area unavailable |
+| `area_km2` | Official PSA Table A statutory values (or computed fallback for barangays) | Exact PDF values for country to municipal levels; geometric approximations for barangays |
+| `density_2024` | `pop_2024 / area_km2` | Derived using statutory areas (approximated for barangays) |
 | `pct_change_2020_2024` | Derived when both vintages present | Null after boundary/code changes |
 
 `popcen_2010_2024.csv` is built by `pnpm convert:pop` from the two PSA workbooks
@@ -67,17 +67,11 @@ plus name, with the shared 2024 population as the authoritative tiebreaker (this
 is what fixes places that were previously missing 2015/2020 figures). Province
 totals are accepted only when the row's 2024 value equals the PSGC province total,
 which keeps same-named cities (e.g. "City of Cebu" vs. Cebu province) separate.
-`area_km2` is owned by `seed:stats`; the population fields and their derived
-density/change are owned by `seed:pop`.
+`area_km2` is owned by `seed:stats` (which maps the exact PDF values compiled by `convert:area` / `enrich:area` and falls back to geometry for unmapped elements/barangays); the population fields and their derived density/change are owned by `seed:pop`.
 
-> **Area is computed from geospatial shapes.** Population counts come from PSA
-> PSGC publications, but `area_km2` is **not** an official figure — it is
-> calculated directly from each boundary polygon (geodesic area on WGS84 via
-> `@turf/area` for region/province/municipality and `pyproj` for barangay/
-> country). Because boundary geometry is simplified and generalized, these areas
-> are **approximate** and may differ slightly from official land-area
-> statistics. Any value derived from area — notably `density_2024`
-> (`pop_2024 / area_km2`) — inherits the same approximation.
+> **Official Statutory Land Area.** Land area data for the Country, Region, Province, and City/Municipality levels utilizes the exact statutory values explicitly stated in the official PSA Table A (Using 2013 Land Areas) publication to ensure density metric integrity. No approximations are performed on these tiers.
+>
+> **Barangay Level Approximation.** Because the official PSA Table A publication does not contain a granular breakdown for individual barangays, barangay-level areas are computationally approximated from boundary polygons (geodesic area on WGS84). Since the boundary geometry is simplified and generalized, these areas are approximate. Any value derived from them (such as barangay population density) inherits the same approximation.
 
 ---
 
