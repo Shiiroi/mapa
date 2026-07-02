@@ -571,7 +571,7 @@ export function Sidebar(props: SidebarProps) {
                                         <strong>Special Non-Residential Enclaves:</strong>{" "}
                                         <span>
                                             Non-residential commercial and structural plots omitting explicit census counts (Tutuban Mall and Manila
-                                            North Cemetery) are retained as special active map parcels with sentinel codes (1380601901 and 1380605901)
+                                            Chinese Cemetery) are retained as special active map parcels with sentinel codes (1380601901 and 1380605901)
                                             to prevent blank structural gaps across the city layout.
                                         </span>
                                     </li>

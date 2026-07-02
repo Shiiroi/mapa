@@ -155,7 +155,7 @@ matched only 39,335. The following deterministic corrections recovered
 
 ### 8. Manila non-barangay parcels (NCR, City of Manila)
 
-- **Affected:** 2 parcels — Tutuban Mall, Manila North Cemetery
+- **Affected:** 2 parcels — Tutuban Mall, Manila Chinese Cemetery
 - **Issue:** The altcoder Adm4 shapefile includes polygons for these areas with
   `ADM4_PCODE = null` and no PSGC barangay code. PSA assigns no census unit to
   them (commercial complex with disputed barangay claims; cemetery). They appear
@@ -163,7 +163,7 @@ matched only 39,335. The following deterministic corrections recovered
 - **Action:** Injected as named `Special` parcels into the City of Manila
   barangay file (`1380600000.json`) with sentinel PSGC codes:
   - `1380601901` — Tutuban Mall (Tondo I/II SubMun area)
-  - `1380605901` — Manila North Cemetery (Santa Cruz SubMun area)
+  - `1380605901` — Manila Chinese Cemetery (Santa Cruz SubMun area)
   Population is `null` (not zero); area is computed from boundary geometry;
   density is `null`.
 - **Basis:** Shapefile labels + PSGC confirms SubMun totals only (no barangay
@@ -180,7 +180,7 @@ that were logged as unmatched:
 | Shapefile code | Location | Resolution |
 |----------------|----------|------------|
 | `1303901906` | Tondo / Tutuban area | Superseded by `1380601901` Tutuban Mall |
-| `1303901907` | Santa Cruz / North Cemetery area | Superseded by `1380605901` Manila North Cemetery |
+| `1303901907` | Santa Cruz / North Cemetery area | Superseded by `1380605901` Manila Chinese Cemetery |
 
 Geometry for these areas now comes from the cleaner parcel definitions, not the
 shapefile slivers. The shapefile features remain dropped (no PSGC match).

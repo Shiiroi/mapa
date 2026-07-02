@@ -6,7 +6,7 @@ import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, Pr
 const GEO_BUCKET = "geo";
 
 // Bump this when geo JSON is re-uploaded so clients bypass stale browser HTTP cache
-const GEO_DATA_VERSION = "2026-06-27.5";
+const GEO_DATA_VERSION = "2026-07-03.1";
 
 // Appends cache-busting version query parameter to storage URLs
 function withGeoVersion(url: string): string {
