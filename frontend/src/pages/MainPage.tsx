@@ -6,6 +6,8 @@ import { MapPanel } from "../map/components/MapPanel";
 import { Sidebar, type SidebarTab } from "../map/components/Sidebar";
 import { useBarangays } from "../map/hooks/useBarangays";
 import { useMapDownload } from "../map/hooks/useMapDownload";
+import { useUrlToStateSync } from "../map/hooks/useUrlToStateSync";
+import { useStateToUrlSync } from "../map/hooks/useStateToUrlSync";
 import { useMapLayers } from "../map/hooks/useMapLayers";
 import type { MapLevel } from "../map/constants";
 import type { CustomOverlay, SeriesViewState } from "../map/types";
@@ -51,6 +53,24 @@ export default function MainPage() {
     }, []);
 
     const download = useMapDownload({ regions, provinces, municities, municityMeta, country });
+
+    // Sync URL to state on direct page load (e.g., /region/:slug or /province/:slug)
+    useUrlToStateSync({
+        regions,
+        provinces,
+        onSetRegion: download.setSelectedRegionPsgc,
+        onSetProvince: download.setSelectedProvincePsgc,
+        onSetLevel: download.setLevel,
+    });
+
+    // Sync state to URL when user selects a region or province
+    useStateToUrlSync({
+        regions,
+        provinces,
+        selectedRegionPsgc: download.selectedRegionPsgc,
+        selectedProvincePsgc: download.selectedProvincePsgc,
+        level: download.level,
+    });
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect

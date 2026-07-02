@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://mapa.shhiroi.me/sitemap.xml

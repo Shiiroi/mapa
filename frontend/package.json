@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "vite",
         "dev:docker": "vite --mode docker",
-        "build": "tsc -b && vite build",
+        "build": "tsc -b && tsx scripts/generate-sitemap.ts && vite build",
         "seed:stats": "tsx --env-file=.env scripts/seed-stats.ts",
         "scrape:comelec": "scripts/py/.venv/bin/python scripts/py/scrape_comelec.py --base-dir scripts/py/data",
         "map:comelec": "tsx scripts/map-comelec-president.ts",
