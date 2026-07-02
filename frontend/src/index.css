@@ -31,4 +31,12 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
+
+    .leaflet-container,
+    .leaflet-container:focus,
+    .leaflet-container:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+        -webkit-tap-highlight-color: transparent;
+    }
 }

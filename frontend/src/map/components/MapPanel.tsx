@@ -1,7 +1,7 @@
 // Leaflet map; view mode driven by sidebar; click selects a division.
 
 import { useMemo, useCallback, useState, useEffect, useRef, type ReactNode } from "react";
-import { MapContainer, TileLayer, GeoJSON, ZoomControl } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, ZoomControl, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import type { Feature, Geometry } from "geojson";
 import { cn } from "../../lib/cn";
@@ -91,31 +91,35 @@ interface MapPanelProps {
     error?: Error | null;
     overlay?: CustomOverlay | null;
     overlayView?: SeriesViewState;
+    isSidebarCollapsed?: boolean;
+    sidebarDrawerHeightPx?: number;
+    onMapInteraction?: () => void;
 }
 
 // Shared legend box with a collapse toggle styled like the Controls pill for UI
 // consistency. Collapsed shows just the "Legend" pill; the title moves into the panel.
-function LegendShell({
-    title,
-    collapsed,
-    onToggle,
-    children,
-}: {
-    title: ReactNode;
-    collapsed: boolean;
-    onToggle: () => void;
-    children: ReactNode;
-}) {
+function LegendShell({ title, collapsed, onToggle, children }: { title: ReactNode; collapsed: boolean; onToggle: () => void; children: ReactNode }) {
     return (
-        <div className="absolute bottom-6 left-3 z-[1000] flex flex-col-reverse items-start gap-2">
+        <div className="absolute bottom-6 left-3 z-1000 flex flex-col-reverse items-start gap-1.5 lg:gap-2">
             <button
                 type="button"
                 onClick={onToggle}
                 aria-expanded={!collapsed}
                 title={collapsed ? "Show legend" : "Hide legend"}
-                className="flex items-center gap-1.5 rounded-lg border border-border-light bg-white px-2 py-1.5 text-[10px] font-medium uppercase tracking-wide text-muted shadow-soft transition-colors hover:bg-surface hover:text-primary"
+                className="flex items-center gap-1 lg:gap-1.5 rounded-lg border border-border-light bg-white px-1.5 py-1 lg:px-2 lg:py-1.5 text-[9px] lg:text-[10px] font-medium uppercase tracking-wide text-muted shadow-soft transition-colors hover:bg-surface hover:text-primary"
             >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <svg
+                    width="10"
+                    height="10"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                    className="lg:w-3 lg:h-3"
+                >
                     <line x1="10" y1="6" x2="20" y2="6" />
                     <line x1="10" y1="12" x2="20" y2="12" />
                     <line x1="10" y1="18" x2="20" y2="18" />
@@ -125,8 +129,8 @@ function LegendShell({
                 </svg>
                 <span>Legend</span>
                 <svg
-                    width="12"
-                    height="12"
+                    width="10"
+                    height="10"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -134,14 +138,14 @@ function LegendShell({
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     aria-hidden="true"
-                    className={cn("transition-transform", collapsed ? "rotate-180" : "")}
+                    className={cn("transition-transform lg:w-3 lg:h-3", collapsed ? "rotate-180" : "")}
                 >
                     <polyline points="6 9 12 15 18 9" />
                 </svg>
             </button>
             {!collapsed && (
-                <div className="rounded-lg border border-border-light bg-white/95 px-3 py-2.5 text-[11px] shadow-soft">
-                    <p className="mb-1.5 font-medium text-primary">{title}</p>
+                <div className="max-w-45 lg:max-w-none rounded-lg border border-border-light bg-white/95 px-2 py-2 lg:px-3 lg:py-2.5 text-[10px] lg:text-[11px] shadow-soft">
+                    <p className="mb-1 lg:mb-1.5 font-medium text-primary">{title}</p>
                     {children}
                 </div>
             )}
@@ -171,6 +175,31 @@ function featureStyle(
     };
 }
 
+function MapResizeTrigger({ isCollapsed, mode, drawerHeightPx }: { isCollapsed: boolean; mode: MapLevel; drawerHeightPx?: number }) {
+    const map = useMap();
+    useEffect(() => {
+        const frame = requestAnimationFrame(() => {
+            map.invalidateSize({ animate: false });
+        });
+        return () => cancelAnimationFrame(frame);
+    }, [map, isCollapsed, mode, drawerHeightPx]);
+    return null;
+}
+
+// Only fires the collapse callback on mobile viewports so desktop is unaffected.
+function MapEventTracker({ onInteraction }: { onInteraction?: () => void }) {
+    const isMobile = typeof window !== "undefined" && !window.matchMedia("(min-width: 1024px)").matches;
+    useMapEvents({
+        dragstart: () => {
+            if (isMobile) onInteraction?.();
+        },
+        zoomstart: () => {
+            if (isMobile) onInteraction?.();
+        },
+    });
+    return null;
+}
+
 export function MapPanel({
     country = null,
     provinces = [],
@@ -185,11 +214,16 @@ export function MapPanel({
     error,
     overlay = null,
     overlayView = { mode: "lead" },
+    isSidebarCollapsed = true,
+    sidebarDrawerHeightPx,
+    onMapInteraction,
 }: MapPanelProps) {
     const [userDisplayMode, setUserDisplayMode] = useState<DisplayMode>("outline");
     const [fillOpacity, setFillOpacity] = useState(0.7);
-    const [controlsCollapsed, setControlsCollapsed] = useState(false);
-    const [legendCollapsed, setLegendCollapsed] = useState(false);
+    // Default collapsed on mobile so the map is uncluttered; expanded on desktop.
+    const isMobileInit = typeof window !== "undefined" && !window.matchMedia("(min-width: 1024px)").matches;
+    const [controlsCollapsed, setControlsCollapsed] = useState(isMobileInit);
+    const [legendCollapsed, setLegendCollapsed] = useState(isMobileInit);
     const toggleLegend = useCallback(() => setLegendCollapsed((v) => !v), []);
 
     // The user's shading choice wins; "custom" only applies while an overlay is
@@ -268,15 +302,10 @@ export function MapPanel({
         const populationColors = new Map<string, string>();
         for (const f of currentData.features) {
             const psgc = f.properties.psgc as string;
-            densityColors.set(
-                psgc,
-                colorForDensity(f.properties.density_2024 as number | null, scaleLevel),
-            );
+            densityColors.set(psgc, colorForDensity(f.properties.density_2024 as number | null, scaleLevel));
             populationColors.set(
                 psgc,
-                flatCountryPopulation
-                    ? POPULATION_RAMP[0]
-                    : colorForPopulation(f.properties.pop_2024 as number | null, scaleLevel),
+                flatCountryPopulation ? POPULATION_RAMP[0] : colorForPopulation(f.properties.pop_2024 as number | null, scaleLevel),
             );
         }
         return {
@@ -307,10 +336,7 @@ export function MapPanel({
     // In Philippines view that is the single country polygon (0000000000), so the
     // overlay must include a country row or the view stays blank.
     const overlayLevelOk = overlay != null && overlayActiveAtLevel(overlay, mode);
-    const activeValues = useMemo(
-        () => overlay?.valuesByLevel[mode] ?? {},
-        [overlay, mode],
-    );
+    const activeValues = useMemo(() => overlay?.valuesByLevel[mode] ?? {}, [overlay, mode]);
 
     const { customColors, customLegend, customLegendTitle, customLegendNote } = useMemo(() => {
         if (!overlay || !overlayLevelOk) {
@@ -373,8 +399,7 @@ export function MapPanel({
     }, [displayMode, customColors, populationColors, gdpColors, assetsColors, densityColors]);
 
     const getStyle = useCallback(
-        (feature?: Feature) =>
-            featureStyle(feature, displayMode, activeColors, fillOpacity, overlayLevelOk),
+        (feature?: Feature) => featureStyle(feature, displayMode, activeColors, fillOpacity, overlayLevelOk),
         [displayMode, activeColors, fillOpacity, overlayLevelOk],
     );
 
@@ -407,8 +432,7 @@ export function MapPanel({
             if (tooltip) {
                 layer.bindTooltip(tooltip, { sticky: true, direction: "top" });
             }
-            const baseForFeature = () =>
-                featureStyle(feature, displayMode, activeColors, fillOpacity, overlayLevelOk);
+            const baseForFeature = () => featureStyle(feature, displayMode, activeColors, fillOpacity, overlayLevelOk);
             layer.on("mouseover", () => {
                 layer.setStyle({ ...baseForFeature(), ...HOVER_STYLE });
             });
@@ -423,34 +447,28 @@ export function MapPanel({
     return (
         <div className="relative h-full min-h-0 w-full">
             {loading && (
-                <div className="absolute inset-0 z-[1001] flex items-center justify-center bg-parchment/80">
-                    <p className="rounded-lg bg-white px-6 py-4 shadow-soft">Loading Philippines map…</p>
+                <div className="absolute inset-0 z-1001 flex items-center justify-center bg-parchment/80">
+                    <p className="rounded-lg bg-white px-6 py-4 shadow-soft">Loading Philippine map…</p>
                 </div>
             )}
 
             {error && (
-                <div className="absolute top-3 right-3 z-[1001] max-w-sm rounded-lg bg-red-100 px-4 py-3 text-sm text-red-800 shadow-soft">
+                <div className="absolute top-3 right-3 z-1001 max-w-sm rounded-lg bg-red-100 px-4 py-3 text-sm text-red-800 shadow-soft">
                     Failed to load map: {error.message}
                 </div>
             )}
 
-            <div className="absolute top-3 left-3 z-[1000] flex flex-col items-start gap-2">
+            <div className="absolute top-2 left-2 lg:top-3 lg:left-3 z-1000 flex flex-col items-start gap-1.5 lg:gap-2">
                 <button
                     type="button"
                     onClick={() => setControlsCollapsed((v) => !v)}
                     aria-expanded={!controlsCollapsed}
                     title={controlsCollapsed ? "Show map controls" : "Hide map controls"}
-                    className="flex items-center gap-1.5 rounded-lg border border-border-light bg-white px-2 py-1.5 text-[10px] font-medium uppercase tracking-wide text-muted shadow-soft transition-colors hover:bg-surface hover:text-primary"
+                    className="flex items-center gap-1 lg:gap-1.5 rounded-lg border border-border-light bg-white px-1.5 py-1 lg:px-2 lg:py-1.5 text-[9px] lg:text-[10px] font-medium uppercase tracking-wide text-muted shadow-soft transition-colors hover:bg-surface hover:text-primary"
                 >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <line x1="4" y1="6" x2="20" y2="6" />
-                        <line x1="4" y1="12" x2="20" y2="12" />
-                        <line x1="4" y1="18" x2="20" y2="18" />
-                    </svg>
-                    <span>Controls</span>
                     <svg
-                        width="12"
-                        height="12"
+                        width="10"
+                        height="10"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -458,17 +476,32 @@ export function MapPanel({
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         aria-hidden="true"
-                        className={cn("transition-transform", controlsCollapsed ? "" : "rotate-180")}
+                        className="lg:w-3 lg:h-3"
+                    >
+                        <line x1="4" y1="6" x2="20" y2="6" />
+                        <line x1="4" y1="12" x2="20" y2="12" />
+                        <line x1="4" y1="18" x2="20" y2="18" />
+                    </svg>
+                    <span>Controls</span>
+                    <svg
+                        width="10"
+                        height="10"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                        className={cn("transition-transform lg:w-3 lg:h-3", controlsCollapsed ? "" : "rotate-180")}
                     >
                         <polyline points="6 9 12 15 18 9" />
                     </svg>
                 </button>
 
                 {!controlsCollapsed && onLevelChange && (
-                    <div className="flex flex-wrap items-center gap-1 rounded-lg border border-border-light bg-white p-1 shadow-soft">
-                        <span className="px-1.5 text-[10px] font-medium uppercase tracking-wide text-muted">
-                            View by
-                        </span>
+                    <div className="flex flex-wrap items-center gap-0.5 lg:gap-1 rounded-lg border border-border-light bg-white p-0.5 lg:p-1 shadow-soft">
+                        <span className="px-1 lg:px-1.5 text-[9px] lg:text-[10px] font-medium uppercase tracking-wide text-muted">View by</span>
                         {levelOptions.map((opt) => {
                             const disabled = opt.level === "barangay" && !barangayAvailable;
                             return (
@@ -479,10 +512,8 @@ export function MapPanel({
                                     onClick={() => onLevelChange(opt.level)}
                                     title={disabled ? "Select a municipality first" : undefined}
                                     className={cn(
-                                        "rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
-                                        mode === opt.level
-                                            ? "bg-accent text-white"
-                                            : "text-primary hover:bg-surface",
+                                        "rounded-md px-1.5 py-1 lg:px-2.5 lg:py-1.5 text-[10px] lg:text-xs font-medium transition-colors",
+                                        mode === opt.level ? "bg-accent text-white" : "text-primary hover:bg-surface",
                                         disabled && "cursor-not-allowed opacity-40 hover:bg-transparent",
                                     )}
                                 >
@@ -494,39 +525,33 @@ export function MapPanel({
                 )}
 
                 {!controlsCollapsed && (
-                <div className="flex flex-wrap items-center gap-1 rounded-lg border border-border-light bg-white p-1 shadow-soft">
-                    <span className="px-1.5 text-[10px] font-medium uppercase tracking-wide text-muted">
-                        Shading
-                    </span>
-                    {SHADING_OPTIONS.map((opt) => {
-                        const disabled = opt.requiresOverlay && !overlay;
-                        return (
-                            <button
-                                key={opt.mode}
-                                type="button"
-                                disabled={disabled}
-                                onClick={() => setUserDisplayMode(opt.mode)}
-                                title={disabled ? "Upload a dataset in the Custom tab first" : undefined}
-                                className={cn(
-                                    "rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
-                                    displayMode === opt.mode
-                                        ? "bg-accent text-white"
-                                        : "text-primary hover:bg-surface",
-                                    disabled && "cursor-not-allowed opacity-40 hover:bg-transparent",
-                                )}
-                            >
-                                {opt.label}
-                            </button>
-                        );
-                    })}
-                </div>
+                    <div className="flex flex-wrap items-center gap-0.5 lg:gap-1 rounded-lg border border-border-light bg-white p-0.5 lg:p-1 shadow-soft">
+                        <span className="px-1 lg:px-1.5 text-[9px] lg:text-[10px] font-medium uppercase tracking-wide text-muted">Shading</span>
+                        {SHADING_OPTIONS.map((opt) => {
+                            const disabled = opt.requiresOverlay && !overlay;
+                            return (
+                                <button
+                                    key={opt.mode}
+                                    type="button"
+                                    disabled={disabled}
+                                    onClick={() => setUserDisplayMode(opt.mode)}
+                                    title={disabled ? "Upload a dataset in the Custom tab first" : undefined}
+                                    className={cn(
+                                        "rounded-md px-2 py-1 lg:px-3 lg:py-1.5 text-[10px] lg:text-xs font-medium transition-colors",
+                                        displayMode === opt.mode ? "bg-accent text-white" : "text-primary hover:bg-surface",
+                                        disabled && "cursor-not-allowed opacity-40 hover:bg-transparent",
+                                    )}
+                                >
+                                    {opt.label}
+                                </button>
+                            );
+                        })}
+                    </div>
                 )}
 
                 {!controlsCollapsed && displayMode !== "outline" && (
-                    <div className="flex items-center gap-2 rounded-lg border border-border-light bg-white px-2 py-1.5 shadow-soft">
-                        <span className="text-[10px] font-medium uppercase tracking-wide text-muted">
-                            Opacity
-                        </span>
+                    <div className="flex items-center gap-1.5 lg:gap-2 rounded-lg border border-border-light bg-white px-1.5 py-1 lg:px-2 lg:py-1.5 shadow-soft">
+                        <span className="text-[9px] lg:text-[10px] font-medium uppercase tracking-wide text-muted">Opacity</span>
                         <input
                             type="range"
                             min={20}
@@ -534,9 +559,9 @@ export function MapPanel({
                             step={5}
                             value={Math.round(fillOpacity * 100)}
                             onChange={(e) => setFillOpacity(Number(e.target.value) / 100)}
-                            className="w-24 accent-accent"
+                            className="w-16 lg:w-24 accent-accent"
                         />
-                        <span className="w-8 text-right text-[10px] tabular-nums text-muted">
+                        <span className="w-7 lg:w-8 text-right text-[9px] lg:text-[10px] tabular-nums text-muted">
                             {Math.round(fillOpacity * 100)}%
                         </span>
                     </div>
@@ -544,10 +569,9 @@ export function MapPanel({
             </div>
 
             {overlay && displayMode === "custom" && !overlayLevelOk && (
-                <div className="absolute bottom-6 left-3 z-[1000] max-w-xs rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-900 shadow-soft">
-                    Switch view to{" "}
-                    {overlay.levels.map((l) => SCALE_LEVEL_LABELS[l as keyof typeof SCALE_LEVEL_LABELS] ?? l).join(", ")}{" "}
-                    to see &ldquo;{overlay.meta.title}&rdquo;.
+                <div className="absolute bottom-6 left-3 z-1000 max-w-xs rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-900 shadow-soft">
+                    Switch view to {overlay.levels.map((l) => SCALE_LEVEL_LABELS[l as keyof typeof SCALE_LEVEL_LABELS] ?? l).join(", ")} to see
+                    &ldquo;{overlay.meta.title}&rdquo;.
                 </div>
             )}
 
@@ -565,19 +589,13 @@ export function MapPanel({
                     <div className="flex flex-col gap-0.5">
                         {customLegend.map((item) => (
                             <div key={item.label} className="flex items-center gap-2 text-muted">
-                                <span
-                                    className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light"
-                                    style={{ backgroundColor: item.color }}
-                                />
+                                <span className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light" style={{ backgroundColor: item.color }} />
                                 <span className="leading-tight">{item.label}</span>
                             </div>
                         ))}
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-muted">
-                        <span
-                            className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light"
-                            style={{ backgroundColor: NO_DATA_COLOR }}
-                        />
+                        <span className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light" style={{ backgroundColor: NO_DATA_COLOR }} />
                         <span>No data</span>
                     </div>
                 </LegendShell>
@@ -585,35 +603,23 @@ export function MapPanel({
 
             {displayMode === "density" && (
                 <LegendShell title="Population density [2024]" collapsed={legendCollapsed} onToggle={toggleLegend}>
-                    <p className="mb-2 text-[10px] text-muted">
-                        inhabitants / km² · {SCALE_LEVEL_LABELS[scaleLevel]} scale
-                    </p>
+                    <p className="mb-2 text-[10px] text-muted">inhabitants / km² · {SCALE_LEVEL_LABELS[scaleLevel]} scale</p>
                     <div className="flex">
                         <div className="flex flex-col overflow-hidden rounded-sm border border-border-light">
                             {densityLegend.map((item) => (
-                                <span
-                                    key={item.label}
-                                    className="h-3.5 w-5"
-                                    style={{ backgroundColor: item.color }}
-                                />
+                                <span key={item.label} className="h-3.5 w-5" style={{ backgroundColor: item.color }} />
                             ))}
                         </div>
                         <div className="flex flex-col">
                             {densityLegend.map((item) => (
-                                <span
-                                    key={item.label}
-                                    className="flex h-3.5 items-center pl-2 leading-none text-muted tabular-nums"
-                                >
+                                <span key={item.label} className="flex h-3.5 items-center pl-2 leading-none text-muted tabular-nums">
                                     {item.label}
                                 </span>
                             ))}
                         </div>
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-muted">
-                        <span
-                            className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light"
-                            style={{ backgroundColor: NO_DATA_COLOR }}
-                        />
+                        <span className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light" style={{ backgroundColor: NO_DATA_COLOR }} />
                         <span>No data</span>
                     </div>
                 </LegendShell>
@@ -621,35 +627,23 @@ export function MapPanel({
 
             {displayMode === "population" && !flatCountryPopulation && (
                 <LegendShell title="Population [2024]" collapsed={legendCollapsed} onToggle={toggleLegend}>
-                    <p className="mb-2 text-[10px] text-muted">
-                        inhabitants · {SCALE_LEVEL_LABELS[scaleLevel]} scale
-                    </p>
+                    <p className="mb-2 text-[10px] text-muted">inhabitants · {SCALE_LEVEL_LABELS[scaleLevel]} scale</p>
                     <div className="flex">
                         <div className="flex flex-col overflow-hidden rounded-sm border border-border-light">
                             {populationLegend.map((item) => (
-                                <span
-                                    key={item.label}
-                                    className="h-5 w-5"
-                                    style={{ backgroundColor: item.color }}
-                                />
+                                <span key={item.label} className="h-5 w-5" style={{ backgroundColor: item.color }} />
                             ))}
                         </div>
                         <div className="flex flex-col">
                             {populationLegend.map((item) => (
-                                <span
-                                    key={item.label}
-                                    className="flex h-5 items-center pl-2 leading-none text-muted tabular-nums"
-                                >
+                                <span key={item.label} className="flex h-5 items-center pl-2 leading-none text-muted tabular-nums">
                                     {item.label}
                                 </span>
                             ))}
                         </div>
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-muted">
-                        <span
-                            className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light"
-                            style={{ backgroundColor: NO_DATA_COLOR }}
-                        />
+                        <span className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light" style={{ backgroundColor: NO_DATA_COLOR }} />
                         <span>No data</span>
                     </div>
                 </LegendShell>
@@ -661,23 +655,17 @@ export function MapPanel({
                     <div className="flex flex-col gap-0.5">
                         {gdpLegend.map((item) => (
                             <div key={item.label} className="flex items-center gap-2 text-muted">
-                                <span
-                                    className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light"
-                                    style={{ backgroundColor: item.color }}
-                                />
+                                <span className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light" style={{ backgroundColor: item.color }} />
                                 <span className="leading-tight tabular-nums">{item.label}</span>
                             </div>
                         ))}
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-muted">
-                        <span
-                            className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light"
-                            style={{ backgroundColor: NO_DATA_COLOR }}
-                        />
+                        <span className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light" style={{ backgroundColor: NO_DATA_COLOR }} />
                         <span>No data</span>
                     </div>
                     {mode === "country" && (
-                        <p className="mt-2 max-w-[200px] border-t border-border-light pt-2 text-[10px] leading-tight text-muted">
+                        <p className="mt-2 max-w-50 border-t border-border-light pt-2 text-[10px] leading-tight text-muted">
                             PH total is summed from PSA regional GDP (not a separate published figure).
                         </p>
                     )}
@@ -690,24 +678,19 @@ export function MapPanel({
                     <div className="flex flex-col gap-0.5">
                         {assetsLegend.map((item) => (
                             <div key={item.label} className="flex items-center gap-2 text-muted">
-                                <span
-                                    className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light"
-                                    style={{ backgroundColor: item.color }}
-                                />
+                                <span className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light" style={{ backgroundColor: item.color }} />
                                 <span className="leading-tight tabular-nums">{item.label}</span>
                             </div>
                         ))}
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-muted">
-                        <span
-                            className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light"
-                            style={{ backgroundColor: NO_DATA_COLOR }}
-                        />
+                        <span className="h-3.5 w-5 shrink-0 rounded-sm border border-border-light" style={{ backgroundColor: NO_DATA_COLOR }} />
                         <span>No data</span>
                     </div>
                     {scaleLevel === "region" && (
-                        <p className="mt-2 max-w-[200px] border-t border-border-light pt-2 text-[10px] leading-tight text-muted">
-                            Region totals are summed from their LGUs (COA AFR). PH total is the sum of all LGUs. NIR is not reported separately in the AFR, so it is derived from the LGUs of Negros Occidental, Negros Oriental, and Siquijor.
+                        <p className="mt-2 max-w-50 border-t border-border-light pt-2 text-[10px] leading-tight text-muted">
+                            Region totals are summed from their LGUs (COA AFR). PH total is the sum of all LGUs. NIR is not reported separately in the
+                            AFR, so it is derived from the LGUs of Negros Occidental, Negros Oriental, and Siquijor.
                         </p>
                     )}
                 </LegendShell>
@@ -724,6 +707,8 @@ export function MapPanel({
                 scrollWheelZoom
                 preferCanvas
             >
+                <MapResizeTrigger isCollapsed={isSidebarCollapsed} mode={mode} drawerHeightPx={sidebarDrawerHeightPx} />
+                <MapEventTracker onInteraction={onMapInteraction} />
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
