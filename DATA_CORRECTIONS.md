@@ -7,11 +7,11 @@ the **basis** for the change. The corrected geometry is committed as GeoJSON und
 
 ## Base datasets
 
-| Layer | Source | Notes |
-|-------|--------|-------|
-| Region / province / municipality | [faeldon/philippines-json-maps](https://github.com/faeldon/philippines-json-maps) (2023 GeoJSON, MIT) | Re-keyed to PSGC |
-| Barangay + country | [altcoder/philippines-psgc-shapefiles](https://github.com/altcoder/philippines-psgc-shapefiles) (Adm0, Adm4, MIT) | Converted from shapefile to GeoJSON |
-| Codes & names | [PSA PSGC](https://psa.gov.ph/classification/psgc/) | `data-sets/data/raw/psgc.csv` |
+| Layer                            | Source                                                                                                            | Notes                               |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| Region / province / municipality | [faeldon/philippines-json-maps](https://github.com/faeldon/philippines-json-maps) (2023 GeoJSON, MIT)             | Re-keyed to PSGC                    |
+| Barangay + country               | [altcoder/philippines-psgc-shapefiles](https://github.com/altcoder/philippines-psgc-shapefiles) (Adm0, Adm4, MIT) | Converted from shapefile to GeoJSON |
+| Codes & names                    | [PSA PSGC](https://psa.gov.ph/classification/psgc/)                                                               | `data-sets/data/raw/psgc.csv`       |
 
 Unless listed below, geometry and attributes come unmodified aside from
 reformatting and PSGC property normalization.
@@ -26,11 +26,11 @@ Mapa follows the **official PSGC hierarchy**, in which the National Capital
 Region (NCR, `13…`) has **no province or district tier**. Its component units
 attach **directly to the region**:
 
-| Level in NCR | Count | Examples |
-|--------------|-------|----------|
-| City | 16 | Manila, Quezon City, Makati… |
-| Municipality | 1 | Pateros |
-| SubMun | 14 | sub-units **of the City of Manila** (Tondo, Sampaloc, Binondo…) |
+| Level in NCR | Count | Examples                                                        |
+| ------------ | ----- | --------------------------------------------------------------- |
+| City         | 16    | Manila, Quezon City, Makati…                                    |
+| Municipality | 1     | Pateros                                                         |
+| SubMun       | 14    | sub-units **of the City of Manila** (Tondo, Sampaloc, Binondo…) |
 
 Because of this, `municities.province_psgc` is **nullable**, and NCR cities are
 stored with `province_psgc = null` and `region_psgc = 1300000000`.
@@ -38,7 +38,7 @@ stored with `province_psgc = null` and `region_psgc = 1300000000`.
 > **Why this differs from many other maps:** A lot of third-party PH datasets
 > group NCR into **four "districts"** (1st–4th District of NCR / Capital,
 > Eastern, Northern, Southern Manila Districts). Those are **congressional /
-> legislative groupings**, *not* PSGC geographic administrative units. PSA does
+> legislative groupings**, _not_ PSGC geographic administrative units. PSA does
 > not publish census geography (or boundary geometry) at that level, so Mapa
 > intentionally omits them to stay faithful to PSGC and to keep population /
 > density joins keyed on real PSGC codes.
@@ -53,12 +53,12 @@ as a separate optional grouping, not folded into the core hierarchy.
 Mapa attaches population and density to every administrative level from PSA
 census data:
 
-| Field | Source | Notes |
-|-------|--------|-------|
-| `pop_2010`, `pop_2015`, `pop_2020`, `pop_2024` | `data-sets/data/clean/popcen_2010_2024.csv` | Region/province/city/municipality from PSA Table B; 2024 down to barangay from the PSGC datafile |
-| `area_km2` | Official PSA Table A statutory values (or computed fallback for barangays) | Exact PDF values for country to municipal levels; geometric approximations for barangays |
-| `density_2024` | `pop_2024 / area_km2` | Derived using statutory areas (approximated for barangays) |
-| `pct_change_2020_2024` | Derived when both vintages present | Null after boundary/code changes |
+| Field                                          | Source                                                                     | Notes                                                                                            |
+| ---------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `pop_2010`, `pop_2015`, `pop_2020`, `pop_2024` | `data-sets/data/clean/popcen_2010_2024.csv`                                | Region/province/city/municipality from PSA Table B; 2024 down to barangay from the PSGC datafile |
+| `area_km2`                                     | Official PSA Table A statutory values (or computed fallback for barangays) | Exact PDF values for country to municipal levels; geometric approximations for barangays         |
+| `density_2024`                                 | `pop_2024 / area_km2`                                                      | Derived using statutory areas (approximated for barangays)                                       |
+| `pct_change_2020_2024`                         | Derived when both vintages present                                         | Null after boundary/code changes                                                                 |
 
 `popcen_2010_2024.csv` is built by `pnpm convert:pop` from the two PSA workbooks
 in `data-sets/source/`. The PSGC datafile is the code/name/2024 spine; Table B is
@@ -162,10 +162,10 @@ matched only 39,335. The following deterministic corrections recovered
   as holes in barangay-level maps (also visible on citypopulation.de).
 - **Action:** Injected as named `Special` parcels into the City of Manila
   barangay file (`1380600000.json`) with sentinel PSGC codes:
-  - `1380601901` — Tutuban Mall (Tondo I/II SubMun area)
-  - `1380605901` — Manila Chinese Cemetery (Santa Cruz SubMun area)
-  Population is `null` (not zero); area is computed from boundary geometry;
-  density is `null`.
+    - `1380601901` — Tutuban Mall (Tondo I/II SubMun area)
+    - `1380605901` — Manila Chinese Cemetery (Santa Cruz SubMun area)
+      Population is `null` (not zero); area is computed from boundary geometry;
+      density is `null`.
 - **Basis:** Shapefile labels + PSGC confirms SubMun totals only (no barangay
   codes for these parcels); same hole pattern as third-party PH maps.
 - **Status:** Automated (post-shapefile injection).
@@ -177,10 +177,10 @@ matched only 39,335. The following deterministic corrections recovered
 The altcoder shapefile originally had two empty-named slivers at these locations
 that were logged as unmatched:
 
-| Shapefile code | Location | Resolution |
-|----------------|----------|------------|
-| `1303901906` | Tondo / Tutuban area | Superseded by `1380601901` Tutuban Mall |
-| `1303901907` | Santa Cruz / North Cemetery area | Superseded by `1380605901` Manila Chinese Cemetery |
+| Shapefile code | Location                         | Resolution                                         |
+| -------------- | -------------------------------- | -------------------------------------------------- |
+| `1303901906`   | Tondo / Tutuban area             | Superseded by `1380601901` Tutuban Mall            |
+| `1303901907`   | Santa Cruz / North Cemetery area | Superseded by `1380605901` Manila Chinese Cemetery |
 
 Geometry for these areas now comes from the cleaner parcel definitions, not the
 shapefile slivers. The shapefile features remain dropped (no PSGC match).
@@ -227,24 +227,27 @@ self-hosters consume the committed geo directly via `pnpm upload:geo` and
 Mapa integrates presidential election results from the May 2022 national election. The raw data is scraped from the public COMELEC transparency server using `scripts/py/scrape_comelec.py` and processed via `scripts/map-comelec-president.ts`.
 
 ### 1. 100% Match to Official Congressional Canvass (National level)
+
 - **Problem:** The raw scraped files from the COMELEC transparency server aggregate to `53,639,140` total valid votes. The official final tally certified by Congress (acting as the National Board of Canvassers) proclaims `53,815,469` total valid votes. The discrepancy of `176,329` votes is due to administrative and legal exclusions from the electronic transmission feed:
-  1. **Local Absentee Voting (LAV):** Around 70,000 to 80,000 votes cast by military, police, government employees, teachers, and media practitioners performing election-day duties away from their registration precincts. Under [COMELEC Resolution No. 10725](https://comelec.gov.ph/?r=AboutCOMELEC/Resolutions/ElectionLaws/Resolutions/Res10725), these ballots are manually mailed and canvassed by a Special Board of Canvassers at the Palacio del Gobernador in Intramuros, Manila. Because they are processed centrally, they never pass through a precinct Vote Counting Machine (VCM) and have no electronic files on the transparency server.
-  2. **Detention Prisoner Voting (DPV / PDLs):** Ballots cast by pre-trial detainees and individuals serving sentences under one year, governed by [COMELEC Resolution No. 9371](https://comelec.gov.ph/?r=AboutCOMELEC/Resolutions/ElectionLaws/Resolutions/Res9371) (upheld by the Supreme Court in [*Aguinaldo v. New Bilibid Prison*, G.R. No. 221201](https://sc.judiciary.gov.ph/) on March 29, 2022). These are counted manually and consolidated at the municipal or national boards of canvassers, rather than via live media routers.
-  3. **Untransmitted Overseas Absentee Voting (OAV):** Out of 92 foreign service posts, around 60% cast manual ballots under the Overseas Absentee Voting Act (R.A. 9189 as amended by R.A. 10590). 38 smaller posts failed to transmit their electronic COCs to the media server due to connectivity or administrative issues, instead submitting physical paper COCs directly to the Senate/NBOC.
+    1. **Local Absentee Voting (LAV):** Around 70,000 to 80,000 votes cast by military, police, government employees, teachers, and media practitioners performing election-day duties away from their registration precincts. Under [COMELEC Resolution No. 10725](https://comelec.gov.ph/?r=AboutCOMELEC/Resolutions/ElectionLaws/Resolutions/Res10725), these ballots are manually mailed and canvassed by a Special Board of Canvassers at the Palacio del Gobernador in Intramuros, Manila. Because they are processed centrally, they never pass through a precinct Vote Counting Machine (VCM) and have no electronic files on the transparency server.
+    2. **Detention Prisoner Voting (DPV / PDLs):** Ballots cast by pre-trial detainees and individuals serving sentences under one year, governed by [COMELEC Resolution No. 9371](https://comelec.gov.ph/?r=AboutCOMELEC/Resolutions/ElectionLaws/Resolutions/Res9371) (upheld by the Supreme Court in [_Aguinaldo v. New Bilibid Prison_, G.R. No. 221201](https://sc.judiciary.gov.ph/) on March 29, 2022). These are counted manually and consolidated at the municipal or national boards of canvassers, rather than via live media routers.
+    3. **Untransmitted Overseas Absentee Voting (OAV):** Out of 92 foreign service posts, around 60% cast manual ballots under the Overseas Absentee Voting Act (R.A. 9189 as amended by R.A. 10590). 38 smaller posts failed to transmit their electronic COCs to the media server due to connectivity or administrative issues, instead submitting physical paper COCs directly to the Senate/NBOC.
 - **Correction:** To prevent discrepancy at the country-level view, the mapping script directly injects the official Congressional canvass totals for the root row (`psgc: "0000000000"`, `Philippines`). This provides a **100% exact match** with the official proclaimed results, while sub-national levels (region down to barangay) show the geographical distribution derived from the transparency server.
 - **Basis:** [Congress of the Philippines Proclamation of Winners](https://www.pna.gov.ph/articles/1175204) (May 25, 2022); [COMELEC Resolution No. 10725 (LAV rules)](https://comelec.gov.ph/?r=AboutCOMELEC/Resolutions/ElectionLaws/Resolutions/Res10725); [COMELEC Resolution No. 9371 (PDL voting rules)](https://comelec.gov.ph/?r=AboutCOMELEC/Resolutions/ElectionLaws/Resolutions/Res9371); [Supreme Court Resolution G.R. No. 221201](https://sc.judiciary.gov.ph/).
 
 ### 2. Omitted Special Geographic Area (SGA) Municipalities
+
 - **Problem:** When mapping municipal-level data, 8 municipalities inside the Special Geographic Area (SGA) of BARMM (Pabalik, Kadayangan, Kapalawan, Tugunan, Ligawasan, Malidegao, Nuling, and SGA-8/Pinaring) do not exist in the 2022 election results.
 - **Correction:** These 8 municipalities were created in **April 2024** by virtue of regional laws (BARMM Act Nos. 50-57) and plebiscites. In the 2022 elections, their constituent barangays were still part of their original municipalities in Cotabato province. They are intentionally left blank in the 2022 elections CSV, which is historically correct.
 - **Basis:** Bangsamoro Organic Law (R.A. 11054) and BARMM plebiscites of April 2025.
 
 ### 3. Highly Urbanized Cities (HUCs) and Independent Cities
+
 - **Problem:** HUCs (such as Cebu City, Davao City, Bacolod City, Zamboanga City) are administratively independent of their geographical provinces. Their Certificates of Canvass (COCs) are uploaded directly to the national level and are not present inside the parent province's COC file.
 - **Correction:** The mapping script skips province-level COCs on disk. Instead, it aggregates province totals directly from the constituent municipality rows using PSGC prefix grouping (`loadLguParents`). This ensures that HUCs are correctly rolled up into their geographical provinces for spatial visualization.
 - **Basis:** Geographic proximity map design (HUCs are rendered inside their geographic provinces on the map).
 
 ### 4. Negros Island Region (NIR) and NCR
+
 - **NCR:** NCR has no provinces in the PSGC hierarchy. The script handles the legislative district COCs (like `NCR - SECOND DISTRICT`) by skipping their empty COCs and descending directly to the component municipalities (Quezon City, Pasig, etc.) to get their individual COCs.
 - **NIR:** The script routes the provinces of Negros Occidental and Negros Oriental (PSGC prefix `18`) to Region `1800000000` (Negros Island Region) based on the boundary definition, even though the raw 2022 election data lists them under Region VI and Region VII. This ensures the map correctly renders them inside the newly enacted NIR boundaries.
-

@@ -47,17 +47,11 @@ export async function fetchMunicitiesMetaFromStorage(): Promise<MunicityMeta[]> 
 
 // Reads the manifest and downloads all province files to return a flat municipality list
 export async function fetchMunicitiesGeometryFromStorage(): Promise<MunicityGeoJSON[]> {
-    const manifest = await fetchGeoLayerFromStorage<{ provincePsgcs: string[] }>(
-        "municities/manifest.json",
-        "fetchMunicitiesManifest",
-    );
+    const manifest = await fetchGeoLayerFromStorage<{ provincePsgcs: string[] }>("municities/manifest.json", "fetchMunicitiesManifest");
 
     const batches = await Promise.all(
         manifest.provincePsgcs.map((provincePsgc) =>
-            fetchGeoLayerFromStorage<MunicityGeoJSON[]>(
-                `municities/province-${provincePsgc}.json`,
-                `fetchMunicitiesProvince-${provincePsgc}`,
-            ),
+            fetchGeoLayerFromStorage<MunicityGeoJSON[]>(`municities/province-${provincePsgc}.json`, `fetchMunicitiesProvince-${provincePsgc}`),
         ),
     );
 
@@ -66,10 +60,7 @@ export async function fetchMunicitiesGeometryFromStorage(): Promise<MunicityGeoJ
 
 // Fetches all municipality outlines belonging to a specific province
 export async function fetchMunicitiesByProvinceFromStorage(provincePsgc: string): Promise<MunicityGeoJSON[]> {
-    return fetchGeoLayerFromStorage<MunicityGeoJSON[]>(
-        `municities/province-${provincePsgc}.json`,
-        `fetchMunicitiesProvince-${provincePsgc}`,
-    );
+    return fetchGeoLayerFromStorage<MunicityGeoJSON[]>(`municities/province-${provincePsgc}.json`, `fetchMunicitiesProvince-${provincePsgc}`);
 }
 
 // Fetches the national country outline from CDN
@@ -79,8 +70,5 @@ export async function fetchCountryFromStorage(): Promise<CountryGeoJSON> {
 
 // Fetches all barangay shapes belonging to a specific municipality
 export async function fetchBarangaysByMunicityFromStorage(municityPsgc: string): Promise<BarangayGeoJSON[]> {
-    return fetchGeoLayerFromStorage<BarangayGeoJSON[]>(
-        `municities/bgy/${municityPsgc}.json`,
-        `fetchBarangaysMunicity-${municityPsgc}`,
-    );
+    return fetchGeoLayerFromStorage<BarangayGeoJSON[]>(`municities/bgy/${municityPsgc}.json`, `fetchBarangaysMunicity-${municityPsgc}`);
 }

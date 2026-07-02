@@ -40,7 +40,9 @@ function dedupeByPsgc(rows: Record<string, unknown>[]): Record<string, unknown>[
 }
 
 // Strips extra columns not in the barangays schema
-function stripExtraColumns<T extends { [K: string]: unknown }>(rows: T[]): Omit<T, keyof Omit<T, "psgc" | "correspondence" | "name" | "geo_lvl" | "city_lvl" | "municity_psgc" | "province_psgc" | "region_psgc">>[] {
+function stripExtraColumns<T extends { [K: string]: unknown }>(
+    rows: T[],
+): Omit<T, keyof Omit<T, "psgc" | "correspondence" | "name" | "geo_lvl" | "city_lvl" | "municity_psgc" | "province_psgc" | "region_psgc">>[] {
     const allowedCols = new Set(["psgc", "correspondence", "name", "geo_lvl", "city_lvl", "municity_psgc", "province_psgc", "region_psgc"]);
     return rows.map((row) => {
         const filtered: Record<string, unknown> = {};
@@ -68,11 +70,7 @@ async function main() {
     }
 
     console.log("Seeding barangays from municities/bgy/meta.json…");
-    const barangays = stripExtraColumns(
-        dedupeByPsgc(
-            JSON.parse(fs.readFileSync(BGY_META, "utf8")) as Array<Record<string, unknown>>,
-        ),
-    );
+    const barangays = stripExtraColumns(dedupeByPsgc(JSON.parse(fs.readFileSync(BGY_META, "utf8")) as Array<Record<string, unknown>>));
 
     let total = 0;
     for (const chunk of chunks(barangays, 500)) {
