@@ -429,8 +429,8 @@ export function InfoPanel({ place }: InfoPanelProps) {
                         displayPlace.area_km2 == null
                             ? "No boundary loaded"
                             : displayPlace.level === "barangay"
-                            ? "Estimated from boundary polygon"
-                            : "Official statutory area (PSA)"
+                                ? "Estimated from boundary polygon"
+                                : "Official area used by PSA"
                     }
                 />
                 <StatCard
@@ -447,7 +447,7 @@ export function InfoPanel({ place }: InfoPanelProps) {
 
             {displayPlace.level === "barangay" && (
                 <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-2">
-                    ⚠️ Note: Barangay land area and population density metrics are computationally derived geographic approximations by Mapa. Official PSA Table A statutory breakdowns are unavailable at this resolution.
+                    ⚠️ Note: Barangay land area and population density metrics are computationally derived geographic approximations by Mapa. Official PSA Table A breakdowns are unavailable at this resolution.
                 </p>
             )}
 
@@ -455,93 +455,93 @@ export function InfoPanel({ place }: InfoPanelProps) {
                 displayPlace.pop_2015 != null ||
                 displayPlace.pop_2020 != null ||
                 displayPlace.pop_2024 != null) && (
-                <section>
-                    <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-muted">
-                        Population history (census)
-                    </p>
-                    <table className="w-full border-collapse text-sm">
-                        <thead>
-                            <tr className="text-xs text-muted">
-                                <th className="py-1 pr-2 text-left font-medium"></th>
-                                {POP_HISTORY.map((row) => (
-                                    <th key={row.year} className="py-1 px-2 text-right font-medium">
-                                        {row.year}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr className="border-t border-border-light">
-                                <td className="py-1.5 pr-2 text-left text-muted">Population</td>
-                                {POP_HISTORY.map((row) => (
-                                    <td
-                                        key={row.year}
-                                        className="py-1.5 px-2 text-right font-medium text-primary"
-                                    >
-                                        {formatPopulation(displayPlace[row.key])}
-                                    </td>
-                                ))}
-                            </tr>
-                            <tr className="border-t border-border-light">
-                                <td className="py-1.5 pr-2 text-left text-muted">Change</td>
-                                {POP_HISTORY.map((row, i) => {
-                                    const prev = i > 0 ? POP_HISTORY[i - 1] : null;
-                                    const change = prev
-                                        ? totalPctChange(displayPlace[prev.key], displayPlace[row.key])
-                                        : null;
-                                    return (
+                    <section>
+                        <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-muted">
+                            Population history (census)
+                        </p>
+                        <table className="w-full border-collapse text-sm">
+                            <thead>
+                                <tr className="text-xs text-muted">
+                                    <th className="py-1 pr-2 text-left font-medium"></th>
+                                    {POP_HISTORY.map((row) => (
+                                        <th key={row.year} className="py-1 px-2 text-right font-medium">
+                                            {row.year}
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr className="border-t border-border-light">
+                                    <td className="py-1.5 pr-2 text-left text-muted">Population</td>
+                                    {POP_HISTORY.map((row) => (
                                         <td
                                             key={row.year}
-                                            className={cn(
-                                                "py-1.5 px-2 text-right italic",
-                                                i === 0 ? "text-muted" : changeToneClass(change),
-                                            )}
+                                            className="py-1.5 px-2 text-right font-medium text-primary"
                                         >
-                                            {i === 0 ? "—" : formatPctChange(change)}
+                                            {formatPopulation(displayPlace[row.key])}
                                         </td>
-                                    );
-                                })}
-                            </tr>
-                            <tr className="border-t border-border-light">
-                                <td className="py-1.5 pr-2 text-left text-muted">Growth/yr</td>
-                                {POP_HISTORY.map((row, i) => {
-                                    const prev = i > 0 ? POP_HISTORY[i - 1] : null;
-                                    const pgr = prev
-                                        ? compoundAnnualGrowthRate(
-                                              displayPlace[prev.key],
-                                              displayPlace[row.key],
-                                              prev.year,
-                                              row.year,
-                                          )
-                                        : null;
-                                    return (
-                                        <td
-                                            key={row.year}
-                                            className={cn(
-                                                "py-1.5 px-2 text-right font-medium",
-                                                i === 0 ? "text-muted" : changeToneClass(pgr),
-                                            )}
-                                        >
-                                            {i === 0 ? "—" : formatGrowthRate(pgr)}
-                                        </td>
-                                    );
-                                })}
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p className="mt-1.5 text-xs text-muted">
-                        Change is the total percent change since the previous census; Growth/yr is the
-                        average annual growth rate (compound) over the exact period between census
-                        reference dates, matching PSA’s published rate.
-                    </p>
-                    <div className="mt-3">
-                        <PopulationTrendChart
-                            points={POP_HISTORY.map((row) => ({ year: row.year, value: displayPlace[row.key] }))
-                                .filter((p): p is { year: number; value: number } => p.value != null)}
-                        />
-                    </div>
-                </section>
-            )}
+                                    ))}
+                                </tr>
+                                <tr className="border-t border-border-light">
+                                    <td className="py-1.5 pr-2 text-left text-muted">Change</td>
+                                    {POP_HISTORY.map((row, i) => {
+                                        const prev = i > 0 ? POP_HISTORY[i - 1] : null;
+                                        const change = prev
+                                            ? totalPctChange(displayPlace[prev.key], displayPlace[row.key])
+                                            : null;
+                                        return (
+                                            <td
+                                                key={row.year}
+                                                className={cn(
+                                                    "py-1.5 px-2 text-right italic",
+                                                    i === 0 ? "text-muted" : changeToneClass(change),
+                                                )}
+                                            >
+                                                {i === 0 ? "—" : formatPctChange(change)}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                                <tr className="border-t border-border-light">
+                                    <td className="py-1.5 pr-2 text-left text-muted">Growth/yr</td>
+                                    {POP_HISTORY.map((row, i) => {
+                                        const prev = i > 0 ? POP_HISTORY[i - 1] : null;
+                                        const pgr = prev
+                                            ? compoundAnnualGrowthRate(
+                                                displayPlace[prev.key],
+                                                displayPlace[row.key],
+                                                prev.year,
+                                                row.year,
+                                            )
+                                            : null;
+                                        return (
+                                            <td
+                                                key={row.year}
+                                                className={cn(
+                                                    "py-1.5 px-2 text-right font-medium",
+                                                    i === 0 ? "text-muted" : changeToneClass(pgr),
+                                                )}
+                                            >
+                                                {i === 0 ? "—" : formatGrowthRate(pgr)}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p className="mt-1.5 text-xs text-muted">
+                            Change is the total percent change since the previous census; Growth/yr is the
+                            average annual growth rate (compound) over the exact period between census
+                            reference dates, matching PSA’s published rate.
+                        </p>
+                        <div className="mt-3">
+                            <PopulationTrendChart
+                                points={POP_HISTORY.map((row) => ({ year: row.year, value: displayPlace[row.key] }))
+                                    .filter((p): p is { year: number; value: number } => p.value != null)}
+                            />
+                        </div>
+                    </section>
+                )}
 
             {displayPlace.gdp_2024 != null && (
                 <section>
