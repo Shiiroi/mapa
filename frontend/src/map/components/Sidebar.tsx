@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { NavLink } from "react-router-dom";
 import { cn } from "../../lib/cn";
 import type { MapLevel } from "../constants";
 import type { ExportKind } from "../hooks/useMapDownload";
@@ -168,6 +169,11 @@ export function Sidebar(props: SidebarProps) {
           }
         : null;
 
+    const complianceLinks = [
+        { to: "/privacy", label: "Privacy Policy" },
+        { to: "/terms", label: "Terms of Service" },
+    ];
+
     return (
         <aside className="flex h-full min-h-0 flex-col overflow-hidden border-l border-border bg-white select-none outline-none focus:outline-none focus-within:outline-none focus-within:ring-0">
             {props.onToggleCollapse && (
@@ -299,10 +305,12 @@ export function Sidebar(props: SidebarProps) {
                 )}
             </div>
 
-            <footer className={cn(
-                "shrink-0 border-t border-border-light bg-white px-4 py-2.5 flex justify-center select-none outline-none focus:outline-none lg:px-5",
-                isEffectivelyCollapsed ? "hidden lg:flex" : ""
-            )}>
+            <footer
+                className={cn(
+                    "shrink-0 border-t border-border-light bg-white px-4 py-2.5 flex flex-col items-center gap-1.5 select-none outline-none focus:outline-none lg:px-5",
+                    isEffectivelyCollapsed ? "hidden lg:flex" : "",
+                )}
+            >
                 <button
                     type="button"
                     onClick={() => setIsNotesModalOpen(true)}
@@ -310,21 +318,29 @@ export function Sidebar(props: SidebarProps) {
                 >
                     Sources and Notes
                 </button>
+                <nav className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[0.8rem] leading-none text-muted opacity-50">
+                    {complianceLinks.map((link, index) => (
+                        <span key={link.to} className="inline-flex items-center gap-x-2">
+                            {index > 0 && <span aria-hidden="true">•</span>}
+                            <NavLink to={link.to} className="transition-colors hover:text-primary hover:opacity-100">
+                                {link.label}
+                            </NavLink>
+                        </span>
+                    ))}
+                </nav>
             </footer>
 
             {isNotesModalOpen && (
-                <div 
+                <div
                     onClick={() => setIsNotesModalOpen(false)}
                     className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm select-text"
                 >
-                    <div 
+                    <div
                         onClick={(e) => e.stopPropagation()}
                         className="relative flex flex-col w-full max-w-2xl max-h-[85vh] bg-white rounded-xl shadow-2xl overflow-hidden border border-border"
                     >
                         <header className="flex items-center justify-between px-6 py-4 border-b border-border-light bg-surface/30">
-                            <h2 className="text-base font-bold text-primary">
-                                Sources and Notes
-                            </h2>
+                            <h2 className="text-base font-bold text-primary">Sources and Notes</h2>
                             <button
                                 type="button"
                                 onClick={() => setIsNotesModalOpen(false)}
@@ -334,7 +350,7 @@ export function Sidebar(props: SidebarProps) {
                                 ✕
                             </button>
                         </header>
-                        
+
                         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6 text-sm text-muted leading-relaxed">
                             <section className="space-y-2.5">
                                 <h3 className="font-bold text-primary text-xs uppercase tracking-wider border-b border-border-light pb-1.5">
@@ -371,7 +387,8 @@ export function Sidebar(props: SidebarProps) {
                                             className="text-accent underline"
                                         >
                                             Philippine Statistics Authority (PSA)
-                                        </a>.
+                                        </a>
+                                        .
                                     </li>
                                     <li>
                                         <strong>Administrative Boundaries and Spatial Codes:</strong>{" "}
@@ -392,7 +409,8 @@ export function Sidebar(props: SidebarProps) {
                                             rel="noopener noreferrer"
                                             className="text-accent underline"
                                         >
-                                            Philippine Statistics Authority (PSA). 2024 Census of Population (2024 POPCEN) Population Counts Declared Official by the President.
+                                            Philippine Statistics Authority (PSA). 2024 Census of Population (2024 POPCEN) Population Counts Declared
+                                            Official by the President.
                                         </a>
                                     </li>
                                     <li>
@@ -403,7 +421,8 @@ export function Sidebar(props: SidebarProps) {
                                             rel="noopener noreferrer"
                                             className="text-accent underline"
                                         >
-                                            Philippine Statistics Authority (PSA). PSA 2020 Census of Population and Housing: Age and Sex Distribution.
+                                            Philippine Statistics Authority (PSA). PSA 2020 Census of Population and Housing: Age and Sex
+                                            Distribution.
                                         </a>
                                     </li>
                                     <li>
@@ -414,7 +433,8 @@ export function Sidebar(props: SidebarProps) {
                                             rel="noopener noreferrer"
                                             className="text-accent underline"
                                         >
-                                            Philippine Statistics Authority (PSA). Gross Domestic Product, by Province and HUCs (Constant 2018 Prices).
+                                            Philippine Statistics Authority (PSA). Gross Domestic Product, by Province and HUCs (Constant 2018
+                                            Prices).
                                         </a>
                                     </li>
                                     <li>
@@ -425,7 +445,8 @@ export function Sidebar(props: SidebarProps) {
                                             rel="noopener noreferrer"
                                             className="text-accent underline"
                                         >
-                                            Commission on Audit (COA). 2024 Annual Financial Report for the Local Government, Including Bangsamoro Government (Volume I).
+                                            Commission on Audit (COA). 2024 Annual Financial Report for the Local Government, Including Bangsamoro
+                                            Government (Volume I).
                                         </a>
                                     </li>
                                     <li>
@@ -447,7 +468,9 @@ export function Sidebar(props: SidebarProps) {
                                             rel="noopener noreferrer"
                                             className="text-accent underline"
                                         >
-                                            Philippine Statistics Authority (PSA). Population, Land Area, Population Density, and Percent Change in Population Density of the Philippines by Region, Province/Highly Urbanized City, and City/Municipality: 2010, 2015, and 2020.
+                                            Philippine Statistics Authority (PSA). Population, Land Area, Population Density, and Percent Change in
+                                            Population Density of the Philippines by Region, Province/Highly Urbanized City, and City/Municipality:
+                                            2010, 2015, and 2020.
                                         </a>
                                     </li>
                                 </ul>
@@ -460,11 +483,21 @@ export function Sidebar(props: SidebarProps) {
                                 <ul className="space-y-2.5 text-xs list-none pl-0">
                                     <li className="flex flex-col sm:flex-row gap-1">
                                         <strong>National Capital Region Configuration:</strong>{" "}
-                                        <span>Following the official PSGC hierarchy, the National Capital Region (NCR) has no province or district tier. All component units attach directly to the region. Consequently, selecting NCR at the Region level and choosing "All Provinces" for data downloads will yield an empty file—users must select "All Municipalities" instead.</span>
+                                        <span>
+                                            Following the official PSGC hierarchy, the National Capital Region (NCR) has no province or district tier.
+                                            All component units attach directly to the region. Consequently, selecting NCR at the Region level and
+                                            choosing "All Provinces" for data downloads will yield an empty file—users must select "All
+                                            Municipalities" instead.
+                                        </span>
                                     </li>
                                     <li className="flex flex-col sm:flex-row gap-1">
                                         <strong>Land Area Sourcing:</strong>{" "}
-                                        <span>Land area data for Country, Region, Province, and City/Municipality levels utilizes the exact statutory values explicitly stated in the official PSA Table A publication to ensure density metric integrity. No approximations are performed on these tiers. If an area calculation for an upper tier is unmapped or missing in the official dataset, the system automatically triggers a computational geometric fallback.</span>
+                                        <span>
+                                            Land area data for Country, Region, Province, and City/Municipality levels utilizes the exact statutory
+                                            values explicitly stated in the official PSA Table A publication to ensure density metric integrity. No
+                                            approximations are performed on these tiers. If an area calculation for an upper tier is unmapped or
+                                            missing in the official dataset, the system automatically triggers a computational geometric fallback.
+                                        </span>
                                     </li>
                                 </ul>
                             </section>
@@ -474,56 +507,106 @@ export function Sidebar(props: SidebarProps) {
                                     Detailed Boundary Geometry &amp; Shapefile Corrections Log
                                 </h3>
                                 <p className="text-xs">
-                                    Upstream shapefile boundary joins from open-source repositories are normalized via deterministic processing rules to resolve code anomalies. The following structural modifications have been programmatically committed to the dataset:
+                                    Upstream shapefile boundary joins from open-source repositories are normalized via deterministic processing rules
+                                    to resolve code anomalies. The following structural modifications have been programmatically committed to the
+                                    dataset:
                                 </p>
                                 <ul className="space-y-2.5 text-xs list-none pl-0">
                                     <li className="flex flex-col sm:flex-row gap-1">
                                         <strong>Correspondence Digit-Swap:</strong>{" "}
-                                        <span>For approximately 1,293 barangays in NIR-renumbered regions, the shapefile correspondence codes encode with the first two digits inverted (e.g., shapefile 604502001 maps to CSV correspondence 064502001). A digit-swap transformation is applied to achieve 1:1 name verification within parent municipalities.</span>
+                                        <span>
+                                            For approximately 1,293 barangays in NIR-renumbered regions, the shapefile correspondence codes encode
+                                            with the first two digits inverted (e.g., shapefile 604502001 maps to CSV correspondence 064502001). A
+                                            digit-swap transformation is applied to achieve 1:1 name verification within parent municipalities.
+                                        </span>
                                     </li>
                                     <li className="flex flex-col sm:flex-row gap-1">
                                         <strong>Manila Sub-Municipal Roll-up:</strong>{" "}
-                                        <span>Shapefile features for the City of Manila utilize localized sub-municipal districts (such as Tondo or Sampaloc) which are absent in standard municipality statistical sets. These records are programmatically rolled up into the uniform canonical parent code for the City of Manila (1380600000).</span>
+                                        <span>
+                                            Shapefile features for the City of Manila utilize localized sub-municipal districts (such as Tondo or
+                                            Sampaloc) which are absent in standard municipality statistical sets. These records are programmatically
+                                            rolled up into the uniform canonical parent code for the City of Manila (1380600000).
+                                        </span>
                                     </li>
                                     <li className="flex flex-col sm:flex-row gap-1">
                                         <strong>Bacolod City Administrative Override:</strong>{" "}
-                                        <span>Outdated administrative codes assigned to 61 component barangays in Bacolod City are forcefully remapped to the official PSGC canonical target (1830200000) followed by strict text-string name matches within the corrected boundary grouping.</span>
+                                        <span>
+                                            Outdated administrative codes assigned to 61 component barangays in Bacolod City are forcefully remapped
+                                            to the official PSGC canonical target (1830200000) followed by strict text-string name matches within the
+                                            corrected boundary grouping.
+                                        </span>
                                     </li>
                                     <li className="flex flex-col sm:flex-row gap-1">
                                         <strong>Sulu Regional Remap:</strong>{" "}
-                                        <span>Shapefile features covering all 19 Sulu municipalities incorrectly carry the historical BARMM region-19 prefix. These 410 barangay entities are automatically remapped to the canonical region-09 geographic tracking prefix to match actual database indexes.</span>
+                                        <span>
+                                            Shapefile features covering all 19 Sulu municipalities incorrectly carry the historical BARMM region-19
+                                            prefix. These 410 barangay entities are automatically remapped to the canonical region-09 geographic
+                                            tracking prefix to match actual database indexes.
+                                        </span>
                                     </li>
                                     <li className="flex flex-col sm:flex-row gap-1">
                                         <strong>SGA Unique-Name Recovery:</strong>{" "}
-                                        <span>Specific barangays (Panicupan, Macabual, and Dunguan) assigned to mismatched municipal codes are salvaged via a global unique-name matching routine across the entire PSGC reference table.</span>
+                                        <span>
+                                            Specific barangays (Panicupan, Macabual, and Dunguan) assigned to mismatched municipal codes are salvaged
+                                            via a global unique-name matching routine across the entire PSGC reference table.
+                                        </span>
                                     </li>
                                     <li className="flex flex-col sm:flex-row gap-1">
                                         <strong>Calaca Boundary Merger:</strong>{" "}
-                                        <span>Following the Supreme Court ruling upheld in April 2025, the abolished territory of Barangay San Rafael is programmatically dissolved, and its spatial polygon layer is unioned directly into the adjacent bounds of Barangay Dacanlao (0401007019) in Calaca, Batangas.</span>
+                                        <span>
+                                            Following the Supreme Court ruling upheld in April 2025, the abolished territory of Barangay San Rafael is
+                                            programmatically dissolved, and its spatial polygon layer is unioned directly into the adjacent bounds of
+                                            Barangay Dacanlao (0401007019) in Calaca, Batangas.
+                                        </span>
                                     </li>
                                     <li className="flex flex-col sm:flex-row gap-1">
                                         <strong>Caloocan Synthetic Layout:</strong>{" "}
-                                        <span>Due to complex GIS parsing constraints, the single boundary polygon for Caloocan Barangay 176 is maintained as a unified synthetic record rather than being split into its newly declared statutory sub-units (176-A through 176-F).</span>
+                                        <span>
+                                            Due to complex GIS parsing constraints, the single boundary polygon for Caloocan Barangay 176 is
+                                            maintained as a unified synthetic record rather than being split into its newly declared statutory
+                                            sub-units (176-A through 176-F).
+                                        </span>
                                     </li>
                                     <li className="flex flex-col sm:flex-row gap-1">
                                         <strong>Special Non-Residential Enclaves:</strong>{" "}
-                                        <span>Non-residential commercial and structural plots omitting explicit census counts (Tutuban Mall and Manila North Cemetery) are retained as special active map parcels with sentinel codes (1380601901 and 1380605901) to prevent blank structural gaps across the city layout.</span>
+                                        <span>
+                                            Non-residential commercial and structural plots omitting explicit census counts (Tutuban Mall and Manila
+                                            North Cemetery) are retained as special active map parcels with sentinel codes (1380601901 and 1380605901)
+                                            to prevent blank structural gaps across the city layout.
+                                        </span>
                                     </li>
                                     <li className="flex flex-col sm:flex-row gap-1">
                                         <strong>2022 Presidential Election Data Audits:</strong>{" "}
-                                        <span>The country-level view uses a hardcoded injection of the certified Congressional canvass proclamation (53,815,469 total valid votes) to achieve an exact match with official results. Sub-national breakdowns represent live transmission logs compiled from the COMELEC transparency server (53,639,140 valid votes). The variance of 176,329 votes is legal and expected, driven by centrally audited Local Absentee Voting (LAV), Detention Prisoner Voting (DPV), and untransmitted Overseas Absentee Voting (OAV) logs that bypass media routers.</span>
+                                        <span>
+                                            The country-level view uses a hardcoded injection of the certified Congressional canvass proclamation
+                                            (53,815,469 total valid votes) to achieve an exact match with official results. Sub-national breakdowns
+                                            represent live transmission logs compiled from the COMELEC transparency server (53,639,140 valid votes).
+                                            The variance of 176,329 votes is legal and expected, driven by centrally audited Local Absentee Voting
+                                            (LAV), Detention Prisoner Voting (DPV), and untransmitted Overseas Absentee Voting (OAV) logs that bypass
+                                            media routers.
+                                        </span>
                                     </li>
                                     <li className="flex flex-col sm:flex-row gap-1">
                                         <strong>Omitted Special Geographic Area (SGA) Municipalities:</strong>{" "}
-                                        <span>The 8 municipalities inside the Special Geographic Area of BARMM (Pabalik, Kadayangan, Kapalawan, Tugunan, Ligawasan, Malidegao, Nuling, and SGA-8) were legally created in April 2024. For historical tracking accuracy, their 2022 election values are left blank because their constituent barangays were still tabulated under Cotabato province parent municipalities at the time of the vote.</span>
+                                        <span>
+                                            The 8 municipalities inside the Special Geographic Area of BARMM (Pabalik, Kadayangan, Kapalawan, Tugunan,
+                                            Ligawasan, Malidegao, Nuling, and SGA-8) were legally created in April 2024. For historical tracking
+                                            accuracy, their 2022 election values are left blank because their constituent barangays were still
+                                            tabulated under Cotabato province parent municipalities at the time of the vote.
+                                        </span>
                                     </li>
                                     <li className="flex flex-col sm:flex-row gap-1">
                                         <strong>Highly Urbanized Cities (HUCs):</strong>{" "}
-                                        <span>Highly Urbanized Cities are administratively independent of their geographical provinces. To maintain clear spatial visualization layouts, the data pipeline rolls up independent city metrics under their geographical provincial bounds.</span>
+                                        <span>
+                                            Highly Urbanized Cities are administratively independent of their geographical provinces. To maintain
+                                            clear spatial visualization layouts, the data pipeline rolls up independent city metrics under their
+                                            geographical provincial bounds.
+                                        </span>
                                     </li>
                                 </ul>
                                 <p className="mt-3.5 pt-3 border-t border-border-light text-xs text-muted leading-relaxed">
-                                    For the exhaustive technical repository log of all geographic adjustments, view the version control file directly at:{" "}
+                                    For the exhaustive technical repository log of all geographic adjustments, view the version control file directly
+                                    at:{" "}
                                     <a
                                         href="https://github.com/Shiiroi/mapa/blob/main/DATA_CORRECTIONS.md"
                                         target="_blank"
@@ -535,7 +618,7 @@ export function Sidebar(props: SidebarProps) {
                                 </p>
                             </section>
                         </div>
-                        
+
                         <footer className="flex justify-end px-6 py-3 border-t border-border-light bg-surface/30">
                             <button
                                 type="button"

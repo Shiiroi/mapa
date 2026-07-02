@@ -25,9 +25,11 @@ import { buildSeriesScale, formatSeriesTooltip } from "../utils/seriesScale";
 const PH_CENTER: [number, number] = [12.8797, 121.774];
 const PH_ZOOM = 6;
 // Outermost zoom + hard pan limit so the map can't show beyond the Philippines.
+// The west edge is intentionally a little wider so the map can be shifted right
+// for screenshots without changing the rest of the layout.
 const PH_MIN_ZOOM = 5;
 const PH_MAX_BOUNDS: L.LatLngBoundsLiteral = [
-    [3.0, 115.0],
+    [3.0, 112.0],
     [22.5, 128.0],
 ];
 

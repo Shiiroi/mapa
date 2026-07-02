@@ -104,10 +104,13 @@ export default function MainPage() {
         [download, activeTab],
     );
 
-    const handleLevelChange = useCallback((level: MapLevel) => {
-        track("toggle_map_view_mode", { level });
-        download.setLevel(level);
-    }, [download]);
+    const handleLevelChange = useCallback(
+        (level: MapLevel) => {
+            track("toggle_map_view_mode", { level });
+            download.setLevel(level);
+        },
+        [download],
+    );
 
     const handleTabChange = useCallback((tab: SidebarTab) => {
         track("switch_sidebar_tab", { tab });
@@ -138,7 +141,7 @@ export default function MainPage() {
 
     return (
         // Desktop: exact original grid.  Mobile: flex column with animated collapse.
-        <div className="flex h-dvh flex-col overflow-hidden select-none outline-none focus:outline-none lg:grid lg:grid-cols-2">
+        <div className="flex h-full min-h-0 flex-col overflow-hidden select-none outline-none focus:outline-none lg:grid lg:grid-cols-2">
             {/* Map — desktop: always h-full.  Mobile: grows/shrinks with sidebar. */}
             <div
                 className={cn(
@@ -170,7 +173,7 @@ export default function MainPage() {
             <div
                 className={cn(
                     // Desktop classes (unchanged from original)
-                    "lg:h-dvh lg:min-h-0 lg:overflow-hidden lg:border-t-0 lg:max-h-none lg:select-none lg:outline-none lg:focus:outline-none",
+                    "lg:h-full lg:min-h-0 lg:overflow-hidden lg:border-t-0 lg:max-h-none lg:select-none lg:outline-none lg:focus:outline-none",
                     // Mobile shared
                     "border-t border-border-light overflow-hidden select-none outline-none focus:outline-none",
                     isSidebarCollapsed ? "flex-none" : "flex-none",
