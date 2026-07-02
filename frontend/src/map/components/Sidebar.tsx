@@ -91,7 +91,10 @@ function CollapsibleSources({ children }: { children: React.ReactNode }) {
                 </svg>
             </button>
             <div
-                className={cn("px-4 pb-2.5 text-xs leading-relaxed text-muted space-y-1 select-text lg:px-5 lg:pb-4 lg:block", isCollapsed ? "hidden" : "block")}
+                className={cn(
+                    "px-4 pb-2.5 text-xs leading-relaxed text-muted space-y-1 select-text lg:px-5 lg:pb-4 lg:block",
+                    isCollapsed ? "hidden" : "block",
+                )}
             >
                 {children}
             </div>
