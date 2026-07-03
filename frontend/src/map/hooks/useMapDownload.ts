@@ -20,7 +20,7 @@ interface UseMapDownloadOptions {
 
 // Manages the download panel's selection state and runs the scoped GeoJSON export.
 export function useMapDownload({ regions, provinces, municities, municityMeta, country }: UseMapDownloadOptions) {
-    const [level, setLevelState] = useState<MapLevel>("province");
+    const [level, setLevelState] = useState<MapLevel>("country");
     const [selectedRegionPsgc, setSelectedRegionPsgc] = useState<string | null>(null);
     const [selectedProvincePsgc, setSelectedProvincePsgc] = useState<string | null>(null);
     const [selectedMunicityPsgc, setSelectedMunicityPsgcState] = useState<string | null>(null);

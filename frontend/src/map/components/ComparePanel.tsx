@@ -210,13 +210,13 @@ function MetricRow({
     const bWins = mode === "higher" && a != null && b != null && b > a;
 
     const cellClass = (wins: boolean) =>
-        wins ? "text-sm font-semibold text-accent" : "text-sm font-medium text-primary";
+        wins ? "text-xs font-bold text-accent tabular-nums" : "text-xs font-medium text-primary tabular-nums";
 
     return (
-        <tr className="border-b border-border-light last:border-0">
-            <td className="py-2 pr-2 text-xs text-muted">{label}</td>
-            <td className={cn("py-2 px-2 text-right", cellClass(aWins))}>{format(a)}</td>
-            <td className={cn("py-2 pl-2 text-right", cellClass(bWins))}>{format(b)}</td>
+        <tr className="border-b border-border-light hover:bg-slate-50/50">
+            <td className="py-1.5 px-2 text-left text-muted font-medium">{label}</td>
+            <td className={cn("py-1.5 px-2 text-right", cellClass(aWins))}>{format(a)}</td>
+            <td className={cn("py-1.5 px-2 text-right", cellClass(bWins))}>{format(b)}</td>
         </tr>
     );
 }
@@ -234,13 +234,13 @@ function CompareSection({
 }) {
     return (
         <div className="space-y-2">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">{title}</h3>
-            <table className="w-full border-collapse">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-primary border-b border-border pb-1">{title}</h3>
+            <table className="w-full border-collapse border border-border text-xs bg-white">
                 <thead>
-                    <tr className="text-xs text-muted">
-                        <th className="pb-2 text-left font-medium">Metric</th>
-                        <th className="pb-2 text-right font-medium">{nameA}</th>
-                        <th className="pb-2 text-right font-medium">{nameB}</th>
+                    <tr className="text-[10px] text-muted bg-slate-50/50 border-b border-border">
+                        <th className="py-1.5 px-2 text-left font-semibold">METRIC</th>
+                        <th className="py-1.5 px-2 text-right font-semibold">{nameA}</th>
+                        <th className="py-1.5 px-2 text-right font-semibold">{nameB}</th>
                     </tr>
                 </thead>
                 <tbody>{children}</tbody>

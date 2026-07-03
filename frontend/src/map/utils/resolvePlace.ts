@@ -18,6 +18,9 @@ export interface ResolvedPlace extends DivisionStatsFields {
     geo_lvl: string;
     breadcrumb: string;
     note?: string | null;
+    region_psgc?: string | null;
+    province_psgc?: string | null;
+    municity_psgc?: string | null;
 }
 
 interface ResolvePlaceInput {
@@ -121,6 +124,7 @@ export function resolveSelectedPlace(input: ResolvePlaceInput): ResolvedPlace | 
             level: "region",
             geo_lvl: region.geo_lvl,
             breadcrumb: breadcrumbFor("region", regions, provinces, undefined, null, region.psgc),
+            region_psgc: region.psgc,
             ...mergeStats(region),
         };
     }
@@ -135,6 +139,8 @@ export function resolveSelectedPlace(input: ResolvePlaceInput): ResolvedPlace | 
             level: "province",
             geo_lvl: province.geo_lvl,
             breadcrumb: breadcrumbFor("province", regions, provinces, undefined, province.psgc, province.region_psgc),
+            region_psgc: province.region_psgc,
+            province_psgc: province.psgc,
             ...mergeStats(province),
         };
     }
@@ -156,6 +162,9 @@ export function resolveSelectedPlace(input: ResolvePlaceInput): ResolvedPlace | 
                 muni.province_psgc,
                 muni.region_psgc,
             ),
+            region_psgc: muni.region_psgc,
+            province_psgc: muni.province_psgc,
+            municity_psgc: muni.psgc,
             ...mergeStats(muni),
         };
     }
@@ -172,6 +181,9 @@ export function resolveSelectedPlace(input: ResolvePlaceInput): ResolvedPlace | 
             geo_lvl: bgy.geo_lvl,
             breadcrumb: `${breadcrumbFor("municipality", regions, provinces, muni, bgy.province_psgc, bgy.region_psgc)} › ${bgy.name.trim()}`,
             note: bgy.note ?? null,
+            region_psgc: bgy.region_psgc,
+            province_psgc: bgy.province_psgc,
+            municity_psgc: bgy.municity_psgc,
             ...mergeStats(bgy),
         };
     }

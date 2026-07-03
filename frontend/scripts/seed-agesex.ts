@@ -64,6 +64,7 @@ async function main() {
     const payload = rows
         .map((row) => ({
             psgc: row.psgc.padStart(10, "0"),
+            level: row.level,
             pop_male_2020: Number(row.pop_male_2020),
             pop_female_2020: Number(row.pop_female_2020),
             age_sex_2020: JSON.parse(row.age_sex_2020),

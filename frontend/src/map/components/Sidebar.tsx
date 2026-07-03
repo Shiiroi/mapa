@@ -57,6 +57,7 @@ interface SidebarProps {
     drawerMinHeightPx?: number;
     drawerMaxHeightPx?: number;
     onDrawerHeightChange?: (heightPx: number) => void;
+    onLevelChange?: (level: MapLevel) => void;
 }
 
 const TABS: { id: SidebarTab; label: string }[] = [
@@ -178,22 +179,22 @@ export function Sidebar(props: SidebarProps) {
         <aside className="flex h-full min-h-0 flex-col overflow-hidden border-l border-border bg-white select-none outline-none focus:outline-none focus-within:outline-none focus-within:ring-0">
             {props.onToggleCollapse && (
                 <div
-                    className="lg:hidden flex items-center justify-center w-full py-2.5 cursor-ns-resize active:bg-surface/60 transition-colors select-none outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 touch-none [-webkit-tap-highlight-color:transparent]"
+                    className="lg:hidden flex items-center justify-center w-full py-2 cursor-ns-resize active:bg-surface/60 transition-colors select-none outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 touch-none [-webkit-tap-highlight-color:transparent]"
                     onPointerDown={beginDrawerGesture}
                     onPointerMove={updateDrawerGesture}
                     onPointerUp={endDrawerGesture}
                     onPointerCancel={cancelDrawerGesture}
                 >
-                    <div className="w-12 h-1.5 rounded-full bg-muted/40" />
+                    <div className="w-12 h-1 bg-muted/40 rounded-none" />
                 </div>
             )}
 
-            <header className="shrink-0 border-b border-border-light px-4 py-2 lg:px-5 lg:py-4">
+            <header className="shrink-0 border-b border-border-light px-4 py-2 lg:px-5 lg:py-3 bg-white">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-xl font-semibold tracking-tight text-primary lg:text-2xl">Mapa</h1>
+                    <h1 className="text-lg font-bold uppercase tracking-wider text-primary">Mapa</h1>
                     <div className="flex items-center gap-2">
                         <span
-                            className="text-[10px] font-medium text-muted bg-surface rounded-md px-2 py-0.5 truncate max-w-35 lg:max-w-50 lg:text-xs"
+                            className="text-[10px] font-medium text-muted bg-surface px-2 py-0.5 truncate max-w-35 lg:max-w-50 lg:text-xs border border-border-light rounded-none"
                             title={selectedPlace ? selectedPlace.breadcrumb : "Explore region maps"}
                         >
                             {selectedPlace ? selectedPlace.name : "Explore"}
@@ -205,7 +206,7 @@ export function Sidebar(props: SidebarProps) {
                             className="text-muted hover:text-accent transition-colors"
                             aria-label="GitHub Repository"
                         >
-                            <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
                             </svg>
                         </a>
@@ -213,7 +214,7 @@ export function Sidebar(props: SidebarProps) {
                 </div>
                 <div
                     className={cn(
-                        "rounded-lg border border-border-light bg-surface p-0.5 lg:mt-3 lg:p-1 lg:flex lg:items-stretch",
+                        "border border-border bg-surface p-0.5 lg:mt-2.5 lg:p-0.5 lg:flex lg:items-stretch rounded-none",
                         isEffectivelyCollapsed ? "hidden" : "flex mt-2",
                     )}
                 >
@@ -226,9 +227,9 @@ export function Sidebar(props: SidebarProps) {
                                 if (props.onExpand) props.onExpand();
                             }}
                             className={cn(
-                                "flex-1 rounded-md text-center transition-all duration-200 outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0",
-                                "px-2.5 py-1.5 text-xs leading-none lg:px-3 lg:py-1.5 lg:text-sm",
-                                tab === t.id ? "bg-accent font-medium text-white shadow-soft" : "text-primary hover:bg-white/90 hover:text-primary",
+                                "flex-1 text-center transition-all duration-200 outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 cursor-pointer rounded-none",
+                                "px-2.5 py-1 text-xs font-semibold uppercase tracking-wider lg:px-3 lg:py-1 lg:text-[11px]",
+                                tab === t.id ? "bg-accent text-white" : "text-primary hover:bg-white hover:text-primary",
                             )}
                         >
                             {t.label}
@@ -267,8 +268,19 @@ export function Sidebar(props: SidebarProps) {
                 )}
 
                 {tab === "info" && (
-                    <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 lg:px-5 lg:py-5">
-                        <InfoPanel place={selectedPlace} />
+                    <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 lg:px-5 lg:py-5 bg-white">
+                        <InfoPanel
+                            place={selectedPlace}
+                            regions={props.regions}
+                            provinces={props.provinces}
+                            municityMeta={props.municityMeta}
+                            barangays={props.barangays}
+                            onRegionChange={props.onRegionChange}
+                            onProvinceChange={props.onProvinceChange}
+                            onMunicityChange={props.onMunicityChange}
+                            onBarangayChange={props.onBarangayChange}
+                            onLevelChange={props.onLevelChange}
+                        />
                     </div>
                 )}
 
@@ -307,14 +319,14 @@ export function Sidebar(props: SidebarProps) {
 
             <footer
                 className={cn(
-                    "shrink-0 border-t border-border-light bg-white px-4 py-2.5 flex flex-col items-center gap-1.5 select-none outline-none focus:outline-none lg:px-5",
+                    "shrink-0 border-t border-border bg-white px-4 py-2 flex flex-col items-center gap-1.5 select-none outline-none focus:outline-none lg:px-5",
                     isEffectivelyCollapsed ? "hidden lg:flex" : "",
                 )}
             >
                 <button
                     type="button"
                     onClick={() => setIsNotesModalOpen(true)}
-                    className="text-xs font-medium text-muted hover:text-accent transition-colors outline-none focus:outline-none cursor-pointer"
+                    className="text-xs font-semibold text-muted hover:text-accent transition-colors outline-none focus:outline-none cursor-pointer uppercase tracking-wider text-[10px]"
                 >
                     Sources and Notes
                 </button>
@@ -333,11 +345,11 @@ export function Sidebar(props: SidebarProps) {
             {isNotesModalOpen && (
                 <div
                     onClick={() => setIsNotesModalOpen(false)}
-                    className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm select-text"
+                    className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/45 select-text"
                 >
                     <div
                         onClick={(e) => e.stopPropagation()}
-                        className="relative flex flex-col w-full max-w-2xl max-h-[85vh] bg-white rounded-xl shadow-2xl overflow-hidden border border-border"
+                        className="relative flex flex-col w-full max-w-2xl max-h-[85vh] bg-white overflow-hidden border-2 border-border rounded-none shadow-none"
                     >
                         <header className="flex items-center justify-between px-6 py-4 border-b border-border-light bg-surface/30">
                             <h2 className="text-base font-bold text-primary">Sources and Notes</h2>

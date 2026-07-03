@@ -1,9 +1,8 @@
-// Split-layout shell: map panel and download sidebar.
-
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { track } from "@vercel/analytics";
 import { MapPanel } from "../map/components/MapPanel";
 import { Sidebar, type SidebarTab } from "../map/components/Sidebar";
+import { IndexSidebar } from "../map/components/IndexSidebar";
 import { useBarangays } from "../map/hooks/useBarangays";
 import { useMapDownload } from "../map/hooks/useMapDownload";
 import { useUrlToStateSync } from "../map/hooks/useUrlToStateSync";
@@ -37,6 +36,7 @@ export default function MainPage() {
             // eslint-disable-next-line react-hooks/set-state-in-effect
             setOverlayView(defaultSeriesViewState(activeOverlay));
         } else {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setOverlayView({ mode: "lead" });
         }
     }, [activeOverlay]);
@@ -54,23 +54,7 @@ export default function MainPage() {
 
     const download = useMapDownload({ regions, provinces, municities, municityMeta, country });
 
-    // Sync URL to state on direct page load (e.g., /region/:slug or /province/:slug)
-    useUrlToStateSync({
-        regions,
-        provinces,
-        onSetRegion: download.setSelectedRegionPsgc,
-        onSetProvince: download.setSelectedProvincePsgc,
-        onSetLevel: download.setLevel,
-    });
 
-    // Sync state to URL when user selects a region or province
-    useStateToUrlSync({
-        regions,
-        provinces,
-        selectedRegionPsgc: download.selectedRegionPsgc,
-        selectedProvincePsgc: download.selectedProvincePsgc,
-        level: download.level,
-    });
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -86,8 +70,7 @@ export default function MainPage() {
         return set;
     }, [country, regions, provinces, municityMeta]);
 
-    // True level per PSGC, so the CSV parser can tell HUC/independent cities
-    // (codes ending in "00000", like provinces) apart from actual provinces.
+    // True level per PSGC
     const psgcLevels = useMemo(() => {
         const map = new Map<string, MapLevel>();
         if (country) map.set(country.psgc, "country");
@@ -106,17 +89,56 @@ export default function MainPage() {
         [regions, provinces, municityMeta],
     );
 
-    const barangaysQuery = useBarangays(download.selectedMunicityPsgc, download.level === "barangay");
+    const barangaysQuery = useBarangays(
+        download.selectedMunicityPsgc,
+        download.level === "barangay" || download.level === "municipality"
+    );
 
     const barangays = barangaysQuery.data ?? [];
+
+    // Sync URL to state on direct page load
+    useUrlToStateSync({
+        regions,
+        provinces,
+        municityMeta,
+        barangays,
+        onSetRegion: download.setSelectedRegionPsgc,
+        onSetProvince: download.setSelectedProvincePsgc,
+        onSetMunicity: download.setSelectedMunicityPsgc,
+        onSetBarangay: download.setSelectedBarangayPsgc,
+        onSetLevel: download.setLevel,
+    });
+
+    // Sync state to URL when user selects location tiers
+    useStateToUrlSync({
+        regions,
+        provinces,
+        municityMeta,
+        barangays,
+        selectedRegionPsgc: download.selectedRegionPsgc,
+        selectedProvincePsgc: download.selectedProvincePsgc,
+        selectedMunicityPsgc: download.selectedMunicityPsgc,
+        selectedBarangayPsgc: download.selectedBarangayPsgc,
+        level: download.level,
+    });
     const mapLoading =
         loading || (download.level === "municipality" && municitiesLoading) || (download.level === "barangay" && barangaysQuery.isLoading);
+
+    const activePsgc = useMemo(() => {
+        return (
+            download.selectedBarangayPsgc ||
+            download.selectedMunicityPsgc ||
+            download.selectedProvincePsgc ||
+            download.selectedRegionPsgc ||
+            (country?.psgc ?? null)
+        );
+    }, [download.selectedBarangayPsgc, download.selectedMunicityPsgc, download.selectedProvincePsgc, download.selectedRegionPsgc, country]);
 
     const handleFeatureClick = useCallback(
         (entityPsgc: string, mode: MapLevel) => {
             track("select_shape", { psgc: entityPsgc, level: mode });
             download.setSelectionFromMap(mode, entityPsgc);
-            // On mobile: expand info tab so user sees details. Otherwise, do not alter collapse state.
+            // On mobile: expand info tab so user sees details.
             if (activeTab === "info") {
                 setIsSidebarCollapsed(false);
             }
@@ -160,14 +182,28 @@ export default function MainPage() {
     }, [mobileDrawerMaxHeightPx]);
 
     return (
-        // Desktop: exact original grid.  Mobile: flex column with animated collapse.
-        <div className="flex h-full min-h-0 flex-col overflow-hidden select-none outline-none focus:outline-none lg:grid lg:grid-cols-2">
-            {/* Map — desktop: always h-full.  Mobile: grows/shrinks with sidebar. */}
+        <div className="flex h-screen w-screen flex-col overflow-hidden select-none outline-none focus:outline-none lg:grid lg:grid-cols-[240px_1fr_45%] lg:items-stretch">
+            {/* Sitemap Sidebar — Desktop only */}
+            <div className="hidden lg:block lg:h-full lg:w-full lg:min-w-0 lg:min-h-0">
+                <IndexSidebar
+                    level={download.level}
+                    regions={regions}
+                    provinces={provinces}
+                    municityMeta={municityMeta}
+                    selectedRegionPsgc={download.selectedRegionPsgc}
+                    onRegionChange={download.setSelectedRegionPsgc}
+                    selectedProvincePsgc={download.selectedProvincePsgc}
+                    onProvinceChange={download.setSelectedProvincePsgc}
+                    selectedMunicityPsgc={download.selectedMunicityPsgc}
+                    onMunicityChange={download.setSelectedMunicityPsgc}
+                    onLevelChange={handleLevelChange}
+                />
+            </div>
+
+            {/* Map — desktop: strict grid child. Mobile: grows/shrinks with sidebar. */}
             <div
                 className={cn(
-                    // Desktop classes (unchanged from original)
-                    "lg:h-full lg:min-h-0 lg:select-none lg:outline-none lg:focus:outline-none",
-                    // Mobile classes — drawer height is controlled from the sidebar gesture.
+                    "lg:h-full lg:w-full lg:min-w-0 lg:min-h-0 lg:relative",
                     "flex-1 min-h-0 select-none outline-none focus:outline-none",
                 )}
             >
@@ -187,14 +223,14 @@ export default function MainPage() {
                     overlayView={overlayView}
                     isSidebarCollapsed={isSidebarCollapsed}
                     sidebarDrawerHeightPx={mobileDrawerHeightPx}
+                    activePsgc={activePsgc}
                 />
             </div>
-            {/* Sidebar — desktop: always flex-1 with original styling.  Mobile: collapses to header-only. */}
+
+            {/* Details/Data Sidebar — desktop: strict grid child. Mobile: animated collapse drawer. */}
             <div
                 className={cn(
-                    // Desktop classes (unchanged from original)
-                    "lg:h-full lg:min-h-0 lg:overflow-hidden lg:border-t-0 lg:max-h-none lg:select-none lg:outline-none lg:focus:outline-none",
-                    // Mobile shared
+                    "lg:h-full lg:w-full lg:min-w-0 lg:min-h-0 lg:overflow-hidden lg:border-t-0 lg:max-h-none lg:select-none lg:outline-none lg:focus:outline-none",
                     "border-t border-border-light overflow-hidden select-none outline-none focus:outline-none",
                     isSidebarCollapsed ? "flex-none" : "flex-none",
                 )}
@@ -244,6 +280,7 @@ export default function MainPage() {
                     drawerMinHeightPx={mobileDrawerMinHeightPx}
                     drawerMaxHeightPx={mobileDrawerMaxHeightPx}
                     onDrawerHeightChange={handleDrawerHeightChange}
+                    onLevelChange={handleLevelChange}
                 />
             </div>
         </div>

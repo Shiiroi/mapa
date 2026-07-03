@@ -17,13 +17,26 @@ import {
     formatPesoPerCapita,
     formatPopulation,
 } from "../utils/formatStats";
-import { broadAgeGroups, type BroadAgeGroups } from "../utils/ageSex";
+import { broadAgeGroups } from "../utils/ageSex";
 import { mergePlaceStats } from "../utils/mergePlaceStats";
 import type { AgeSexBand } from "../types";
 import type { ResolvedPlace } from "../utils/resolvePlace";
+import type { Region, ProvinceGeoJSON, MunicityMeta, BarangayGeoJSON } from "../types";
+import type { MapLevel } from "../constants";
+import { SubLevelDataTable } from "./SubLevelDataTable";
+import { TopDistributionBar } from "./TopDistributionBar";
 
 interface InfoPanelProps {
     place: ResolvedPlace | null;
+    regions: Region[];
+    provinces: ProvinceGeoJSON[];
+    municityMeta: MunicityMeta[];
+    barangays: BarangayGeoJSON[];
+    onRegionChange: (psgc: string | null) => void;
+    onProvinceChange: (psgc: string | null) => void;
+    onMunicityChange: (psgc: string | null) => void;
+    onBarangayChange?: (psgc: string | null) => void;
+    onLevelChange?: (level: MapLevel) => void;
 }
 
 const PSA_PSGC_URL = "https://psa.gov.ph/classification/psgc/";
@@ -46,13 +59,11 @@ const GDP_HISTORY: { year: number; key: "gdp_2022" | "gdp_2023" | "gdp_2024" }[]
     { year: 2024, key: "gdp_2024" },
 ];
 
-// Gives the plain total percent change between two census figures.
 function totalPctChange(from: number | null, to: number | null): number | null {
     if (from == null || to == null || from === 0) return null;
     return ((to - from) / from) * 100;
 }
 
-// Shortens large counts for chart labels, e.g. 12,600,000 becomes 12.6M.
 function formatCompactNumber(n: number): string {
     const abs = Math.abs(n);
     if (abs >= 1_000_000) {
@@ -66,13 +77,11 @@ function formatCompactNumber(n: number): string {
     return String(Math.round(n));
 }
 
-// Shortens the open-ended PSA top band ("80 years and over", i.e. age >= 80) to "80+".
 function formatAgeBand(age: string): string {
     const m = age.match(/(\d+)\s*(?:years\s*and\s*over|and\s*over|\+)/i);
     return m ? `${m[1]}+` : age;
 }
 
-// Picks a tidy tick step (1, 2, 2.5, or 5 times a power of ten) so every gridline lands on a round number.
 function niceAxisStep(maxValue: number, tickCount: number): number {
     if (maxValue <= 0) return 1;
     const rough = maxValue / tickCount;
@@ -82,7 +91,6 @@ function niceAxisStep(maxValue: number, tickCount: number): number {
     return niceNorm * pow;
 }
 
-// Draws an inline SVG line chart with axes and gridlines; accepts a custom value formatter.
 function PopulationTrendChart({
     points,
     formatValue = formatCompactNumber,
@@ -93,8 +101,8 @@ function PopulationTrendChart({
     ariaLabel?: string;
 }) {
     if (points.length < 2) return null;
-    const W = 340;
-    const H = 180;
+    const W = 380;
+    const H = 140;
     const padLeft = 38;
     const padRight = 12;
     const padTop = 16;
@@ -118,7 +126,7 @@ function PopulationTrendChart({
     const line = points.map((p) => `${x(p.year).toFixed(1)},${y(p.value).toFixed(1)}`).join(" ");
 
     return (
-        <div className="text-accent">
+        <div className="text-accent border border-border p-2 bg-slate-50/20">
             <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={ariaLabel}>
                 {yTicks.map((t) => (
                     <g key={t}>
@@ -127,17 +135,17 @@ function PopulationTrendChart({
                             y1={y(t)}
                             x2={W - padRight}
                             y2={y(t)}
-                            stroke="currentColor"
-                            strokeOpacity={t === 0 ? 0.25 : 0.1}
-                            strokeDasharray={t === 0 ? undefined : "3 3"}
+                            stroke="#cbd5e1"
+                            strokeWidth={0.5}
+                            strokeDasharray="2 2"
                         />
-                        <text x={padLeft - 5} y={y(t) + 3} textAnchor="end" className="fill-muted text-[9px]">
+                        <text x={padLeft - 5} y={y(t) + 3} textAnchor="end" className="fill-muted text-[8px] font-mono">
                             {formatValue(t)}
                         </text>
                     </g>
                 ))}
 
-                <polyline points={line} fill="none" stroke="currentColor" strokeWidth={2} strokeLinejoin="round" />
+                <polyline points={line} fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinejoin="round" />
 
                 {points.map((p) => (
                     <g key={p.year}>
@@ -146,11 +154,11 @@ function PopulationTrendChart({
                             y1={baseline}
                             x2={x(p.year)}
                             y2={baseline + 3}
-                            stroke="currentColor"
-                            strokeOpacity={0.3}
+                            stroke="#cbd5e1"
+                            strokeWidth={0.5}
                         />
-                        <circle cx={x(p.year)} cy={y(p.value)} r={3.5} fill="currentColor" />
-                        <text x={x(p.year)} y={H - 8} textAnchor="middle" className="fill-muted text-[9px]">
+                        <circle cx={x(p.year)} cy={y(p.value)} r={3} fill="currentColor" />
+                        <text x={x(p.year)} y={H - 8} textAnchor="middle" className="fill-muted text-[9px] font-medium font-sans">
                             {p.year}
                         </text>
                     </g>
@@ -160,77 +168,110 @@ function PopulationTrendChart({
     );
 }
 
-// Shows the male/female share as a single split bar with percentage labels.
-function SexSplit({ male, female }: { male: number; female: number }) {
+function SexDonutChart({ male, female }: { male: number; female: number }) {
     const total = male + female;
     if (total === 0) return null;
     const malePct = (male / total) * 100;
     const femalePct = 100 - malePct;
+    
+    const size = 68;
+    const strokeWidth = 10;
+    const radius = (size - strokeWidth) / 2;
+    const circumference = 2 * Math.PI * radius;
+    const maleOffset = circumference - (malePct / 100) * circumference;
+    
     return (
-        <div>
-            <div className="mb-1 flex justify-between text-xs">
-                <span className="font-medium text-sky-600">Males {malePct.toFixed(1)}%</span>
-                <span className="font-medium text-rose-600">Females {femalePct.toFixed(1)}%</span>
-            </div>
-            <div className="flex h-3 overflow-hidden rounded-full">
-                <div className="bg-sky-500/80" style={{ width: `${malePct}%` }} />
-                <div className="bg-rose-500/80" style={{ width: `${femalePct}%` }} />
+        <div className="flex items-center justify-center gap-3 border border-border p-2 bg-slate-50/20">
+            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="transform -rotate-90">
+                {/* Background circle / Female segment */}
+                <circle
+                    cx={size / 2}
+                    cy={size / 2}
+                    r={radius}
+                    fill="none"
+                    stroke="#f43f5e"
+                    strokeWidth={strokeWidth}
+                />
+                {/* Male segment overlay */}
+                <circle
+                    cx={size / 2}
+                    cy={size / 2}
+                    r={radius}
+                    fill="none"
+                    stroke="#0284c7"
+                    strokeWidth={strokeWidth}
+                    strokeDasharray={circumference}
+                    strokeDashoffset={maleOffset}
+                />
+            </svg>
+            <div className="text-[9px] space-y-0.5 font-sans text-left">
+                <div className="flex items-center gap-1">
+                    <span className="inline-block w-2 h-2 bg-[#0284c7]" />
+                    <span className="font-semibold text-primary">M: {malePct.toFixed(1)}%</span>
+                </div>
+                <div className="flex items-center gap-1">
+                    <span className="inline-block w-2 h-2 bg-[#f43f5e]" />
+                    <span className="font-semibold text-primary">F: {femalePct.toFixed(1)}%</span>
+                </div>
             </div>
         </div>
     );
 }
 
-const AGE_GROUP_META: { key: keyof BroadAgeGroups; label: string; bar: string; text: string }[] = [
-    { key: "young", label: "0–14 years", bar: "bg-sky-500/80", text: "text-sky-600" },
-    { key: "working", label: "15–64 years", bar: "bg-emerald-500/80", text: "text-emerald-600" },
-    { key: "senior", label: "65+ years", bar: "bg-amber-500/80", text: "text-amber-600" },
-];
-
-// Renders the broad age groups as a stacked bar plus a labelled count/percentage legend.
-function AgeGroupBreakdown({ groups }: { groups: BroadAgeGroups }) {
-    if (groups.total === 0) return null;
+function AgeBarChart({ young, working, senior }: { young: number; working: number; senior: number }) {
+    const total = young + working + senior;
+    if (total === 0) return null;
+    const yPct = (young / total) * 100;
+    const wPct = (working / total) * 100;
+    const sPct = (senior / total) * 100;
+    
+    const maxPct = Math.max(yPct, wPct, sPct, 1);
+    const W = 110;
+    const H = 72;
+    const padBottom = 14;
+    const plotH = H - padBottom;
+    
+    const barW = 18;
+    const gap = 10;
+    const startX = (W - (barW * 3 + gap * 2)) / 2;
+    
     return (
-        <div className="space-y-2">
-            <div className="flex h-3 overflow-hidden rounded-full">
-                {AGE_GROUP_META.map((g) => (
-                    <div
-                        key={g.key}
-                        className={g.bar}
-                        style={{ width: `${(groups[g.key] / groups.total) * 100}%` }}
-                    />
-                ))}
-            </div>
-            <div className="space-y-1">
-                {AGE_GROUP_META.map((g) => {
-                    const value = groups[g.key];
-                    const pct = (value / groups.total) * 100;
+        <div className="border border-border p-2 bg-slate-50/20 flex items-center justify-center">
+            <svg width={W} height={H} className="font-sans text-[8px]">
+                {[0.25, 0.5, 0.75, 1.0].map((tick, i) => {
+                    const val = maxPct * tick;
+                    const y = plotH - (val / maxPct) * (plotH - 8);
                     return (
-                        <div key={g.key} className="flex items-center justify-between text-xs">
-                            <span className="flex items-center gap-1.5">
-                                <span className={cn("inline-block h-2.5 w-2.5 rounded-sm", g.bar)} />
-                                <span className="text-muted">{g.label}</span>
-                            </span>
-                            <span>
-                                <span className="font-medium text-primary">{formatPopulation(value)}</span>
-                                <span className={cn("ml-1.5", g.text)}>{pct.toFixed(1)}%</span>
-                            </span>
-                        </div>
+                         <line key={i} x1={0} y1={y} x2={W} y2={y} stroke="#e2e8f0" strokeWidth={0.5} strokeDasharray="2 2" />
                     );
                 })}
-            </div>
+                {/* 0-14 bar */}
+                <rect x={startX} y={plotH - (yPct / maxPct) * (plotH - 8)} width={barW} height={(yPct / maxPct) * (plotH - 8)} fill="#0284c7" />
+                <text x={startX + barW / 2} y={plotH - (yPct / maxPct) * (plotH - 8) - 2} textAnchor="middle" className="fill-primary font-bold">{yPct.toFixed(0)}%</text>
+                <text x={startX + barW / 2} y={H - 3} textAnchor="middle" className="fill-muted font-medium">0-14</text>
+
+                {/* 15-64 bar */}
+                <rect x={startX + barW + gap} y={plotH - (wPct / maxPct) * (plotH - 8)} width={barW} height={(wPct / maxPct) * (plotH - 8)} fill="#10b981" />
+                <text x={startX + barW + gap + barW / 2} y={plotH - (wPct / maxPct) * (plotH - 8) - 2} textAnchor="middle" className="fill-primary font-bold">{wPct.toFixed(0)}%</text>
+                <text x={startX + barW + gap + barW / 2} y={H - 3} textAnchor="middle" className="fill-muted font-medium">15-64</text>
+
+                {/* 65+ bar */}
+                <rect x={startX + (barW + gap) * 2} y={plotH - (sPct / maxPct) * (plotH - 8)} width={barW} height={(sPct / maxPct) * (plotH - 8)} fill="#f59e0b" />
+                <text x={startX + (barW + gap) * 2 + barW / 2} y={plotH - (sPct / maxPct) * (plotH - 8) - 2} textAnchor="middle" className="fill-primary font-bold">{sPct.toFixed(0)}%</text>
+                <text x={startX + (barW + gap) * 2 + barW / 2} y={H - 3} textAnchor="middle" className="fill-muted font-medium">65+</text>
+            </svg>
         </div>
     );
 }
 
-// Lays out a back-to-back age-sex pyramid with male bars left, female right, and counts on the edges.
 function AgeSexPyramid({ bands }: { bands: AgeSexBand[] }) {
     const maxCount = Math.max(...bands.map((b) => Math.max(b.male, b.female)), 1);
     return (
-        <div className="space-y-0.5">
-            <div className="grid grid-cols-[3rem_1fr_4rem_1fr_3rem] items-center gap-1 text-[10px] uppercase tracking-wide text-muted">
+        <div className="space-y-0.5 border border-border p-2 bg-slate-50/10">
+            <div className="grid grid-cols-[3rem_1fr_4.5rem_1fr_3rem] items-center gap-1 text-[9px] uppercase tracking-wide text-muted font-semibold">
                 <span className="text-right">Male</span>
                 <span />
-                <span className="text-center">Age</span>
+                <span className="text-center">Age Group</span>
                 <span />
                 <span className="text-left">Female</span>
             </div>
@@ -240,27 +281,27 @@ function AgeSexPyramid({ bands }: { bands: AgeSexBand[] }) {
                 return (
                     <div
                         key={band.age}
-                        className="grid grid-cols-[3rem_1fr_4rem_1fr_3rem] items-center gap-1 text-[10px]"
+                        className="grid grid-cols-[3rem_1fr_4.5rem_1fr_3rem] items-center gap-1 text-[10px]"
                     >
-                        <span className="text-right tabular-nums text-sky-700">
+                        <span className="text-right tabular-nums font-mono text-sky-700">
                             {band.male.toLocaleString()}
                         </span>
                         <div className="flex justify-end">
                             <div
-                                className="h-3 rounded-l bg-sky-500/80"
-                                style={{ width: `${malePct}%`, minWidth: band.male > 0 ? "2px" : 0 }}
+                                className="h-3 bg-sky-500/80 rounded-none border border-sky-600/20"
+                                style={{ width: `${malePct}%`, minWidth: band.male > 0 ? "1px" : 0 }}
                                 title={`Male: ${band.male.toLocaleString()}`}
                             />
                         </div>
-                        <span className="shrink-0 text-center text-muted">{formatAgeBand(band.age)}</span>
+                        <span className="shrink-0 text-center text-muted font-mono text-[9px]">{formatAgeBand(band.age)}</span>
                         <div className="flex justify-start">
                             <div
-                                className="h-3 rounded-r bg-rose-500/80"
-                                style={{ width: `${femalePct}%`, minWidth: band.female > 0 ? "2px" : 0 }}
+                                className="h-3 bg-rose-500/80 rounded-none border border-rose-600/20"
+                                style={{ width: `${femalePct}%`, minWidth: band.female > 0 ? "1px" : 0 }}
                                 title={`Female: ${band.female.toLocaleString()}`}
                             />
                         </div>
-                        <span className="text-left tabular-nums text-rose-700">
+                        <span className="text-left tabular-nums font-mono text-rose-700">
                             {band.female.toLocaleString()}
                         </span>
                     </div>
@@ -270,27 +311,55 @@ function AgeSexPyramid({ bands }: { bands: AgeSexBand[] }) {
     );
 }
 
-function StatCard({
-    label,
-    value,
-    sub,
-    valueClassName,
-}: {
-    label: string;
-    value: string;
-    sub?: string;
-    valueClassName?: string;
-}) {
-    return (
-        <div className="rounded-lg border border-border-light bg-white px-3 py-2.5">
-            <p className="text-xs text-muted">{label}</p>
-            <p className={cn("mt-0.5 text-lg font-semibold text-primary", valueClassName)}>{value}</p>
-            {sub && <p className="mt-0.5 text-xs text-muted">{sub}</p>}
-        </div>
-    );
-}
+export function InfoPanel({
+    place,
+    regions,
+    provinces,
+    municityMeta,
+    barangays,
+    onRegionChange,
+    onProvinceChange,
+    onMunicityChange,
+    onBarangayChange,
+    onLevelChange,
+}: InfoPanelProps) {
 
-export function InfoPanel({ place }: InfoPanelProps) {
+    const handleSelectEntity = (psgc: string, subLevel: MapLevel) => {
+        if (subLevel === "region") {
+            onRegionChange(psgc);
+            onProvinceChange(null);
+            onMunicityChange(null);
+            onBarangayChange?.(null);
+            onLevelChange?.("region");
+        } else if (subLevel === "province") {
+            const province = provinces.find((p) => p.psgc === psgc);
+            if (province) {
+                onRegionChange(province.region_psgc);
+                onProvinceChange(psgc);
+                onMunicityChange(null);
+                onBarangayChange?.(null);
+                onLevelChange?.("province");
+            }
+        } else if (subLevel === "municipality") {
+            const muni = municityMeta.find((m) => m.psgc === psgc);
+            if (muni) {
+                onRegionChange(muni.region_psgc);
+                onProvinceChange(muni.province_psgc);
+                onMunicityChange(psgc);
+                onBarangayChange?.(null);
+                onLevelChange?.("municipality");
+            }
+        } else if (subLevel === "barangay") {
+            const bgy = barangays.find((b) => b.psgc === psgc);
+            if (bgy) {
+                onRegionChange(bgy.region_psgc);
+                onProvinceChange(bgy.province_psgc);
+                onMunicityChange(bgy.municity_psgc);
+                onBarangayChange?.(psgc);
+                onLevelChange?.("barangay");
+            }
+        }
+    };
     const statsQuery = useDivisionStats(place?.psgc ?? null);
     const displayPlace = useMemo(
         () => (place ? mergePlaceStats(place, statsQuery.data) : null),
@@ -299,8 +368,8 @@ export function InfoPanel({ place }: InfoPanelProps) {
 
     if (!place) {
         return (
-            <p className="text-sm text-muted">
-                Select a place at the current view level to see population, area, and density.
+            <p className="text-xs text-muted font-medium italic">
+                Select a place at the current view level to see population, area, and density details.
             </p>
         );
     }
@@ -388,91 +457,211 @@ export function InfoPanel({ place }: InfoPanelProps) {
         downloadTextFile(csv, `mapa-info-${slugifyFilename(displayPlace!.name)}-${date}.csv`, "text/csv");
     }
 
+    const renderInteractiveBreadcrumbs = () => {
+        const breadcrumbs: { label: string; action: () => void }[] = [];
+        
+        breadcrumbs.push({
+            label: "Philippines",
+            action: () => {
+                onRegionChange(null);
+                onProvinceChange(null);
+                onMunicityChange(null);
+                onBarangayChange?.(null);
+                onLevelChange?.("country");
+            }
+        });
+
+        const regPsgc = displayPlace.region_psgc || (displayPlace.level === "region" ? displayPlace.psgc : null);
+        if (regPsgc) {
+            const regionObj = regions.find((r) => r.psgc === regPsgc);
+            if (regionObj) {
+                breadcrumbs.push({
+                    label: regionObj.name.trim(),
+                    action: () => {
+                        onRegionChange(regPsgc);
+                        onProvinceChange(null);
+                        onMunicityChange(null);
+                        onBarangayChange?.(null);
+                        onLevelChange?.("region");
+                    }
+                });
+            }
+        }
+
+        const provPsgc = displayPlace.province_psgc || (displayPlace.level === "province" ? displayPlace.psgc : null);
+        if (provPsgc && displayPlace.level !== "region") {
+            const provinceObj = provinces.find((p) => p.psgc === provPsgc);
+            if (provinceObj) {
+                breadcrumbs.push({
+                    label: provinceObj.name.trim(),
+                    action: () => {
+                        onRegionChange(provinceObj.region_psgc);
+                        onProvinceChange(provPsgc);
+                        onMunicityChange(null);
+                        onBarangayChange?.(null);
+                        onLevelChange?.("province");
+                    }
+                });
+            }
+        }
+
+        const muniPsgc = displayPlace.level === "barangay" ? displayPlace.municity_psgc : (displayPlace.level === "municipality" ? displayPlace.psgc : null);
+        if (muniPsgc && (displayPlace.level === "municipality" || displayPlace.level === "barangay")) {
+            const muniObj = municityMeta.find((m) => m.psgc === muniPsgc);
+            if (muniObj) {
+                breadcrumbs.push({
+                    label: muniObj.name.trim(),
+                    action: () => {
+                        onRegionChange(muniObj.region_psgc);
+                        onProvinceChange(muniObj.province_psgc);
+                        onMunicityChange(muniPsgc);
+                        onBarangayChange?.(null);
+                        onLevelChange?.("municipality");
+                    }
+                });
+            }
+        }
+
+        if (displayPlace.level === "barangay") {
+            breadcrumbs.push({
+                label: displayPlace.name.trim(),
+                action: () => {}
+            });
+        }
+
+        return (
+            <nav className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[10px] font-sans font-bold text-muted uppercase tracking-wider mb-2 border border-border p-2 bg-slate-50/50">
+                {breadcrumbs.map((b, i) => {
+                    const isLast = i === breadcrumbs.length - 1;
+                    return (
+                        <span key={i} className="flex items-center gap-x-1.5">
+                            {i > 0 && <span className="text-slate-300 font-bold font-mono">›</span>}
+                            {isLast ? (
+                                <span className="text-primary font-bold">{b.label}</span>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={b.action}
+                                    className="text-accent hover:underline hover:text-accent-dark transition-colors cursor-pointer"
+                                >
+                                    {b.label}
+                                </button>
+                            )}
+                        </span>
+                    );
+                })}
+            </nav>
+        );
+    };
+
     return (
         <div className="space-y-4">
             <div>
-                <h2 className="text-lg font-semibold text-primary">{displayPlace.name}</h2>
-                <p className="text-xs text-muted">{displayPlace.breadcrumb}</p>
-                <p className="mt-1 font-mono text-xs text-muted">PSGC {displayPlace.psgc}</p>
+                {renderInteractiveBreadcrumbs()}
+                <div className="flex items-baseline justify-between gap-2 mt-2">
+                    <h2 className="text-lg font-bold text-primary tracking-tight">{displayPlace.name}</h2>
+                    <span className="font-mono text-[10px] text-muted font-medium bg-slate-100 border border-border px-1.5 py-0.5">PSGC {displayPlace.psgc}</span>
+                </div>
                 {displayPlace.geo_lvl === "Special" && (
-                    <p className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+                    <div className="mt-2 border border-amber-300 bg-amber-50/50 px-3 py-2 text-xs text-amber-900 rounded-none">
                         Non-residential parcel — not a PSGC census unit; no official population.
                         {displayPlace.note ? ` ${displayPlace.note}` : ""}
-                    </p>
+                    </div>
                 )}
             </div>
 
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                <StatCard
-                    label="Population [2024]"
-                    value={formatPopulation(displayPlace.pop_2024)}
-                    sub="PSA PSGC publication"
-                />
-                <StatCard
-                    label="Change [2020 → 2024]"
-                    value={formatPctChange(displayPlace.pct_change_2020_2024)}
-                    valueClassName={changeToneClass(displayPlace.pct_change_2020_2024)}
-                    sub={
-                        displayPlace.pop_2020 == null
-                            ? "No comparable 2020 figure (boundary or code change)"
-                            : annualChange ?? undefined
-                    }
-                />
-                <StatCard
-                    label="Population density [2024]"
-                    value={displayPlace.density_2024 != null ? `${formatDensity(displayPlace.density_2024)}/km²` : "—"}
-                />
-                <StatCard
-                    label="Area (km²)"
-                    value={formatAreaKm2(displayPlace.area_km2)}
-                    sub={
-                        displayPlace.area_km2 == null
-                            ? "No boundary loaded"
-                            : displayPlace.level === "barangay"
-                                ? "Estimated from boundary polygon"
-                                : "Official area used by PSA"
-                    }
-                />
-                <StatCard
-                    label="Total assets [2024]"
-                    value={formatAssets(displayPlace.assets_2024)}
-                    sub="COA Annual Financial Report"
-                />
-                <StatCard
-                    label="GDP [2024]"
-                    value={formatGdp(displayPlace.gdp_2024)}
-                    sub={displayPlace.gdp_2024 != null ? "PSA constant 2018 prices" : "Not published at this level"}
-                />
+            {/* Key Statistics Grid Table */}
+            <div>
+                <table className="w-full table-fixed border-collapse border border-border text-xs tabular-nums text-primary bg-white">
+                    <colgroup>
+                        <col className="w-1/3" />
+                        <col className="w-2/3" />
+                    </colgroup>
+                    <tbody>
+                        <tr className="border-b border-border bg-slate-50/30">
+                            <td className="py-2 px-3 font-semibold text-muted text-left">POPULATION (2024)</td>
+                            <td className="py-2 px-3 text-right font-medium text-primary">{formatPopulation(displayPlace.pop_2024)}</td>
+                        </tr>
+                        <tr className="border-b border-border">
+                            <td className="py-2 px-3 font-semibold text-muted text-left">CHANGE (2020 → 2024)</td>
+                            <td className={cn("py-2 px-3 text-right font-bold", changeToneClass(displayPlace.pct_change_2020_2024))}>
+                                {formatPctChange(displayPlace.pct_change_2020_2024)}
+                                {displayPlace.pop_2020 != null && annualChange && (
+                                    <span className="text-[10px] font-normal text-muted ml-1">({annualChange})</span>
+                                )}
+                            </td>
+                        </tr>
+                        <tr className="border-b border-border bg-slate-50/30">
+                            <td className="py-2 px-3 font-semibold text-muted text-left">POPULATION DENSITY</td>
+                            <td className="py-2 px-3 text-right font-medium text-primary">
+                                {displayPlace.density_2024 != null ? `${formatDensity(displayPlace.density_2024)}/km²` : "—"}
+                            </td>
+                        </tr>
+                        <tr className="border-b border-border">
+                            <td className="py-2 px-3 font-semibold text-muted text-left">OFFICIAL LAND AREA</td>
+                            <td className="py-2 px-3 text-right font-medium text-primary">
+                                {formatAreaKm2(displayPlace.area_km2)}
+                                {displayPlace.area_km2 != null && (
+                                    <span className="block text-[9px] text-muted font-normal mt-0.5 leading-none text-left">
+                                        {displayPlace.level === "barangay"
+                                            ? "Estimated from boundary polygon"
+                                            : "Official area from PSA Table A"}
+                                    </span>
+                                )}
+                            </td>
+                        </tr>
+                        <tr className="border-b border-border bg-slate-50/30">
+                            <td className="py-2 px-3 font-semibold text-muted text-left">TOTAL ASSETS (2024)</td>
+                            <td className="py-2 px-3 text-right font-medium text-primary">{formatAssets(displayPlace.assets_2024)}</td>
+                        </tr>
+                        <tr>
+                            <td className="py-2 px-3 font-semibold text-muted text-left">GROSS REGIONAL GDP (2024)</td>
+                            <td className="py-2 px-3 text-right font-medium text-primary">
+                                {displayPlace.gdp_2024 != null ? formatGdp(displayPlace.gdp_2024) : "—"}
+                                {displayPlace.gdp_2024 == null && (
+                                    <span className="block text-[9px] text-muted font-normal mt-0.5 leading-none text-left">Not published at this level</span>
+                                )}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             {displayPlace.level === "barangay" && (
-                <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-2">
-                    ⚠️ Note: Barangay land area and population density metrics are computationally derived geographic approximations by Mapa. Official PSA Table A breakdowns are unavailable at this resolution.
-                </p>
+                <div className="text-[10px] text-amber-800 bg-amber-50/50 border border-amber-300 px-3 py-2 leading-normal">
+                    <strong>Note:</strong> Barangay land area and population density metrics are computationally derived geographic approximations by Mapa. Official PSA Table A breakdowns are unavailable at this resolution.
+                </div>
             )}
 
             {(displayPlace.pop_2010 != null ||
                 displayPlace.pop_2015 != null ||
                 displayPlace.pop_2020 != null ||
                 displayPlace.pop_2024 != null) && (
-                    <section>
-                        <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-muted">
-                            Population history (census)
+                    <section className="space-y-2 border-t border-border pt-3.5">
+                        <p className="text-xs font-bold uppercase tracking-wider text-primary border-b border-border-light pb-1">
+                            Population Census History
                         </p>
-                        <table className="w-full border-collapse text-sm">
+                        <table className="w-full table-fixed border-collapse border border-border text-xs tabular-nums bg-white">
+                            <colgroup>
+                                <col className="w-1/3" />
+                                <col className="w-[16.6%]" />
+                                <col className="w-[16.6%]" />
+                                <col className="w-[16.6%]" />
+                                <col className="w-[16.6%]" />
+                            </colgroup>
                             <thead>
-                                <tr className="text-xs text-muted">
-                                    <th className="py-1 pr-2 text-left font-medium"></th>
+                                <tr className="text-[10px] text-muted bg-slate-50/50 border-b border-border">
+                                    <th className="py-1.5 px-2 text-left font-semibold">CENSUS</th>
                                     {POP_HISTORY.map((row) => (
-                                        <th key={row.year} className="py-1 px-2 text-right font-medium">
+                                        <th key={row.year} className="py-1.5 px-2 text-right font-semibold">
                                             {row.year}
                                         </th>
                                     ))}
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr className="border-t border-border-light">
-                                    <td className="py-1.5 pr-2 text-left text-muted">Population</td>
+                                <tr className="border-b border-border">
+                                    <td className="py-1.5 px-2 text-left text-muted font-medium">Population</td>
                                     {POP_HISTORY.map((row) => (
                                         <td
                                             key={row.year}
@@ -482,8 +671,8 @@ export function InfoPanel({ place }: InfoPanelProps) {
                                         </td>
                                     ))}
                                 </tr>
-                                <tr className="border-t border-border-light">
-                                    <td className="py-1.5 pr-2 text-left text-muted">Change</td>
+                                <tr className="border-b border-border">
+                                    <td className="py-1.5 px-2 text-left text-muted font-medium">Total Change</td>
                                     {POP_HISTORY.map((row, i) => {
                                         const prev = i > 0 ? POP_HISTORY[i - 1] : null;
                                         const change = prev
@@ -493,8 +682,8 @@ export function InfoPanel({ place }: InfoPanelProps) {
                                             <td
                                                 key={row.year}
                                                 className={cn(
-                                                    "py-1.5 px-2 text-right italic",
-                                                    i === 0 ? "text-muted" : changeToneClass(change),
+                                                    "py-1.5 px-2 text-right italic font-medium",
+                                                    i === 0 ? "text-muted font-normal" : changeToneClass(change),
                                                 )}
                                             >
                                                 {i === 0 ? "—" : formatPctChange(change)}
@@ -502,8 +691,8 @@ export function InfoPanel({ place }: InfoPanelProps) {
                                         );
                                     })}
                                 </tr>
-                                <tr className="border-t border-border-light">
-                                    <td className="py-1.5 pr-2 text-left text-muted">Growth/yr</td>
+                                <tr>
+                                    <td className="py-1.5 px-2 text-left text-muted font-medium">Growth/yr (CAGR)</td>
                                     {POP_HISTORY.map((row, i) => {
                                         const prev = i > 0 ? POP_HISTORY[i - 1] : null;
                                         const pgr = prev
@@ -518,8 +707,8 @@ export function InfoPanel({ place }: InfoPanelProps) {
                                             <td
                                                 key={row.year}
                                                 className={cn(
-                                                    "py-1.5 px-2 text-right font-medium",
-                                                    i === 0 ? "text-muted" : changeToneClass(pgr),
+                                                    "py-1.5 px-2 text-right font-semibold",
+                                                    i === 0 ? "text-muted font-normal" : changeToneClass(pgr),
                                                 )}
                                             >
                                                 {i === 0 ? "—" : formatGrowthRate(pgr)}
@@ -529,48 +718,54 @@ export function InfoPanel({ place }: InfoPanelProps) {
                                 </tr>
                             </tbody>
                         </table>
-                        <p className="mt-1.5 text-xs text-muted">
-                            Change is the total percent change since the previous census; Growth/yr is the
-                            average annual growth rate (compound) over the exact period between census
-                            reference dates, matching PSA’s published rate.
+                        
+                        <PopulationTrendChart
+                            points={POP_HISTORY.map((row) => ({ year: row.year, value: displayPlace[row.key] }))
+                                .filter((p): p is { year: number; value: number } => p.value != null)}
+                        />
+                        <p className="text-[10px] leading-normal text-muted bg-slate-50 p-2 border border-border">
+                            Change is the total percent change since the previous census. Growth/yr is the compound annual growth rate over the exact period, matching PSA’s published methodology.
                         </p>
-                        <div className="mt-3">
-                            <PopulationTrendChart
-                                points={POP_HISTORY.map((row) => ({ year: row.year, value: displayPlace[row.key] }))
-                                    .filter((p): p is { year: number; value: number } => p.value != null)}
-                            />
-                        </div>
                     </section>
                 )}
 
             {displayPlace.gdp_2024 != null && (
-                <section>
-                    <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-muted">Economy</p>
-                    <div className="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                        <StatCard
-                            label="GDP per capita [2024]"
-                            value={formatPesoPerCapita(gdpPerCapita)}
-                            sub={
-                                displayPlace.pop_2024 != null
-                                    ? "GDP ÷ population 2024"
-                                    : "No population figure for ratio"
-                            }
-                        />
-                    </div>
-                    <table className="mb-2 w-full border-collapse text-sm">
+                <section className="space-y-2 border-t border-border pt-3.5">
+                    <p className="text-xs font-bold uppercase tracking-wider text-primary border-b border-border-light pb-1">
+                        Gross domestic product (gdp)
+                    </p>
+                    <table className="w-full table-fixed border-collapse border border-border text-xs tabular-nums bg-white mb-2">
+                        <colgroup>
+                            <col className="w-1/3" />
+                            <col className="w-2/3" />
+                        </colgroup>
+                        <tbody>
+                            <tr className="border-b border-border bg-slate-50/50">
+                                <td className="py-1.5 px-2 text-left text-muted font-medium">GDP PER CAPITA (2024)</td>
+                                <td className="py-1.5 px-2 text-right font-semibold text-primary">{formatPesoPerCapita(gdpPerCapita)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table className="w-full table-fixed border-collapse border border-border text-xs tabular-nums bg-white">
+                        <colgroup>
+                            <col className="w-1/3" />
+                            <col className="w-[22.2%]" />
+                            <col className="w-[22.2%]" />
+                            <col className="w-[22.2%]" />
+                        </colgroup>
                         <thead>
-                            <tr className="text-xs text-muted">
-                                <th className="py-1 pr-2 text-left font-medium"></th>
+                            <tr className="text-[10px] text-muted bg-slate-50/50 border-b border-border">
+                                <th className="py-1.5 px-2 text-left font-semibold">GDP METRIC</th>
                                 {GDP_HISTORY.map((row) => (
-                                    <th key={row.year} className="py-1 px-2 text-right font-medium">
+                                    <th key={row.year} className="py-1.5 px-2 text-right font-semibold">
                                         {row.year}
                                     </th>
                                 ))}
                             </tr>
                         </thead>
                         <tbody>
-                            <tr className="border-t border-border-light">
-                                <td className="py-1.5 pr-2 text-left text-muted">GDP</td>
+                            <tr className="border-b border-border">
+                                <td className="py-1.5 px-2 text-left text-muted font-medium">GDP (Constant 2018 Prices)</td>
                                 {GDP_HISTORY.map((row) => (
                                     <td
                                         key={row.year}
@@ -580,8 +775,8 @@ export function InfoPanel({ place }: InfoPanelProps) {
                                     </td>
                                 ))}
                             </tr>
-                            <tr className="border-t border-border-light">
-                                <td className="py-1.5 pr-2 text-left text-muted">Change</td>
+                            <tr>
+                                <td className="py-1.5 px-2 text-left text-muted font-medium">Real GDP Growth</td>
                                 {GDP_HISTORY.map((row, i) => {
                                     const prev = i > 0 ? GDP_HISTORY[i - 1] : null;
                                     const change = prev
@@ -591,8 +786,8 @@ export function InfoPanel({ place }: InfoPanelProps) {
                                         <td
                                             key={row.year}
                                             className={cn(
-                                                "py-1.5 px-2 text-right italic",
-                                                i === 0 ? "text-muted" : changeToneClass(change),
+                                                "py-1.5 px-2 text-right font-semibold",
+                                                i === 0 ? "text-muted font-normal" : changeToneClass(change),
                                             )}
                                         >
                                             {i === 0 ? "—" : formatPctChange(change)}
@@ -612,58 +807,135 @@ export function InfoPanel({ place }: InfoPanelProps) {
             )}
 
             {displayPlace.age_sex_2020 != null && displayPlace.age_sex_2020.length > 0 && (
-                <section>
-                    <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-muted">
-                        Household age &amp; sex [2020]
-                    </p>
-                    <div className="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                        <StatCard
-                            label="Male"
-                            value={formatPopulation(displayPlace.pop_male_2020)}
-                            sub="2020 CPH household population"
-                        />
-                        <StatCard
-                            label="Female"
-                            value={formatPopulation(displayPlace.pop_female_2020)}
-                            sub="2020 CPH household population"
-                        />
-                    </div>
-
+                <section className="space-y-4 border-t border-border pt-3.5">
+                    {/* Sex distribution with donut chart */}
                     {displayPlace.pop_male_2020 != null && displayPlace.pop_female_2020 != null && (
-                        <div className="mb-4">
-                            <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted">Sex</p>
-                            <SexSplit male={displayPlace.pop_male_2020} female={displayPlace.pop_female_2020} />
+                        <div className="space-y-2">
+                            <p className="text-xs font-bold uppercase tracking-wider text-primary border-b border-border-light pb-1">
+                                Sex Distribution (2020 CPH)
+                            </p>
+                            <div className="grid grid-cols-2 gap-3 items-center">
+                                <table className="w-full table-fixed border-collapse border border-border text-xs tabular-nums bg-white">
+                                    <colgroup>
+                                        <col className="w-1/2" />
+                                        <col className="w-1/2" />
+                                    </colgroup>
+                                    <tbody>
+                                        <tr className="border-b border-border bg-slate-50/30">
+                                            <td className="py-2 px-2.5 font-semibold text-muted text-left">MALE</td>
+                                            <td className="py-2 px-2.5 text-right font-bold text-sky-600">
+                                                {formatPopulation(displayPlace.pop_male_2020)}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className="py-2 px-2.5 font-semibold text-muted text-left">FEMALE</td>
+                                            <td className="py-2 px-2.5 text-right font-bold text-rose-600">
+                                                {formatPopulation(displayPlace.pop_female_2020)}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <SexDonutChart male={displayPlace.pop_male_2020} female={displayPlace.pop_female_2020} />
+                            </div>
                         </div>
                     )}
 
-                    <div className="mb-4">
-                        <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted">Age groups</p>
-                        <AgeGroupBreakdown groups={broadAgeGroups(displayPlace.age_sex_2020)} />
+                    {/* Broad Age groups with vertical bar chart */}
+                    <div className="space-y-2">
+                        <p className="text-xs font-bold uppercase tracking-wider text-primary border-b border-border-light pb-1">
+                            Age Structure (2020 CPH)
+                        </p>
+                        <div className="grid grid-cols-[1.2fr_1fr] gap-3 items-center">
+                            <table className="w-full table-fixed border-collapse border border-border text-xs tabular-nums bg-white">
+                                 <colgroup>
+                                     <col className="w-1/3" />
+                                     <col className="w-1/3" />
+                                     <col className="w-1/3" />
+                                 </colgroup>
+                                 <thead>
+                                     <tr className="text-[10px] text-muted bg-slate-50/50 border-b border-border">
+                                         <th className="py-1 px-1.5 text-left font-semibold">AGE GROUP</th>
+                                         <th className="py-1 px-1.5 text-right font-semibold">POP</th>
+                                         <th className="py-1 px-1.5 text-right font-semibold">SHARE</th>
+                                     </tr>
+                                 </thead>
+                                <tbody>
+                                    {(() => {
+                                        const groups = broadAgeGroups(displayPlace.age_sex_2020);
+                                        const total = groups.total || 1;
+                                        return (
+                                            <>
+                                                <tr className="border-b border-border">
+                                                    <td className="py-1.5 px-1.5 font-medium text-primary">0–14 years</td>
+                                                    <td className="py-1.5 px-1.5 text-right text-slate-700">{formatPopulation(groups.young)}</td>
+                                                    <td className="py-1.5 px-1.5 text-right font-bold text-sky-600">{((groups.young / total) * 100).toFixed(1)}%</td>
+                                                </tr>
+                                                <tr className="border-b border-border">
+                                                    <td className="py-1.5 px-1.5 font-medium text-primary">15–64 years</td>
+                                                    <td className="py-1.5 px-1.5 text-right text-slate-700">{formatPopulation(groups.working)}</td>
+                                                    <td className="py-1.5 px-1.5 text-right font-bold text-emerald-600">{((groups.working / total) * 100).toFixed(1)}%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="py-1.5 px-1.5 font-medium text-primary">65+ years</td>
+                                                    <td className="py-1.5 px-1.5 text-right text-slate-700">{formatPopulation(groups.senior)}</td>
+                                                    <td className="py-1.5 px-1.5 text-right font-bold text-amber-600">{((groups.senior / total) * 100).toFixed(1)}%</td>
+                                                </tr>
+                                            </>
+                                        );
+                                    })()}
+                                </tbody>
+                            </table>
+                            {(() => {
+                                const groups = broadAgeGroups(displayPlace.age_sex_2020);
+                                return <AgeBarChart young={groups.young} working={groups.working} senior={groups.senior} />;
+                            })()}
+                        </div>
                     </div>
 
-                    <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted">
-                        Age distribution
-                    </p>
-                    <AgeSexPyramid bands={displayPlace.age_sex_2020} />
+                    <div className="space-y-2">
+                        <p className="text-xs font-bold uppercase tracking-wider text-primary border-b border-border-light pb-1">
+                            Age &amp; Sex Pyramid
+                        </p>
+                        <AgeSexPyramid bands={displayPlace.age_sex_2020} />
+                    </div>
                 </section>
             )}
 
-            <div className="flex gap-2">
+            <TopDistributionBar
+                level={displayPlace.level}
+                regions={regions}
+                provinces={provinces}
+                municityMeta={municityMeta}
+                barangays={barangays}
+                selectedRegionPsgc={displayPlace.region_psgc || (displayPlace.level === "region" ? displayPlace.psgc : null)}
+                selectedProvincePsgc={displayPlace.province_psgc || (displayPlace.level === "province" ? displayPlace.psgc : null)}
+                parentName={displayPlace.name}
+            />
+
+            <SubLevelDataTable
+                level={displayPlace.level}
+                regions={regions}
+                provinces={provinces}
+                municityMeta={municityMeta}
+                barangays={barangays}
+                selectedRegionPsgc={displayPlace.region_psgc || (displayPlace.level === "region" ? displayPlace.psgc : null)}
+                selectedProvincePsgc={displayPlace.province_psgc || (displayPlace.level === "province" ? displayPlace.psgc : null)}
+                selectedMunicityPsgc={displayPlace.municity_psgc || (displayPlace.level === "municipality" ? displayPlace.psgc : null)}
+                onSelectEntity={handleSelectEntity}
+            />
+
+            <div className="flex gap-2 border-t border-border pt-4">
                 <button
                     type="button"
                     onClick={handleDownloadJson}
-                    className={cn(
-                        "flex-1 rounded-lg border border-border-light bg-white px-3 py-2 text-sm font-medium text-primary hover:bg-surface",
-                    )}
+                    className="flex-1 border border-border bg-white px-3 py-2 text-xs font-bold uppercase tracking-wider text-primary hover:bg-slate-50 transition-colors cursor-pointer rounded-none"
                 >
                     Download info (JSON)
                 </button>
                 <button
                     type="button"
                     onClick={handleDownloadCsv}
-                    className={cn(
-                        "flex-1 rounded-lg border border-border-light bg-white px-3 py-2 text-sm font-medium text-primary hover:bg-surface",
-                    )}
+                    className="flex-1 border border-border bg-white px-3 py-2 text-xs font-bold uppercase tracking-wider text-primary hover:bg-slate-50 transition-colors cursor-pointer rounded-none"
                 >
                     Download info (CSV)
                 </button>

@@ -34,16 +34,18 @@ const PH_MAX_BOUNDS: L.LatLngBoundsLiteral = [
 ];
 
 const BASE_STYLE: L.PathOptions = {
-    color: "#2b6cb0",
-    weight: 0.8,
-    fillColor: "#3182ce",
-    fillOpacity: 0.15,
+    color: "#475569", // slate-600 neutral outline
+    weight: 0.6,
+    fillColor: "#94a3b8", // slate-400 neutral fill
+    fillOpacity: 0.1,
     renderer: L.canvas(),
 };
 
 const HOVER_STYLE: L.PathOptions = {
-    weight: 2,
-    fillOpacity: 0.85,
+    color: "#1d4ed8", // deep standard blue active/highlight outline
+    weight: 1.5,
+    fillColor: "#1d4ed8",
+    fillOpacity: 0.2,
 };
 
 type DisplayMode = "outline" | "density" | "population" | "gdp" | "assets" | "custom";
@@ -96,6 +98,7 @@ interface MapPanelProps {
     isSidebarCollapsed?: boolean;
     sidebarDrawerHeightPx?: number;
     onMapInteraction?: () => void;
+    activePsgc?: string | null;
 }
 
 // Shared legend box with a collapse toggle styled like the Controls pill for UI
@@ -202,6 +205,182 @@ function MapEventTracker({ onInteraction }: { onInteraction?: () => void }) {
     return null;
 }
 
+function MapZoomTrigger({
+    activePsgc,
+    country,
+    regions,
+    provinces,
+    municities,
+    barangays,
+    onMapSettled,
+}: {
+    activePsgc: string | null;
+    country: MapEntity | null;
+    regions: MapEntity[];
+    provinces: MapEntity[];
+    municities: MapEntity[];
+    barangays: MapEntity[];
+    onMapSettled?: () => void;
+}) {
+    const map = useMap();
+    const prevActivePsgc = useRef<string | null>(null);
+    const isInitial = useRef(true);
+    const refitBoundsRef = useRef<() => void>(() => {});
+
+    // Keep bounds calculation ref fresh to prevent stale closure in observer
+    useEffect(() => {
+        refitBoundsRef.current = () => {
+            let selectedEntity: MapEntity | null = null;
+            if (activePsgc) {
+                if (country && country.psgc === activePsgc) {
+                    selectedEntity = country;
+                } else {
+                    selectedEntity =
+                        regions.find((x) => x.psgc === activePsgc) ??
+                        provinces.find((x) => x.psgc === activePsgc) ??
+                        municities.find((x) => x.psgc === activePsgc) ??
+                        barangays.find((x) => x.psgc === activePsgc) ??
+                        null;
+                }
+            }
+
+            if (selectedEntity && selectedEntity.geometry) {
+                try {
+                    const bounds = L.geoJSON(selectedEntity.geometry).getBounds();
+                    if (bounds.isValid()) {
+                        const isBgy = selectedEntity.geo_lvl === "Bgy" || activePsgc!.length > 9;
+                        map.fitBounds(bounds, {
+                            animate: false,
+                            padding: [30, 30],
+                            maxZoom: isBgy ? 15 : 12,
+                        });
+                    }
+                } catch (e) {
+                    console.error("Error refitting bounds on layout resize:", e);
+                }
+            } else {
+                map.setView(PH_CENTER, PH_ZOOM, { animate: false });
+            }
+        };
+    }, [activePsgc, country, regions, provinces, municities, barangays, map]);
+
+    // Explicit ResizeObserver observing the parent element
+    useEffect(() => {
+        const container = map.getContainer();
+        const parent = container.parentElement;
+        if (!parent) return;
+
+        const observer = new ResizeObserver(() => {
+            // Double requestAnimationFrame (WebKit/Safari layout pass hack)
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    map.invalidateSize({ animate: false });
+                    if (refitBoundsRef.current) {
+                        refitBoundsRef.current();
+                    }
+                });
+            });
+        });
+
+        observer.observe(parent);
+
+        // Initial recalculation immediately upon rendering (wrapped in double requestAnimationFrame)
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                map.invalidateSize({ animate: false });
+                if (refitBoundsRef.current) {
+                    refitBoundsRef.current();
+                }
+                // Call onMapSettled after WebKit finishes layout calculations
+                onMapSettled?.();
+            });
+        });
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [map, onMapSettled]);
+
+    useEffect(() => {
+        // Resolve the active entity from geo layers
+        let selectedEntity: MapEntity | null = null;
+        if (activePsgc) {
+            if (country && country.psgc === activePsgc) {
+                selectedEntity = country;
+            } else {
+                selectedEntity =
+                    regions.find((x) => x.psgc === activePsgc) ??
+                    provinces.find((x) => x.psgc === activePsgc) ??
+                    municities.find((x) => x.psgc === activePsgc) ??
+                    barangays.find((x) => x.psgc === activePsgc) ??
+                    null;
+            }
+        }
+
+        // If we have a selection but geo data is still loading, wait for it
+        if (activePsgc && !selectedEntity) {
+            return;
+        }
+
+        // 1. Initial Load: Fit bounds instantly if we have resolved the entity
+        if (isInitial.current) {
+            isInitial.current = false;
+            prevActivePsgc.current = activePsgc;
+
+            if (selectedEntity && selectedEntity.geometry) {
+                try {
+                    const bounds = L.geoJSON(selectedEntity.geometry).getBounds();
+                    if (bounds.isValid()) {
+                        const isBgy = selectedEntity.geo_lvl === "Bgy" || activePsgc!.length > 9;
+                        map.fitBounds(bounds, {
+                            animate: false,
+                            padding: [30, 30],
+                            maxZoom: isBgy ? 15 : 12,
+                        });
+                    }
+                } catch (e) {
+                    console.error("Error on initial load fitBounds:", e);
+                }
+            } else {
+                map.setView(PH_CENTER, PH_ZOOM, { animate: false });
+            }
+            return;
+        }
+
+        // 2. Prevent duplicate animations if selection didn't change
+        if (activePsgc === prevActivePsgc.current) {
+            return;
+        }
+        prevActivePsgc.current = activePsgc;
+
+        // 3. Zoom out to country if selection is cleared
+        if (!activePsgc || activePsgc === country?.psgc) {
+            map.flyTo(PH_CENTER, PH_ZOOM, { duration: 0.8 });
+            return;
+        }
+
+        // 4. Snappy animated zoom for user interactions (800ms)
+        if (selectedEntity && selectedEntity.geometry) {
+            try {
+                const geojsonLayer = L.geoJSON(selectedEntity.geometry);
+                const bounds = geojsonLayer.getBounds();
+                if (bounds.isValid()) {
+                    const isBgy = selectedEntity.geo_lvl === "Bgy" || activePsgc.length > 9;
+                    map.flyToBounds(bounds, {
+                        padding: [30, 30],
+                        maxZoom: isBgy ? 15 : 12,
+                        duration: 0.8, // Snappier duration
+                    });
+                }
+            } catch (e) {
+                console.error("Error computing bounds for selection zoom:", e);
+            }
+        }
+    }, [activePsgc, country, regions, provinces, municities, barangays, map]);
+
+    return null;
+}
+
 export function MapPanel({
     country = null,
     provinces = [],
@@ -219,6 +398,7 @@ export function MapPanel({
     isSidebarCollapsed = true,
     sidebarDrawerHeightPx,
     onMapInteraction,
+    activePsgc = null,
 }: MapPanelProps) {
     const [userDisplayMode, setUserDisplayMode] = useState<DisplayMode>("outline");
     const [fillOpacity, setFillOpacity] = useState(0.7);
@@ -227,6 +407,46 @@ export function MapPanel({
     const [controlsCollapsed, setControlsCollapsed] = useState(isMobileInit);
     const [legendCollapsed, setLegendCollapsed] = useState(isMobileInit);
     const toggleLegend = useCallback(() => setLegendCollapsed((v) => !v), []);
+
+    const [layoutReady, setLayoutReady] = useState(false);
+    const [mapSettled, setMapSettled] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!containerRef.current) return;
+
+        const checkDimensions = () => {
+            if (!containerRef.current) return false;
+            const width = containerRef.current.clientWidth;
+            if (width <= 0) return false;
+
+            const isDesktop = window.innerWidth >= 1024;
+            if (isDesktop) {
+                // On desktop, the map should occupy its grid column (less than full screen width).
+                // If it is w-screen or equals window.innerWidth, Safari has not painted layout columns yet.
+                if (width >= window.innerWidth) {
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        const observer = new ResizeObserver(() => {
+            if (checkDimensions()) {
+                setLayoutReady(true);
+                observer.disconnect();
+            }
+        });
+
+        observer.observe(containerRef.current);
+
+        if (checkDimensions()) {
+            setLayoutReady(true);
+            observer.disconnect();
+        }
+
+        return () => observer.disconnect();
+    }, []);
 
     // The user's shading choice wins; "custom" only applies while an overlay is
     // loaded (otherwise fall back to outline). This lets you flip between built-in
@@ -447,7 +667,7 @@ export function MapPanel({
     );
 
     return (
-        <div className="relative h-full min-h-0 w-full">
+        <div ref={containerRef} className="relative w-full h-full min-w-0 min-h-0">
             {loading && (
                 <div className="absolute inset-0 z-1001 flex items-center justify-center bg-parchment/80">
                     <p className="rounded-lg bg-white px-6 py-4 shadow-soft">Loading Philippine map…</p>
@@ -698,31 +918,53 @@ export function MapPanel({
                 </LegendShell>
             )}
 
-            <MapContainer
-                center={PH_CENTER}
-                zoom={PH_ZOOM}
-                minZoom={PH_MIN_ZOOM}
-                maxBounds={PH_MAX_BOUNDS}
-                maxBoundsViscosity={1.0}
-                zoomControl={false}
-                className="h-full w-full"
-                scrollWheelZoom
-                preferCanvas
-            >
-                <MapResizeTrigger isCollapsed={isSidebarCollapsed} mode={mode} drawerHeightPx={sidebarDrawerHeightPx} />
-                <MapEventTracker onInteraction={onMapInteraction} />
-                <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <ZoomControl position="bottomright" />
-                <GeoJSON
-                    key={`${mode}-${displayMode}-${fillOpacity}-${currentData.features.length}-${overlay?.meta.title ?? ""}-${overlayView.mode}-${overlayView.shareKey ?? ""}-${overlayView.pairA ?? ""}-${overlayView.pairB ?? ""}`}
-                    data={currentData}
-                    style={getStyle}
-                    onEachFeature={onEachFeature}
-                />
-            </MapContainer>
+            {layoutReady ? (
+                <div
+                    className={cn(
+                        "w-full h-full transition-opacity duration-300 ease-in-out",
+                        mapSettled ? "opacity-100" : "opacity-0"
+                    )}
+                >
+                    <MapContainer
+                        center={PH_CENTER}
+                        zoom={PH_ZOOM}
+                        minZoom={PH_MIN_ZOOM}
+                        maxBounds={PH_MAX_BOUNDS}
+                        maxBoundsViscosity={1.0}
+                        zoomControl={false}
+                        className="h-full w-full"
+                        scrollWheelZoom
+                        preferCanvas
+                    >
+                        <MapResizeTrigger isCollapsed={isSidebarCollapsed} mode={mode} drawerHeightPx={sidebarDrawerHeightPx} />
+                        <MapEventTracker onInteraction={onMapInteraction} />
+                        <MapZoomTrigger
+                            activePsgc={activePsgc ?? null}
+                            country={country}
+                            regions={regions}
+                            provinces={provinces}
+                            municities={municities}
+                            barangays={barangays}
+                            onMapSettled={() => setMapSettled(true)}
+                        />
+                        <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
+                        <ZoomControl position="bottomright" />
+                        <GeoJSON
+                            key={`${mode}-${displayMode}-${fillOpacity}-${currentData.features.length}-${overlay?.meta.title ?? ""}-${overlayView.mode}-${overlayView.shareKey ?? ""}-${overlayView.pairA ?? ""}-${overlayView.pairB ?? ""}`}
+                            data={currentData}
+                            style={getStyle}
+                            onEachFeature={onEachFeature}
+                        />
+                    </MapContainer>
+                </div>
+            ) : (
+                <div className="h-full w-full bg-slate-50 flex items-center justify-center text-[10px] text-muted font-medium uppercase tracking-wider">
+                    Initializing map layout...
+                </div>
+            )}
         </div>
     );
 }
