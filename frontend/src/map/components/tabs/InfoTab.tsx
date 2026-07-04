@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { downloadJsonFile, downloadTextFile, slugifyFilename } from "../../../lib/downloadFile";
 import { useDivisionStats } from "../../hooks/useDivisionStats";
-import { compoundAnnualGrowthRate, formatAnnualizedChange, formatGdp } from "../../utils/formatStats";
+import { formatGdp } from "../../utils/formatStats";
 import { broadAgeGroups } from "../../utils/ageSex";
 import { mergePlaceStats } from "../../utils/mergePlaceStats";
 import type { ResolvedPlace } from "../../utils/resolvePlace";
@@ -121,15 +121,6 @@ export function InfoTab({
         if (!displayPlace?.age_sex_2020) return null;
         return broadAgeGroups(displayPlace.age_sex_2020);
     }, [displayPlace]);
-
-    const growth2020to2024 = useMemo(() => {
-        if (!displayPlace) return null;
-        return compoundAnnualGrowthRate(displayPlace.pop_2020, displayPlace.pop_2024, 2020, 2024);
-    }, [displayPlace]);
-
-    const annualChange = useMemo(() => {
-        return formatAnnualizedChange(growth2020to2024);
-    }, [growth2020to2024]);
 
     const gdpPerCapita = useMemo(() => {
         if (!displayPlace || displayPlace.gdp_2024 == null || displayPlace.pop_2024 == null || displayPlace.pop_2024 === 0) {
@@ -341,7 +332,7 @@ export function InfoTab({
             </div>
 
             {/* Key Statistics Grid Table */}
-            <KeyStatsTable displayPlace={displayPlace} annualChange={annualChange} />
+            <KeyStatsTable displayPlace={displayPlace} />
 
             {displayPlace.level === "barangay" && (
                 <div className="text-[10px] text-amber-800 bg-amber-50/50 border border-amber-300 px-3 py-2 leading-normal">
