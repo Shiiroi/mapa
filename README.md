@@ -72,11 +72,15 @@ mapa/
 │       │   │   ├── Map.tsx
 │       │   │   ├── Sidebar.tsx
 │       │   │   └── tabs/
+│       │   │   └── Index.tsx
 │       │   │       ├── CompareTab.tsx
 │       │   │       ├── CustomTab.tsx
 │       │   │       ├── DownloadTab.tsx
 │       │   │       ├── InfoTab.tsx
-│       │   │       └── Index.tsx
+│       │   │       └── into-sections
+│       │   │       └── custom-sections
+│       │   │       └── download-sections
+│       │   │       └── compare-sections
 │       │   ├── hooks/
 │       │   ├── services/
 │       │   └── utils/
