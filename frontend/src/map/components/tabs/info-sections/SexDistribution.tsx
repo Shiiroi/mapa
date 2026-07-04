@@ -1,3 +1,4 @@
+// Donut chart showing male/female population share for a place.
 import React, { useMemo } from "react";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 import { formatPopulation } from "../../../utils/formatStats";
@@ -12,10 +13,13 @@ export const SexDistribution = React.memo(function SexDistribution({ male, femal
     const malePct = total > 0 ? (male / total) * 100 : 0;
     const femalePct = total > 0 ? 100 - malePct : 0;
 
-    const data = useMemo(() => [
-        { name: "Male", value: male, percentage: malePct, color: "#0284c7" },
-        { name: "Female", value: female, percentage: femalePct, color: "#f43f5e" },
-    ], [male, female, malePct, femalePct]);
+    const data = useMemo(
+        () => [
+            { name: "Male", value: male, percentage: malePct, color: "#0284c7" },
+            { name: "Female", value: female, percentage: femalePct, color: "#f43f5e" },
+        ],
+        [male, female, malePct, femalePct],
+    );
 
     if (total === 0) return null;
 
@@ -24,15 +28,7 @@ export const SexDistribution = React.memo(function SexDistribution({ male, femal
             <div className="w-[68px] h-[68px] shrink-0">
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
-                        <Pie
-                            data={data}
-                            dataKey="value"
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={20}
-                            outerRadius={28}
-                            paddingAngle={2}
-                        >
+                        <Pie data={data} dataKey="value" cx="50%" cy="50%" innerRadius={20} outerRadius={28} paddingAngle={2}>
                             {data.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={entry.color} />
                             ))}
@@ -41,7 +37,7 @@ export const SexDistribution = React.memo(function SexDistribution({ male, femal
                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             formatter={(val: any, name: any, props: any) => [
                                 `${formatPopulation(Number(val))} (${props.payload.percentage.toFixed(1)}%)`,
-                                String(name)
+                                String(name),
                             ]}
                             contentStyle={{ fontSize: 9, padding: "2px 6px", backgroundColor: "#ffffff", border: "1px solid #cbd5e1" }}
                         />

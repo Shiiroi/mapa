@@ -1,3 +1,4 @@
+// Sidebar container for Info, Compare, Custom, and Download panels.
 import { useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { cn } from "../../lib/cn";

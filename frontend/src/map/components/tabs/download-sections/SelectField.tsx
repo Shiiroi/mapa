@@ -1,3 +1,4 @@
+// Simple labeled select field used by download tab scope pickers.
 interface SelectFieldProps {
     label: string;
     value: string | null;
@@ -8,15 +9,7 @@ interface SelectFieldProps {
     disabled?: boolean;
 }
 
-export function SelectField({
-    label,
-    value,
-    onChange,
-    options,
-    placeholder,
-    allowEmpty,
-    disabled,
-}: SelectFieldProps) {
+export function SelectField({ label, value, onChange, options, placeholder, allowEmpty, disabled }: SelectFieldProps) {
     return (
         <div>
             <label className="mb-1 block text-sm text-primary">{label}</label>

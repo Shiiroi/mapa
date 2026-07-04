@@ -1,3 +1,4 @@
+// Section wrapper for side-by-side comparison tables with shared header/columns.
 import type { ReactNode } from "react";
 
 interface CompareSectionProps {
@@ -7,12 +8,7 @@ interface CompareSectionProps {
     children: ReactNode;
 }
 
-export function CompareSection({
-    title,
-    nameA,
-    nameB,
-    children,
-}: CompareSectionProps) {
+export function CompareSection({ title, nameA, nameB, children }: CompareSectionProps) {
     return (
         <div className="space-y-2">
             <h3 className="text-xs font-bold uppercase tracking-wider text-primary border-b border-border pb-1">{title}</h3>

@@ -1,3 +1,4 @@
+// Table row component showing a numeric metric for A vs B with highlight for higher.
 import { cn } from "../../../../lib/cn";
 
 type RowMode = "higher" | "none";
@@ -10,18 +11,11 @@ interface MetricRowProps {
     mode?: RowMode;
 }
 
-export function MetricRow({
-    label,
-    a,
-    b,
-    format,
-    mode = "higher",
-}: MetricRowProps) {
+export function MetricRow({ label, a, b, format, mode = "higher" }: MetricRowProps) {
     const aWins = mode === "higher" && a != null && b != null && a > b;
     const bWins = mode === "higher" && a != null && b != null && b > a;
 
-    const cellClass = (wins: boolean) =>
-        wins ? "text-xs font-bold text-accent tabular-nums" : "text-xs font-medium text-primary tabular-nums";
+    const cellClass = (wins: boolean) => (wins ? "text-xs font-bold text-accent tabular-nums" : "text-xs font-medium text-primary tabular-nums");
 
     return (
         <tr className="border-b border-border-light hover:bg-slate-50/50">

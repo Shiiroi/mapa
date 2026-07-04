@@ -1,3 +1,4 @@
+// Controls for multi-series overlay visualization mode and series selectors.
 import { cn } from "../../../../lib/cn";
 import type { CustomOverlay, SeriesViewState, SeriesViewMode } from "../../../types";
 import { seriesModeLabel } from "../../../utils/seriesScale";
@@ -15,11 +16,7 @@ interface SeriesConfigProps {
     onOverlayViewChange: (view: SeriesViewState) => void;
 }
 
-export function SeriesConfig({
-    activeOverlay,
-    overlayView,
-    onOverlayViewChange,
-}: SeriesConfigProps) {
+export function SeriesConfig({ activeOverlay, overlayView, onOverlayViewChange }: SeriesConfigProps) {
     const seriesKeys = activeOverlay.series?.map((s) => s.key) ?? [];
     const seriesCount = seriesKeys.length;
 
@@ -44,9 +41,7 @@ export function SeriesConfig({
                             title={disabled ? `Needs at least ${minSeries} series` : undefined}
                             className={cn(
                                 "rounded-md px-2 py-1 text-xs font-medium transition-colors",
-                                overlayView.mode === mode
-                                    ? "bg-accent text-white"
-                                    : "border border-border-light text-primary hover:bg-surface",
+                                overlayView.mode === mode ? "bg-accent text-white" : "border border-border-light text-primary hover:bg-surface",
                                 disabled && "cursor-not-allowed opacity-40",
                             )}
                         >
@@ -61,9 +56,7 @@ export function SeriesConfig({
                     <span className="text-xs text-muted">Series</span>
                     <select
                         value={overlayView.shareKey ?? seriesKeys[0]}
-                        onChange={(e) =>
-                            onOverlayViewChange({ ...overlayView, shareKey: e.target.value })
-                        }
+                        onChange={(e) => onOverlayViewChange({ ...overlayView, shareKey: e.target.value })}
                         className="w-full rounded-md border border-border-light bg-white px-2 py-1.5 text-sm text-primary"
                     >
                         {activeOverlay.series!.map((s) => (
@@ -81,9 +74,7 @@ export function SeriesConfig({
                         <span className="text-xs text-muted">Series A</span>
                         <select
                             value={overlayView.pairA ?? seriesKeys[0]}
-                            onChange={(e) =>
-                                onOverlayViewChange({ ...overlayView, pairA: e.target.value })
-                            }
+                            onChange={(e) => onOverlayViewChange({ ...overlayView, pairA: e.target.value })}
                             className="w-full rounded-md border border-border-light bg-white px-2 py-1.5 text-sm text-primary"
                         >
                             {activeOverlay.series!.map((s) => (
@@ -97,9 +88,7 @@ export function SeriesConfig({
                         <span className="text-xs text-muted">Series B</span>
                         <select
                             value={overlayView.pairB ?? seriesKeys[1]}
-                            onChange={(e) =>
-                                onOverlayViewChange({ ...overlayView, pairB: e.target.value })
-                            }
+                            onChange={(e) => onOverlayViewChange({ ...overlayView, pairB: e.target.value })}
                             className="w-full rounded-md border border-border-light bg-white px-2 py-1.5 text-sm text-primary"
                         >
                             {activeOverlay.series!.map((s) => (

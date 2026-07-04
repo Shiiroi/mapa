@@ -1,3 +1,4 @@
+// Sitemap and dashboard layout: IndexSidebar and MapDashboard.
 import { useState, useEffect, useMemo } from "react";
 import { cn } from "../../lib/cn";
 import type { MapLevel } from "../constants";
@@ -14,8 +15,6 @@ import type {
 import { MapTab } from "./Map";
 import { Sidebar, type SidebarTab } from "./Sidebar";
 import type { ExportKind } from "../hooks/useMapDownload";
-
-// --- Sitemap Tree Sub-Component (formerly IndexSidebar) ---
 
 interface IndexSidebarProps {
     level: MapLevel;
@@ -46,17 +45,8 @@ export function IndexSidebar({
 }: IndexSidebarProps) {
     const [expandedRegions, setExpandedRegions] = useState<Set<string>>(new Set());
 
-    // Auto-expand region if it gets selected
-    useEffect(() => {
-        if (selectedRegionPsgc) {
-            setExpandedRegions((prev) => {
-                if (prev.has(selectedRegionPsgc)) return prev;
-                const next = new Set(prev);
-                next.add(selectedRegionPsgc);
-                return next;
-            });
-        }
-    }, [selectedRegionPsgc]);
+    // Note: treat the currently-selected region as expanded during render
+    // so we avoid synchronously calling setState inside an effect.
 
     const toggleRegion = (psgc: string, e: React.MouseEvent) => {
         e.stopPropagation();
@@ -118,7 +108,7 @@ export function IndexSidebar({
                             onClick={handleSelectCountry}
                             className={cn(
                                 "flex w-full items-center justify-between px-4 py-2.5 text-left font-semibold transition-colors hover:bg-slate-100 cursor-pointer",
-                                level === "country" ? "text-accent bg-accent/5 border-l-2 border-accent" : "text-primary"
+                                level === "country" ? "text-accent bg-accent/5 border-l-2 border-accent" : "text-primary",
                             )}
                         >
                             <span>Philippines (All Regions)</span>
@@ -129,7 +119,7 @@ export function IndexSidebar({
                     {sortedRegions.map((region) => {
                         const isRegionSelected = selectedRegionPsgc === region.psgc && level === "region";
                         const isRegionActive = selectedRegionPsgc === region.psgc;
-                        const isExpanded = expandedRegions.has(region.psgc);
+                        const isExpanded = expandedRegions.has(region.psgc) || selectedRegionPsgc === region.psgc;
                         const regionProvinces = provinces.filter((p) => p.region_psgc === region.psgc);
                         const sortedProvinces = [...regionProvinces].sort((a, b) => a.name.localeCompare(b.name));
 
@@ -139,7 +129,7 @@ export function IndexSidebar({
                                     className={cn(
                                         "flex w-full items-stretch justify-between transition-colors hover:bg-slate-100",
                                         isRegionSelected ? "bg-accent/5 border-l-2 border-accent text-accent font-semibold" : "text-primary",
-                                        isRegionActive && !isRegionSelected ? "bg-slate-50/50" : ""
+                                        isRegionActive && !isRegionSelected ? "bg-slate-50/50" : "",
                                     )}
                                 >
                                     <button
@@ -186,7 +176,7 @@ export function IndexSidebar({
                                                             onClick={() => handleSelectProvince(province)}
                                                             className={cn(
                                                                 "w-full py-1.5 pl-8 pr-4 text-left font-normal transition-colors cursor-pointer hover:bg-slate-100",
-                                                                isProvSelected ? "text-accent font-semibold bg-accent/5" : "text-primary"
+                                                                isProvSelected ? "text-accent font-semibold bg-accent/5" : "text-primary",
                                                             )}
                                                         >
                                                             {province.name}
@@ -195,7 +185,8 @@ export function IndexSidebar({
                                                         {isProvActive && sortedMunis.length > 0 && (
                                                             <ul className="bg-slate-100/20 divide-y divide-border-light/20 border-t border-border-light/40">
                                                                 {sortedMunis.map((muni) => {
-                                                                    const isMuniSelected = selectedMunicityPsgc === muni.psgc && level === "municipality";
+                                                                    const isMuniSelected =
+                                                                        selectedMunicityPsgc === muni.psgc && level === "municipality";
                                                                     return (
                                                                         <li key={muni.psgc}>
                                                                             <button
@@ -203,7 +194,9 @@ export function IndexSidebar({
                                                                                 onClick={() => handleSelectMunicity(muni)}
                                                                                 className={cn(
                                                                                     "w-full py-1 pl-12 pr-4 text-left font-normal transition-colors text-[11px] cursor-pointer hover:bg-slate-100",
-                                                                                    isMuniSelected ? "text-accent font-medium bg-accent/5" : "text-slate-600"
+                                                                                    isMuniSelected
+                                                                                        ? "text-accent font-medium bg-accent/5"
+                                                                                        : "text-slate-600",
                                                                                 )}
                                                                             >
                                                                                 {muni.name}

@@ -1,3 +1,4 @@
+// UI control to pick two places (levels + region/province/muni/barangay) for comparison.
 import type { MapLevel } from "../../../constants";
 import type { BarangayGeoJSON, ProvinceGeoJSON, Region, MunicityMeta } from "../../../types";
 import { type CompareSelection, emptySelection } from "./types";
@@ -26,9 +27,7 @@ export function ComparePicker({
     mapSelectionName,
 }: ComparePickerProps) {
     const levels: MapLevel[] = ["country", "region", "province", "municipality", "barangay"];
-    const filteredMunis = selection.provincePsgc
-        ? municityMeta.filter((m) => m.province_psgc === selection.provincePsgc)
-        : municityMeta;
+    const filteredMunis = selection.provincePsgc ? municityMeta.filter((m) => m.province_psgc === selection.provincePsgc) : municityMeta;
 
     return (
         <div className="space-y-2 rounded-lg border border-border-light bg-surface p-3">
@@ -88,9 +87,7 @@ export function ComparePicker({
             {(selection.level === "municipality" || selection.level === "barangay") && (
                 <select
                     value={selection.municityPsgc ?? ""}
-                    onChange={(e) =>
-                        onChange({ ...selection, municityPsgc: e.target.value || null, barangayPsgc: null })
-                    }
+                    onChange={(e) => onChange({ ...selection, municityPsgc: e.target.value || null, barangayPsgc: null })}
                     className="w-full rounded-md border border-border-light bg-white px-2 py-1.5 text-sm"
                 >
                     <option value="">Select municipality…</option>

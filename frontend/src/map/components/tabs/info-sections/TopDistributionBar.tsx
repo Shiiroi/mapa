@@ -1,3 +1,4 @@
+// Renders top contributor horizontal distribution bar with hover tooltip.
 import { useState, useMemo } from "react";
 import type { MapLevel } from "../../../constants";
 import type { Region, ProvinceGeoJSON, MunicityMeta, BarangayGeoJSON } from "../../../types";

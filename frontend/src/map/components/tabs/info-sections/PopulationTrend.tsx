@@ -1,13 +1,6 @@
+// Line chart of population history points for a place (compact sparkline view).
 import React from "react";
-import {
-    ResponsiveContainer,
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-} from "recharts";
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 
 function formatCompactNumber(n: number): string {
     const abs = Math.abs(n);
@@ -40,12 +33,7 @@ export const PopulationTrend = React.memo(function PopulationTrend({
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={points} margin={{ top: 12, right: 10, left: -22, bottom: -5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                    <XAxis
-                        dataKey="year"
-                        tick={{ fill: "#64748b", fontSize: 9, fontWeight: 500 }}
-                        stroke="#cbd5e1"
-                        tickLine={false}
-                    />
+                    <XAxis dataKey="year" tick={{ fill: "#64748b", fontSize: 9, fontWeight: 500 }} stroke="#cbd5e1" tickLine={false} />
                     <YAxis
                         tickFormatter={formatValue}
                         tick={{ fill: "#64748b", fontSize: 8, fontFamily: "monospace" }}

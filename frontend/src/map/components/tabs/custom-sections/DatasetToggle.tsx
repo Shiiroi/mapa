@@ -1,3 +1,4 @@
+// Small toggle button to enable/disable a built-in dataset in the Custom tab.
 import { cn } from "../../../../lib/cn";
 
 interface DatasetToggleProps {
@@ -7,12 +8,7 @@ interface DatasetToggleProps {
     label: string;
 }
 
-export function DatasetToggle({
-    active,
-    disabled,
-    onChange,
-    label,
-}: DatasetToggleProps) {
+export function DatasetToggle({ active, disabled, onChange, label }: DatasetToggleProps) {
     return (
         <button
             type="button"
