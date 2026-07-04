@@ -45,9 +45,6 @@ export function IndexSidebar({
 }: IndexSidebarProps) {
     const [expandedRegions, setExpandedRegions] = useState<Set<string>>(new Set());
 
-    // Note: treat the currently-selected region as expanded during render
-    // so we avoid synchronously calling setState inside an effect.
-
     const toggleRegion = (psgc: string, e: React.MouseEvent) => {
         e.stopPropagation();
         setExpandedRegions((prev) => {
