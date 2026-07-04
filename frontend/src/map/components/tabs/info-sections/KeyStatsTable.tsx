@@ -1,14 +1,7 @@
 // Key statistics table for a selected place: population, density, area, economy.
 import { useMemo } from "react";
 import { cn } from "../../../../lib/cn";
-import {
-    formatPctChange,
-    formatPopulation,
-    formatDensity,
-    formatAreaKm2,
-    formatAssets,
-    formatGdp,
-} from "../../../utils/formatStats";
+import { formatPctChange, formatPopulation, formatDensity, formatAreaKm2, formatAssets, formatGdp } from "../../../utils/formatStats";
 import type { ResolvedPlace } from "../../../utils/resolvePlace";
 
 interface KeyStatsTableProps {
