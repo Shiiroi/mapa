@@ -29,8 +29,8 @@ const PH_ZOOM = 6;
 // for screenshots without changing the rest of the layout.
 const PH_MIN_ZOOM = 5;
 const PH_MAX_BOUNDS: L.LatLngBoundsLiteral = [
-    [3.0, 112.0],
-    [22.5, 128.0],
+    [2.0, 108.0],
+    [23.5, 131.0],
 ];
 
 const BASE_STYLE: L.PathOptions = {
@@ -80,7 +80,7 @@ export interface MapEntity {
     assets_2024?: number | null;
 }
 
-interface MapPanelProps {
+interface MapTabProps {
     country?: MapEntity | null;
     provinces?: MapEntity[];
     regions?: MapEntity[];
@@ -104,8 +104,19 @@ interface MapPanelProps {
 // Shared legend box with a collapse toggle styled like the Controls pill for UI
 // consistency. Collapsed shows just the "Legend" pill; the title moves into the panel.
 function LegendShell({ title, collapsed, onToggle, children }: { title: ReactNode; collapsed: boolean; onToggle: () => void; children: ReactNode }) {
+    const ref = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        if (ref.current) {
+            L.DomEvent.disableClickPropagation(ref.current);
+            L.DomEvent.disableScrollPropagation(ref.current);
+        }
+    }, []);
+
     return (
-        <div className="absolute bottom-6 left-3 z-1000 flex flex-col-reverse items-start gap-1.5 lg:gap-2">
+        <div
+            ref={ref}
+            className="absolute bottom-6 left-3 z-1000 flex flex-col-reverse items-start gap-1.5 lg:gap-2"
+        >
             <button
                 type="button"
                 onClick={onToggle}
@@ -227,6 +238,11 @@ function MapZoomTrigger({
     const isInitial = useRef(true);
     const refitBoundsRef = useRef<() => void>(() => {});
 
+    const onMapSettledRef = useRef(onMapSettled);
+    useEffect(() => {
+        onMapSettledRef.current = onMapSettled;
+    }, [onMapSettled]);
+
     // Keep bounds calculation ref fresh to prevent stale closure in observer
     useEffect(() => {
         refitBoundsRef.current = () => {
@@ -275,9 +291,6 @@ function MapZoomTrigger({
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     map.invalidateSize({ animate: false });
-                    if (refitBoundsRef.current) {
-                        refitBoundsRef.current();
-                    }
                 });
             });
         });
@@ -292,14 +305,14 @@ function MapZoomTrigger({
                     refitBoundsRef.current();
                 }
                 // Call onMapSettled after WebKit finishes layout calculations
-                onMapSettled?.();
+                onMapSettledRef.current?.();
             });
         });
 
         return () => {
             observer.disconnect();
         };
-    }, [map, onMapSettled]);
+    }, [map]);
 
     useEffect(() => {
         // Resolve the active entity from geo layers
@@ -355,21 +368,25 @@ function MapZoomTrigger({
 
         // 3. Zoom out to country if selection is cleared
         if (!activePsgc || activePsgc === country?.psgc) {
-            map.flyTo(PH_CENTER, PH_ZOOM, { duration: 0.8 });
+            map.setView(PH_CENTER, PH_ZOOM, {
+                animate: true,
+                duration: 0.8,
+            });
             return;
         }
 
-        // 4. Snappy animated zoom for user interactions (800ms)
+        // 4. Smooth animated zoom for user interactions (0.8s direct transition)
         if (selectedEntity && selectedEntity.geometry) {
             try {
                 const geojsonLayer = L.geoJSON(selectedEntity.geometry);
                 const bounds = geojsonLayer.getBounds();
                 if (bounds.isValid()) {
                     const isBgy = selectedEntity.geo_lvl === "Bgy" || activePsgc.length > 9;
-                    map.flyToBounds(bounds, {
+                    map.fitBounds(bounds, {
                         padding: [30, 30],
                         maxZoom: isBgy ? 15 : 12,
-                        duration: 0.8, // Snappier duration
+                        animate: true,
+                        duration: 0.8,
                     });
                 }
             } catch (e) {
@@ -381,7 +398,7 @@ function MapZoomTrigger({
     return null;
 }
 
-export function MapPanel({
+export function MapTab({
     country = null,
     provinces = [],
     regions = [],
@@ -399,7 +416,7 @@ export function MapPanel({
     sidebarDrawerHeightPx,
     onMapInteraction,
     activePsgc = null,
-}: MapPanelProps) {
+}: MapTabProps) {
     const [userDisplayMode, setUserDisplayMode] = useState<DisplayMode>("outline");
     const [fillOpacity, setFillOpacity] = useState(0.7);
     // Default collapsed on mobile so the map is uncluttered; expanded on desktop.
@@ -410,7 +427,16 @@ export function MapPanel({
 
     const [layoutReady, setLayoutReady] = useState(false);
     const [mapSettled, setMapSettled] = useState(false);
+    const handleMapSettled = useCallback(() => setMapSettled(true), []);
     const containerRef = useRef<HTMLDivElement>(null);
+    const controlsRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (controlsRef.current) {
+            L.DomEvent.disableClickPropagation(controlsRef.current);
+            L.DomEvent.disableScrollPropagation(controlsRef.current);
+        }
+    }, [layoutReady]);
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -680,7 +706,10 @@ export function MapPanel({
                 </div>
             )}
 
-            <div className="absolute top-2 left-2 lg:top-3 lg:left-3 z-1000 flex flex-col items-start gap-1.5 lg:gap-2">
+            <div
+                ref={controlsRef}
+                className="absolute top-2 left-2 lg:top-3 lg:left-3 z-1000 flex flex-col items-start gap-1.5 lg:gap-2"
+            >
                 <button
                     type="button"
                     onClick={() => setControlsCollapsed((v) => !v)}
@@ -945,7 +974,7 @@ export function MapPanel({
                             provinces={provinces}
                             municities={municities}
                             barangays={barangays}
-                            onMapSettled={() => setMapSettled(true)}
+                            onMapSettled={handleMapSettled}
                         />
                         <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'

@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
-import type { MapLevel } from "../constants";
-import type { Region, ProvinceGeoJSON, MunicityMeta, BarangayGeoJSON } from "../types";
-import { formatPopulation, formatAreaKm2, formatDensity, formatGdp, formatAssets } from "../utils/formatStats";
+import type { MapLevel } from "../../../constants";
+import type { Region, ProvinceGeoJSON, MunicityMeta, BarangayGeoJSON } from "../../../types";
+import { formatPopulation, formatAreaKm2, formatDensity, formatGdp, formatAssets } from "../../../utils/formatStats";
 
 interface TopDistributionBarProps {
     level: MapLevel;
@@ -23,12 +23,12 @@ interface MetricOption {
 }
 
 const METRICS: readonly MetricOption[] = [
-    { label: "Population (2024 Census)", key: "pop_2024", formatter: formatPopulation },
+    { label: "Population (2024)", key: "pop_2024", formatter: formatPopulation },
     { label: "Land Area (km²)", key: "area_km2", formatter: formatAreaKm2 },
-    { label: "Population Density (/km²)", key: "density_2024", formatter: (n) => `${formatDensity(n)}/km²` },
-    { label: "GDP (2024)", key: "gdp_2024", formatter: formatGdp },
+    { label: "Density (per km²)", key: "density_2024", formatter: (n) => `${formatDensity(n)}/km²` },
+    { label: "Gross Regional GDP (2024)", key: "gdp_2024", formatter: formatGdp },
     { label: "Total Assets (2024)", key: "assets_2024", formatter: formatAssets },
-];
+] as const;
 
 const PREFIX_MAP: Record<MetricKey, string> = {
     pop_2024: "Population",
@@ -38,20 +38,9 @@ const PREFIX_MAP: Record<MetricKey, string> = {
     assets_2024: "Total Assets",
 };
 
-const BLUE_PALETTE = [
-    "#1e3a8a", // slate-900 / deep blue
-    "#1d4ed8", // standard blue
-    "#2563eb",
-    "#3b82f6",
-    "#60a5fa",
-    "#93c5fd",
-    "#0284c7",
-    "#0369a1",
-    "#075985",
-    "#0c4a6e",
-];
+const BLUE_PALETTE = ["#1e3a8a", "#1d4ed8", "#2563eb", "#3b82f6", "#60a5fa", "#93c5fd", "#0284c7", "#0369a1", "#075985", "#0c4a6e"];
 
-const OTHERS_COLOR = "#94a3b8"; // slate-400
+const OTHERS_COLOR = "#94a3b8";
 
 interface TooltipData {
     name: string;
@@ -120,7 +109,7 @@ export function TopDistributionBar({
         // Sort descending
         validItems.sort((a, b) => b.value - a.value);
 
-        const limit = (level === "country" || level === "region") ? 10 : 5;
+        const limit = level === "country" || level === "region" ? 10 : 5;
         const topSlice = validItems.slice(0, limit);
         const othersSlice = validItems.slice(limit);
         const othersSum = othersSlice.reduce((acc, item) => acc + item.value, 0);
@@ -148,9 +137,7 @@ export function TopDistributionBar({
 
     // Omit dropdown options dynamically if NO entities in sub-levels contain the metric
     const availableOptions = useMemo(() => {
-        return METRICS.filter((opt) =>
-            subLevels.some((row) => (row as any)[opt.key] != null && (row as any)[opt.key] > 0)
-        );
+        return METRICS.filter((opt) => subLevels.some((row) => (row as any)[opt.key] != null && (row as any)[opt.key] > 0));
     }, [subLevels]);
 
     if (level === "barangay" || subLevels.length === 0) {
@@ -175,9 +162,7 @@ export function TopDistributionBar({
     return (
         <section className="space-y-3 border-t border-border pt-4 mt-4 text-xs">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border-light pb-1.5">
-                <h3 className="font-bold uppercase tracking-wider text-primary">
-                    {title} Breakdown
-                </h3>
+                <h3 className="font-bold uppercase tracking-wider text-primary">{title} Breakdown</h3>
                 <select
                     value={selectedKey}
                     onChange={(e) => setSelectedKey(e.target.value as MetricKey)}
@@ -236,10 +221,7 @@ export function TopDistributionBar({
                                     className="hover:bg-slate-50/50 cursor-crosshair transition-colors"
                                 >
                                     <td className="py-1.5 px-2 text-center align-middle">
-                                        <span
-                                            className="inline-block w-2.5 h-2.5 border border-black/10"
-                                            style={{ backgroundColor: seg.color }}
-                                        />
+                                        <span className="inline-block w-2.5 h-2.5 border border-black/10" style={{ backgroundColor: seg.color }} />
                                     </td>
                                     <td className="py-1.5 px-2 font-medium text-left truncate">{seg.name}</td>
                                     <td className="py-1.5 px-2 text-right">{activeMetric.formatter(seg.value)}</td>

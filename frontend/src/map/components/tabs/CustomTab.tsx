@@ -1,31 +1,33 @@
 // Custom tab: built-in overlay datasets + session-only CSV upload.
 
 import { useEffect, useMemo, useState } from "react";
-import { cn } from "../../lib/cn";
-import { downloadTextFile } from "../../lib/downloadFile";
-import type { MapLevel } from "../constants";
-import { SCALE_LEVEL_LABELS } from "../constants";
-import { useCustomDatasetValues, useCustomDatasets } from "../hooks/useCustomDatasets";
-import type { CustomDataset, CustomOverlay, SeriesViewMode, SeriesViewState } from "../types";
-import { buildOverlayFromDataset, overlayActiveAtLevel } from "../utils/customOverlay";
-import { formatPopulation } from "../utils/formatStats";
+import { cn } from "../../../lib/cn";
+import { downloadTextFile } from "../../../lib/downloadFile";
+import type { MapLevel } from "../../constants";
+import { SCALE_LEVEL_LABELS } from "../../constants";
+import { useCustomDatasetValues, useCustomDatasets } from "../../hooks/useCustomDatasets";
+import type { CustomDataset, CustomOverlay, SeriesViewState } from "../../types";
+import { buildOverlayFromDataset, overlayActiveAtLevel } from "../../utils/customOverlay";
+import { formatPopulation } from "../../utils/formatStats";
 import {
     CUSTOM_CSV_TEMPLATE,
     CUSTOM_SERIES_CSV_TEMPLATE,
     overlayFromParsedCsv,
     parseCustomCsv,
-} from "../utils/parseCustomCsv";
-import type { ResolvedPlace } from "../utils/resolvePlace";
+} from "../../utils/parseCustomCsv";
+import type { ResolvedPlace } from "../../utils/resolvePlace";
 import {
     dominantSeries,
     leadMargin,
     seriesLabel,
-    seriesModeLabel,
-    seriesShare,
     seriesTotal,
-} from "../utils/seriesScale";
+} from "../../utils/seriesScale";
 
-interface CustomPanelProps {
+// Import extracted sub-components
+import { DatasetToggle } from "./custom-sections/DatasetToggle";
+import { SeriesConfig } from "./custom-sections/SeriesConfig";
+
+interface CustomTabProps {
     mapLevel: MapLevel;
     activeOverlay: CustomOverlay | null;
     onOverlayChange: (overlay: CustomOverlay | null) => void;
@@ -38,66 +40,7 @@ interface CustomPanelProps {
     onOpenNotesModal: () => void;
 }
 
-const SERIES_MODES: { mode: SeriesViewMode; label: string; minSeries: number }[] = [
-    { mode: "dominant", label: "Dominant", minSeries: 1 },
-    { mode: "lead", label: "Lead", minSeries: 2 },
-    { mode: "share", label: "Share", minSeries: 1 },
-    { mode: "head2head", label: "Head-to-head", minSeries: 2 },
-];
-
-function groupByCategory(datasets: CustomDataset[]): Map<string, CustomDataset[]> {
-    const map = new Map<string, CustomDataset[]>();
-    for (const d of datasets) {
-        if (!map.has(d.category)) map.set(d.category, []);
-        map.get(d.category)!.push(d);
-    }
-    return map;
-}
-
-function titleFromFilename(filename: string): string {
-    return filename.replace(/\.[^.]+$/, "").trim() || "Uploaded dataset";
-}
-
-function formatPct(n: number): string {
-    return `${(n * 100).toFixed(1)}%`;
-}
-
-function DatasetToggle({
-    active,
-    disabled,
-    onChange,
-    label,
-}: {
-    active: boolean;
-    disabled?: boolean;
-    onChange: (on: boolean) => void;
-    label: string;
-}) {
-    return (
-        <button
-            type="button"
-            role="switch"
-            aria-checked={active}
-            aria-label={label}
-            disabled={disabled}
-            onClick={() => onChange(!active)}
-            className={cn(
-                "relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-                active ? "bg-accent" : "bg-border-light",
-                disabled && "cursor-not-allowed opacity-50",
-            )}
-        >
-            <span
-                className={cn(
-                    "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition",
-                    active ? "translate-x-5" : "translate-x-0",
-                )}
-            />
-        </button>
-    );
-}
-
-export function CustomPanel({
+export function CustomTab({
     mapLevel,
     activeOverlay,
     onOverlayChange,
@@ -108,7 +51,7 @@ export function CustomPanel({
     psgcLevels,
     psgcLevelsByTier,
     onOpenNotesModal,
-}: CustomPanelProps) {
+}: CustomTabProps) {
     const datasetsQuery = useCustomDatasets();
     const [selectedDatasetId, setSelectedDatasetId] = useState<string | null>(null);
     const [uploadError, setUploadError] = useState<string | null>(null);
@@ -125,9 +68,6 @@ export function CustomPanel({
 
     const levelMatches = activeOverlay != null && overlayActiveAtLevel(activeOverlay, mapLevel);
 
-    const seriesKeys = activeOverlay?.series?.map((s) => s.key) ?? [];
-    const seriesCount = seriesKeys.length;
-
     useEffect(() => {
         if (!selectedDatasetId || !valuesQuery.data) return;
         const dataset = datasetsQuery.data?.find((d) => d.id === selectedDatasetId);
@@ -137,6 +77,7 @@ export function CustomPanel({
         );
     }, [selectedDatasetId, valuesQuery.data, datasetsQuery.data, onOverlayChange, psgcLevels, psgcLevelsByTier]);
 
+    // Local file handlers and operations
     const handleToggleBuiltin = (dataset: CustomDataset, on: boolean) => {
         if (on) {
             setSelectedDatasetId(dataset.id);
@@ -179,14 +120,11 @@ export function CustomPanel({
         void handleFileUpload(file);
     };
 
-    const selectedValue =
-        selectedPlace && activeOverlay
+    const selectedValue = useMemo(() => {
+        return selectedPlace && activeOverlay
             ? activeOverlay.valuesByPsgc[selectedPlace.psgc.padStart(10, "0")]
             : null;
-
-    const setMode = (mode: SeriesViewMode) => {
-        onOverlayViewChange({ ...overlayView, mode });
-    };
+    }, [selectedPlace, activeOverlay]);
 
     return (
         <div className="space-y-5">
@@ -221,7 +159,7 @@ export function CustomPanel({
                                             <p className="text-sm font-medium text-primary">{dataset.title}</p>
                                             {dataset.id === "elections-2022-president" ? (
                                                 <p className="mt-0.5 text-xs leading-relaxed text-muted">
-                                                    Data Context: National totals match the certified Congressional canvass exactly. Sub-national data is aggregated from the COMELEC transparency server.{" "}
+                                                     Context: Certified Congressional canvass. COMELEC aggregates.{" "}
                                                     <button
                                                         type="button"
                                                         onClick={onOpenNotesModal}
@@ -395,94 +333,12 @@ export function CustomPanel({
                         </p>
                     )}
 
-                    {activeOverlay.kind === "series" && seriesCount > 0 && (
-                        <div className="space-y-2 border-t border-border-light pt-2">
-                            <p className="text-xs font-medium uppercase tracking-wide text-muted">Visualization</p>
-                            <div className="flex flex-wrap gap-1">
-                                {SERIES_MODES.map(({ mode, label, minSeries }) => {
-                                    const disabled = seriesCount < minSeries;
-                                    return (
-                                        <button
-                                            key={mode}
-                                            type="button"
-                                            disabled={disabled}
-                                            onClick={() => setMode(mode)}
-                                            title={disabled ? `Needs at least ${minSeries} series` : undefined}
-                                            className={cn(
-                                                "rounded-md px-2 py-1 text-xs font-medium transition-colors",
-                                                overlayView.mode === mode
-                                                    ? "bg-accent text-white"
-                                                    : "border border-border-light text-primary hover:bg-surface",
-                                                disabled && "cursor-not-allowed opacity-40",
-                                            )}
-                                        >
-                                            {label}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-
-                            {overlayView.mode === "share" && (
-                                <label className="block space-y-1">
-                                    <span className="text-xs text-muted">Series</span>
-                                    <select
-                                        value={overlayView.shareKey ?? seriesKeys[0]}
-                                        onChange={(e) =>
-                                            onOverlayViewChange({ ...overlayView, shareKey: e.target.value })
-                                        }
-                                        className="w-full rounded-md border border-border-light bg-white px-2 py-1.5 text-sm text-primary"
-                                    >
-                                        {activeOverlay.series!.map((s) => (
-                                            <option key={s.key} value={s.key}>
-                                                {s.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </label>
-                            )}
-
-                            {overlayView.mode === "head2head" && seriesCount >= 2 && (
-                                <div className="grid grid-cols-2 gap-2">
-                                    <label className="block space-y-1">
-                                        <span className="text-xs text-muted">Series A</span>
-                                        <select
-                                            value={overlayView.pairA ?? seriesKeys[0]}
-                                            onChange={(e) =>
-                                                onOverlayViewChange({ ...overlayView, pairA: e.target.value })
-                                            }
-                                            className="w-full rounded-md border border-border-light bg-white px-2 py-1.5 text-sm text-primary"
-                                        >
-                                            {activeOverlay.series!.map((s) => (
-                                                <option key={s.key} value={s.key}>
-                                                    {s.label}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </label>
-                                    <label className="block space-y-1">
-                                        <span className="text-xs text-muted">Series B</span>
-                                        <select
-                                            value={overlayView.pairB ?? seriesKeys[1]}
-                                            onChange={(e) =>
-                                                onOverlayViewChange({ ...overlayView, pairB: e.target.value })
-                                            }
-                                            className="w-full rounded-md border border-border-light bg-white px-2 py-1.5 text-sm text-primary"
-                                        >
-                                            {activeOverlay.series!.map((s) => (
-                                                <option key={s.key} value={s.key}>
-                                                    {s.label}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </label>
-                                </div>
-                            )}
-
-                            <p className="text-[10px] text-muted">
-                                Viewing: {seriesModeLabel(overlayView.mode)}
-                                {activeOverlay.meta.unit ? ` · ${activeOverlay.meta.unit}` : ""}
-                            </p>
-                        </div>
+                    {activeOverlay.kind === "series" && (
+                        <SeriesConfig
+                            activeOverlay={activeOverlay}
+                            overlayView={overlayView}
+                            onOverlayViewChange={onOverlayViewChange}
+                        />
                     )}
 
                     {selectedPlace && selectedValue && (
@@ -515,7 +371,7 @@ export function CustomPanel({
                                                 <ul className="space-y-0.5">
                                                     {activeOverlay.series!.map((def) => {
                                                         const val = selectedValue.series![def.key] ?? 0;
-                                                        const share = seriesShare(selectedValue, def.key);
+                                                        const share = val != null && total > 0 ? val / total : null;
                                                         const isTop = top?.key === def.key;
                                                         return (
                                                             <li
@@ -545,4 +401,23 @@ export function CustomPanel({
             )}
         </div>
     );
+}
+
+// --- Utilities ---
+
+function groupByCategory(datasets: CustomDataset[]): Map<string, CustomDataset[]> {
+    const map = new Map<string, CustomDataset[]>();
+    for (const d of datasets) {
+        if (!map.has(d.category)) map.set(d.category, []);
+        map.get(d.category)!.push(d);
+    }
+    return map;
+}
+
+function titleFromFilename(filename: string): string {
+    return filename.replace(/\.[^.]+$/, "").trim() || "Uploaded dataset";
+}
+
+function formatPct(n: number): string {
+    return `${(n * 100).toFixed(1)}%`;
 }

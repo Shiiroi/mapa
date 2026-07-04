@@ -1,7 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { cn } from "../../lib/cn";
 import type { MapLevel } from "../constants";
-import type { Region, ProvinceGeoJSON, MunicityMeta } from "../types";
+import type {
+    Region,
+    ProvinceGeoJSON,
+    MunicityGeoJSON,
+    MunicityMeta,
+    BarangayGeoJSON,
+    CountryGeoJSON,
+    CustomOverlay,
+    SeriesViewState,
+} from "../types";
+import { MapTab } from "./Map";
+import { Sidebar, type SidebarTab } from "./Sidebar";
+import type { ExportKind } from "../hooks/useMapDownload";
+
+// --- Sitemap Tree Sub-Component (formerly IndexSidebar) ---
 
 interface IndexSidebarProps {
     level: MapLevel;
@@ -45,7 +59,7 @@ export function IndexSidebar({
     }, [selectedRegionPsgc]);
 
     const toggleRegion = (psgc: string, e: React.MouseEvent) => {
-        e.stopPropagation(); // Avoid triggering region selection
+        e.stopPropagation();
         setExpandedRegions((prev) => {
             const next = new Set(prev);
             if (next.has(psgc)) {
@@ -85,8 +99,9 @@ export function IndexSidebar({
         onLevelChange("municipality");
     };
 
-    // Sort regions by name
-    const sortedRegions = [...regions].sort((a, b) => a.name.localeCompare(b.name));
+    const sortedRegions = useMemo(() => {
+        return [...regions].sort((a, b) => a.name.localeCompare(b.name));
+    }, [regions]);
 
     return (
         <aside className="flex h-full w-full flex-col border-r border-border bg-surface select-none font-sans text-xs">
@@ -97,7 +112,6 @@ export function IndexSidebar({
 
             <div className="flex-1 overflow-y-auto">
                 <ul className="divide-y divide-border-light">
-                    {/* Country level row */}
                     <li className="bg-white">
                         <button
                             type="button"
@@ -112,7 +126,6 @@ export function IndexSidebar({
                         </button>
                     </li>
 
-                    {/* Region rows */}
                     {sortedRegions.map((region) => {
                         const isRegionSelected = selectedRegionPsgc === region.psgc && level === "region";
                         const isRegionActive = selectedRegionPsgc === region.psgc;
@@ -155,7 +168,6 @@ export function IndexSidebar({
                                     </button>
                                 </div>
 
-                                {/* Province sub-list */}
                                 {isExpanded && (
                                     <ul className="bg-slate-50/30 divide-y divide-border-light/40 border-t border-border-light/60">
                                         {sortedProvinces.length === 0 ? (
@@ -180,7 +192,6 @@ export function IndexSidebar({
                                                             {province.name}
                                                         </button>
 
-                                                        {/* Municipality sub-sub-list, only show if province is actively selected */}
                                                         {isProvActive && sortedMunis.length > 0 && (
                                                             <ul className="bg-slate-100/20 divide-y divide-border-light/20 border-t border-border-light/40">
                                                                 {sortedMunis.map((muni) => {
@@ -214,5 +225,214 @@ export function IndexSidebar({
                 </ul>
             </div>
         </aside>
+    );
+}
+
+// --- Top-Level Unified Dashboard Layout Component ---
+
+interface MapDashboardProps {
+    level: MapLevel;
+    regions: Region[];
+    provinces: ProvinceGeoJSON[];
+    municities: MunicityGeoJSON[];
+    municityMeta: MunicityMeta[];
+    country: CountryGeoJSON | null;
+    barangays: BarangayGeoJSON[];
+    barangaysLoading: boolean;
+
+    selectedRegionPsgc: string | null;
+    onRegionChange: (psgc: string | null) => void;
+    selectedProvincePsgc: string | null;
+    onProvinceChange: (psgc: string | null) => void;
+    selectedMunicityPsgc: string | null;
+    onMunicityChange: (psgc: string | null) => void;
+    selectedBarangayPsgc: string | null;
+    onBarangayChange: (psgc: string | null) => void;
+
+    regionFilterPsgc: string | null;
+    onRegionFilterChange: (psgc: string | null) => void;
+    provinceFilterPsgc: string | null;
+    onProvinceFilterChange: (psgc: string | null) => void;
+
+    exportKind: ExportKind;
+    onExportKindChange: (kind: ExportKind) => void;
+    onDownload: () => void;
+    downloading: boolean;
+    downloadError: string | null;
+
+    activeOverlay: CustomOverlay | null;
+    onOverlayChange: (overlay: CustomOverlay | null) => void;
+    overlayView: SeriesViewState;
+    onOverlayViewChange: (view: SeriesViewState) => void;
+
+    activeTab: SidebarTab;
+    onTabChange: (tab: SidebarTab) => void;
+
+    isSidebarCollapsed: boolean;
+    isDesktopViewport: boolean;
+    onToggleCollapse: () => void;
+    onExpand: () => void;
+    onCollapse: () => void;
+
+    drawerHeightPx: number;
+    drawerMinHeightPx: number;
+    drawerMaxHeightPx: number;
+    onDrawerHeightChange: (heightPx: number) => void;
+    onLevelChange: (level: MapLevel) => void;
+
+    mapLoading: boolean;
+    mapError: Error | null;
+    activePsgc: string | null;
+    onFeatureClick: (entityPsgc: string, mode: MapLevel) => void;
+
+    knownPsgcs: Set<string>;
+    psgcLevels: ReadonlyMap<string, MapLevel>;
+    psgcLevelsByTier: Partial<Record<MapLevel, ReadonlySet<string>>>;
+}
+
+export function MapDashboard({
+    level,
+    regions,
+    provinces,
+    municities,
+    municityMeta,
+    country,
+    barangays,
+    barangaysLoading,
+    selectedRegionPsgc,
+    onRegionChange,
+    selectedProvincePsgc,
+    onProvinceChange,
+    selectedMunicityPsgc,
+    onMunicityChange,
+    selectedBarangayPsgc,
+    onBarangayChange,
+    regionFilterPsgc,
+    onRegionFilterChange,
+    provinceFilterPsgc,
+    onProvinceFilterChange,
+    exportKind,
+    onExportKindChange,
+    onDownload,
+    downloading,
+    downloadError,
+    activeOverlay,
+    onOverlayChange,
+    overlayView,
+    onOverlayViewChange,
+    activeTab,
+    onTabChange,
+    isSidebarCollapsed,
+    isDesktopViewport,
+    onToggleCollapse,
+    onExpand,
+    onCollapse,
+    drawerHeightPx,
+    drawerMinHeightPx,
+    drawerMaxHeightPx,
+    onDrawerHeightChange,
+    onLevelChange,
+    mapLoading,
+    mapError,
+    activePsgc,
+    onFeatureClick,
+    knownPsgcs,
+    psgcLevels,
+    psgcLevelsByTier,
+}: MapDashboardProps) {
+    return (
+        <div className="flex h-screen w-screen flex-col overflow-hidden select-none outline-none focus:outline-none lg:grid lg:grid-cols-[240px_1fr_45%] lg:items-stretch">
+            {/* Sitemap Sidebar — Desktop only */}
+            <div className="hidden lg:block lg:h-full lg:w-full lg:min-w-0 lg:min-h-0">
+                <IndexSidebar
+                    level={level}
+                    regions={regions}
+                    provinces={provinces}
+                    municityMeta={municityMeta}
+                    selectedRegionPsgc={selectedRegionPsgc}
+                    onRegionChange={onRegionChange}
+                    selectedProvincePsgc={selectedProvincePsgc}
+                    onProvinceChange={onProvinceChange}
+                    selectedMunicityPsgc={selectedMunicityPsgc}
+                    onMunicityChange={onMunicityChange}
+                    onLevelChange={onLevelChange}
+                />
+            </div>
+
+            {/* Map — desktop: strict grid child. Mobile: grows/shrinks with sidebar. */}
+            <div className="lg:h-full lg:w-full lg:min-w-0 lg:min-h-0 lg:relative flex-1 min-h-0 select-none outline-none focus:outline-none">
+                <MapTab
+                    country={country}
+                    provinces={provinces}
+                    regions={regions}
+                    municities={municities}
+                    barangays={level === "barangay" ? barangays : []}
+                    mode={level}
+                    onFeatureClick={onFeatureClick}
+                    onLevelChange={onLevelChange}
+                    barangayAvailable={!!selectedMunicityPsgc}
+                    loading={mapLoading}
+                    error={mapError}
+                    overlay={activeOverlay}
+                    overlayView={overlayView}
+                    isSidebarCollapsed={isSidebarCollapsed}
+                    sidebarDrawerHeightPx={drawerHeightPx}
+                    activePsgc={activePsgc}
+                />
+            </div>
+
+            {/* Details/Data Sidebar — desktop: strict grid child. Mobile: animated collapse drawer. */}
+            <div
+                className="lg:h-full lg:w-full lg:min-w-0 lg:min-h-0 lg:overflow-hidden lg:border-t-0 lg:max-h-none lg:select-none lg:outline-none lg:focus:outline-none border-t border-border-light overflow-hidden select-none outline-none focus:outline-none flex-none"
+                style={isDesktopViewport ? undefined : { height: drawerHeightPx }}
+            >
+                <Sidebar
+                    level={level}
+                    regions={regions}
+                    provinces={provinces}
+                    municities={municities}
+                    municityMeta={municityMeta}
+                    country={country}
+                    barangays={barangays}
+                    barangaysLoading={barangaysLoading}
+                    selectedRegionPsgc={selectedRegionPsgc}
+                    onRegionChange={onRegionChange}
+                    selectedProvincePsgc={selectedProvincePsgc}
+                    onProvinceChange={onProvinceChange}
+                    selectedMunicityPsgc={selectedMunicityPsgc}
+                    onMunicityChange={onMunicityChange}
+                    selectedBarangayPsgc={selectedBarangayPsgc}
+                    onBarangayChange={onBarangayChange}
+                    regionFilterPsgc={regionFilterPsgc}
+                    onRegionFilterChange={onRegionFilterChange}
+                    provinceFilterPsgc={provinceFilterPsgc}
+                    onProvinceFilterChange={onProvinceFilterChange}
+                    exportKind={exportKind}
+                    onExportKindChange={onExportKindChange}
+                    onDownload={onDownload}
+                    downloading={downloading}
+                    error={downloadError}
+                    activeOverlay={activeOverlay}
+                    onOverlayChange={onOverlayChange}
+                    overlayView={overlayView}
+                    onOverlayViewChange={onOverlayViewChange}
+                    knownPsgcs={knownPsgcs}
+                    psgcLevels={psgcLevels}
+                    psgcLevelsByTier={psgcLevelsByTier}
+                    activeTab={activeTab}
+                    onTabChange={onTabChange}
+                    isCollapsed={isSidebarCollapsed}
+                    isDesktopViewport={isDesktopViewport}
+                    onToggleCollapse={onToggleCollapse}
+                    onExpand={onExpand}
+                    onCollapse={onCollapse}
+                    drawerHeightPx={drawerHeightPx}
+                    drawerMinHeightPx={drawerMinHeightPx}
+                    drawerMaxHeightPx={drawerMaxHeightPx}
+                    onDrawerHeightChange={onDrawerHeightChange}
+                    onLevelChange={onLevelChange}
+                />
+            </div>
+        </div>
     );
 }

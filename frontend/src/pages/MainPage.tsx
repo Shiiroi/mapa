@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { track } from "@vercel/analytics";
-import { MapPanel } from "../map/components/MapPanel";
-import { Sidebar, type SidebarTab } from "../map/components/Sidebar";
-import { IndexSidebar } from "../map/components/IndexSidebar";
+import { MapDashboard } from "../map/components/Index";
+import type { SidebarTab } from "../map/components/Sidebar";
 import { useBarangays } from "../map/hooks/useBarangays";
 import { useMapDownload } from "../map/hooks/useMapDownload";
 import { useUrlToStateSync } from "../map/hooks/useUrlToStateSync";
@@ -11,7 +10,6 @@ import { useMapLayers } from "../map/hooks/useMapLayers";
 import type { MapLevel } from "../map/constants";
 import type { CustomOverlay, SeriesViewState } from "../map/types";
 import { defaultSeriesViewState } from "../map/utils/seriesScale";
-import { cn } from "../lib/cn";
 
 export default function MainPage() {
     const [activeOverlay, setActiveOverlay] = useState<CustomOverlay | null>(null);
@@ -53,8 +51,6 @@ export default function MainPage() {
     }, []);
 
     const download = useMapDownload({ regions, provinces, municities, municityMeta, country });
-
-
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -182,107 +178,55 @@ export default function MainPage() {
     }, [mobileDrawerMaxHeightPx]);
 
     return (
-        <div className="flex h-screen w-screen flex-col overflow-hidden select-none outline-none focus:outline-none lg:grid lg:grid-cols-[240px_1fr_45%] lg:items-stretch">
-            {/* Sitemap Sidebar — Desktop only */}
-            <div className="hidden lg:block lg:h-full lg:w-full lg:min-w-0 lg:min-h-0">
-                <IndexSidebar
-                    level={download.level}
-                    regions={regions}
-                    provinces={provinces}
-                    municityMeta={municityMeta}
-                    selectedRegionPsgc={download.selectedRegionPsgc}
-                    onRegionChange={download.setSelectedRegionPsgc}
-                    selectedProvincePsgc={download.selectedProvincePsgc}
-                    onProvinceChange={download.setSelectedProvincePsgc}
-                    selectedMunicityPsgc={download.selectedMunicityPsgc}
-                    onMunicityChange={download.setSelectedMunicityPsgc}
-                    onLevelChange={handleLevelChange}
-                />
-            </div>
-
-            {/* Map — desktop: strict grid child. Mobile: grows/shrinks with sidebar. */}
-            <div
-                className={cn(
-                    "lg:h-full lg:w-full lg:min-w-0 lg:min-h-0 lg:relative",
-                    "flex-1 min-h-0 select-none outline-none focus:outline-none",
-                )}
-            >
-                <MapPanel
-                    country={country}
-                    provinces={provinces}
-                    regions={regions}
-                    municities={municities}
-                    barangays={download.level === "barangay" ? barangays : []}
-                    mode={download.level}
-                    onFeatureClick={handleFeatureClick}
-                    onLevelChange={handleLevelChange}
-                    barangayAvailable={!!download.selectedMunicityPsgc}
-                    loading={mapLoading}
-                    error={error ?? (barangaysQuery.error as Error | null)}
-                    overlay={activeOverlay}
-                    overlayView={overlayView}
-                    isSidebarCollapsed={isSidebarCollapsed}
-                    sidebarDrawerHeightPx={mobileDrawerHeightPx}
-                    activePsgc={activePsgc}
-                />
-            </div>
-
-            {/* Details/Data Sidebar — desktop: strict grid child. Mobile: animated collapse drawer. */}
-            <div
-                className={cn(
-                    "lg:h-full lg:w-full lg:min-w-0 lg:min-h-0 lg:overflow-hidden lg:border-t-0 lg:max-h-none lg:select-none lg:outline-none lg:focus:outline-none",
-                    "border-t border-border-light overflow-hidden select-none outline-none focus:outline-none",
-                    isSidebarCollapsed ? "flex-none" : "flex-none",
-                )}
-                style={isDesktopViewport ? undefined : { height: mobileDrawerHeightPx }}
-            >
-                <Sidebar
-                    level={download.level}
-                    regions={regions}
-                    provinces={provinces}
-                    municities={municities}
-                    municityMeta={municityMeta}
-                    country={country}
-                    barangays={barangays}
-                    barangaysLoading={barangaysQuery.isLoading}
-                    selectedRegionPsgc={download.selectedRegionPsgc}
-                    onRegionChange={download.setSelectedRegionPsgc}
-                    selectedProvincePsgc={download.selectedProvincePsgc}
-                    onProvinceChange={download.setSelectedProvincePsgc}
-                    selectedMunicityPsgc={download.selectedMunicityPsgc}
-                    onMunicityChange={download.setSelectedMunicityPsgc}
-                    selectedBarangayPsgc={download.selectedBarangayPsgc}
-                    onBarangayChange={download.setSelectedBarangayPsgc}
-                    regionFilterPsgc={download.regionFilterPsgc}
-                    onRegionFilterChange={download.setRegionFilterPsgc}
-                    provinceFilterPsgc={download.provinceFilterPsgc}
-                    onProvinceFilterChange={download.setProvinceFilterPsgc}
-                    exportKind={download.exportKind}
-                    onExportKindChange={download.setExportKind}
-                    onDownload={download.download}
-                    downloading={download.downloading}
-                    error={download.error}
-                    activeOverlay={activeOverlay}
-                    onOverlayChange={setActiveOverlay}
-                    overlayView={overlayView}
-                    onOverlayViewChange={setOverlayView}
-                    knownPsgcs={knownPsgcs}
-                    psgcLevels={psgcLevels}
-                    psgcLevelsByTier={psgcLevelsByTier}
-                    activeTab={activeTab}
-                    onTabChange={handleTabChange}
-                    isCollapsed={isSidebarCollapsed}
-                    isDesktopViewport={isDesktopViewport}
-                    onToggleCollapse={handleDrawerToggle}
-                    onExpand={handleDrawerExpand}
-                    onCollapse={handleDrawerCollapse}
-                    drawerHeightPx={mobileDrawerHeightPx}
-                    drawerMinHeightPx={mobileDrawerMinHeightPx}
-                    drawerMaxHeightPx={mobileDrawerMaxHeightPx}
-                    onDrawerHeightChange={handleDrawerHeightChange}
-                    onLevelChange={handleLevelChange}
-                />
-            </div>
-        </div>
+        <MapDashboard
+            level={download.level}
+            regions={regions}
+            provinces={provinces}
+            municities={municities}
+            municityMeta={municityMeta}
+            country={country}
+            barangays={barangays}
+            barangaysLoading={barangaysQuery.isLoading}
+            selectedRegionPsgc={download.selectedRegionPsgc}
+            onRegionChange={download.setSelectedRegionPsgc}
+            selectedProvincePsgc={download.selectedProvincePsgc}
+            onProvinceChange={download.setSelectedProvincePsgc}
+            selectedMunicityPsgc={download.selectedMunicityPsgc}
+            onMunicityChange={download.setSelectedMunicityPsgc}
+            selectedBarangayPsgc={download.selectedBarangayPsgc}
+            onBarangayChange={download.setSelectedBarangayPsgc}
+            regionFilterPsgc={download.regionFilterPsgc}
+            onRegionFilterChange={download.setRegionFilterPsgc}
+            provinceFilterPsgc={download.provinceFilterPsgc}
+            onProvinceFilterChange={download.setProvinceFilterPsgc}
+            exportKind={download.exportKind}
+            onExportKindChange={download.setExportKind}
+            onDownload={download.download}
+            downloading={download.downloading}
+            downloadError={download.error}
+            activeOverlay={activeOverlay}
+            onOverlayChange={setActiveOverlay}
+            overlayView={overlayView}
+            onOverlayViewChange={setOverlayView}
+            activeTab={activeTab}
+            onTabChange={handleTabChange}
+            isSidebarCollapsed={isSidebarCollapsed}
+            isDesktopViewport={isDesktopViewport}
+            onToggleCollapse={handleDrawerToggle}
+            onExpand={handleDrawerExpand}
+            onCollapse={handleDrawerCollapse}
+            drawerHeightPx={mobileDrawerHeightPx}
+            drawerMinHeightPx={mobileDrawerMinHeightPx}
+            drawerMaxHeightPx={mobileDrawerMaxHeightPx}
+            onDrawerHeightChange={handleDrawerHeightChange}
+            onLevelChange={handleLevelChange}
+            mapLoading={mapLoading}
+            mapError={error ?? (barangaysQuery.error as Error | null)}
+            activePsgc={activePsgc}
+            onFeatureClick={handleFeatureClick}
+            knownPsgcs={knownPsgcs}
+            psgcLevels={psgcLevels}
+            psgcLevelsByTier={psgcLevelsByTier}
+        />
     );
 }

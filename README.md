@@ -27,6 +27,8 @@ Live: https://mapa.shhiroi.me
 - Per-place statistics: population, age and sex distribution, GDP (PSA constant 2018 prices), and LGU total assets.
 - Built-in COMELEC 2022 presidential results overlay, plus custom CSV overlay uploads keyed by PSGC.
 - Side-by-side comparison of any two places.
+- Interactive Stacked Bar Chart Distribution — a compact, hoverable breakdown of any place into its immediate sub-levels with an integrated data table and floating tooltip.
+- Modular tabbed UI (Compare, Custom, Download) with extractable components (`ComparePicker`, `MetricRow`, `DatasetToggle`, etc.) for easier reuse and testing.
 
 ## Architecture
 
@@ -64,6 +66,20 @@ mapa/
 │   │   └── py/scrape_comelec.py     # Download COMELEC 2022 results (optional regen)
 │   └── src/
 │       ├── map/                     # Map rendering, layers, download UI
+│       │   ├── constants.ts
+│       │   ├── types.ts
+│       │   ├── components/
+│       │   │   ├── Map.tsx
+│       │   │   ├── Sidebar.tsx
+│       │   │   └── tabs/
+│       │   │       ├── CompareTab.tsx
+│       │   │       ├── CustomTab.tsx
+│       │   │       ├── DownloadTab.tsx
+│       │   │       ├── InfoTab.tsx
+│       │   │       └── Index.tsx
+│       │   ├── hooks/
+│       │   ├── services/
+│       │   └── utils/
 │       └── pages/
 ├── supabase/migrations/             # Schema: regions, provinces, municities, barangays
 ├── DATA_CORRECTIONS.md              # Boundary corrections summary
@@ -131,16 +147,16 @@ pnpm restore
 
 `restore` runs `upload:geo` then `db:restore`, reading `data-sets/backup/<table>.csv`.
 
-| Command | What it does |
-|---------|----------------|
-| `pnpm setup` | Upload geo + seed from clean source data |
-| `pnpm restore` | Upload geo + restore from `data-sets/backup/*.csv` |
-| `pnpm seed:all` | Seed Postgres only (no geo upload) |
-| `pnpm upload:geo` | Upload `data-sets/geo/**` to Supabase Storage |
-| `pnpm convert:area` | Extract land area from Table A PDF to JSON |
-| `pnpm enrich:area` | Enrich GeoJSON files with PDF land areas |
-| `pnpm db:export` | Dump current DB to `data-sets/backup/*.csv` |
-| `pnpm db:restore` | Restore Postgres from backup CSVs only |
+| Command             | What it does                                       |
+| ------------------- | -------------------------------------------------- |
+| `pnpm setup`        | Upload geo + seed from clean source data           |
+| `pnpm restore`      | Upload geo + restore from `data-sets/backup/*.csv` |
+| `pnpm seed:all`     | Seed Postgres only (no geo upload)                 |
+| `pnpm upload:geo`   | Upload `data-sets/geo/**` to Supabase Storage      |
+| `pnpm convert:area` | Extract land area from Table A PDF to JSON         |
+| `pnpm enrich:area`  | Enrich GeoJSON files with PDF land areas           |
+| `pnpm db:export`    | Dump current DB to `data-sets/backup/*.csv`        |
+| `pnpm db:restore`   | Restore Postgres from backup CSVs only             |
 
 Individual seeders, for partial updates: `seed:db`, `seed:bgy`, `seed:stats`, `seed:pop`, `seed:agesex`, `seed:gdp`, `seed:afr`, `seed:custom-elections`.
 
@@ -203,13 +219,13 @@ All exported files are RFC 7946 GeoJSON `FeatureCollection`s in WGS 84 (EPSG:432
 }
 ```
 
-| Level | `geo_lvl` | Example `psgc` |
-|-------|-----------|----------------|
-| Country | `Country` | `0000000000` |
-| Region | `Reg` | `1300000000` (NCR) |
-| Province | `Prov` | `0128000000` |
-| City/Municipality | `City` / `Mun` | `1830200000` |
-| Barangay | `Bgy` | `1830200001` |
+| Level             | `geo_lvl`      | Example `psgc`     |
+| ----------------- | -------------- | ------------------ |
+| Country           | `Country`      | `0000000000`       |
+| Region            | `Reg`          | `1300000000` (NCR) |
+| Province          | `Prov`         | `0128000000`       |
+| City/Municipality | `City` / `Mun` | `1830200000`       |
+| Barangay          | `Bgy`          | `1830200001`       |
 
 Downloaded files are named `mapa-{level}-{slug}-{date}.json`.
 
@@ -226,6 +242,7 @@ All seed commands, including `seed:custom-elections`, are upserts and never wipe
 If you want to re-scrape and rebuild the election data yourself, use the pipeline below. Python 3.11+ and the scraper virtualenv are required (see Prerequisites).
 
 ##### 1. Fast Scrape (Regions, Provinces, Cities/Municipalities only)
+
 By default, the scraper runs to the city/municipality tier (`--max-rank citymun`). This is a **fast crawl** taking only a few minutes. Because municipality COCs contain the fully aggregated votes of all underlying barangays, this is all that is required to generate 100% complete presidential maps for region, province, and city/municipality levels:
 
 ```bash
@@ -239,6 +256,7 @@ pnpm db:export                 # refresh committed database backup snapshot
 ```
 
 ##### 2. Heavy Scrape (Barangays & Precincts)
+
 If you need detailed spatial shading inside the **Barangay** view tier, execute the heavy scraper with `--max-rank barangay`. This crawls all individual clustered-precinct JSON files, taking several hours and requiring ~3.3GB of space:
 
 ```bash
@@ -250,6 +268,7 @@ pnpm map:comelec && pnpm seed:custom-elections && pnpm db:export
 ```
 
 ##### 3. Staged Scrape by Region
+
 Because the scraper is **resumable** (it automatically skips files already present on disk), you can stage the heavy barangay crawl one region at a time:
 
 ```bash
@@ -265,45 +284,50 @@ Region names must match COMELEC's labels (for example `NATIONAL CAPITAL REGION`,
 ## Data sources & licenses
 
 ### Geospatial Boundaries
-* **Region, province, municipality GeoJSON (re-keyed to PSGC):** [faeldon/philippines-json-maps](https://github.com/faeldon/philippines-json-maps) (MIT © James Faeldon)
-* **Barangay + country shapefiles (Adm0, Adm4):** [altcoder/philippines-psgc-shapefiles](https://github.com/altcoder/philippines-psgc-shapefiles) (MIT © James Faeldon)
+
+- **Region, province, municipality GeoJSON (re-keyed to PSGC):** [faeldon/philippines-json-maps](https://github.com/faeldon/philippines-json-maps) (MIT © James Faeldon)
+- **Barangay + country shapefiles (Adm0, Adm4):** [altcoder/philippines-psgc-shapefiles](https://github.com/altcoder/philippines-psgc-shapefiles) (MIT © James Faeldon)
 
 ### Statistical Citations
-* **Administrative Boundaries & Spatial Codes**
-  * Citation: [Philippine Statistics Authority (PSA). PSGC 1Q 2026 Publication Datafile.](https://psa.gov.ph/classification/psgc/node/1684083211)
-* **Population Statistics Baseline**
-  * Citation: [Philippine Statistics Authority (PSA). 2024 Census of Population (2024 POPCEN) Population Counts Declared Official by the President.](https://psa.gov.ph/content/2024-census-population-popcen-population-counts-declared-official-president)
-* **Demographic Distributions**
-  * Citation: [Philippine Statistics Authority (PSA). PSA 2020 Census of Population and Housing: Age and Sex Distribution.](https://psa.gov.ph/content/age-and-sex-distribution-philippine-population-2020-census-population-and-housing)
-* **Socioeconomic Baseline Matrix**
-  * Citation: [Philippine Statistics Authority (PSA). Gross Domestic Product, by Province and HUCs (Constant 2018 Prices).](https://openstat.psa.gov.ph/PXWeb/pxweb/en/DB/DB__2A__PPA__2025/?tablelist=true&rxid=bdf9d8da-96f1-4100-ae09-18cb3eaeb313)
-* **Local Government Financial Profiles**
-  * Citation: [Commission on Audit (COA). 2024 Annual Financial Report for the Local Government, Including Bangsamoro Government (Volume I).](https://www.coa.gov.ph/reports/annual-financial-reports/afr-local-government-units/)
-* **Electoral Overlays**
-  * Citation: [Commission on Elections (COMELEC). 2022 National and Local Elections Results Transparency Portal.](https://2022electionresults.comelec.gov.ph/#/dashboard)
-* **Geospatial Baseline Area & Density Metric Spine**
-  * Citation: [Philippine Statistics Authority (PSA). Population, Land Area, Population Density, and Percent Change in Population Density of the Philippines by Region, Province/Highly Urbanized City, and City/Municipality: 2010, 2015, and 2020.](https://psa.gov.ph/system/files/phcd/2022-12/2010-2015-2020%2520Population%2520Density_Table%2520A_Using%25202013%2520Land%2520Areas_12%2520July%25202021.pdf)
+
+- **Administrative Boundaries & Spatial Codes**
+    - Citation: [Philippine Statistics Authority (PSA). PSGC 1Q 2026 Publication Datafile.](https://psa.gov.ph/classification/psgc/node/1684083211)
+- **Population Statistics Baseline**
+    - Citation: [Philippine Statistics Authority (PSA). 2024 Census of Population (2024 POPCEN) Population Counts Declared Official by the President.](https://psa.gov.ph/content/2024-census-population-popcen-population-counts-declared-official-president)
+- **Demographic Distributions**
+    - Citation: [Philippine Statistics Authority (PSA). PSA 2020 Census of Population and Housing: Age and Sex Distribution.](https://psa.gov.ph/content/age-and-sex-distribution-philippine-population-2020-census-population-and-housing)
+- **Socioeconomic Baseline Matrix**
+    - Citation: [Philippine Statistics Authority (PSA). Gross Domestic Product, by Province and HUCs (Constant 2018 Prices).](https://openstat.psa.gov.ph/PXWeb/pxweb/en/DB/DB__2A__PPA__2025/?tablelist=true&rxid=bdf9d8da-96f1-4100-ae09-18cb3eaeb313)
+- **Local Government Financial Profiles**
+    - Citation: [Commission on Audit (COA). 2024 Annual Financial Report for the Local Government, Including Bangsamoro Government (Volume I).](https://www.coa.gov.ph/reports/annual-financial-reports/afr-local-government-units/)
+- **Electoral Overlays**
+    - Citation: [Commission on Elections (COMELEC). 2022 National and Local Elections Results Transparency Portal.](https://2022electionresults.comelec.gov.ph/#/dashboard)
+- **Geospatial Baseline Area & Density Metric Spine**
+    - Citation: [Philippine Statistics Authority (PSA). Population, Land Area, Population Density, and Percent Change in Population Density of the Philippines by Region, Province/Highly Urbanized City, and City/Municipality: 2010, 2015, and 2020.](https://psa.gov.ph/system/files/phcd/2022-12/2010-2015-2020%2520Population%2520Density_Table%2520A_Using%25202013%2520Land%2520Areas_12%2520July%25202021.pdf)
 
 Full third-party license texts are in [`NOTICE.md`](./NOTICE.md). Mapa re-keys, links, corrects, and packages these datasets; it does not claim ownership of the underlying boundary or statistical data.
 
 ### 📊 Land Area & Population Density
-* **National to Municipal Levels:** Land area data utilizes the exact statutory values from the official **Philippine Statistics Authority (PSA)** [2010-2015-2020 Population Density (Table A using 2013 Land Areas)](https://psa.gov.ph/system/files/phcd/2022-12/2010-2015-2020%2520Population%2520Density_Table%2520A_Using%25202013%2520Land%2520Areas_12%2520July%25202021.pdf) publication. No data approximations are performed on these tiers.
-* **Barangay Level:** Computationally approximated from geometric boundaries due to an absence of granular breakdown in the official source document.
+
+- **National to Municipal Levels:** Land area data utilizes the exact statutory values from the official **Philippine Statistics Authority (PSA)** [2010-2015-2020 Population Density (Table A using 2013 Land Areas)](https://psa.gov.ph/system/files/phcd/2022-12/2010-2015-2020%2520Population%2520Density_Table%2520A_Using%25202013%2520Land%2520Areas_12%2520July%25202021.pdf) publication. No data approximations are performed on these tiers.
+- **Barangay Level:** Computationally approximated from geometric boundaries due to an absence of granular breakdown in the official source document.
 
 ## Notes & Disclosures
 
 ### Notes
-* **a1/** Land area is based on the cadastral survey and estimated land areas (certified and provided to the Department of Budget and Management) from the Land Management Bureau, Department of Environment and Natural Resources, as of December 2013.
-* **a2/** Due to unfinished cadastral survey, details do not add up to the national total.
-* **a3/** Due to rounding off, the provincial totals may not be equal to the sum of the individual figures.
-* **b1/** Excludes 2,739 Filipinos in Philippine embassies, consulates, and missions abroad but includes 18,989 persons in the areas disputed by the City of Pasig (National Capital Region) and the province of Rizal (Region IV-A).
-* **b2/** Excludes 2,134 Filipinos in Philippine embassies, consulates, and missions abroad.
-* **b3/** Excludes 2,098 Filipinos in Philippine embassies, consulates, and missions abroad.
-* **\*** Land area is based on cadastral survey (certified and provided to the DBM) from the LMB, DENR, as of December 2013.
-* **\*\*** Estimated land area (certified and provided to the DBM) from the LMB, DENR, as of December 2013.
-* **\*\*\*** Population counts for the provinces exclude the counts of Highly Urbanized Cities.
+
+- **a1/** Land area is based on the cadastral survey and estimated land areas (certified and provided to the Department of Budget and Management) from the Land Management Bureau, Department of Environment and Natural Resources, as of December 2013.
+- **a2/** Due to unfinished cadastral survey, details do not add up to the national total.
+- **a3/** Due to rounding off, the provincial totals may not be equal to the sum of the individual figures.
+- **b1/** Excludes 2,739 Filipinos in Philippine embassies, consulates, and missions abroad but includes 18,989 persons in the areas disputed by the City of Pasig (National Capital Region) and the province of Rizal (Region IV-A).
+- **b2/** Excludes 2,134 Filipinos in Philippine embassies, consulates, and missions abroad.
+- **b3/** Excludes 2,098 Filipinos in Philippine embassies, consulates, and missions abroad.
+- **\*** Land area is based on cadastral survey (certified and provided to the DBM) from the LMB, DENR, as of December 2013.
+- **\*\*** Estimated land area (certified and provided to the DBM) from the LMB, DENR, as of December 2013.
+- **\*\*\*** Population counts for the provinces exclude the counts of Highly Urbanized Cities.
 
 ### Administrative & Historical Corrections
+
 1. The Negros Island Region (NIR) was abolished through Executive Order No. 38 “Revoking Executive Order No. 183 (s. 2015) which Created a Negros Island Region and for Other Purposes”, signed by President Rodrigo Roa Duterte on 07 August 2017. The abolition of NIR reverted the provinces, cities, municipalities, and barangays of Negros Occidental and City of Bacolod to Region VI (Western Visayas) and Negros Oriental to Region VII (Central Visayas).
 2. Renamed province from Compostela Valley under Republic Act No. 11297, dated April 17, 2019; ratified on December 7, 2019.
 3. Renamed region from ARMM under Republic Act No. 11054, dated July 27, 2018; ratified on January 25, 2019.
