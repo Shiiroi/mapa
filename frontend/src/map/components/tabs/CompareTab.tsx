@@ -7,14 +7,7 @@ import { useDivisionStats } from "../../hooks/useDivisionStats";
 import { fetchBarangaysByMunicity } from "../../services/mapApi";
 import type { BarangayGeoJSON, CountryGeoJSON, CustomOverlay, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../../types";
 import { broadAgeGroups } from "../../utils/ageSex";
-import {
-    formatAreaKm2,
-    formatAssets,
-    formatDensity,
-    formatGdp,
-    formatPesoPerCapita,
-    formatPopulation,
-} from "../../utils/formatStats";
+import { formatAreaKm2, formatAssets, formatDensity, formatGdp, formatPesoPerCapita, formatPopulation } from "../../utils/formatStats";
 import { mergePlaceStats } from "../../utils/mergePlaceStats";
 import { resolveSelectedPlace, type ResolvedPlace } from "../../utils/resolvePlace";
 
@@ -69,27 +62,15 @@ export function CompareTab({
     const barangaysB = barangaysBQuery.data ?? [];
 
     const ctx = useMemo(() => ({ country, regions, provinces, municities, municityMeta }), [country, regions, provinces, municities, municityMeta]);
-    
-    const placeA = useMemo(
-        () => resolveComparePlace(selA, { ...ctx, barangays: barangaysA }),
-        [selA, ctx, barangaysA],
-    );
-    const placeB = useMemo(
-        () => resolveComparePlace(selB, { ...ctx, barangays: barangaysB }),
-        [selB, ctx, barangaysB],
-    );
+
+    const placeA = useMemo(() => resolveComparePlace(selA, { ...ctx, barangays: barangaysA }), [selA, ctx, barangaysA]);
+    const placeB = useMemo(() => resolveComparePlace(selB, { ...ctx, barangays: barangaysB }), [selB, ctx, barangaysB]);
 
     const statsAQuery = useDivisionStats(placeA?.psgc ?? null);
     const statsBQuery = useDivisionStats(placeB?.psgc ?? null);
 
-    const displayA = useMemo(
-        () => (placeA ? mergePlaceStats(placeA, statsAQuery.data) : null),
-        [placeA, statsAQuery.data],
-    );
-    const displayB = useMemo(
-        () => (placeB ? mergePlaceStats(placeB, statsBQuery.data) : null),
-        [placeB, statsBQuery.data],
-    );
+    const displayA = useMemo(() => (placeA ? mergePlaceStats(placeA, statsAQuery.data) : null), [placeA, statsAQuery.data]);
+    const displayB = useMemo(() => (placeB ? mergePlaceStats(placeB, statsBQuery.data) : null), [placeB, statsBQuery.data]);
 
     const showPopulation =
         displayA &&
@@ -104,33 +85,27 @@ export function CompareTab({
     const showEconomy =
         displayA &&
         displayB &&
-        (displayA.gdp_2024 != null ||
-            displayB.gdp_2024 != null ||
-            displayA.assets_2024 != null ||
-            displayB.assets_2024 != null);
+        (displayA.gdp_2024 != null || displayB.gdp_2024 != null || displayA.assets_2024 != null || displayB.assets_2024 != null);
 
     const showHouseholds =
         displayA &&
         displayB &&
-        ((displayA.age_sex_2020 != null && displayA.age_sex_2020.length > 0) ||
-            (displayB.age_sex_2020 != null && displayB.age_sex_2020.length > 0));
+        ((displayA.age_sex_2020 != null && displayA.age_sex_2020.length > 0) || (displayB.age_sex_2020 != null && displayB.age_sex_2020.length > 0));
 
-    const ageGroupsA = useMemo(() => displayA?.age_sex_2020 ? broadAgeGroups(displayA.age_sex_2020) : null, [displayA]);
-    const ageGroupsB = useMemo(() => displayB?.age_sex_2020 ? broadAgeGroups(displayB.age_sex_2020) : null, [displayB]);
+    const ageGroupsA = useMemo(() => (displayA?.age_sex_2020 ? broadAgeGroups(displayA.age_sex_2020) : null), [displayA]);
+    const ageGroupsB = useMemo(() => (displayB?.age_sex_2020 ? broadAgeGroups(displayB.age_sex_2020) : null), [displayB]);
 
     const activeOverlaySection = useMemo(() => {
         if (!displayA || !displayB || !activeOverlay) return null;
-        
+
         const psgcA = displayA.psgc.padStart(10, "0");
         const psgcB = displayB.psgc.padStart(10, "0");
         const cellA = activeOverlay.valuesByPsgc[psgcA];
         const cellB = activeOverlay.valuesByPsgc[psgcB];
-        
+
         if (!cellA && !cellB) return null;
-        
-        const label = activeOverlay.meta.unit
-            ? `${activeOverlay.meta.title} (${activeOverlay.meta.unit})`
-            : activeOverlay.meta.title;
+
+        const label = activeOverlay.meta.unit ? `${activeOverlay.meta.title} (${activeOverlay.meta.unit})` : activeOverlay.meta.title;
 
         if (activeOverlay.kind === "series" && activeOverlay.series?.length) {
             return (
@@ -138,12 +113,8 @@ export function CompareTab({
                     {activeOverlay.series.map((def) => {
                         const valA = cellA?.series?.[def.key] ?? null;
                         const valB = cellB?.series?.[def.key] ?? null;
-                        const totalA = cellA?.series
-                            ? Object.values(cellA.series).reduce((s, v) => s + (v > 0 ? v : 0), 0)
-                            : 0;
-                        const totalB = cellB?.series
-                            ? Object.values(cellB.series).reduce((s, v) => s + (v > 0 ? v : 0), 0)
-                            : 0;
+                        const totalA = cellA?.series ? Object.values(cellA.series).reduce((s, v) => s + (v > 0 ? v : 0), 0) : 0;
+                        const totalB = cellB?.series ? Object.values(cellB.series).reduce((s, v) => s + (v > 0 ? v : 0), 0) : 0;
                         const shareA = valA != null && totalA > 0 ? valA / totalA : null;
                         const shareB = valB != null && totalB > 0 ? valB / totalB : null;
                         const fmt = (v: number | null, share: number | null) => {
@@ -154,12 +125,8 @@ export function CompareTab({
                         return (
                             <tr key={def.key} className="border-b border-border-light last:border-0">
                                 <td className="py-2 pr-2 text-xs text-muted">{def.label}</td>
-                                <td className="py-2 px-2 text-right text-sm font-medium text-primary tabular-nums">
-                                    {fmt(valA, shareA)}
-                                </td>
-                                <td className="py-2 pl-2 text-right text-sm font-medium text-primary tabular-nums">
-                                    {fmt(valB, shareB)}
-                                </td>
+                                <td className="py-2 px-2 text-right text-sm font-medium text-primary tabular-nums">{fmt(valA, shareA)}</td>
+                                <td className="py-2 pl-2 text-right text-sm font-medium text-primary tabular-nums">{fmt(valB, shareB)}</td>
                             </tr>
                         );
                     })}
@@ -171,16 +138,11 @@ export function CompareTab({
         const valB = activeOverlay.kind === "numeric" ? (cellB?.value ?? null) : null;
         const catA = activeOverlay.kind === "categorical" ? (cellA?.category ?? "—") : null;
         const catB = activeOverlay.kind === "categorical" ? (cellB?.category ?? "—") : null;
-        
+
         return (
             <CompareSection title={activeOverlay.meta.title} nameA={displayA.name} nameB={displayB.name}>
                 {activeOverlay.kind === "numeric" ? (
-                    <MetricRow
-                        label={label}
-                        a={valA}
-                        b={valB}
-                        format={formatPopulation}
-                    />
+                    <MetricRow label={label} a={valA} b={valB} format={formatPopulation} />
                 ) : (
                     <tr className="border-b border-border-light last:border-0">
                         <td className="py-2 pr-2 text-xs text-muted">{label}</td>
@@ -194,9 +156,7 @@ export function CompareTab({
 
     return (
         <div className="space-y-4">
-            <p className="text-sm text-muted">
-                Pick two places and compare population, economy, and household stats side by side.
-            </p>
+            <p className="text-sm text-muted">Pick two places and compare population, economy, and household stats side by side.</p>
 
             <div className="grid grid-cols-1 gap-3">
                 <ComparePicker
@@ -229,82 +189,32 @@ export function CompareTab({
 
                     {showPopulation && (
                         <CompareSection title="Population" nameA={displayA.name} nameB={displayB.name}>
-                            <MetricRow
-                                label="Population [2024]"
-                                a={displayA.pop_2024}
-                                b={displayB.pop_2024}
-                                format={formatPopulation}
-                            />
-                            <MetricRow
-                                label="Area (km²)"
-                                a={displayA.area_km2}
-                                b={displayB.area_km2}
-                                format={formatAreaKm2}
-                            />
-                            <MetricRow
-                                label="Density [2024]"
-                                a={displayA.density_2024}
-                                b={displayB.density_2024}
-                                format={formatDensityPerKm2}
-                            />
+                            <MetricRow label="Population [2024]" a={displayA.pop_2024} b={displayB.pop_2024} format={formatPopulation} />
+                            <MetricRow label="Area (km²)" a={displayA.area_km2} b={displayB.area_km2} format={formatAreaKm2} />
+                            <MetricRow label="Density [2024]" a={displayA.density_2024} b={displayB.density_2024} format={formatDensityPerKm2} />
                         </CompareSection>
                     )}
 
                     {showEconomy && (
                         <CompareSection title="Economy" nameA={displayA.name} nameB={displayB.name}>
-                            <MetricRow
-                                label="GDP [2024]"
-                                a={displayA.gdp_2024}
-                                b={displayB.gdp_2024}
-                                format={formatGdp}
-                            />
+                            <MetricRow label="GDP [2024]" a={displayA.gdp_2024} b={displayB.gdp_2024} format={formatGdp} />
                             <MetricRow
                                 label="GDP per capita [2024]"
                                 a={gdpPerCapita(displayA.gdp_2024, displayA.pop_2024)}
                                 b={gdpPerCapita(displayB.gdp_2024, displayB.pop_2024)}
                                 format={formatPesoPerCapita}
                             />
-                            <MetricRow
-                                label="Total assets [2024]"
-                                a={displayA.assets_2024}
-                                b={displayB.assets_2024}
-                                format={formatAssets}
-                            />
+                            <MetricRow label="Total assets [2024]" a={displayA.assets_2024} b={displayB.assets_2024} format={formatAssets} />
                         </CompareSection>
                     )}
 
                     {showHouseholds && (
                         <CompareSection title="Households 2020" nameA={displayA.name} nameB={displayB.name}>
-                            <MetricRow
-                                label="Male"
-                                a={displayA.pop_male_2020}
-                                b={displayB.pop_male_2020}
-                                format={formatPopulation}
-                            />
-                            <MetricRow
-                                label="Female"
-                                a={displayA.pop_female_2020}
-                                b={displayB.pop_female_2020}
-                                format={formatPopulation}
-                            />
-                            <MetricRow
-                                label="Age 0–14"
-                                a={ageGroupsA?.young ?? null}
-                                b={ageGroupsB?.young ?? null}
-                                format={formatPopulation}
-                            />
-                            <MetricRow
-                                label="Age 15–64"
-                                a={ageGroupsA?.working ?? null}
-                                b={ageGroupsB?.working ?? null}
-                                format={formatPopulation}
-                            />
-                            <MetricRow
-                                label="Age 65+"
-                                a={ageGroupsA?.senior ?? null}
-                                b={ageGroupsB?.senior ?? null}
-                                format={formatPopulation}
-                            />
+                            <MetricRow label="Male" a={displayA.pop_male_2020} b={displayB.pop_male_2020} format={formatPopulation} />
+                            <MetricRow label="Female" a={displayA.pop_female_2020} b={displayB.pop_female_2020} format={formatPopulation} />
+                            <MetricRow label="Age 0–14" a={ageGroupsA?.young ?? null} b={ageGroupsB?.young ?? null} format={formatPopulation} />
+                            <MetricRow label="Age 15–64" a={ageGroupsA?.working ?? null} b={ageGroupsB?.working ?? null} format={formatPopulation} />
+                            <MetricRow label="Age 65+" a={ageGroupsA?.senior ?? null} b={ageGroupsB?.senior ?? null} format={formatPopulation} />
                         </CompareSection>
                     )}
                 </div>
