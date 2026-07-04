@@ -1,13 +1,58 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/mapa.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mapa — Philippines administrative maps GeoJSON</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/mapa.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- Primary SEO Meta Tags -->
+        <title>Mapa</title>
+        <meta name="title" content="Mapa — Download Philippine GeoJSON & Visualize Data" />
+        <meta
+            name="description"
+            content="Explore, analyze, and download PSGC-aligned Philippine administrative maps and demographic data. Visualize custom data, compare metrics across regions, provinces, and municipalities, or download clean GeoJSON shapefiles."
+        />
+        <meta
+            name="keywords"
+            content="philippine map, geojson philippines, map boundaries philippines, psa census data visualization, philippines data visualization, download philippine shapefiles, regional distribution chart, municipality population statistics"
+        />
+        <meta name="author" content="Mapa" />
+        <meta name="robots" content="index, follow" />
+
+        <!-- Open Graph / Facebook / LinkedIn -->
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://mapa.shhiroi.me/" />
+        <meta property="og:title" content="Mapa — Interactive Philippine Map & Administrative GeoJSON Boundaries" />
+        <meta
+            property="og:description"
+            content="An open alternative for visualizing data with a Philippine map. Generate custom choropleth maps, compare administrative regions, or download clean, optimized GeoJSON shapefiles."
+        />
+        <meta property="og:image" content="https://mapa.shhiroi.me/og-image.png" />
+
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://mapa.shhiroi.me/" />
+        <meta property="twitter:title" content="Mapa — Interactive Philippine Map & Administrative GeoJSON Boundaries" />
+        <meta
+            property="twitter:description"
+            content="An open alternative for visualizing data with a Philippine map. Generate custom choropleth maps, compare administrative regions, or download clean, optimized GeoJSON shapefiles."
+        />
+        <meta property="twitter:image" content="https://mapa.shhiroi.me/og-image.png" />
+    </head>
+    <body>
+        <!-- Fallback Content for Crawlers -->
+        <noscript>
+            <h1>Mapa — Interactive Philippine Map & Administrative GeoJSON Boundaries</h1>
+            <p>
+                An open data visualization platform and PhilAtlas alternative for geographic, economic, and demographic statistics in the Philippines.
+            </p>
+            <p>
+                Download optimized Philippine map boundaries and administrative shapefiles (Regions, Provinces, Cities, Municipalities, and Barangays)
+                keyed directly to standard PSGC identifiers.
+            </p>
+        </noscript>
+
+        <div id="root"></div>
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
 </html>

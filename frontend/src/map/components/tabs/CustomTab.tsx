@@ -9,19 +9,9 @@ import { useCustomDatasetValues, useCustomDatasets } from "../../hooks/useCustom
 import type { CustomDataset, CustomOverlay, SeriesViewState } from "../../types";
 import { buildOverlayFromDataset, overlayActiveAtLevel } from "../../utils/customOverlay";
 import { formatPopulation } from "../../utils/formatStats";
-import {
-    CUSTOM_CSV_TEMPLATE,
-    CUSTOM_SERIES_CSV_TEMPLATE,
-    overlayFromParsedCsv,
-    parseCustomCsv,
-} from "../../utils/parseCustomCsv";
+import { CUSTOM_CSV_TEMPLATE, CUSTOM_SERIES_CSV_TEMPLATE, overlayFromParsedCsv, parseCustomCsv } from "../../utils/parseCustomCsv";
 import type { ResolvedPlace } from "../../utils/resolvePlace";
-import {
-    dominantSeries,
-    leadMargin,
-    seriesLabel,
-    seriesTotal,
-} from "../../utils/seriesScale";
+import { dominantSeries, leadMargin, seriesLabel, seriesTotal } from "../../utils/seriesScale";
 
 // Import extracted sub-components
 import { DatasetToggle } from "./custom-sections/DatasetToggle";
@@ -61,10 +51,7 @@ export function CustomTab({
 
     const hasBuiltinDatasets = (datasetsQuery.data?.length ?? 0) > 0;
 
-    const grouped = useMemo(
-        () => groupByCategory(datasetsQuery.data ?? []),
-        [datasetsQuery.data],
-    );
+    const grouped = useMemo(() => groupByCategory(datasetsQuery.data ?? []), [datasetsQuery.data]);
 
     const levelMatches = activeOverlay != null && overlayActiveAtLevel(activeOverlay, mapLevel);
 
@@ -72,9 +59,7 @@ export function CustomTab({
         if (!selectedDatasetId || !valuesQuery.data) return;
         const dataset = datasetsQuery.data?.find((d) => d.id === selectedDatasetId);
         if (!dataset) return;
-        onOverlayChange(
-            buildOverlayFromDataset(dataset, valuesQuery.data, psgcLevels, psgcLevelsByTier),
-        );
+        onOverlayChange(buildOverlayFromDataset(dataset, valuesQuery.data, psgcLevels, psgcLevelsByTier));
     }, [selectedDatasetId, valuesQuery.data, datasetsQuery.data, onOverlayChange, psgcLevels, psgcLevelsByTier]);
 
     // Local file handlers and operations
@@ -121,19 +106,17 @@ export function CustomTab({
     };
 
     const selectedValue = useMemo(() => {
-        return selectedPlace && activeOverlay
-            ? activeOverlay.valuesByPsgc[selectedPlace.psgc.padStart(10, "0")]
-            : null;
+        return selectedPlace && activeOverlay ? activeOverlay.valuesByPsgc[selectedPlace.psgc.padStart(10, "0")] : null;
     }, [selectedPlace, activeOverlay]);
 
     return (
         <div className="space-y-5">
             <div className="space-y-2">
-                <h3 className="text-base font-bold text-primary">
-                    Map Your Own Datasets
-                </h3>
+                <h3 className="text-base font-bold text-primary">Custom Philippine Choropleth Map Generator</h3>
                 <p className="text-xs text-muted leading-relaxed">
-                    Upload a custom CSV file to dynamically color and visualize your data across geographic boundaries. All processing happens locally within your web browser—your data is never sent to or stored on an external server.
+                    Visualize data with a Philippine map using our custom choropleth map generator. Upload a CSV file to dynamically color and map
+                    your own data across Philippine administrative boundaries (regions, provinces, municipalities, and barangays). All processing
+                    happens locally in your web browser—your data is never sent to or stored on an external server.
                 </p>
             </div>
 
@@ -144,8 +127,7 @@ export function CustomTab({
                         <div key={category} className="space-y-2">
                             <p className="text-xs text-muted">{category}</p>
                             {items.map((dataset) => {
-                                const isActive =
-                                    selectedDatasetId === dataset.id && activeOverlay?.source === "builtin";
+                                const isActive = selectedDatasetId === dataset.id && activeOverlay?.source === "builtin";
                                 const isLoading = selectedDatasetId === dataset.id && valuesQuery.isFetching;
                                 return (
                                     <div
@@ -159,7 +141,7 @@ export function CustomTab({
                                             <p className="text-sm font-medium text-primary">{dataset.title}</p>
                                             {dataset.id === "elections-2022-president" ? (
                                                 <p className="mt-0.5 text-xs leading-relaxed text-muted">
-                                                     Context: Certified Congressional canvass. COMELEC aggregates.{" "}
+                                                    Context: Certified Congressional canvass. COMELEC aggregates.{" "}
                                                     <button
                                                         type="button"
                                                         onClick={onOpenNotesModal}
@@ -170,9 +152,7 @@ export function CustomTab({
                                                 </p>
                                             ) : (
                                                 dataset.description && (
-                                                    <p className="mt-0.5 text-xs leading-relaxed text-muted">
-                                                        {dataset.description}
-                                                    </p>
+                                                    <p className="mt-0.5 text-xs leading-relaxed text-muted">{dataset.description}</p>
                                                 )
                                             )}
                                             {dataset.id !== "elections-2022-president" && dataset.source_name && dataset.source_url && (
@@ -187,9 +167,7 @@ export function CustomTab({
                                                     </a>
                                                 </p>
                                             )}
-                                            {isLoading && (
-                                                <p className="mt-1 text-xs text-muted">Loading values…</p>
-                                            )}
+                                            {isLoading && <p className="mt-1 text-xs text-muted">Loading values…</p>}
                                         </div>
                                         <DatasetToggle
                                             active={isActive}
@@ -211,9 +189,7 @@ export function CustomTab({
                 onDrop={handleDrop}
                 className={cn(
                     "border-2 border-dashed rounded-xl p-5 flex flex-col items-center justify-center transition-all cursor-pointer",
-                    isDragging
-                        ? "border-accent bg-accent/5 scale-[1.01]"
-                        : "border-border hover:border-accent hover:bg-surface/50"
+                    isDragging ? "border-accent bg-accent/5 scale-[1.01]" : "border-border hover:border-accent hover:bg-surface/50",
                 )}
                 onClick={() => {
                     document.getElementById("csv-file-input")?.click();
@@ -226,26 +202,16 @@ export function CustomTab({
                     className="hidden"
                     onChange={(e) => void handleFileUpload(e.target.files?.[0] ?? null)}
                 />
-                
+
                 <div className="text-center space-y-4">
-                    <p className="text-sm font-semibold text-primary">
-                        Click to upload or drag &amp; drop your CSV file here
-                    </p>
-                    
+                    <p className="text-sm font-semibold text-primary">Click to upload or drag &amp; drop your CSV file here</p>
+
                     <div className="text-left max-w-md mx-auto space-y-2 border-t border-border-light pt-3 text-[11px] text-muted">
-                        <p className="font-semibold text-primary">
-                            Data Format Requirements:
-                        </p>
+                        <p className="font-semibold text-primary">Data Format Requirements:</p>
                         <ul className="space-y-1.5 list-none pl-0">
-                            <li>
-                                • Key Column: Must include an identifier column named exactly "psgc", "province", or "city_mun".
-                            </li>
-                            <li>
-                                • Simple Shading: Include a single value column (e.g., "value" or "total") to shade maps linearly.
-                            </li>
-                            <li>
-                                • Data Breakdowns: Supply multiple series columns to visualize distributions (e.g., election metrics, budgets).
-                            </li>
+                            <li>• Key Column: Must include an identifier column named exactly "psgc", "province", or "city_mun".</li>
+                            <li>• Simple Shading: Include a single value column (e.g., "value" or "total") to shade maps linearly.</li>
+                            <li>• Data Breakdowns: Supply multiple series columns to visualize distributions (e.g., election metrics, budgets).</li>
                         </ul>
                     </div>
                 </div>
@@ -262,7 +228,7 @@ export function CustomTab({
                         className="w-full rounded-lg border border-border bg-white px-2.5 py-1.5 text-xs text-primary outline-none focus:border-accent"
                     />
                 </label>
-                
+
                 <div className="flex gap-2">
                     <button
                         type="button"
@@ -273,13 +239,7 @@ export function CustomTab({
                     </button>
                     <button
                         type="button"
-                        onClick={() =>
-                            downloadTextFile(
-                                CUSTOM_SERIES_CSV_TEMPLATE,
-                                "custom-series-template.csv",
-                                "text/csv",
-                            )
-                        }
+                        onClick={() => downloadTextFile(CUSTOM_SERIES_CSV_TEMPLATE, "custom-series-template.csv", "text/csv")}
                         className="flex-1 rounded-lg border border-border bg-white py-1.5 text-xs font-medium text-primary hover:bg-surface"
                     >
                         Multi-series template
@@ -325,20 +285,13 @@ export function CustomTab({
 
                     {!levelMatches && (
                         <p className="text-xs text-amber-700">
-                            Covers{" "}
-                            {activeOverlay.levels
-                                .map((l) => SCALE_LEVEL_LABELS[l as keyof typeof SCALE_LEVEL_LABELS] ?? l)
-                                .join(", ")}
-                            . Switch map view to one of those levels to see it on the map.
+                            Covers {activeOverlay.levels.map((l) => SCALE_LEVEL_LABELS[l as keyof typeof SCALE_LEVEL_LABELS] ?? l).join(", ")}. Switch
+                            map view to one of those levels to see it on the map.
                         </p>
                     )}
 
                     {activeOverlay.kind === "series" && (
-                        <SeriesConfig
-                            activeOverlay={activeOverlay}
-                            overlayView={overlayView}
-                            onOverlayViewChange={onOverlayViewChange}
-                        />
+                        <SeriesConfig activeOverlay={activeOverlay} overlayView={overlayView} onOverlayViewChange={onOverlayViewChange} />
                     )}
 
                     {selectedPlace && selectedValue && (

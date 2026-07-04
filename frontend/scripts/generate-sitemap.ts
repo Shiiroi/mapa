@@ -43,9 +43,11 @@ async function readNames(jsonPath: string, nameField = "name") {
 async function build() {
     const regionsPath = path.resolve(__dirname, "../data-sets/geo/regions.json");
     const provincesPath = path.resolve(__dirname, "../data-sets/geo/provinces.json");
+    const municitiesPath = path.resolve(__dirname, "../data-sets/geo/municities/meta.json");
 
     const regions = await readNames(regionsPath);
     const provinces = await readNames(provincesPath);
+    const municities = await readNames(municitiesPath);
 
     const urls = new Set<string>();
     urls.add(`${BASE_URL}/`);
@@ -58,6 +60,11 @@ async function build() {
     provinces.forEach((p) => {
         const s = slugify(p);
         if (s) urls.add(`${BASE_URL}/province/${s}`);
+    });
+
+    municities.forEach((m) => {
+        const s = slugify(m);
+        if (s) urls.add(`${BASE_URL}/municipality/${s}`);
     });
 
     const items = Array.from(urls).sort();

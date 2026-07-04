@@ -77,19 +77,13 @@ export function DownloadTab({
     downloading,
     error,
 }: DownloadTabProps) {
-    const filteredProvinces = regionFilterPsgc
-        ? provinces.filter((p) => p.region_psgc === regionFilterPsgc)
-        : provinces;
+    const filteredProvinces = regionFilterPsgc ? provinces.filter((p) => p.region_psgc === regionFilterPsgc) : provinces;
 
-    const filteredMunis = provinceFilterPsgc
-        ? municityMeta.filter((m) => m.province_psgc === provinceFilterPsgc)
-        : municityMeta;
+    const filteredMunis = provinceFilterPsgc ? municityMeta.filter((m) => m.province_psgc === provinceFilterPsgc) : municityMeta;
 
     // --- Scope Sub-Renderers ---
 
-    const renderCountryScope = () => (
-        <p className="text-sm text-primary">Whole Philippines outline (single shape)</p>
-    );
+    const renderCountryScope = () => <p className="text-sm text-primary">Whole Philippines administrative boundary as a single GeoJSON shape</p>;
 
     const renderRegionScope = () => (
         <SelectField
@@ -182,7 +176,8 @@ export function DownloadTab({
                 <section className="space-y-3">
                     <label className="block text-xs font-medium uppercase tracking-wide text-muted">Scope</label>
                     <p className="text-xs text-muted">
-                        Switch the view level using the control on the map.
+                        Download PSGC-aligned GeoJSON boundaries for the Philippines. Select your scope: country-wide outline, regions, provinces,
+                        municipalities, or barangays. All data follows Philippine administrative shapefiles standards.
                     </p>
 
                     {level === "country" && renderCountryScope()}
@@ -202,9 +197,7 @@ export function DownloadTab({
                                         onClick={() => onExportKindChange(opt.kind)}
                                         className={cn(
                                             "flex-1 rounded-md px-3 py-1.5 text-center text-sm transition-colors",
-                                            exportKind === opt.kind
-                                                ? "bg-accent font-medium text-white"
-                                                : "text-primary hover:bg-white",
+                                            exportKind === opt.kind ? "bg-accent font-medium text-white" : "text-primary hover:bg-white",
                                         )}
                                     >
                                         {opt.label}

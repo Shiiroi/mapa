@@ -3,11 +3,7 @@
 import { useMemo } from "react";
 import { downloadJsonFile, downloadTextFile, slugifyFilename } from "../../../lib/downloadFile";
 import { useDivisionStats } from "../../hooks/useDivisionStats";
-import {
-    compoundAnnualGrowthRate,
-    formatAnnualizedChange,
-    formatGdp,
-} from "../../utils/formatStats";
+import { compoundAnnualGrowthRate, formatAnnualizedChange, formatGdp } from "../../utils/formatStats";
 import { broadAgeGroups } from "../../utils/ageSex";
 import { mergePlaceStats } from "../../utils/mergePlaceStats";
 import type { ResolvedPlace } from "../../utils/resolvePlace";
@@ -19,13 +15,7 @@ import { PopulationTrend } from "./info-sections/PopulationTrend";
 import { SexDistribution } from "./info-sections/SexDistribution";
 import { AgeStructure } from "./info-sections/AgeStructure";
 import { AgeSexPyramid } from "./info-sections/AgeSexPyramid";
-import {
-    KeyStatsTable,
-    CensusHistoryTable,
-    GdpTable,
-    SexDistributionTable,
-    AgeStructureTable,
-} from "./info-sections/InfoTables";
+import { KeyStatsTable, CensusHistoryTable, GdpTable, SexDistributionTable, AgeStructureTable } from "./info-sections/InfoTables";
 
 export interface InfoTabProps {
     place: ResolvedPlace | null;
@@ -41,8 +31,7 @@ export interface InfoTabProps {
 }
 
 const PSA_PSGC_URL = "https://psa.gov.ph/classification/psgc/";
-const PSA_AGESEX_URL =
-    "https://psa.gov.ph/content/age-and-sex-distribution-philippine-population-2020-census-population-and-housing";
+const PSA_AGESEX_URL = "https://psa.gov.ph/content/age-and-sex-distribution-philippine-population-2020-census-population-and-housing";
 const PSA_AGESEX_FILE_URL =
     "https://psa.gov.ph/system/files/phcd/2022-12/4_Household%2520Population%2520by%2520Age%2520Group%2520and%2520Sex_Philippines_2020%2520CPH_rev.xlsx";
 const PSA_GDP_URL = "https://openstat.psa.gov.ph/Database/Gross-Regional-Domestic-Product";
@@ -72,7 +61,6 @@ export function InfoTab({
     onBarangayChange,
     onLevelChange,
 }: InfoTabProps) {
-
     const handleSelectEntity = (psgc: string, subLevel: MapLevel) => {
         if (subLevel === "region") {
             onRegionChange(psgc);
@@ -110,23 +98,22 @@ export function InfoTab({
         }
     };
     const statsQuery = useDivisionStats(place?.psgc ?? null);
-    const displayPlace = useMemo(
-        () => (place ? mergePlaceStats(place, statsQuery.data) : null),
-        [place, statsQuery.data],
-    );
+    const displayPlace = useMemo(() => (place ? mergePlaceStats(place, statsQuery.data) : null), [place, statsQuery.data]);
 
     // Compute stable points for Population History chart
     const popHistoryPoints = useMemo(() => {
         if (!displayPlace) return [];
-        return POP_HISTORY.map((row) => ({ year: row.year, value: displayPlace[row.key] }))
-            .filter((p): p is { year: number; value: number } => p.value != null);
+        return POP_HISTORY.map((row) => ({ year: row.year, value: displayPlace[row.key] })).filter(
+            (p): p is { year: number; value: number } => p.value != null,
+        );
     }, [displayPlace]);
 
     // Compute stable points for GDP history chart
     const gdpHistoryPoints = useMemo(() => {
         if (!displayPlace) return [];
-        return GDP_HISTORY.map((row) => ({ year: row.year, value: displayPlace[row.key] }))
-            .filter((p): p is { year: number; value: number } => p.value != null);
+        return GDP_HISTORY.map((row) => ({ year: row.year, value: displayPlace[row.key] })).filter(
+            (p): p is { year: number; value: number } => p.value != null,
+        );
     }, [displayPlace]);
 
     // Compute stable broad age group structures
@@ -137,12 +124,7 @@ export function InfoTab({
 
     const growth2020to2024 = useMemo(() => {
         if (!displayPlace) return null;
-        return compoundAnnualGrowthRate(
-            displayPlace.pop_2020,
-            displayPlace.pop_2024,
-            2020,
-            2024,
-        );
+        return compoundAnnualGrowthRate(displayPlace.pop_2020, displayPlace.pop_2024, 2020, 2024);
     }, [displayPlace]);
 
     const annualChange = useMemo(() => {
@@ -180,8 +162,7 @@ export function InfoTab({
             gdp_2023: displayPlace.gdp_2023,
             gdp_2024: displayPlace.gdp_2024,
             gdp_per_capita_2024: gdpPerCapita,
-            source:
-                "Population from the Philippine Statistics Authority (PSA) PSGC and 2010/2015/2020/2024 census tables; 2020 household age/sex and GDP (constant 2018 prices) from PSA; area and derived metrics (density, % change) computed by Mapa from PSA boundaries. Total assets from COA CY2024 AFR.",
+            source: "Population from the Philippine Statistics Authority (PSA) PSGC and 2010/2015/2020/2024 census tables; 2020 household age/sex and GDP (constant 2018 prices) from PSA; area and derived metrics (density, % change) computed by Mapa from PSA boundaries. Total assets from COA CY2024 AFR.",
             source_url: PSA_PSGC_URL,
             age_sex_source: "PSA 2020 Census — Age/Sex Distribution",
             age_sex_source_url: PSA_AGESEX_URL,
@@ -215,7 +196,10 @@ export function InfoTab({
             ["gdp_2023", String(displayPlace.gdp_2023 ?? "")],
             ["gdp_2024", String(displayPlace.gdp_2024 ?? "")],
             ["gdp_per_capita_2024", String(gdpPerCapita ?? "")],
-            ["source", "Philippine Statistics Authority (PSA) PSGC and 2010–2024 censuses; 2020 CPH age/sex; GDP constant 2018 prices; area/density/change derived by Mapa; assets from COA CY2024 AFR"],
+            [
+                "source",
+                "Philippine Statistics Authority (PSA) PSGC and 2010–2024 censuses; 2020 CPH age/sex; GDP constant 2018 prices; area/density/change derived by Mapa; assets from COA CY2024 AFR",
+            ],
             ["source_url", PSA_PSGC_URL],
             ["age_sex_source", "PSA 2020 Census of Population and Housing — Age and Sex Distribution"],
             ["age_sex_source_url", PSA_AGESEX_URL],
@@ -230,7 +214,7 @@ export function InfoTab({
     const renderInteractiveBreadcrumbs = () => {
         if (!displayPlace) return null;
         const breadcrumbs: { label: string; action: () => void }[] = [];
-        
+
         breadcrumbs.push({
             label: "Philippines",
             action: () => {
@@ -239,7 +223,7 @@ export function InfoTab({
                 onMunicityChange(null);
                 onBarangayChange?.(null);
                 onLevelChange?.("country");
-            }
+            },
         });
 
         const regPsgc = displayPlace.region_psgc || (displayPlace.level === "region" ? displayPlace.psgc : null);
@@ -254,7 +238,7 @@ export function InfoTab({
                         onMunicityChange(null);
                         onBarangayChange?.(null);
                         onLevelChange?.("region");
-                    }
+                    },
                 });
             }
         }
@@ -271,12 +255,13 @@ export function InfoTab({
                         onMunicityChange(null);
                         onBarangayChange?.(null);
                         onLevelChange?.("province");
-                    }
+                    },
                 });
             }
         }
 
-        const muniPsgc = displayPlace.level === "barangay" ? displayPlace.municity_psgc : (displayPlace.level === "municipality" ? displayPlace.psgc : null);
+        const muniPsgc =
+            displayPlace.level === "barangay" ? displayPlace.municity_psgc : displayPlace.level === "municipality" ? displayPlace.psgc : null;
         if (muniPsgc && (displayPlace.level === "municipality" || displayPlace.level === "barangay")) {
             const muniObj = municityMeta.find((m) => m.psgc === muniPsgc);
             if (muniObj) {
@@ -288,7 +273,7 @@ export function InfoTab({
                         onMunicityChange(muniPsgc);
                         onBarangayChange?.(null);
                         onLevelChange?.("municipality");
-                    }
+                    },
                 });
             }
         }
@@ -296,7 +281,7 @@ export function InfoTab({
         if (displayPlace.level === "barangay") {
             breadcrumbs.push({
                 label: displayPlace.name.trim(),
-                action: () => {}
+                action: () => {},
             });
         }
 
@@ -328,7 +313,9 @@ export function InfoTab({
     if (!place) {
         return (
             <p className="text-xs text-muted font-medium italic">
-                Select a place at the current view level to see population, area, and density details.
+                Select a place to explore Philippine demographic statistics including population distribution, census data from the Philippine
+                Statistics Authority (PSA), economic indicators, and geographic data. This PhilStats-like tool provides comprehensive Philippine
+                geographic and economic information down to the barangay level.
             </p>
         );
     }
@@ -341,7 +328,9 @@ export function InfoTab({
                 {renderInteractiveBreadcrumbs()}
                 <div className="flex items-baseline justify-between gap-2 mt-2">
                     <h2 className="text-lg font-bold text-primary tracking-tight">{displayPlace.name}</h2>
-                    <span className="font-mono text-[10px] text-muted font-medium bg-slate-100 border border-border px-1.5 py-0.5">PSGC {displayPlace.psgc}</span>
+                    <span className="font-mono text-[10px] text-muted font-medium bg-slate-100 border border-border px-1.5 py-0.5">
+                        PSGC {displayPlace.psgc}
+                    </span>
                 </div>
                 {displayPlace.geo_lvl === "Special" && (
                     <div className="mt-2 border border-amber-300 bg-amber-50/50 px-3 py-2 text-xs text-amber-900 rounded-none">
@@ -352,34 +341,28 @@ export function InfoTab({
             </div>
 
             {/* Key Statistics Grid Table */}
-            <KeyStatsTable
-                displayPlace={displayPlace}
-                annualChange={annualChange}
-            />
+            <KeyStatsTable displayPlace={displayPlace} annualChange={annualChange} />
 
             {displayPlace.level === "barangay" && (
                 <div className="text-[10px] text-amber-800 bg-amber-50/50 border border-amber-300 px-3 py-2 leading-normal">
-                    <strong>Note:</strong> Barangay land area and population density metrics are computationally derived geographic approximations by Mapa. Official PSA Table A breakdowns are unavailable at this resolution.
+                    <strong>Note:</strong> Barangay land area and population density metrics are computationally derived geographic approximations by
+                    Mapa. Official PSA Table A breakdowns are unavailable at this resolution.
                 </div>
             )}
 
-            {(displayPlace.pop_2010 != null ||
-                displayPlace.pop_2015 != null ||
-                displayPlace.pop_2020 != null ||
-                displayPlace.pop_2024 != null) && (
-                    <section className="space-y-2 border-t border-border pt-3.5">
-                        <p className="text-xs font-bold uppercase tracking-wider text-primary border-b border-border-light pb-1">
-                            Population Census History
-                        </p>
-                        <CensusHistoryTable displayPlace={displayPlace} />
-                        <PopulationTrend
-                            points={popHistoryPoints}
-                        />
-                        <p className="text-[10px] leading-normal text-muted bg-slate-50 p-2 border border-border font-sans">
-                            Change is the total percent change since the previous census. Growth/yr is the compound annual growth rate over the exact period, matching PSA’s published methodology.
-                        </p>
-                    </section>
-                )}
+            {(displayPlace.pop_2010 != null || displayPlace.pop_2015 != null || displayPlace.pop_2020 != null || displayPlace.pop_2024 != null) && (
+                <section className="space-y-2 border-t border-border pt-3.5">
+                    <p className="text-xs font-bold uppercase tracking-wider text-primary border-b border-border-light pb-1">
+                        Population Census History
+                    </p>
+                    <CensusHistoryTable displayPlace={displayPlace} />
+                    <PopulationTrend points={popHistoryPoints} />
+                    <p className="text-[10px] leading-normal text-muted bg-slate-50 p-2 border border-border font-sans">
+                        Change is the total percent change since the previous census. Growth/yr is the compound annual growth rate over the exact
+                        period, matching PSA’s published methodology.
+                    </p>
+                </section>
+            )}
 
             {displayPlace.gdp_2024 != null && (
                 <section className="space-y-2 border-t border-border pt-3.5">
@@ -387,11 +370,7 @@ export function InfoTab({
                         Gross domestic product (gdp)
                     </p>
                     <GdpTable displayPlace={displayPlace} gdpPerCapita={gdpPerCapita} />
-                    <PopulationTrend
-                        points={gdpHistoryPoints}
-                        formatValue={formatGdp}
-                        ariaLabel="GDP over time"
-                    />
+                    <PopulationTrend points={gdpHistoryPoints} formatValue={formatGdp} ariaLabel="GDP over time" />
                 </section>
             )}
 
@@ -417,9 +396,7 @@ export function InfoTab({
                         </p>
                         <div className="grid grid-cols-[1.2fr_1fr] gap-3 items-center">
                             <AgeStructureTable ageSexBands={displayPlace.age_sex_2020} />
-                            {ageGroups && (
-                                <AgeStructure young={ageGroups.young} working={ageGroups.working} senior={ageGroups.senior} />
-                            )}
+                            {ageGroups && <AgeStructure young={ageGroups.young} working={ageGroups.working} senior={ageGroups.senior} />}
                         </div>
                     </div>
 
