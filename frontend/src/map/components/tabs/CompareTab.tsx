@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { cn } from "../../../lib/cn";
 import { useDivisionStats } from "../../hooks/useDivisionStats";
 import { fetchBarangaysByMunicity } from "../../services/mapApi";
-import type { MapLevel } from "../../constants";
 import type { BarangayGeoJSON, CountryGeoJSON, CustomOverlay, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../../types";
 import { broadAgeGroups } from "../../utils/ageSex";
 import {

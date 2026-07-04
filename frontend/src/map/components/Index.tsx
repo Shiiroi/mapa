@@ -1,5 +1,5 @@
 // Sitemap and dashboard layout: IndexSidebar and MapDashboard.
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { cn } from "../../lib/cn";
 import type { MapLevel } from "../constants";
 import type {
