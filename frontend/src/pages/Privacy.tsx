@@ -15,15 +15,15 @@ export default function Privacy() {
                     <p className="text-xs text-muted">Last updated: June 29, 2026</p>
                     <h1 className="mt-3 text-3xl font-semibold tracking-tight text-primary lg:text-4xl">Privacy Policy</h1>
                     <p className="mt-4 max-w-2xl text-sm leading-6 text-muted lg:text-base lg:leading-7">
-                        Mapa is a volunteer-maintained geospatial visualization project. This policy explains what we collect and why.
+                        Lens is a volunteer-maintained geospatial visualization project. This policy explains what we collect and why.
                     </p>
                 </header>
 
                 <div className="mt-6 grid gap-4">
                     <section className="rounded-2xl border border-border-light bg-white/85 p-5 shadow-soft lg:p-6">
-                        <h2 className="text-sm font-semibold tracking-tight text-primary lg:text-base">What Mapa is</h2>
+                        <h2 className="text-sm font-semibold tracking-tight text-primary lg:text-base">What Lens is</h2>
                         <p className="mt-2 text-sm leading-6 text-muted">
-                            Mapa provides administrative boundary visualizations, simple charts, and data downloads derived from public sources. It is
+                            Lens provides administrative boundary visualizations, simple charts, and data downloads derived from public sources. It is
                             not an official government service; data are community-maintained and may be incomplete or out of date.
                         </p>
                     </section>

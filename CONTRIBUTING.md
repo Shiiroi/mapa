@@ -1,6 +1,6 @@
-# Contributing to Mapa
+# Contributing to Lens
 
-Thanks for your interest in contributing to Mapa! This project maps Philippine
+Thanks for your interest in contributing to Lens! This project maps Philippine
 administrative divisions and overlays official census, economic, and election data, so
 accuracy matters as much as code quality. This guide covers how to report issues, propose
 data corrections, and submit code changes.
@@ -87,7 +87,7 @@ pnpm dev
 
 ## Data Contributions
 
-Because Mapa surfaces official government statistics and boundaries, data-related PRs and
+Because Lens surfaces official government statistics and boundaries, data-related PRs and
 issues are held to a higher bar than typical UI changes:
 
 - Any correction to boundaries, PSGC codes, population, GDP, LGU financial data, or
@@ -111,6 +111,6 @@ issues are held to a higher bar than typical UI changes:
 
 ## License
 
-By contributing to Mapa, you agree that your contributions will be licensed under the
+By contributing to Lens, you agree that your contributions will be licensed under the
 project's [MIT License](./LICENSE). Contributions involving third-party data must respect
 the licenses noted in [`NOTICE.md`](./NOTICE.md).

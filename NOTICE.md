@@ -1,6 +1,6 @@
 # NOTICE
 
-Mapa includes and builds upon third-party open data and software. The original
+Lens includes and builds upon third-party open data and software. The original
 licenses and attributions are reproduced below and must be retained in
 redistributions of the corresponding data or code.
 
@@ -12,7 +12,7 @@ redistributions of the corresponding data or code.
 - **Author:** James Faeldon
 - **Source:** https://github.com/faeldon/philippines-json-maps
 - **License:** MIT
-- **Usage in Mapa:** Region, province, and municipality boundary geometry is
+- **Usage in Lens:** Region, province, and municipality boundary geometry is
   re-keyed to PSGC from this project's GeoJSON. Some geometries have been
   corrected or joined — see [`DATA_CORRECTIONS.md`](./DATA_CORRECTIONS.md).
 
@@ -47,7 +47,7 @@ SOFTWARE.
 - **Project:** philippines-psgc-shapefiles
 - **Source:** https://github.com/altcoder/philippines-psgc-shapefiles
 - **License:** MIT
-- **Usage in Mapa:** Barangay (Adm4) and country (Adm0) boundary shapefiles
+- **Usage in Lens:** Barangay (Adm4) and country (Adm0) boundary shapefiles
   were joined to PSA PSGC codes and committed as GeoJSON under `frontend/data-sets/geo/`.
   Corrections are documented in [`DATA_CORRECTIONS.md`](./DATA_CORRECTIONS.md).
 
@@ -81,11 +81,11 @@ SOFTWARE.
 
 - **Publisher:** Philippine Statistics Authority (PSA)
 - **Source:** https://psa.gov.ph/classification/psgc/
-- **Usage in Mapa:** Administrative codes, names, hierarchy, and population
+- **Usage in Lens:** Administrative codes, names, hierarchy, and population
   counts (`frontend/data-sets/data/raw/psgc.csv`). Census and economic statistics
   are sourced from PSA publications (see sections 4–5 below).
 
-> Mapa is an independent project and is not affiliated with, endorsed by, or an
+> Lens is an independent project and is not affiliated with, endorsed by, or an
 > official product of the PSA or any government agency.
 
 ---
@@ -107,7 +107,7 @@ SOFTWARE.
 
 - **Source:** COA CY 2024 Annual Financial Report, Local Government Units
   (https://www.coa.gov.ph/reports/annual-financial-reports/afr-local-government-units/)
-- **Usage in Mapa:** Total assets per LGU (`division_stats.assets_2024`).
+- **Usage in Lens:** Total assets per LGU (`division_stats.assets_2024`).
 
 ---
 
@@ -117,7 +117,7 @@ SOFTWARE.
   (https://2022electionresults.comelec.gov.ph/)
 - **License:** Public domain (Republic Act No. 8293, Section 176 — works of the
   Philippine government)
-- **Usage in Mapa:** Built-in presidential election overlay (`custom_datasets` /
+- **Usage in Lens:** Built-in presidential election overlay (`custom_datasets` /
   `custom_stats`), seeded from `data-sets/data/clean/elections_2022_president_all.csv`.
 - **Scraper credit:** Download tooling is vendored and adapted from
   [ianalis/scraper2022](https://github.com/ianalis/scraper2022) (MIT). See
@@ -136,5 +136,5 @@ SOFTWARE.
 > [COA CY 2024 AFR (Local Government)](https://www.coa.gov.ph/reports/annual-financial-reports/afr-local-government-units/).
 > 2022 election results from
 > [COMELEC transparency results](https://2022electionresults.comelec.gov.ph/)
-> (public domain). Some boundaries corrected or joined by Mapa — see
+> (public domain). Some boundaries corrected or joined by Lens — see
 > [Data Corrections](./DATA_CORRECTIONS.md).

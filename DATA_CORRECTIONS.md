@@ -1,6 +1,6 @@
 # Data corrections
 
-This document tracks corrections and derivations Mapa applies on top of upstream
+This document tracks corrections and derivations Lens applies on top of upstream
 open-source boundary data. Every entry records **what** was changed, **why**, and
 the **basis** for the change. The corrected geometry is committed as GeoJSON under
 `frontend/data-sets/geo/`.
@@ -22,7 +22,7 @@ reformatting and PSGC property normalization.
 
 ### NCR has no province/district level
 
-Mapa follows the **official PSGC hierarchy**, in which the National Capital
+Lens follows the **official PSGC hierarchy**, in which the National Capital
 Region (NCR, `13…`) has **no province or district tier**. Its component units
 attach **directly to the region**:
 
@@ -39,7 +39,7 @@ stored with `province_psgc = null` and `region_psgc = 1300000000`.
 > group NCR into **four "districts"** (1st–4th District of NCR / Capital,
 > Eastern, Northern, Southern Manila Districts). Those are **congressional /
 > legislative groupings**, _not_ PSGC geographic administrative units. PSA does
-> not publish census geography (or boundary geometry) at that level, so Mapa
+> not publish census geography (or boundary geometry) at that level, so Lens
 > intentionally omits them to stay faithful to PSGC and to keep population /
 > density joins keyed on real PSGC codes.
 
@@ -50,7 +50,7 @@ as a separate optional grouping, not folded into the core hierarchy.
 
 ### Population and density stats
 
-Mapa attaches population and density to every administrative level from PSA
+Lens attaches population and density to every administrative level from PSA
 census data:
 
 | Field                                          | Source                                                                     | Notes                                                                                            |
@@ -191,7 +191,7 @@ shapefile slivers. The shapefile features remain dropped (no PSGC match).
 
 - **Source:** Commission on Audit (COA) CY 2024 Annual Financial Report (Local Government), Volume I, **Part III: Financial Profile** (`frontend/data-sets/source/afr.pdf`, PDF viewer pages 172–234).
 - **Mapping:** Name normalization and alias table in `frontend/scripts/lib/afrMatch.ts`; results seeded via `pnpm seed:afr` into `division_stats.assets_2024`.
-- **Units:** Report tables are in **thousand pesos**; Mapa stores and displays **actual pesos** (`value × 1000` as `bigint`).
+- **Units:** Report tables are in **thousand pesos**; Lens stores and displays **actual pesos** (`value × 1000` as `bigint`).
 - **Coverage:** ~98.5% of LGUs submitted financial statements; rows with all `-` in the PDF are stored as null. Component units (city colleges, hospitals, etc.) are skipped during extraction.
 - **Region / country totals:** Computed as the sum of matched province, city, and municipality rows per region (not copied from provinces-only `Regional Total` subtotal lines, which omit cities and municipalities).
 - **UI:** Info panel shows **Total assets [2024]** only (other financial columns are extracted but not surfaced in the app yet).
@@ -224,7 +224,7 @@ self-hosters consume the committed geo directly via `pnpm upload:geo` and
 
 ## 2022 Presidential Election Data Corrections & Audits
 
-Mapa integrates presidential election results from the May 2022 national election. The raw data is scraped from the public COMELEC transparency server using `scripts/py/scrape_comelec.py` and processed via `scripts/map-comelec-president.ts`.
+Lens integrates presidential election results from the May 2022 national election. The raw data is scraped from the public COMELEC transparency server using `scripts/py/scrape_comelec.py` and processed via `scripts/map-comelec-president.ts`.
 
 ### 1. 100% Match to Official Congressional Canvass (National level)
 

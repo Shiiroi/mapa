@@ -163,12 +163,12 @@ export function Sidebar(props: SidebarProps) {
 
     const currentSelection: CompareSelection | null = selectedPlace
         ? {
-              level: props.level,
-              regionPsgc: props.selectedRegionPsgc,
-              provincePsgc: props.selectedProvincePsgc,
-              municityPsgc: props.selectedMunicityPsgc,
-              barangayPsgc: props.selectedBarangayPsgc,
-          }
+            level: props.level,
+            regionPsgc: props.selectedRegionPsgc,
+            provincePsgc: props.selectedProvincePsgc,
+            municityPsgc: props.selectedMunicityPsgc,
+            barangayPsgc: props.selectedBarangayPsgc,
+        }
         : null;
 
     const complianceLinks = [
@@ -192,7 +192,12 @@ export function Sidebar(props: SidebarProps) {
 
             <header className="shrink-0 border-b border-border-light px-4 py-2 lg:px-5 lg:py-3 bg-white">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-lg font-bold uppercase tracking-wider text-primary">Mapa</h1>
+                    <div className="flex items-center gap-2.5">
+                        <h1 className="hidden sm:inline text-s text-muted font-normal">
+                            Data, seen through the <span className="font-black text-accent uppercase">LENS</span>
+                        </h1>
+                        <img src="/lens.png" className="h-6 w-auto" alt="Lens Logo" />
+                    </div>
                     <div className="flex items-center gap-2">
                         <span
                             className="text-[10px] font-medium text-muted bg-surface px-2 py-0.5 truncate max-w-35 lg:max-w-50 lg:text-xs border border-border-light rounded-none"

@@ -15,7 +15,7 @@ export default function Terms() {
                     <p className="text-xs text-muted">Last updated: June 29, 2026</p>
                     <h1 className="mt-3 text-3xl font-semibold tracking-tight text-primary lg:text-4xl">Terms of Service</h1>
                     <p className="mt-4 max-w-2xl text-sm leading-6 text-muted lg:text-base lg:leading-7">
-                        By using Mapa you agree to these terms. The service is provided by volunteers and contributors.
+                        By using Lens you agree to these terms. The service is provided by volunteers and contributors.
                     </p>
                 </header>
 
@@ -23,7 +23,7 @@ export default function Terms() {
                     <section className="rounded-2xl border border-border-light bg-white/85 p-5 shadow-soft lg:p-6">
                         <h2 className="text-sm font-semibold tracking-tight text-primary lg:text-base">The service</h2>
                         <p className="mt-2 text-sm leading-6 text-muted">
-                            Mapa helps users explore administrative boundaries, download datasets, and view basic charts derived from public sources.
+                            Lens helps users explore administrative boundaries, download datasets, and view basic charts derived from public sources.
                             The service is provided "as is" without guaranteed uptime, accuracy, or completeness.
                         </p>
                     </section>
@@ -31,7 +31,7 @@ export default function Terms() {
                     <section className="rounded-2xl border border-border-light bg-white/85 p-5 shadow-soft lg:p-6">
                         <h2 className="text-sm font-semibold tracking-tight text-primary lg:text-base">Not official</h2>
                         <p className="mt-2 text-sm leading-6 text-muted">
-                            Mapa is a community project and is not affiliated with or endorsed by government agencies. Do not rely on Mapa as your
+                            Lens is a community project and is not affiliated with or endorsed by government agencies. Do not rely on Lens as your
                             only source for official decisions.
                         </p>
                     </section>
@@ -57,7 +57,7 @@ export default function Terms() {
                                 <strong>Editor accounts:</strong> Accounts are issued at maintainer discretion and may be deactivated for misuse.
                             </li>
                             <li>
-                                <strong>License:</strong> By submitting content you grant Mapa a license to display and distribute approved edits as
+                                <strong>License:</strong> By submitting content you grant Lens a license to display and distribute approved edits as
                                 part of the project.
                             </li>
                         </ul>
@@ -77,7 +77,7 @@ export default function Terms() {
                         </h2>
                         <p className="mt-2 text-sm leading-6 text-muted">
                             THE SERVICE IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND. To the fullest extent permitted by law, contributors and
-                            maintainers are not liable for indirect, incidental, or consequential damages arising from your use of Mapa.
+                            maintainers are not liable for indirect, incidental, or consequential damages arising from your use of Lens.
                         </p>
                     </section>
 
