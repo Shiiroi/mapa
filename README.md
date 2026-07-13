@@ -2,7 +2,7 @@
 
 Lens is an interactive map and GeoJSON download tool for Philippine administrative divisions — country, region, province, city/municipality, and barangay. It overlays census, economic, and election statistics on those boundaries, supports side-by-side comparison of places, and exports standards-compliant GeoJSON.
 
-Live: https://mapa.shhiroi.me
+Live: https://lens.mapaph.com (previously https://mapa.shhiroi.me)
 
 > Lens is an independent project. It is not affiliated with or endorsed by the Philippine Statistics Authority (PSA) or any government agency.
 
