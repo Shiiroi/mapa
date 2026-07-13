@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const BASE_URL = "https://mapa.shhiroi.me";
+const BASE_URL = "https://lens.mapaph.com";
 
 const LASTMOD = new Date().toISOString().slice(0, 10);
 
