@@ -10,7 +10,13 @@ import type { CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Re
 // boundary; the others export one child level (single level per file).
 export type ExportKind = "self" | "provinces" | "municipalities" | "barangays";
 
-interface UseMapDownloadOptions {
+interface SetSelectionGeoData {
+    provinces: ProvinceGeoJSON[];
+    municities: MunicityGeoJSON[];
+    municityMeta: MunicityMeta[];
+}
+
+interface DownloadGeoData {
     regions: Region[];
     provinces: ProvinceGeoJSON[];
     municities: MunicityGeoJSON[];
@@ -19,7 +25,7 @@ interface UseMapDownloadOptions {
 }
 
 // Manages the download panel's selection state and runs the scoped GeoJSON export.
-export function useMapDownload({ regions, provinces, municities, municityMeta, country }: UseMapDownloadOptions) {
+export function useMapDownload() {
     const [level, setLevelState] = useState<MapLevel>("country");
     const [selectedRegionPsgc, setSelectedRegionPsgc] = useState<string | null>(null);
     const [selectedProvincePsgc, setSelectedProvincePsgc] = useState<string | null>(null);
@@ -52,7 +58,8 @@ export function useMapDownload({ regions, provinces, municities, municityMeta, c
 
     // Syncs the download selection (and parent filters) when the user clicks the map.
     const setSelectionFromMap = useCallback(
-        (mode: MapLevel, entityPsgc: string) => {
+        (mode: MapLevel, entityPsgc: string, geoData: SetSelectionGeoData) => {
+            const { provinces, municities, municityMeta } = geoData;
             setLevelState(mode);
             setExportKind("self");
             if (mode === "country") {
@@ -83,12 +90,12 @@ export function useMapDownload({ regions, provinces, municities, municityMeta, c
                 setSelectedBarangayPsgc(entityPsgc);
             }
         },
-        [provinces, municities, municityMeta],
+        [],
     );
 
     // Translates the current level + export kind + selection into a DownloadScope,
     // throwing a user-facing message when a required selection is missing.
-    const resolveScope = useCallback((): DownloadScope => {
+    const resolveScope = useCallback((municityMeta: MunicityMeta[]): DownloadScope => {
         if (level === "country") {
             return { kind: "country" };
         }
@@ -140,15 +147,15 @@ export function useMapDownload({ regions, provinces, municities, municityMeta, c
         selectedMunicityPsgc,
         selectedBarangayPsgc,
         provinceFilterPsgc,
-        municityMeta,
     ]);
 
     // Builds the scoped GeoJSON and saves it, surfacing any error to the panel.
-    const download = useCallback(async () => {
+    const download = useCallback(async (geoData: DownloadGeoData) => {
+        const { regions, provinces, municities, municityMeta, country } = geoData;
         setError(null);
         setDownloading(true);
         try {
-            const scope = resolveScope();
+            const scope = resolveScope(municityMeta);
             const result = await buildDownloadGeoJson({
                 level,
                 scope,
@@ -164,7 +171,7 @@ export function useMapDownload({ regions, provinces, municities, municityMeta, c
         } finally {
             setDownloading(false);
         }
-    }, [level, resolveScope, regions, provinces, municities, municityMeta, country]);
+    }, [level, resolveScope]);
 
     return {
         level,

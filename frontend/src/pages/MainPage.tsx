@@ -12,6 +12,8 @@ import type { CustomOverlay, SeriesViewState } from "../map/types";
 import { defaultSeriesViewState } from "../map/utils/seriesScale";
 
 export default function MainPage() {
+    const download = useMapDownload();
+
     const [activeOverlay, setActiveOverlay] = useState<CustomOverlay | null>(null);
     const [overlayView, setOverlayView] = useState<SeriesViewState>({ mode: "lead" });
     const [mapLevel, setMapLevel] = useState<MapLevel>("country");
@@ -26,7 +28,9 @@ export default function MainPage() {
     const [mobileDrawerHeightPx, setMobileDrawerHeightPx] = useState(mobileDrawerMinHeightPx);
 
     const { provinces, municities, municityMeta, regions, country, loading, municitiesLoading, error } = useMapLayers({
-        loadMunicitiesGeometry: mapLevel === "municipality" || mapLevel === "province",
+        loadMunicitiesGeometry: mapLevel === "municipality",
+        selectedRegionPsgc: download.selectedRegionPsgc,
+        selectedProvincePsgc: download.selectedProvincePsgc,
     });
 
     useEffect(() => {
@@ -50,7 +54,7 @@ export default function MainPage() {
         return () => window.removeEventListener("resize", onResize);
     }, []);
 
-    const download = useMapDownload({ regions, provinces, municities, municityMeta, country });
+    // download is now initialized at the top to resolve circular dependency
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -87,7 +91,7 @@ export default function MainPage() {
 
     const barangaysQuery = useBarangays(
         download.selectedMunicityPsgc,
-        download.level === "barangay" || download.level === "municipality"
+        download.level === "barangay"
     );
 
     const barangays = barangaysQuery.data ?? [];
@@ -120,6 +124,22 @@ export default function MainPage() {
     const mapLoading =
         loading || (download.level === "municipality" && municitiesLoading) || (download.level === "barangay" && barangaysQuery.isLoading);
 
+    const mapLoadingMessage = useMemo(() => {
+        if (loading) {
+            return "Loading base map layers…";
+        }
+        if (download.level === "municipality" && municitiesLoading) {
+            return "Loading municipal boundaries… (this may take a few seconds)";
+        }
+        if (download.level === "barangay" && barangaysQuery.isLoading) {
+            const muniName = download.selectedMunicityPsgc
+                ? municityMeta.find((m) => m.psgc === download.selectedMunicityPsgc)?.name || "municipality"
+                : "municipality";
+            return `Loading barangay outlines for ${muniName}…`;
+        }
+        return "";
+    }, [loading, download.level, download.selectedMunicityPsgc, municitiesLoading, barangaysQuery.isLoading, municityMeta]);
+
     const activePsgc = useMemo(() => {
         return (
             download.selectedBarangayPsgc ||
@@ -133,13 +153,13 @@ export default function MainPage() {
     const handleFeatureClick = useCallback(
         (entityPsgc: string, mode: MapLevel) => {
             track("select_shape", { psgc: entityPsgc, level: mode });
-            download.setSelectionFromMap(mode, entityPsgc);
+            download.setSelectionFromMap(mode, entityPsgc, { provinces, municities, municityMeta });
             // On mobile: expand info tab so user sees details.
             if (activeTab === "info") {
                 setIsSidebarCollapsed(false);
             }
         },
-        [download, activeTab],
+        [download, activeTab, provinces, municities, municityMeta],
     );
 
     const handleLevelChange = useCallback(
@@ -201,7 +221,7 @@ export default function MainPage() {
             onProvinceFilterChange={download.setProvinceFilterPsgc}
             exportKind={download.exportKind}
             onExportKindChange={download.setExportKind}
-            onDownload={download.download}
+            onDownload={() => download.download({ regions, provinces, municities, municityMeta, country })}
             downloading={download.downloading}
             downloadError={download.error}
             activeOverlay={activeOverlay}
@@ -221,6 +241,7 @@ export default function MainPage() {
             onDrawerHeightChange={handleDrawerHeightChange}
             onLevelChange={handleLevelChange}
             mapLoading={mapLoading}
+            mapLoadingMessage={mapLoadingMessage}
             mapError={error ?? (barangaysQuery.error as Error | null)}
             activePsgc={activePsgc}
             onFeatureClick={handleFeatureClick}

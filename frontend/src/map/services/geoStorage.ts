@@ -20,14 +20,21 @@ export function getGeoStoragePublicUrl(fileName: string): string {
     return withGeoVersion(data.publicUrl);
 }
 
+const geoCache = new Map<string, any>();
+
 // Downloads a file from the geo bucket. Geometries must be uploaded to storage via upload:geo script
 export async function fetchGeoLayerFromStorage<T>(fileName: string, label: string): Promise<T> {
+    if (geoCache.has(fileName)) {
+        return geoCache.get(fileName) as T;
+    }
     const url = getGeoStoragePublicUrl(fileName);
     const res = await fetch(url);
     if (!res.ok) {
         throw new Error(`Storage ${label} failed: ${res.status} ${res.statusText}`);
     }
-    return (await res.json()) as T;
+    const data = (await res.json()) as T;
+    geoCache.set(fileName, data);
+    return data;
 }
 
 // Fetches region outlines from CDN

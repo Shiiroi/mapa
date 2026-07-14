@@ -91,7 +91,9 @@ interface MapTabProps {
     onLevelChange?: (level: MapLevel) => void;
     // Barangay view is only selectable once a municipality is chosen
     barangayAvailable?: boolean;
+    municipalityAvailable?: boolean;
     loading?: boolean;
+    loadingMessage?: string;
     error?: Error | null;
     overlay?: CustomOverlay | null;
     overlayView?: SeriesViewState;
@@ -408,7 +410,9 @@ export function MapTab({
     onFeatureClick,
     onLevelChange,
     barangayAvailable = false,
+    municipalityAvailable = false,
     loading,
+    loadingMessage,
     error,
     overlay = null,
     overlayView = { mode: "lead" },
@@ -696,7 +700,10 @@ export function MapTab({
         <div ref={containerRef} className="relative w-full h-full min-w-0 min-h-0">
             {loading && (
                 <div className="absolute inset-0 z-1001 flex items-center justify-center bg-parchment/80">
-                    <p className="rounded-lg bg-white px-6 py-4 shadow-soft">Loading Philippine map…</p>
+                    <div className="rounded-lg bg-white px-6 py-4 shadow-soft text-center">
+                        <p className="font-semibold text-primary">{loadingMessage || "Loading Philippine map…"}</p>
+                        {loadingMessage && <p className="text-[10px] text-muted mt-1">Please wait...</p>}
+                    </div>
                 </div>
             )}
 
@@ -754,14 +761,24 @@ export function MapTab({
                     <div className="flex flex-wrap items-center gap-0.5 lg:gap-1 rounded-lg border border-border-light bg-white p-0.5 lg:p-1 shadow-soft">
                         <span className="px-1 lg:px-1.5 text-[9px] lg:text-[10px] font-medium uppercase tracking-wide text-muted">View by</span>
                         {levelOptions.map((opt) => {
-                            const disabled = opt.level === "barangay" && !barangayAvailable;
+                            const disabled =
+                                (opt.level === "barangay" && !barangayAvailable) ||
+                                (opt.level === "municipality" && !municipalityAvailable);
+                            
+                            let titleText: string | undefined = undefined;
+                            if (opt.level === "barangay" && !barangayAvailable) {
+                                titleText = "Select a municipality first";
+                            } else if (opt.level === "municipality" && !municipalityAvailable) {
+                                titleText = "Select a region or province first";
+                            }
+
                             return (
                                 <button
                                     key={opt.level}
                                     type="button"
                                     disabled={disabled}
                                     onClick={() => onLevelChange(opt.level)}
-                                    title={disabled ? "Select a municipality first" : undefined}
+                                    title={titleText}
                                     className={cn(
                                         "rounded-md px-1.5 py-1 lg:px-2.5 lg:py-1.5 text-[10px] lg:text-xs font-medium transition-colors",
                                         mode === opt.level ? "bg-accent text-white" : "text-primary hover:bg-surface",

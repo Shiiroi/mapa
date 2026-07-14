@@ -64,6 +64,14 @@ export async function fetchMunicitiesByProvince(provincePsgc: string): Promise<M
     );
 }
 
+// Fetches municipality geometries for multiple provinces in parallel and flattens them
+export async function fetchMunicitiesGeometryForProvinces(provincePsgcs: string[]): Promise<MunicityGeoJSON[]> {
+    const batches = await Promise.all(
+        provincePsgcs.map((psgc) => fetchMunicitiesByProvince(psgc))
+    );
+    return batches.flat();
+}
+
 // Gets the national boundary shape from storage
 export async function fetchCountry(): Promise<CountryGeoJSON> {
     return fetchCountryFromStorage();

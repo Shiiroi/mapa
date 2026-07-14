@@ -1,12 +1,15 @@
 // React Query loader for regions, provinces, municity metadata, and geometries.
 
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchCountry, fetchProvinces, fetchMunicitiesMeta, fetchMunicitiesGeometry, fetchRegions } from "../services/mapApi";
+import { fetchCountry, fetchProvinces, fetchMunicitiesMeta, fetchMunicitiesGeometryForProvinces, fetchRegions } from "../services/mapApi";
 import type { CountryGeoJSON, ProvinceGeoJSON, MunicityGeoJSON, MunicityMeta, Region } from "../types";
 
 interface UseMapLayersOptions {
-    // When true, loads all municipality geometries (heavy, only needed for city or municipality views)
+    // When true, loads municipality geometries
     loadMunicitiesGeometry?: boolean;
+    selectedRegionPsgc?: string | null;
+    selectedProvincePsgc?: string | null;
 }
 
 interface UseMapLayersReturn {
@@ -23,9 +26,14 @@ interface UseMapLayersReturn {
 }
 
 // Loads and caches base map layers. Municity geometry is deferred until requested
-// so the Philippines view is not blocked by hundreds of per-province JSON files.
+// and is loaded per active province or region selection.
 export function useMapLayers(options: UseMapLayersOptions = {}): UseMapLayersReturn {
-    const { loadMunicitiesGeometry = false } = options;
+    const {
+        loadMunicitiesGeometry = false,
+        selectedRegionPsgc = null,
+        selectedProvincePsgc = null,
+    } = options;
+
     const provincesQuery = useQuery<ProvinceGeoJSON[]>({
         queryKey: ["provinces"],
         queryFn: fetchProvinces,
@@ -38,13 +46,27 @@ export function useMapLayers(options: UseMapLayersOptions = {}): UseMapLayersRet
         staleTime: 20 * 60 * 1000,
     });
 
+    // Determine the list of province PSGCs we need to load municipalities for
+    const provincePsgcsToLoad = useMemo(() => {
+        if (!loadMunicitiesGeometry) return [];
+        if (selectedProvincePsgc) {
+            return [selectedProvincePsgc];
+        }
+        if (selectedRegionPsgc && provincesQuery.data) {
+            return provincesQuery.data
+                .filter((p) => p.region_psgc === selectedRegionPsgc)
+                .map((p) => p.psgc);
+        }
+        return [];
+    }, [loadMunicitiesGeometry, selectedProvincePsgc, selectedRegionPsgc, provincesQuery.data]);
+
     const municitiesGeometryQuery = useQuery<MunicityGeoJSON[]>({
-        queryKey: ["municities", "geometry"],
-        queryFn: fetchMunicitiesGeometry,
+        queryKey: ["municities", "geometry", provincePsgcsToLoad],
+        queryFn: () => fetchMunicitiesGeometryForProvinces(provincePsgcsToLoad),
         staleTime: 20 * 60 * 1000,
         gcTime: 30 * 60 * 1000,
         retry: false,
-        enabled: loadMunicitiesGeometry,
+        enabled: loadMunicitiesGeometry && provincePsgcsToLoad.length > 0,
     });
 
     const regionsQuery = useQuery<Region[]>({

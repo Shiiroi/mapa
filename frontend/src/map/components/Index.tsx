@@ -269,8 +269,8 @@ interface MapDashboardProps {
     drawerMaxHeightPx: number;
     onDrawerHeightChange: (heightPx: number) => void;
     onLevelChange: (level: MapLevel) => void;
-
     mapLoading: boolean;
+    mapLoadingMessage?: string;
     mapError: Error | null;
     activePsgc: string | null;
     onFeatureClick: (entityPsgc: string, mode: MapLevel) => void;
@@ -323,6 +323,7 @@ export function MapDashboard({
     onDrawerHeightChange,
     onLevelChange,
     mapLoading,
+    mapLoadingMessage,
     mapError,
     activePsgc,
     onFeatureClick,
@@ -361,7 +362,9 @@ export function MapDashboard({
                     onFeatureClick={onFeatureClick}
                     onLevelChange={onLevelChange}
                     barangayAvailable={!!selectedMunicityPsgc}
+                    municipalityAvailable={!!selectedRegionPsgc || !!selectedProvincePsgc}
                     loading={mapLoading}
+                    loadingMessage={mapLoadingMessage}
                     error={mapError}
                     overlay={activeOverlay}
                     overlayView={overlayView}
