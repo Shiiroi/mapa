@@ -35,6 +35,12 @@ export function useStateToUrlSync({
     const lastNavigatedPathRef = useRef<string>("");
 
     useEffect(() => {
+        // Return early while core geographic lists are still loading.
+        // Prevents premature redirects to "/" (country level) on initial deep-link mount.
+        if (regions.length === 0 || provinces.length === 0 || municityMeta.length === 0) {
+            return;
+        }
+
         let targetPath: string | null = null;
 
         if (level === "country") {
@@ -78,8 +84,8 @@ export function useStateToUrlSync({
             }
         }
 
-        // Only update if we successfully resolved a target path
-        if (targetPath && window.location.pathname !== targetPath && lastNavigatedPathRef.current !== targetPath) {
+        // Only update if we successfully resolved a target path and it differs from current pathname
+        if (targetPath && window.location.pathname !== targetPath) {
             lastNavigatedPathRef.current = targetPath;
             navigate(targetPath, { replace: true });
         }

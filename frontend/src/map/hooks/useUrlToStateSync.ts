@@ -73,6 +73,11 @@ export function useUrlToStateSync({
         const region = regions.find((r) => slugify(r.name) === regSlug);
         if (!region) {
             lastSyncedPathRef.current = "/";
+            onSetLevel("country");
+            onSetRegion(null);
+            onSetProvince(null);
+            onSetMunicity(null);
+            onSetBarangay?.(null);
             navigate("/", { replace: true });
             return;
         }
@@ -91,8 +96,14 @@ export function useUrlToStateSync({
         const provSlug = segments[1].toLowerCase();
         const province = provinces.find((p) => p.region_psgc === region.psgc && slugify(p.name) === provSlug);
         if (!province) {
-            lastSyncedPathRef.current = `/${regSlug}`;
-            navigate(`/${regSlug}`, { replace: true });
+            const parentPath = `/${regSlug}`;
+            lastSyncedPathRef.current = parentPath;
+            onSetLevel("region");
+            onSetRegion(region.psgc);
+            onSetProvince(null);
+            onSetMunicity(null);
+            onSetBarangay?.(null);
+            navigate(parentPath, { replace: true });
             return;
         }
 
@@ -112,6 +123,11 @@ export function useUrlToStateSync({
         if (!muni) {
             const parentPath = `/${regSlug}/${provSlug}`;
             lastSyncedPathRef.current = parentPath;
+            onSetLevel("province");
+            onSetRegion(region.psgc);
+            onSetProvince(province.psgc);
+            onSetMunicity(null);
+            onSetBarangay?.(null);
             navigate(parentPath, { replace: true });
             return;
         }
@@ -128,8 +144,15 @@ export function useUrlToStateSync({
 
         // 4. Resolve Barangay
         const bgySlug = segments[3].toLowerCase();
-        // If barangays list is still loading, wait for it
+        
+        // If barangays list is still loading, set parent state to enable the query and wait
         if (barangays.length === 0) {
+            lastSyncedPathRef.current = pathname;
+            onSetLevel("barangay");
+            onSetRegion(region.psgc);
+            onSetProvince(province.psgc);
+            onSetMunicity(muni.psgc);
+            onSetBarangay?.(null);
             return;
         }
 
@@ -144,6 +167,11 @@ export function useUrlToStateSync({
         } else {
             const parentPath = `/${regSlug}/${provSlug}/${muniSlug}`;
             lastSyncedPathRef.current = parentPath;
+            onSetLevel("municipality");
+            onSetRegion(region.psgc);
+            onSetProvince(province.psgc);
+            onSetMunicity(muni.psgc);
+            onSetBarangay?.(null);
             navigate(parentPath, { replace: true });
         }
     }, [
