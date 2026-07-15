@@ -76,6 +76,13 @@ export default function Terms() {
                     </section>
 
                     <section className="rounded-2xl border border-border-light bg-white/85 p-5 shadow-soft lg:p-6">
+                        <h2 className="text-sm font-semibold tracking-tight text-primary lg:text-base">Governing Law</h2>
+                        <p className="mt-2 text-sm leading-6 text-muted">
+                            These Terms of Service and your use of Lens are governed by the laws of the Republic of the Philippines.
+                        </p>
+                    </section>
+
+                    <section className="rounded-2xl border border-border-light bg-white/85 p-5 shadow-soft lg:p-6">
                         <h2 className="text-sm font-semibold tracking-tight text-primary lg:text-base">Contact</h2>
                         <p className="mt-2 text-sm leading-6 text-muted">
                             If you have questions about these terms, please contact: <a href="mailto:vrsmagwili@gmail.com">vrsmagwili@gmail.com</a>
