@@ -76,6 +76,20 @@ export default function Terms() {
                     </section>
 
                     <section className="rounded-2xl border border-border-light bg-white/85 p-5 shadow-soft lg:p-6">
+                        <h2 className="text-sm font-semibold tracking-tight text-primary lg:text-base">Indemnification</h2>
+                        <p className="mt-2 text-sm leading-6 text-muted">
+                            You agree to indemnify, defend, and hold harmless the volunteers, maintainers, and contributors of Lens from and against any claims, liabilities, damages, losses, and expenses (including legal fees) arising out of or in any way connected with your access to or use of the service.
+                        </p>
+                    </section>
+
+                    <section className="rounded-2xl border border-border-light bg-white/85 p-5 shadow-soft lg:p-6">
+                        <h2 className="text-sm font-semibold tracking-tight text-primary lg:text-base">Severability</h2>
+                        <p className="mt-2 text-sm leading-6 text-muted">
+                            If any provision of these Terms of Service is held to be invalid, illegal, or unenforceable by a court of competent jurisdiction, that provision shall be modified to the minimum extent necessary, and the remaining provisions of these Terms shall remain in full force and effect.
+                        </p>
+                    </section>
+
+                    <section className="rounded-2xl border border-border-light bg-white/85 p-5 shadow-soft lg:p-6">
                         <h2 className="text-sm font-semibold tracking-tight text-primary lg:text-base">Governing Law</h2>
                         <p className="mt-2 text-sm leading-6 text-muted">
                             These Terms of Service and your use of Lens are governed by the laws of the Republic of the Philippines.

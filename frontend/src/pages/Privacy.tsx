@@ -66,6 +66,27 @@ export default function Privacy() {
                     </section>
 
                     <section className="rounded-2xl border border-border-light bg-white/85 p-5 shadow-soft lg:p-6">
+                        <h2 className="text-sm font-semibold tracking-tight text-primary lg:text-base">Children's Privacy</h2>
+                        <p className="mt-2 text-sm leading-6 text-muted">
+                            Lens is a general-audience website and is not directed at children under the age of 13 (or 16 in certain jurisdictions). We do not knowingly collect or solicit personal information from minors.
+                        </p>
+                    </section>
+
+                    <section className="rounded-2xl border border-border-light bg-white/85 p-5 shadow-soft lg:p-6">
+                        <h2 className="text-sm font-semibold tracking-tight text-primary lg:text-base">Third-Party Links</h2>
+                        <p className="mt-2 text-sm leading-6 text-muted">
+                            Our map and pages contain links to third-party data sources, repositories, and APIs. We have no control over and are not responsible for the privacy practices, content, or cookie policies of these external websites.
+                        </p>
+                    </section>
+
+                    <section className="rounded-2xl border border-border-light bg-white/85 p-5 shadow-soft lg:p-6">
+                        <h2 className="text-sm font-semibold tracking-tight text-primary lg:text-base">Your Privacy Rights</h2>
+                        <p className="mt-2 text-sm leading-6 text-muted">
+                            Under global privacy regulations (including the Philippine Data Privacy Act, GDPR, and CCPA), individuals have rights regarding access and deletion of their personal data. Because Lens does not store or collect personal identifiers, we have no mechanism to associate any browsing session with a specific individual and are unable to fulfill access or deletion requests.
+                        </p>
+                    </section>
+
+                    <section className="rounded-2xl border border-border-light bg-white/85 p-5 shadow-soft lg:p-6">
                         <h2 className="text-sm font-semibold tracking-tight text-primary lg:text-base">Governing Law</h2>
                         <p className="mt-2 text-sm leading-6 text-muted">
                             This Privacy Policy and your use of Lens are governed by the laws of the Republic of the Philippines.
