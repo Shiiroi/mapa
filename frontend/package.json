@@ -43,7 +43,7 @@
         "frontend": "link:",
         "h3-js": "^4.4.0",
         "leaflet": "^1.9.4",
-        "pg": "^8.21.0",
+        "pg": "^8.22.0",
         "react": "^19.2.6",
         "react-dom": "^19.2.6",
         "react-leaflet": "^5.0.0",
