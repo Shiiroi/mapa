@@ -33,8 +33,8 @@ importers:
         specifier: ^6.2.1
         version: 6.2.1
       csv-stringify:
-        specifier: ^6.7.0
-        version: 6.7.0
+        specifier: ^6.8.1
+        version: 6.8.1
       fast-csv:
         specifier: ^5.0.7
         version: 5.0.7
@@ -924,8 +924,8 @@ packages:
   csv-parse@6.2.1:
     resolution: {integrity: sha512-LRLMV+UCyfMokp8Wb411duBf1gaBKJfOfBWU9eHMJ+b+cJYZsNu3AFmjJf3+yPGd59Exz1TsMjaSFyxnYB9+IQ==}
 
-  csv-stringify@6.7.0:
-    resolution: {integrity: sha512-UdtziYp5HuTz7e5j8Nvq+a/3HQo+2/aJZ9xntNTpmRRIg/3YYqDVgiS9fvAhtNbnyfbv2ZBe0bqCHqzhE7FqWQ==}
+  csv-stringify@6.8.1:
+    resolution: {integrity: sha512-tZ6X6TKQyQgCo5OptXcyAbfN1pwmoxEqELPQ7KFazNErx7kiVsDK8o+VYRXhfMl4N9vvOOLXuioquR2MeP847A==}
 
   d3-array@3.2.4:
     resolution: {integrity: sha512-tdQAmyA18i4J7wprpYq8ClcxZy3SC31QMeByyCFyRt7BVHdREQZ5lpzoe5mFEYZUWe+oq8HBvk9JjpibyEV4Jg==}
@@ -2343,7 +2343,7 @@ snapshots:
 
   csv-parse@6.2.1: {}
 
-  csv-stringify@6.7.0: {}
+  csv-stringify@6.8.1: {}
 
   d3-array@3.2.4:
     dependencies:
