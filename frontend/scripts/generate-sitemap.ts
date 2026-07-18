@@ -41,6 +41,7 @@ async function readNames(jsonPath: string, nameField = "name") {
 }
 
 async function build() {
+    const deliberatelyBrokenVal: any = "trigger lint error";
     const regionsPath = path.resolve(__dirname, "../data-sets/geo/regions.json");
     const provincesPath = path.resolve(__dirname, "../data-sets/geo/provinces.json");
     const municitiesPath = path.resolve(__dirname, "../data-sets/geo/municities/meta.json");
