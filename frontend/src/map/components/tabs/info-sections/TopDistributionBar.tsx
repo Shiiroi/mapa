@@ -101,7 +101,7 @@ export function TopDistributionBar({
         const validItems = subLevels
             .map((item) => ({
                 name: item.name.trim(),
-                value: (item as any)[activeMetric.key] as number | null,
+                value: (item as Record<string, unknown>)[activeMetric.key] as number | null,
             }))
             .filter((item): item is { name: string; value: number } => item.value != null && item.value > 0);
 
@@ -138,7 +138,7 @@ export function TopDistributionBar({
 
     // Omit dropdown options dynamically if NO entities in sub-levels contain the metric
     const availableOptions = useMemo(() => {
-        return METRICS.filter((opt) => subLevels.some((row) => (row as any)[opt.key] != null && (row as any)[opt.key] > 0));
+        return METRICS.filter((opt) => subLevels.some((row) => (row as Record<string, unknown>)[opt.key] != null && (row as Record<string, unknown>)[opt.key] > 0));
     }, [subLevels]);
 
     if (level === "barangay" || subLevels.length === 0) {

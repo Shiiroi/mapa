@@ -51,7 +51,7 @@ function stripExtraColumns<T extends { [K: string]: unknown }>(
                 filtered[key] = value;
             }
         }
-        return filtered as any;
+        return filtered as unknown as Omit<T, keyof Omit<T, "psgc" | "correspondence" | "name" | "geo_lvl" | "city_lvl" | "municity_psgc" | "province_psgc" | "region_psgc">>;
     });
 }
 

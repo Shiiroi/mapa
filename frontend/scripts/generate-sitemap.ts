@@ -33,7 +33,7 @@ async function readNames(jsonPath: string, nameField = "name") {
         const raw = await fs.readFile(jsonPath, "utf8");
         const arr = JSON.parse(raw);
         if (!Array.isArray(arr)) return [];
-        return arr.map((r: any) => String(r[nameField] ?? "")).filter(Boolean);
+        return arr.map((r: Record<string, unknown>) => String(r[nameField] ?? "")).filter(Boolean);
     } catch (e) {
         console.warn(`Could not read ${jsonPath}: ${e}`);
         return [];

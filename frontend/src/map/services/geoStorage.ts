@@ -20,7 +20,7 @@ export function getGeoStoragePublicUrl(fileName: string): string {
     return withGeoVersion(data.publicUrl);
 }
 
-const geoCache = new Map<string, any>();
+const geoCache = new Map<string, unknown>();
 
 // Downloads a file from the geo bucket. Geometries must be uploaded to storage via upload:geo script
 export async function fetchGeoLayerFromStorage<T>(fileName: string, label: string): Promise<T> {
