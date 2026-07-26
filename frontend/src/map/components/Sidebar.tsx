@@ -172,6 +172,7 @@ export function Sidebar(props: SidebarProps) {
         : null;
 
     const complianceLinks = [
+        { to: "/faq", label: "FAQ" },
         { to: "/privacy", label: "Privacy Policy" },
         { to: "/terms", label: "Terms of Service" },
     ];
