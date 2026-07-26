@@ -1,6 +1,16 @@
+import { Helmet } from "react-helmet-async";
+
 export default function Privacy() {
     return (
         <div className="h-full overflow-y-auto">
+            <Helmet>
+                <title>Privacy Policy — Lens (MapaPH)</title>
+                <meta
+                    name="description"
+                    content="Privacy Policy for Lens (MapaPH). Explains data handling, browser caching, local analytics, and open-source usage policies."
+                />
+                <link rel="canonical" href="https://lens.mapaph.com/privacy" />
+            </Helmet>
             <div className="mx-auto flex min-h-full w-full max-w-4xl flex-col px-4 py-8 lg:px-8 lg:py-12">
                 <div className="mb-6 flex items-center justify-between gap-4 text-[11px] uppercase tracking-[0.24em] text-muted">
                     <a href="/" className="text-muted transition-colors hover:text-primary">

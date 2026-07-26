@@ -1,6 +1,16 @@
+import { Helmet } from "react-helmet-async";
+
 export default function Terms() {
     return (
         <div className="h-full overflow-y-auto">
+            <Helmet>
+                <title>Terms of Service — Lens (MapaPH)</title>
+                <meta
+                    name="description"
+                    content="Terms of Service for Lens (MapaPH). Details open-source licensing, acceptable use, and disclaimer of warranties."
+                />
+                <link rel="canonical" href="https://lens.mapaph.com/terms" />
+            </Helmet>
             <div className="mx-auto flex min-h-full w-full max-w-4xl flex-col px-4 py-8 lg:px-8 lg:py-12">
                 <div className="mb-6 flex items-center justify-between gap-4 text-[11px] uppercase tracking-[0.24em] text-muted">
                     <a href="/" className="text-muted transition-colors hover:text-primary">

@@ -6,7 +6,7 @@
     <link rel="icon" type="image/svg+xml" href="/lens.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Primary SEO Meta Tags -->
+    <!-- Universal Fallback SEO Meta Tags (overridden by React Helmet per-route) -->
     <title>Lens — Interactive Philippines Map &amp; GeoJSON Downloads</title>
     <meta name="title" content="Lens — Interactive Philippines Map &amp; GeoJSON Downloads" />
     <meta name="description"
@@ -16,60 +16,10 @@
     <meta name="author" content="Lens (MapaPH)" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://lens.mapaph.com/" />
-
-    <!-- Open Graph / Facebook / LinkedIn -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://lens.mapaph.com/" />
-    <meta property="og:title" content="Lens — Interactive Philippines Map &amp; GeoJSON Downloads" />
-    <meta property="og:description"
-        content="Explore a data-rich map of the Philippines by region, province, city, and barangay. Visualize population, GDP, and assets, or upload your own CSV. Free GeoJSON downloads." />
-    <meta property="og:image" content="https://lens.mapaph.com/og-image.png" />
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://lens.mapaph.com/" />
-    <meta property="twitter:title" content="Lens — Interactive Philippines Map &amp; GeoJSON Downloads" />
-    <meta property="twitter:description"
-        content="Explore a data-rich map of the Philippines by region, province, city, and barangay. Visualize population, GDP, and assets, or upload your own CSV. Free GeoJSON downloads." />
-    <meta property="twitter:image" content="https://lens.mapaph.com/og-image.png" />
-
-    <!-- JSON-LD FAQ Schema -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "How do I download a GeoJSON file for a Philippine province or barangay?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Pick a level on the map (region down to barangay), select a place, and export it in RFC 7946 / WGS 84 format from the Download tab."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Where can I find Philippines population and GDP data by city or municipality?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Lens overlays PSA population, GDP, and LGU asset data directly on the map at every administrative level, viewable per place or side-by-side."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I visualize my own data on a map of the Philippines?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes — upload a CSV keyed by PSGC code and Lens will render it as a choropleth alongside the built-in datasets."
-          }
-        }
-      ]
-    }
-    </script>
 </head>
 
 <body>
-    <!-- Fallback Content for Crawlers -->
+    <!-- Fallback Content for Crawlers (Homepage Only) -->
     <noscript>
         <h1>The Philippines, mapped down to the barangay.</h1>
         <p>
@@ -80,15 +30,6 @@
             <li>Upload your own CSV and visualize it against any province, city, or barangay in the Philippines.</li>
             <li>Download GeoJSON boundaries for any administrative level, ready for GIS or web mapping projects.</li>
         </ul>
-        <h2>Frequently Asked Questions</h2>
-        <dl>
-            <dt>How do I download a GeoJSON file for a Philippine province or barangay?</dt>
-            <dd>Pick a level on the map (region down to barangay), select a place, and export it in RFC 7946 / WGS 84 format from the Download tab.</dd>
-            <dt>Where can I find Philippines population and GDP data by city or municipality?</dt>
-            <dd>Lens overlays PSA population, GDP, and LGU asset data directly on the map at every administrative level, viewable per place or side-by-side.</dd>
-            <dt>Can I visualize my own data on a map of the Philippines?</dt>
-            <dd>Yes — upload a CSV keyed by PSGC code and Lens will render it as a choropleth alongside the built-in datasets.</dd>
-        </dl>
     </noscript>
 
     <div id="root"></div>
