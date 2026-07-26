@@ -7,12 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Primary SEO Meta Tags -->
-    <title>Lens (MapaPH) — Philippine Maps, GeoJSON Boundaries & Data Visualization</title>
-    <meta name="title" content="Lens (MapaPH) — Philippine Maps, GeoJSON Boundaries & Data Visualization" />
+    <title>Lens — Interactive Philippines Map &amp; GeoJSON Downloads</title>
+    <meta name="title" content="Lens — Interactive Philippines Map &amp; GeoJSON Downloads" />
     <meta name="description"
-        content="Interactive Philippine maps covering every region, province, city, municipality, and barangay. Visualize population density, land area, GDP, assets, and age/sex distribution, or download clean, PSGC-aligned GeoJSON boundaries from barangay to national level." />
+        content="Explore a data-rich map of the Philippines by region, province, city, and barangay. Visualize population, GDP, and assets, or upload your own CSV. Free GeoJSON downloads." />
     <meta name="keywords"
-        content="philippine map, philippines map, geojson philippines, download philippine shapefiles, psgc boundaries, barangay geojson, philippine population density, philippine land area, philippine gdp by region, philippine age sex distribution, philippine data visualization, choropleth map philippines, philippine administrative boundaries" />
+        content="mapa ph, mapaph, mapa philippines, ph map, philippines map, map philippines, Philippine GeoJSON, Philippine administrative boundaries, PSGC map" />
     <meta name="author" content="Lens (MapaPH)" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://lens.mapaph.com/" />
@@ -20,33 +20,75 @@
     <!-- Open Graph / Facebook / LinkedIn -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://lens.mapaph.com/" />
-    <meta property="og:title" content="Lens — Philippine Maps, GeoJSON Boundaries & Data Visualization" />
+    <meta property="og:title" content="Lens — Interactive Philippines Map &amp; GeoJSON Downloads" />
     <meta property="og:description"
-        content="Interactive Philippine maps with population density, land area, GDP, assets, and age/sex distribution by region, province, city, and barangay. Compare divisions or download clean, optimized GeoJSON boundaries." />
+        content="Explore a data-rich map of the Philippines by region, province, city, and barangay. Visualize population, GDP, and assets, or upload your own CSV. Free GeoJSON downloads." />
     <meta property="og:image" content="https://lens.mapaph.com/og-image.png" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://lens.mapaph.com/" />
-    <meta property="twitter:title" content="Lens — Philippine Maps, GeoJSON Boundaries & Data Visualization" />
+    <meta property="twitter:title" content="Lens — Interactive Philippines Map &amp; GeoJSON Downloads" />
     <meta property="twitter:description"
-        content="Interactive Philippine maps with population density, land area, GDP, and demographic data by region, province, city, and barangay — plus downloadable GeoJSON boundaries." />
+        content="Explore a data-rich map of the Philippines by region, province, city, and barangay. Visualize population, GDP, and assets, or upload your own CSV. Free GeoJSON downloads." />
     <meta property="twitter:image" content="https://lens.mapaph.com/og-image.png" />
+
+    <!-- JSON-LD FAQ Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I download a GeoJSON file for a Philippine province or barangay?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pick a level on the map (region down to barangay), select a place, and export it in RFC 7946 / WGS 84 format from the Download tab."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where can I find Philippines population and GDP data by city or municipality?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Lens overlays PSA population, GDP, and LGU asset data directly on the map at every administrative level, viewable per place or side-by-side."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I visualize my own data on a map of the Philippines?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes — upload a CSV keyed by PSGC code and Lens will render it as a choropleth alongside the built-in datasets."
+          }
+        }
+      ]
+    }
+    </script>
 </head>
 
 <body>
     <!-- Fallback Content for Crawlers -->
     <noscript>
-        <h1>Lens (MapaPH) — Philippine Maps, GeoJSON Boundaries & Data Visualization</h1>
+        <h1>The Philippines, mapped down to the barangay.</h1>
         <p>
-            Explore interactive Philippine maps covering every region, province, city, municipality,
-            and barangay. Visualize population density, land area, GDP, assets, and age/sex distribution
-            across the country.
+            Lens is an interactive Philippines map for visualizing census, economic, and election data — and downloading standards-compliant GeoJSON for every administrative level.
         </p>
-        <p>
-            Download optimized Philippine map boundaries and administrative shapefiles (Regions, Provinces,
-            Cities, Municipalities, and Barangays) keyed directly to standard PSGC identifiers.
-        </p>
+        <ul>
+            <li>See population, population density, GDP, and LGU assets on an interactive PH map — no spreadsheet required.</li>
+            <li>Upload your own CSV and visualize it against any province, city, or barangay in the Philippines.</li>
+            <li>Download GeoJSON boundaries for any administrative level, ready for GIS or web mapping projects.</li>
+        </ul>
+        <h2>Frequently Asked Questions</h2>
+        <dl>
+            <dt>How do I download a GeoJSON file for a Philippine province or barangay?</dt>
+            <dd>Pick a level on the map (region down to barangay), select a place, and export it in RFC 7946 / WGS 84 format from the Download tab.</dd>
+            <dt>Where can I find Philippines population and GDP data by city or municipality?</dt>
+            <dd>Lens overlays PSA population, GDP, and LGU asset data directly on the map at every administrative level, viewable per place or side-by-side.</dd>
+            <dt>Can I visualize my own data on a map of the Philippines?</dt>
+            <dd>Yes — upload a CSV keyed by PSGC code and Lens will render it as a choropleth alongside the built-in datasets.</dd>
+        </dl>
     </noscript>
 
     <div id="root"></div>
