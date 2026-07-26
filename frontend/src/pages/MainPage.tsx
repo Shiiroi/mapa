@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { track } from "@vercel/analytics";
 import { MapDashboard } from "../map/components/Index";
 import type { SidebarTab } from "../map/components/Sidebar";
@@ -10,6 +11,16 @@ import { useMapLayers } from "../map/hooks/useMapLayers";
 import type { MapLevel } from "../map/constants";
 import type { CustomOverlay, SeriesViewState } from "../map/types";
 import { defaultSeriesViewState } from "../map/utils/seriesScale";
+
+const webAppSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Lens",
+    "url": "https://lens.mapaph.com/",
+    "applicationCategory": "GeographicInformationSystem",
+    "operatingSystem": "All",
+    "description": "Interactive Philippines map for visualizing census, economic, and election data, and downloading standards-compliant GeoJSON boundaries.",
+};
 
 export default function MainPage() {
     const download = useMapDownload();
@@ -198,56 +209,88 @@ export default function MainPage() {
     }, [mobileDrawerMaxHeightPx]);
 
     return (
-        <MapDashboard
-            level={download.level}
-            regions={regions}
-            provinces={provinces}
-            municities={municities}
-            municityMeta={municityMeta}
-            country={country}
-            barangays={barangays}
-            barangaysLoading={barangaysQuery.isLoading}
-            selectedRegionPsgc={download.selectedRegionPsgc}
-            onRegionChange={download.setSelectedRegionPsgc}
-            selectedProvincePsgc={download.selectedProvincePsgc}
-            onProvinceChange={download.setSelectedProvincePsgc}
-            selectedMunicityPsgc={download.selectedMunicityPsgc}
-            onMunicityChange={download.setSelectedMunicityPsgc}
-            selectedBarangayPsgc={download.selectedBarangayPsgc}
-            onBarangayChange={download.setSelectedBarangayPsgc}
-            regionFilterPsgc={download.regionFilterPsgc}
-            onRegionFilterChange={download.setRegionFilterPsgc}
-            provinceFilterPsgc={download.provinceFilterPsgc}
-            onProvinceFilterChange={download.setProvinceFilterPsgc}
-            exportKind={download.exportKind}
-            onExportKindChange={download.setExportKind}
-            onDownload={() => download.download({ regions, provinces, municities, municityMeta, country })}
-            downloading={download.downloading}
-            downloadError={download.error}
-            activeOverlay={activeOverlay}
-            onOverlayChange={setActiveOverlay}
-            overlayView={overlayView}
-            onOverlayViewChange={setOverlayView}
-            activeTab={activeTab}
-            onTabChange={handleTabChange}
-            isSidebarCollapsed={isSidebarCollapsed}
-            isDesktopViewport={isDesktopViewport}
-            onToggleCollapse={handleDrawerToggle}
-            onExpand={handleDrawerExpand}
-            onCollapse={handleDrawerCollapse}
-            drawerHeightPx={mobileDrawerHeightPx}
-            drawerMinHeightPx={mobileDrawerMinHeightPx}
-            drawerMaxHeightPx={mobileDrawerMaxHeightPx}
-            onDrawerHeightChange={handleDrawerHeightChange}
-            onLevelChange={handleLevelChange}
-            mapLoading={mapLoading}
-            mapLoadingMessage={mapLoadingMessage}
-            mapError={error ?? (barangaysQuery.error as Error | null)}
-            activePsgc={activePsgc}
-            onFeatureClick={handleFeatureClick}
-            knownPsgcs={knownPsgcs}
-            psgcLevels={psgcLevels}
-            psgcLevelsByTier={psgcLevelsByTier}
-        />
+        <>
+            <Helmet>
+                <title>Lens — Interactive Philippines Map &amp; GeoJSON Downloads</title>
+                <meta name="title" content="Lens — Interactive Philippines Map &amp; GeoJSON Downloads" />
+                <meta
+                    name="description"
+                    content="Explore a data-rich map of the Philippines by region, province, city, and barangay. Visualize population, GDP, and assets, or upload your own CSV. Free GeoJSON downloads."
+                />
+                <meta
+                    name="keywords"
+                    content="mapa ph, mapaph, mapa philippines, ph map, philippines map, map philippines, Philippine GeoJSON, Philippine administrative boundaries, PSGC map"
+                />
+                <link rel="canonical" href="https://lens.mapaph.com/" />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://lens.mapaph.com/" />
+                <meta property="og:title" content="Lens — Interactive Philippines Map &amp; GeoJSON Downloads" />
+                <meta
+                    property="og:description"
+                    content="Explore a data-rich map of the Philippines by region, province, city, and barangay. Visualize population, GDP, and assets, or upload your own CSV. Free GeoJSON downloads."
+                />
+                <meta property="og:image" content="https://lens.mapaph.com/og-image.png" />
+                <meta property="twitter:card" content="summary_large_image" />
+                <meta property="twitter:url" content="https://lens.mapaph.com/" />
+                <meta property="twitter:title" content="Lens — Interactive Philippines Map &amp; GeoJSON Downloads" />
+                <meta
+                    property="twitter:description"
+                    content="Explore a data-rich map of the Philippines by region, province, city, and barangay. Visualize population, GDP, and assets, or upload your own CSV. Free GeoJSON downloads."
+                />
+                <meta property="twitter:image" content="https://lens.mapaph.com/og-image.png" />
+                <script type="application/ld+json">{JSON.stringify(webAppSchema)}</script>
+            </Helmet>
+            <MapDashboard
+                level={download.level}
+                regions={regions}
+                provinces={provinces}
+                municities={municities}
+                municityMeta={municityMeta}
+                country={country}
+                barangays={barangays}
+                barangaysLoading={barangaysQuery.isLoading}
+                selectedRegionPsgc={download.selectedRegionPsgc}
+                onRegionChange={download.setSelectedRegionPsgc}
+                selectedProvincePsgc={download.selectedProvincePsgc}
+                onProvinceChange={download.setSelectedProvincePsgc}
+                selectedMunicityPsgc={download.selectedMunicityPsgc}
+                onMunicityChange={download.setSelectedMunicityPsgc}
+                selectedBarangayPsgc={download.selectedBarangayPsgc}
+                onBarangayChange={download.setSelectedBarangayPsgc}
+                regionFilterPsgc={download.regionFilterPsgc}
+                onRegionFilterChange={download.setRegionFilterPsgc}
+                provinceFilterPsgc={download.provinceFilterPsgc}
+                onProvinceFilterChange={download.setProvinceFilterPsgc}
+                exportKind={download.exportKind}
+                onExportKindChange={download.setExportKind}
+                onDownload={() => download.download({ regions, provinces, municities, municityMeta, country })}
+                downloading={download.downloading}
+                downloadError={download.error}
+                activeOverlay={activeOverlay}
+                onOverlayChange={setActiveOverlay}
+                overlayView={overlayView}
+                onOverlayViewChange={setOverlayView}
+                activeTab={activeTab}
+                onTabChange={handleTabChange}
+                isSidebarCollapsed={isSidebarCollapsed}
+                isDesktopViewport={isDesktopViewport}
+                onToggleCollapse={handleDrawerToggle}
+                onExpand={handleDrawerExpand}
+                onCollapse={handleDrawerCollapse}
+                drawerHeightPx={mobileDrawerHeightPx}
+                drawerMinHeightPx={mobileDrawerMinHeightPx}
+                drawerMaxHeightPx={mobileDrawerMaxHeightPx}
+                onDrawerHeightChange={handleDrawerHeightChange}
+                onLevelChange={handleLevelChange}
+                mapLoading={mapLoading}
+                mapLoadingMessage={mapLoadingMessage}
+                mapError={error ?? (barangaysQuery.error as Error | null)}
+                activePsgc={activePsgc}
+                onFeatureClick={handleFeatureClick}
+                knownPsgcs={knownPsgcs}
+                psgcLevels={psgcLevels}
+                psgcLevelsByTier={psgcLevelsByTier}
+            />
+        </>
     );
 }
