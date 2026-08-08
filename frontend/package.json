@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "vite",
         "dev:docker": "vite --mode docker",
-        "build": "tsc -b && tsx scripts/generate-sitemap.ts && vite build",
+        "build": "tsc -b && tsx scripts/generate-sitemap.ts && vite build && tsx scripts/prerender.ts",
         "seed:stats": "tsx --env-file=.env scripts/seed-stats.ts",
         "scrape:comelec": "scripts/py/.venv/bin/python scripts/py/scrape_comelec.py --base-dir scripts/py/data",
         "map:comelec": "tsx scripts/map-comelec-president.ts",
@@ -48,6 +48,7 @@
         "react-dom": "^19.2.6",
         "react-leaflet": "^5.0.0",
         "react-router-dom": "^7.18.1",
+        "react-helmet-async": "^2.0.5",
         "recharts": "^3.9.1",
         "tailwind-merge": "^3.6.0"
     },

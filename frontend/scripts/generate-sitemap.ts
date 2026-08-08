@@ -51,6 +51,9 @@ async function build() {
 
     const urls = new Set<string>();
     urls.add(`${BASE_URL}/`);
+    urls.add(`${BASE_URL}/faq`);
+    urls.add(`${BASE_URL}/privacy`);
+    urls.add(`${BASE_URL}/terms`);
 
     regions.forEach((r) => {
         const s = slugify(r);
