@@ -37,7 +37,7 @@
         "@types/geojson": "^7946.0.16",
         "@vercel/analytics": "^2.0.1",
         "clsx": "^2.1.1",
-        "csv-parse": "^6.2.1",
+        "csv-parse": "^7.0.2",
         "csv-stringify": "^6.8.1",
         "fast-csv": "^5.0.7",
         "frontend": "link:",
