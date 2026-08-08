@@ -697,7 +697,12 @@ export function MapTab({
     );
 
     return (
-        <div ref={containerRef} className="relative w-full h-full min-w-0 min-h-0">
+        <div
+            ref={containerRef}
+            className="relative w-full h-full min-w-0 min-h-0"
+            role="region"
+            aria-label="Interactive choropleth map of the Philippines showing administrative boundaries and statistical data"
+        >
             {loading && (
                 <div className="absolute inset-0 z-1001 flex items-center justify-center bg-parchment/80">
                     <div className="rounded-lg bg-white px-6 py-4 shadow-soft text-center">
