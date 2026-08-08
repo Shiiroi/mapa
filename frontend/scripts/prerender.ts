@@ -476,7 +476,7 @@ async function prerender() {
         let pageHtml = templateHtml;
 
         // Title
-        pageHtml = pageHtml.replace(/<title>.*?<\/title>/gi, `<title>${escapeHtml(meta.title)}<\/title>`);
+        pageHtml = pageHtml.replace(/<title>.*?<\/title>/gi, `<title>${escapeHtml(meta.title)}</title>`);
         pageHtml = pageHtml.replace(/<meta name="title" content=".*?" \/>/gi, `<meta name="title" content="${escapeHtml(meta.title)}" />`);
         pageHtml = pageHtml.replace(/<meta property="og:title" content=".*?" \/>/gi, `<meta property="og:title" content="${escapeHtml(meta.title)}" />`);
         pageHtml = pageHtml.replace(/<meta property="twitter:title" content=".*?" \/>/gi, `<meta property="twitter:title" content="${escapeHtml(meta.title)}" />`);

@@ -50,7 +50,6 @@ export default function MainPage() {
             // eslint-disable-next-line react-hooks/set-state-in-effect
             setOverlayView(defaultSeriesViewState(activeOverlay));
         } else {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
             setOverlayView({ mode: "lead" });
         }
     }, [activeOverlay]);
