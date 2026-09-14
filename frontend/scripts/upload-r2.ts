@@ -1,12 +1,18 @@
 // Uploads data-sets/geo JSON files to Cloudflare R2 bucket with immutable cache headers.
 
 import { S3Client, PutObjectCommand, ListObjectsV2Command, type ListObjectsV2CommandOutput } from "@aws-sdk/client-s3";
+import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const GEO_DIR = path.join(__dirname, "../data-sets/geo");
+
+if (!fs.existsSync(GEO_DIR)) {
+    console.error(`GEO_DIR does not exist at: ${GEO_DIR}`);
+    process.exit(1);
+}
 
 const accountId = process.env.R2_ACCOUNT_ID;
 const accessKeyId = process.env.R2_ACCESS_KEY_ID;
@@ -35,7 +41,15 @@ function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function loadExistingSizes(into: Map<string, number>) {
+interface ExistingObject {
+    size: number;
+    etag: string;
+}
+
+const existingObjects = new Map<string, ExistingObject>();
+
+// Loads existing objects in bucket to allow skipping already uploaded files
+async function loadExistingMetadata(into: Map<string, ExistingObject>) {
     let token: string | undefined = undefined;
     console.log("Checking existing objects in R2 bucket…");
     while (true) {
@@ -47,7 +61,8 @@ async function loadExistingSizes(into: Map<string, number>) {
         );
         for (const item of res.Contents ?? []) {
             if (item.Key && typeof item.Size === "number") {
-                into.set(item.Key, item.Size);
+                const cleanEtag = (item.ETag ?? "").replace(/^"|"$/g, "").toLowerCase();
+                into.set(item.Key, { size: item.Size, etag: cleanEtag });
             }
         }
         if (!res.IsTruncated || !res.NextContinuationToken) break;
@@ -56,7 +71,7 @@ async function loadExistingSizes(into: Map<string, number>) {
     console.log(`Found ${into.size} existing objects in R2.`);
 }
 
-// Collects all relative JSON paths under directory
+// Collects all relative JSON paths under directory with normalized forward slashes
 function collectFiles(dir: string, baseDir = dir): string[] {
     const results: string[] = [];
     if (!fs.existsSync(dir)) return results;
@@ -66,20 +81,22 @@ function collectFiles(dir: string, baseDir = dir): string[] {
         if (entry.isDirectory()) {
             results.push(...collectFiles(fullPath, baseDir));
         } else if (entry.isFile() && entry.name.endsWith(".json")) {
-            results.push(path.relative(baseDir, fullPath));
+            // Normalize path separators to forward slashes for S3 keys across Windows/POSIX
+            const relKey = path.relative(baseDir, fullPath).replace(/\\/g, "/");
+            results.push(relKey);
         }
     }
     return results;
 }
 
-const existingSizes = new Map<string, number>();
-
 async function uploadFile(relativePath: string) {
     const filePath = path.join(GEO_DIR, relativePath);
     const body = fs.readFileSync(filePath);
 
-    // Skip if existing file matches size
-    if (existingSizes.get(relativePath) === body.byteLength) {
+    // Skip if existing file matches exact MD5 content hash
+    const localHash = crypto.createHash("md5").update(body).digest("hex").toLowerCase();
+    const existing = existingObjects.get(relativePath);
+    if (existing && (existing.etag === localHash || (!existing.etag && existing.size === body.byteLength))) {
         return "skipped";
     }
 
@@ -108,7 +125,7 @@ async function uploadFile(relativePath: string) {
 
 async function main() {
     console.log(`Uploading geo layers to R2 bucket "${bucketName}"…`);
-    await loadExistingSizes(existingSizes);
+    await loadExistingMetadata(existingObjects);
 
     const allFiles = collectFiles(GEO_DIR).sort();
     const total = allFiles.length;
