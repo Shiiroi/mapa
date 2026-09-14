@@ -21,6 +21,7 @@
         "seed:db": "tsx --env-file=.env scripts/seed-db.ts",
         "seed:bgy": "tsx --env-file=.env scripts/seed-bgy.ts",
         "upload:geo": "tsx --env-file=.env scripts/upload-geo.ts",
+        "upload:r2": "tsx --env-file=.env scripts/upload-r2.ts",
         "seed:all": "npm run seed:db && npm run seed:bgy && npm run seed:stats && npm run seed:pop && npm run seed:agesex && npm run seed:gdp && npm run seed:afr && npm run seed:custom-elections",
         "setup": "npm run upload:geo && npm run seed:all",
         "db:export": "tsx --env-file=.env scripts/db-export.ts",
@@ -53,6 +54,7 @@
         "tailwind-merge": "^3.6.0"
     },
     "devDependencies": {
+        "@aws-sdk/client-s3": "^3.1131.0",
         "@eslint/js": "^10.0.1",
         "@tailwindcss/vite": "^4.3.3",
         "@types/leaflet": "^1.9.21",
