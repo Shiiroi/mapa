@@ -49,13 +49,15 @@ export function CompareTab({
         queryKey: ["barangays", "compare", selA.municityPsgc],
         queryFn: () => fetchBarangaysByMunicity(selA.municityPsgc!),
         enabled: selA.level === "barangay" && !!selA.municityPsgc,
-        staleTime: 10 * 60 * 1000,
+        staleTime: Infinity,
+        gcTime: 24 * 60 * 60 * 1000,
     });
     const barangaysBQuery = useQuery({
         queryKey: ["barangays", "compare", selB.municityPsgc],
         queryFn: () => fetchBarangaysByMunicity(selB.municityPsgc!),
         enabled: selB.level === "barangay" && !!selB.municityPsgc,
-        staleTime: 10 * 60 * 1000,
+        staleTime: Infinity,
+        gcTime: 24 * 60 * 60 * 1000,
     });
 
     const barangaysA = barangaysAQuery.data ?? [];

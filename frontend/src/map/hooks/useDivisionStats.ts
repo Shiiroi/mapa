@@ -10,6 +10,7 @@ export function useDivisionStats(psgc: string | null) {
         queryKey: ["division_stats", psgc],
         queryFn: () => fetchStatsByPsgc(psgc!),
         enabled: !!psgc,
-        staleTime: 30 * 60 * 1000,
+        staleTime: Infinity,
+        gcTime: 24 * 60 * 60 * 1000,
     });
 }
