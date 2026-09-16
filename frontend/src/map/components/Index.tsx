@@ -214,6 +214,32 @@ export function IndexSidebar({
                     })}
                 </ul>
             </div>
+
+            {/* mapaPH Ecosystem Tools Card */}
+            <div className="shrink-0 border-t border-border bg-white p-3">
+                <a
+                    href="https://mapaph.com/tools"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2.5 border border-border-light bg-surface p-2.5 transition-all hover:border-accent/40 hover:bg-white hover:shadow-xs"
+                    title="Explore more Philippine geospatial tools at mapaph.com"
+                >
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-border-light bg-white p-1 transition-colors group-hover:border-accent/40">
+                        <img src="/ph.svg" alt="mapaPH" className="h-full w-full object-contain transition-transform group-hover:scale-105" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between">
+                            <span className="text-xs font-semibold text-primary transition-colors group-hover:text-accent">
+                                mapaPH Tools
+                            </span>
+                            <span className="text-[11px] text-muted transition-colors group-hover:text-accent">↗</span>
+                        </div>
+                        <p className="mt-0.5 text-[10px] text-muted leading-tight">
+                            PRS92 converter, PSGC &amp; more
+                        </p>
+                    </div>
+                </a>
+            </div>
         </aside>
     );
 }
