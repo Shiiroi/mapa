@@ -8,7 +8,8 @@ export function useCustomDatasets() {
     return useQuery({
         queryKey: ["custom-datasets"],
         queryFn: fetchCustomDatasets,
-        staleTime: 10 * 60 * 1000,
+        staleTime: Infinity,
+        gcTime: 24 * 60 * 60 * 1000,
     });
 }
 
@@ -18,6 +19,7 @@ export function useCustomDatasetValues(datasetId: string | null) {
         queryKey: ["custom-dataset-values", datasetId],
         queryFn: () => fetchCustomDatasetValues(datasetId!),
         enabled: !!datasetId,
-        staleTime: 10 * 60 * 1000,
+        staleTime: Infinity,
+        gcTime: 24 * 60 * 60 * 1000,
     });
 }

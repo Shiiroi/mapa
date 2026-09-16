@@ -37,13 +37,13 @@ export function useMapLayers(options: UseMapLayersOptions = {}): UseMapLayersRet
     const provincesQuery = useQuery<ProvinceGeoJSON[]>({
         queryKey: ["provinces"],
         queryFn: fetchProvinces,
-        staleTime: 15 * 60 * 1000,
+        staleTime: Infinity,
     });
 
     const municityMetaQuery = useQuery<MunicityMeta[]>({
         queryKey: ["municities", "meta"],
         queryFn: fetchMunicitiesMeta,
-        staleTime: 20 * 60 * 1000,
+        staleTime: Infinity,
     });
 
     // Determine the list of province PSGCs we need to load municipalities for
@@ -63,8 +63,8 @@ export function useMapLayers(options: UseMapLayersOptions = {}): UseMapLayersRet
     const municitiesGeometryQuery = useQuery<MunicityGeoJSON[]>({
         queryKey: ["municities", "geometry", provincePsgcsToLoad],
         queryFn: () => fetchMunicitiesGeometryForProvinces(provincePsgcsToLoad),
-        staleTime: 20 * 60 * 1000,
-        gcTime: 30 * 60 * 1000,
+        staleTime: Infinity,
+        gcTime: 24 * 60 * 60 * 1000,
         retry: false,
         enabled: loadMunicitiesGeometry && provincePsgcsToLoad.length > 0,
     });
@@ -72,13 +72,13 @@ export function useMapLayers(options: UseMapLayersOptions = {}): UseMapLayersRet
     const regionsQuery = useQuery<Region[]>({
         queryKey: ["regions"],
         queryFn: fetchRegions,
-        staleTime: 15 * 60 * 1000,
+        staleTime: Infinity,
     });
 
     const countryQuery = useQuery<CountryGeoJSON>({
         queryKey: ["country"],
         queryFn: fetchCountry,
-        staleTime: 15 * 60 * 1000,
+        staleTime: Infinity,
     });
 
     const loading =

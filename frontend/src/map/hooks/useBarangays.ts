@@ -9,6 +9,7 @@ export function useBarangays(municityPsgc: string | null, enabled: boolean) {
         queryKey: ["barangays", municityPsgc],
         queryFn: () => fetchBarangaysByMunicity(municityPsgc!),
         enabled: enabled && !!municityPsgc,
-        staleTime: 10 * 60 * 1000,
+        staleTime: Infinity,
+        gcTime: 24 * 60 * 60 * 1000,
     });
 }
