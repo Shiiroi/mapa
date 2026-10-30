@@ -109,7 +109,7 @@ export default function Terms() {
                     <section className="rounded-2xl border border-border-light bg-white/85 p-5 shadow-soft lg:p-6">
                         <h2 className="text-sm font-semibold tracking-tight text-primary lg:text-base">Contact</h2>
                         <p className="mt-2 text-sm leading-6 text-muted">
-                            If you have questions about these terms, please contact: <a href="mailto:vrsmagwili@gmail.com">vrsmagwili@gmail.com</a>
+                            If you have questions about these terms, please contact: <a href="mailto:mapaph.1030@gmail.com">mapaph.1030@gmail.com</a>
                         </p>
                     </section>
                 </div>
