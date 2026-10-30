@@ -207,6 +207,31 @@ export function DownloadTab({
                         </div>
                     )}
                 </section>
+
+                <section className="rounded-lg border border-border-light bg-surface/60 p-3.5 space-y-2">
+                    <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                            PSGC 2025–2026 Boundary Updates
+                        </span>
+                        <span className="rounded bg-accent/10 px-1.5 py-0.5 text-[9px] font-semibold text-accent">
+                            Updated
+                        </span>
+                    </div>
+                    <ul className="space-y-1.5 text-[11px] text-muted leading-snug list-disc pl-4">
+                        <li>
+                            <strong className="text-primary">Sulu → Region IX (E.O. 91, s. 2025):</strong> Province of Sulu and all 19 municipalities (<code className="text-[10px]">0906600000</code>) transferred from BARMM to Zamboanga Peninsula per PSA Ref. 2025-325.
+                        </li>
+                        <li>
+                            <strong className="text-primary">Negros Island Region (R.A. 12000):</strong> Negros Occidental, Bacolod City, Negros Oriental, and Siquijor unified under NIR (<code className="text-[10px]">1800000000</code>).
+                        </li>
+                        <li>
+                            <strong className="text-primary">Cotabato City &amp; BARMM SGA:</strong> Cotabato City (<code className="text-[10px]">1908703000</code>) under Maguindanao del Norte and the 63 North Cotabato barangays organized into 8 SGA municipalities (<code className="text-[10px]">1909900000</code>).
+                        </li>
+                        <li>
+                            <strong className="text-primary">Taguig–Makati EMBO Ruling:</strong> BGC and the 10 EMBO barangays transferred to Taguig City (38 bgys) from Makati (23 bgys).
+                        </li>
+                    </ul>
+                </section>
             </div>
 
             <div className="border-t border-border-light px-5 py-4">

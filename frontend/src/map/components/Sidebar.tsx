@@ -556,11 +556,39 @@ export function Sidebar(props: SidebarProps) {
                                         </span>
                                     </li>
                                     <li className="flex flex-col sm:flex-row gap-1">
-                                        <strong>Sulu Regional Remap:</strong>{" "}
+                                        <strong>Sulu Regional Transfer (E.O. 91, s. 2025):</strong>{" "}
                                         <span>
-                                            Shapefile features covering all 19 Sulu municipalities incorrectly carry the historical BARMM region-19
-                                            prefix. These 410 barangay entities are automatically remapped to the canonical region-09 geographic
-                                            tracking prefix to match actual database indexes.
+                                            Pursuant to Executive Order No. 91, Series of 2025 and PSA Reference No. 2025-325 (following the Supreme
+                                            Court ruling excluding Sulu from BARMM), the Province of Sulu (0906600000) and all 19 of its municipalities
+                                            (including Parang, Sulu 0906609000, disambiguated from Parang, Maguindanao del Norte 1908709000) and 410
+                                            barangays are assigned to Region IX (Zamboanga Peninsula) both in PSGC hierarchy and regional boundary
+                                            geometry.
+                                        </span>
+                                    </li>
+                                    <li className="flex flex-col sm:flex-row gap-1">
+                                        <strong>Cotabato City &amp; BARMM Special Geographic Area (SGA):</strong>{" "}
+                                        <span>
+                                            Following the Bangsamoro Organic Law (R.A. 11054) ratification and formal turnover to BARMM, Cotabato City
+                                            (1908703000) is mapped under Maguindanao del Norte (1908700000, BARMM), and the 63 barangays from North
+                                            Cotabato (reconstituted into 8 SGA municipalities under 1909900000) are carved out of North Cotabato
+                                            (1204700000) and Region XII.
+                                        </span>
+                                    </li>
+                                    <li className="flex flex-col sm:flex-row gap-1">
+                                        <strong>Negros Island Region (R.A. 12000):</strong>{" "}
+                                        <span>
+                                            Negros Occidental (1804500000, including Bacolod City 1830200000), Negros Oriental (1804600000), and
+                                            Siquijor (1806100000) and all 63 of their component cities and municipalities are linked under the
+                                            re-established Negros Island Region (1800000000).
+                                        </span>
+                                    </li>
+                                    <li className="flex flex-col sm:flex-row gap-1">
+                                        <strong>Taguig–Makati EMBO Boundary Transfer:</strong>{" "}
+                                        <span>
+                                            Pursuant to Supreme Court G.R. No. 235316, Fort Bonifacio (BGC) and the 10 EMBO barangays (Cembo, Comembo,
+                                            East Rembo, Pembo, Pitogo, Post Proper Northside, Post Proper Southside, Rizal, South Cembo, and West
+                                            Rembo) are dissolved into Taguig City (1381500000, 38 barangays) and removed from the City of Makati
+                                            (1380300000, 23 barangays).
                                         </span>
                                     </li>
                                     <li className="flex flex-col sm:flex-row gap-1">
