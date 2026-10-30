@@ -4,6 +4,7 @@ import { S3Client, PutObjectCommand, ListObjectsV2Command, type ListObjectsV2Com
 import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
+import * as zlib from "zlib";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -91,9 +92,10 @@ function collectFiles(dir: string, baseDir = dir): string[] {
 
 async function uploadFile(relativePath: string) {
     const filePath = path.join(GEO_DIR, relativePath);
-    const body = fs.readFileSync(filePath);
+    const rawBody = fs.readFileSync(filePath);
+    const body = zlib.gzipSync(rawBody, { level: 9 });
 
-    // Skip if existing file matches exact MD5 content hash
+    // Skip if existing file matches exact MD5 content hash of the gzipped payload
     const localHash = crypto.createHash("md5").update(body).digest("hex").toLowerCase();
     const existing = existingObjects.get(relativePath);
     if (existing && (existing.etag === localHash || (!existing.etag && existing.size === body.byteLength))) {
@@ -109,6 +111,7 @@ async function uploadFile(relativePath: string) {
                     Key: relativePath,
                     Body: body,
                     ContentType: "application/json",
+                    ContentEncoding: "gzip",
                     CacheControl: "public, max-age=31536000, immutable",
                 }),
             );

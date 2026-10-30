@@ -713,8 +713,15 @@ export function MapTab({
             )}
 
             {error && (
-                <div className="absolute top-3 right-3 z-1001 max-w-sm rounded-lg bg-red-100 px-4 py-3 text-sm text-red-800 shadow-soft">
-                    Failed to load map: {error.message}
+                <div className="absolute top-3 right-3 z-1001 flex max-w-sm items-center justify-between gap-3 rounded-lg bg-red-100 px-4 py-3 text-sm text-red-800 shadow-soft">
+                    <span>Failed to load map: {error.message}</span>
+                    <button
+                        type="button"
+                        onClick={() => window.location.reload()}
+                        className="shrink-0 rounded bg-red-800 px-2.5 py-1 text-xs font-semibold text-white transition-colors hover:bg-red-900 cursor-pointer"
+                    >
+                        Retry
+                    </button>
                 </div>
             )}
 
