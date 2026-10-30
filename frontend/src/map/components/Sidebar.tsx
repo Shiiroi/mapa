@@ -208,7 +208,7 @@ export function Sidebar(props: SidebarProps) {
                         </span>
                         <div className="flex items-center gap-1.5 ml-0.5">
                             <a
-                                href="https://facebook.com/mapaph.official"
+                                href="https://www.facebook.com/share/16LuySJAGLA/?mibextid=wwXIfr"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-muted hover:text-accent transition-colors"
@@ -220,7 +220,7 @@ export function Sidebar(props: SidebarProps) {
                                 </svg>
                             </a>
                             <a
-                                href="https://instagram.com/mapaph.official"
+                                href="https://www.instagram.com/mapaph.1030/"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-muted hover:text-accent transition-colors"
