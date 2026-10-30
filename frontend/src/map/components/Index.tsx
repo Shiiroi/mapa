@@ -109,7 +109,7 @@ export function IndexSidebar({
                             )}
                         >
                             <span>Philippines (All Regions)</span>
-                            <span className="text-[10px] text-muted tabular-nums">17 Regions</span>
+                            <span className="text-[10px] text-muted tabular-nums">{regions.length || 18} Regions</span>
                         </button>
                     </li>
 

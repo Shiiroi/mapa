@@ -112,15 +112,36 @@ matched only 39,335. The following deterministic corrections recovered
 - **Basis:** 61:61 exact name overlap with PSGC CSV.
 - **Status:** Automated override + name match.
 
-### 4. Sulu region-19 → region-09 remap
+### 4. Sulu transfer to Region IX (E.O. No. 91, s. 2025 / PSA Ref. 2025-325)
 
-- **Affected:** 410 barangays (all 19 Sulu municities)
-- **Issue:** Shapefile encodes Sulu under BARMM region-19 prefix (`19066xxxx`);
-  PSGC canonical municities use region-09 (`09066xxxx`).
-- **Action:** Automatic remap `19066…` → `09066…`, then name-match within
-  municity.
-- **Basis:** 100% name overlap across all 19 Sulu municities (Talipao, Siasi,
-  Jolo, etc.).
+- **Affected:** Province of Sulu (`0906600000`), all 19 Sulu municipalities (`0906601000`–`0906619000`), and 410 barangays
+- **Issue:** Following the Supreme Court ruling excluding Sulu from BARMM and Executive Order No. 91, Series of 2025 (PSA Reference No. 2025-325, released August 29, 2025), Sulu was officially transferred to Region IX (Zamboanga Peninsula). Upstream shapefiles still encoded Sulu's `region_psgc` and regional geometry under BARMM (`1900000000`), and `Parang, Sulu` (`0906609000`) was mis-grouped under Maguindanao del Norte (`1908700000`) due to a duplicate municipality name with `Parang, Maguindanao del Norte` (`1908709000`).
+- **Action:** Remapped `0906600000` and all 19 Sulu municipalities to `region_psgc: "0900000000"`, moved `Parang, Sulu` (`0906609000`) from `province-1908700000.json` to `province-0906600000.json`, and transferred Sulu's provincial polygon from BARMM (`1900000000`) to Region IX (`0900000000`) in `regions.json`.
+- **Basis:** Executive Order No. 91, s. 2025 (30 July 2025) and PSA PSGC Advisory Ref. No. 2025-325 (29 August 2025).
+- **Status:** Automated.
+
+### 4b. Cotabato City & 63 North Cotabato Barangays (8 SGA Municipalities) in BARMM
+
+- **Affected:** Cotabato City (`1908703000`), Special Geographic Area (`1909900000`, 8 municipalities / 63 barangays), and Province of Cotabato (`1204700000`)
+- **Issue:** Following the January 2019 Bangsamoro Organic Law (R.A. 11054) plebiscite and formal December 2020 turnover, Cotabato City (`1908703000`) and 63 barangays from North Cotabato joined BARMM (with the 63 barangays organized into 8 new SGA municipalities in 2024: `Kapalawan`, `Old Kaabakan`, `Kadayangan`, `Nabalawag`, `Pahamuddin`, `Malidegao`, `Ligawasan`, and `Tugunan`). In the municipal/provincial layers, `Cotabato City` (`1908703000`) remained attached to North Cotabato (`1204700000`), and the `Cotabato` polygon in `provinces.json` still overlapped with the 8 SGA municipalities.
+- **Action:** Moved `Cotabato City` (`1908703000`) to `province-1908700000.json` (`Maguindanao del Norte`, `region_psgc: "1900000000"`) and re-dissolved `Cotabato` (`1204700000`) in `provinces.json` from its 18 remaining municipalities.
+- **Basis:** R.A. 11054 (Bangsamoro Organic Law), DILG–BARMM Turnover (Dec 15, 2020), BARMM Bangsamoro Autonomy Act Nos. 50–57, and PSA PSGC 2025–2026.
+- **Status:** Automated.
+
+### 4c. Negros Island Region (NIR — R.A. 12000)
+
+- **Affected:** Negros Occidental (`1804500000`, including Bacolod City `1830200000`), Negros Oriental (`1804600000`), and Siquijor (`1806100000`) — 3 provinces and 63 cities/municipalities
+- **Issue:** While `regions.json` included the `Negros Island Region (NIR)` (`1800000000`) polygon, `provinces.json`, `municities/meta.json`, and `municities/province-18*.json` retained legacy `region_psgc` references to Region VI (`0600000000`) and Region VII (`0700000000`).
+- **Action:** Updated `region_psgc` to `"1800000000"` across all 3 provinces and 63 cities/municipalities, and updated statutory land areas for Region VI (`12,771.50 km²`), Region VII (`10,114.52 km²`), and NIR (`13,602.18 km²`).
+- **Basis:** Republic Act No. 12000 (Negros Island Region Act, signed June 13, 2024) and PSA PSGC.
+- **Status:** Automated.
+
+### 4d. Taguig–Makati EMBO Transfer & Barangay-to-Municipality/Province Boundary Dissolves
+
+- **Affected:** City of Makati (`1380300000`), Taguig City (`1381500000`), Zamboanga Sibugay (`0908300000`: `Imelda`, `Payao`, `Titay`), and all 6 CAR provinces (`Abra`, `Apayao`, `Benguet`, `Ifugao`, `Kalinga`, `Mountain Province`)
+- **Issue:** Barangay-level polygons (`municities/bgy/*.json`) reflected recent Supreme Court and cadastral boundary transfers (including the transfer of Fort Bonifacio / BGC and the 10 EMBO barangays from Makati to Taguig under SC G.R. No. 235316, the `7.85 km²` transfer between Payao and Imelda in Zamboanga Sibugay, and Cordillera inter-provincial boundary settlements), but parent municipal and provincial outlines had not been re-dissolved.
+- **Action:** Programmatically dissolved updated barangay polygons into their parent municipality outlines and re-dissolved the affected provincial polygons in `provinces.json`.
+- **Basis:** Supreme Court G.R. No. 235316 (Taguig vs. Makati) and PSA/NAMRIA Adm4 barangay boundaries.
 - **Status:** Automated.
 
 ### 5. SGA unique-name recovery

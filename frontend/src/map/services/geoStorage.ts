@@ -6,7 +6,7 @@ import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, Pr
 const GEO_BUCKET = "geo";
 
 // Bump this when geo JSON is re-uploaded so clients bypass stale browser HTTP cache
-const GEO_DATA_VERSION = "2026-10-30.1";
+const GEO_DATA_VERSION = "2026-10-30.2";
 
 const CDN_BASE_URL = (import.meta.env.VITE_GEO_CDN_URL as string | undefined)?.replace(/\/+$/, "");
 

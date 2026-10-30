@@ -45,11 +45,14 @@ Full third-party license texts are in [`NOTICE.md`](../NOTICE.md). Mapa re-keys,
 
 ### Administrative & Historical Corrections
 
-1. The Negros Island Region (NIR) was abolished through Executive Order No. 38 "Revoking Executive Order No. 183 (s. 2015) which Created a Negros Island Region and for Other Purposes", signed by President Rodrigo Roa Duterte on 07 August 2017. The abolition of NIR reverted the provinces, cities, municipalities, and barangays of Negros Occidental and City of Bacolod to Region VI (Western Visayas) and Negros Oriental to Region VII (Central Visayas).
-2. Renamed province from Compostela Valley under Republic Act No. 11297, dated April 17, 2019; ratified on December 7, 2019.
-3. Renamed region from ARMM under Republic Act No. 11054, dated July 27, 2018; ratified on January 25, 2019.
-4. Converted into a city under Republic Act No. 11086; ratified on 7 September 2019.
-5. Correction of municipality name from Pinamungahan; under Municipal Mayor Certification.
+1. The Negros Island Region (NIR, `1800000000`) was abolished in 2017 (E.O. No. 38) and re-established on June 13, 2024 under **Republic Act No. 12000** (*Negros Island Region Act*), uniting Negros Occidental (including Bacolod City), Negros Oriental, and Siquijor under Region XVIII.
+2. Pursuant to **Executive Order No. 91, Series of 2025** (30 July 2025) and **PSA Reference No. 2025-325** (29 August 2025), following the Supreme Court ruling excluding Sulu from BARMM, the **Province of Sulu (`0906600000`)** and all 19 of its municipalities and 410 barangays were officially transferred to **Region IX (Zamboanga Peninsula)**.
+3. Following the ratification of the **Bangsamoro Organic Law (R.A. 11054)** and formal turnover on December 15, 2020, **Cotabato City (`1908703000`)** (under Maguindanao del Norte) and the **63 barangays from North Cotabato** (reconstituted in 2024 into the 8 municipalities of the **Special Geographic Area, `1909900000`**) are part of **BARMM (`1900000000`)**.
+4. Pursuant to **Supreme Court G.R. No. 235316**, Fort Bonifacio (BGC) and the 10 EMBO barangays were transferred from the City of Makati (`1380300000`, 23 barangays) to Taguig City (`1381500000`, 38 barangays).
+5. Renamed province from Compostela Valley to Davao de Oro under Republic Act No. 11297, dated April 17, 2019; ratified on December 7, 2019.
+6. Renamed region from ARMM to BARMM under Republic Act No. 11054, dated July 27, 2018; ratified on January 25, 2019.
+7. Converted Santo Tomas, Batangas into a city under Republic Act No. 11086; ratified on 7 September 2019.
+8. Correction of municipality name from Pinamungahan to Pinamungajan; under Municipal Mayor Certification.
 
 ## Data corrections
 

@@ -22,13 +22,38 @@ function readJson<T>(relativePath: string): T {
     return JSON.parse(fs.readFileSync(path.join(GEO_DIR, relativePath), "utf8")) as T;
 }
 
-// Drops the heavy geometry field before upserting metadata rows.
-function stripGeometry<T extends { geometry?: unknown }>(rows: T[]): Omit<T, "geometry">[] {
-    return rows.map((row) => {
-        const { ...rest } = row;
-        delete rest.geometry;
-        return rest as Omit<T, "geometry">;
-    });
+// Projects only metadata columns stored in regions, provinces, and municities tables.
+function projectRegions(rows: Array<Record<string, unknown>>): Array<Record<string, unknown>> {
+    return rows.map((r) => ({
+        psgc: r.psgc,
+        correspondence: r.correspondence ?? null,
+        name: r.name,
+        geo_lvl: r.geo_lvl ?? "Reg",
+        city_lvl: r.city_lvl ?? null,
+    }));
+}
+
+function projectProvinces(rows: Array<Record<string, unknown>>): Array<Record<string, unknown>> {
+    return rows.map((r) => ({
+        psgc: r.psgc,
+        correspondence: r.correspondence ?? null,
+        name: r.name,
+        geo_lvl: r.geo_lvl ?? "Prov",
+        city_lvl: r.city_lvl ?? null,
+        region_psgc: r.region_psgc ?? null,
+    }));
+}
+
+function projectMunicities(rows: Array<Record<string, unknown>>): Array<Record<string, unknown>> {
+    return rows.map((r) => ({
+        psgc: r.psgc,
+        correspondence: r.correspondence ?? null,
+        name: r.name,
+        geo_lvl: r.geo_lvl ?? "Mun",
+        city_lvl: r.city_lvl ?? null,
+        province_psgc: r.province_psgc ?? null,
+        region_psgc: r.region_psgc ?? null,
+    }));
 }
 
 function chunks<T>(arr: T[], size: number): T[][] {
@@ -62,9 +87,9 @@ async function upsertTable(table: string, rows: Record<string, unknown>[]) {
 async function main() {
     console.log("Seeding database from data-sets/geo…");
 
-    const regions = dedupeByPsgc(stripGeometry(readJson<Array<Record<string, unknown>>>("regions.json")));
-    const provinces = dedupeByPsgc(stripGeometry(readJson<Array<Record<string, unknown>>>("provinces.json")));
-    const municities = dedupeByPsgc(readJson<Array<Record<string, unknown>>>("municities/meta.json"));
+    const regions = dedupeByPsgc(projectRegions(readJson<Array<Record<string, unknown>>>("regions.json")));
+    const provinces = dedupeByPsgc(projectProvinces(readJson<Array<Record<string, unknown>>>("provinces.json")));
+    const municities = dedupeByPsgc(projectMunicities(readJson<Array<Record<string, unknown>>>("municities/meta.json")));
 
     await upsertTable("regions", regions);
     await upsertTable("provinces", provinces);
