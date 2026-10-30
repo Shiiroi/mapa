@@ -1,6 +1,10 @@
 {
     "rewrites": [
         {
+            "source": "/geo-cdn/:path*",
+            "destination": "https://pub-f9d925e99cc844ad9fac924a16e8f3a3.r2.dev/:path*"
+        },
+        {
             "source": "/(.*)",
             "destination": "/index.html"
         }
