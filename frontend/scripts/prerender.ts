@@ -5,40 +5,6 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const BASE_URL = "https://lens.mapaph.com";
 
-interface GeoEntity {
-    psgc: string;
-    name: string;
-    geo_lvl?: string;
-    province_psgc?: string;
-    region_psgc?: string;
-    pop_2024?: number | null;
-    area_km2?: number | null;
-    density_2024?: number | null;
-    assets_2024?: number | null;
-}
-
-function slugify(name: string): string {
-    return name
-        .normalize("NFKD")
-        .replace(/\p{Diacritic}+/gu, "")
-        .toLowerCase()
-        .replace(/&/g, " and ")
-        .replace(/[’'`]/g, "")
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
-}
-
-function formatNumber(num: number | null | undefined): string {
-    if (num === null || num === undefined || isNaN(num)) return "N/A";
-    return Math.round(num).toLocaleString("en-US");
-}
-
-function formatDecimal(num: number | null | undefined, decimals = 1): string {
-    if (num === null || num === undefined || isNaN(num)) return "N/A";
-    return num.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-}
-
 function escapeHtml(str: string): string {
     return str
         .replace(/&/g, "&amp;")
@@ -46,17 +12,6 @@ function escapeHtml(str: string): string {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
-}
-
-async function loadJson<T>(filePath: string): Promise<T[]> {
-    try {
-        const raw = await fs.readFile(filePath, "utf8");
-        const data = JSON.parse(raw);
-        return Array.isArray(data) ? data : [];
-    } catch (e) {
-        console.warn(`[prerender] Could not read ${filePath}: ${e}`);
-        return [];
-    }
 }
 
 interface PageMeta {
@@ -80,45 +35,15 @@ async function prerender() {
         process.exit(1);
     }
 
-    const regions = await loadJson<GeoEntity>(path.resolve(__dirname, "../data-sets/geo/regions.json"));
-    const provinces = await loadJson<GeoEntity>(path.resolve(__dirname, "../data-sets/geo/provinces.json"));
-    const municities = await loadJson<GeoEntity>(path.resolve(__dirname, "../data-sets/geo/municities/meta.json"));
-
-    // Maps for lookups
-    const regionByPsgc = new Map<string, GeoEntity>();
-    const provinceByPsgc = new Map<string, GeoEntity>();
-    const municityByPsgc = new Map<string, GeoEntity>();
-
-    regions.forEach((r) => regionByPsgc.set(r.psgc, r));
-    provinces.forEach((p) => provinceByPsgc.set(p.psgc, p));
-    municities.forEach((m) => municityByPsgc.set(m.psgc, m));
-
-    // Grouping
-    const provincesByRegion = new Map<string, GeoEntity[]>();
-    provinces.forEach((p) => {
-        if (p.region_psgc) {
-            const list = provincesByRegion.get(p.region_psgc) || [];
-            list.push(p);
-            provincesByRegion.set(p.region_psgc, list);
-        }
-    });
-
-    const municitiesByProvince = new Map<string, GeoEntity[]>();
-    municities.forEach((m) => {
-        if (m.province_psgc) {
-            const list = municitiesByProvince.get(m.province_psgc) || [];
-            list.push(m);
-            municitiesByProvince.set(m.province_psgc, list);
-        }
-    });
-
     const pagesToRender = new Map<string, PageMeta>();
 
     // 1. Homepage
     pagesToRender.set("/", {
         title: "Philippines GeoJSON Boundaries & Interactive Maps | Lens (MapaPH)",
-        description: "Free GeoJSON administrative boundaries for every Philippine region, province, city, municipality, and barangay. Visualize population density, census metrics, GDP, and LGU data.",
-        keywords: "philippines geojson, geojson philippines, ph map, philippines map, gis mapping philippines, population density map philippines, PSGC map, mapaph",
+        description:
+            "Free GeoJSON administrative boundaries for every Philippine region, province, city, municipality, and barangay. Visualize population density, census metrics, GDP, and LGU data.",
+        keywords:
+            "philippines geojson, geojson philippines, ph map, philippines map, gis mapping philippines, population density map philippines, PSGC map, mapaph",
         canonical: `${BASE_URL}/`,
         jsonLd: [
             {
@@ -128,13 +53,15 @@ async function prerender() {
                 url: `${BASE_URL}/`,
                 applicationCategory: "GeographicInformationSystem",
                 operatingSystem: "All",
-                description: "Interactive Philippines map for visualizing census, economic, and election data, and downloading standards-compliant GeoJSON boundaries.",
+                description:
+                    "Interactive Philippines map for visualizing census, economic, and election data, and downloading standards-compliant GeoJSON boundaries.",
             },
             {
                 "@context": "https://schema.org",
                 "@type": "Dataset",
                 name: "Philippine Administrative Boundaries GeoJSON Dataset",
-                description: "Complete Philippine administrative boundary vector data down to the barangay level, aligned with standard PSGC classification.",
+                description:
+                    "Complete Philippine administrative boundary vector data down to the barangay level, aligned with standard PSGC classification.",
                 url: `${BASE_URL}/`,
                 spatialCoverage: {
                     "@type": "Place",
@@ -151,24 +78,23 @@ async function prerender() {
         ],
         bodyHtml: `
             <div class="seo-fallback-content">
-                <h1>Philippines GeoJSON Boundaries &amp; Interactive Maps</h1>
+                <h1>Philippines GeoJSON Boundaries &amp; Interactive Choropleth Maps</h1>
                 <p>
-                    Lens (MapaPH) is an open civic data platform providing standards-compliant GeoJSON boundary downloads and interactive maps for every region, province, municipality, city, and barangay in the Philippines.
+                    Lens (MapaPH) is an open-source civic geospatial platform providing standards-compliant IETF RFC 7946 GeoJSON boundary downloads and interactive choropleth maps across all 18 regions, 82 provinces, 149 cities, 1,493 municipalities, and 42,011 barangays in the Philippines.
                 </p>
-                <h2>Core Datasets &amp; Features</h2>
+                <h2>Core Datasets &amp; Cartographic Capabilities</h2>
                 <ul>
-                    <li><strong>GeoJSON Downloads:</strong> Download clean, lightweight administrative boundaries for all PSGC levels.</li>
-                    <li><strong>Population &amp; Density Visualization:</strong> Choropleth maps based on 2024 Philippine statistics.</li>
-                    <li><strong>Custom CSV Upload:</strong> Overlay custom datasets onto official Philippine maps.</li>
+                    <li><strong>Multi-Tier GeoJSON Exports:</strong> Download clean, WGS 84 (EPSG:4326) administrative boundary polygons keyed by official 10-digit Philippine Standard Geographic Codes (PSGC).</li>
+                    <li><strong>2024 PSA Census &amp; Demographic Overlays:</strong> Inspect population counts, geodesic land area (km²), and population density derived from the Philippine Statistics Authority (PSA) Census of Population (POPCEN).</li>
+                    <li><strong>Municipal Financial &amp; Economic Layers:</strong> Compare regional Gross Domestic Product (GDP) and Local Government Unit (LGU) financial asset statements published by the Commission on Audit (COA).</li>
+                    <li><strong>Custom CSV Choropleth Joining:</strong> Upload any spreadsheet keyed by PSGC code or locality name to generate bivariate and sequential thematic maps in the browser without desktop GIS software.</li>
                 </ul>
-                <h2>Explore Regions of the Philippines</h2>
+                <h2>Related Documentation &amp; Civic Utilities</h2>
                 <ul>
-                    ${regions
-                        .map((r) => {
-                            const slug = slugify(r.name);
-                            return `<li><a href="/region/${slug}">${escapeHtml(r.name)} GeoJSON Map &amp; Data</a></li>`;
-                        })
-                        .join("\n")}
+                    <li><a href="https://www.mapaph.com/docs/lens">Lens User Manual &amp; Technical Methodology</a></li>
+                    <li><a href="https://www.mapaph.com/docs/psgc">Philippine Standard Geographic Code (PSGC) Reference Guide</a></li>
+                    <li><a href="https://www.mapaph.com/docs/geojson-guide">GeoJSON RFC 7946 Developer Guide</a></li>
+                    <li><a href="https://www.mapaph.com/tools">mapaPH Civic Cartography Tools Directory</a></li>
                 </ul>
             </div>
         `,
@@ -176,9 +102,10 @@ async function prerender() {
 
     // 2. Static Pages: FAQ, Privacy, Terms
     pagesToRender.set("/faq", {
-        title: "Frequently Asked Questions — Philippines GeoJSON & Maps | Lens PH",
-        description: "Find answers about Philippine GeoJSON boundary downloads, PSGC codes, data sources, accuracy, and usage guidelines on Lens.",
-        keywords: "philippines geojson faq, mapaph faq, psgc boundaries help",
+        title: "Frequently Asked Questions & Technical Methodology | Lens (MapaPH)",
+        description:
+            "Find answers about Philippine GeoJSON boundary downloads, 10-digit PSGC codes, PSA census data sources, geometric accuracy, and custom CSV mapping on Lens.",
+        keywords: "philippines geojson faq, mapaph faq, psgc boundaries help, rfc 7946 geojson philippines",
         canonical: `${BASE_URL}/faq`,
         jsonLd: [
             {
@@ -192,272 +119,55 @@ async function prerender() {
         ],
         bodyHtml: `
             <div class="seo-fallback-content">
-                <h1>Frequently Asked Questions (FAQ)</h1>
-                <p>Learn more about Lens (MapaPH), Philippine GeoJSON vector datasets, and how to use administrative maps.</p>
+                <h1>Frequently Asked Questions &amp; Cartographic Methodology</h1>
+                <p>
+                    Technical documentation covering Philippine GeoJSON boundary exports, 10-digit Philippine Standard Geographic Code (PSGC) alignment, PSA 2024 Census of Population (POPCEN) metrics, COA financial statements, and custom CSV choropleth overlays in Lens.
+                </p>
+                <h2>Key Topics Covered</h2>
+                <ul>
+                    <li><strong>RFC 7946 GeoJSON Specification:</strong> All boundary exports use World Geodetic System 1984 (WGS 84 / EPSG:4326) decimal degree coordinates and right-hand polygon winding rules compatible with MapLibre GL JS, Leaflet, QGIS, and PostGIS.</li>
+                    <li><strong>PSGC 10-Digit Standard Alignment:</strong> Administrative divisions follow the Philippine Statistics Authority (PSA) quarterly PSGC updates, including the Bangsamoro Autonomous Region in Muslim Mindanao (BARMM), Negros Island Region (NIR), and the Makati-Taguig EMBO barangay transfers.</li>
+                    <li><strong>Authoritative Public Domain Sources:</strong> Demographic, economic, and electoral layers are compiled from official releases by the PSA, Commission on Audit (COA), and Commission on Elections (COMELEC) under Republic Act No. 8293 Section 176 and Executive Order No. 2 (s. 2016).</li>
+                </ul>
             </div>
         `,
     });
 
     pagesToRender.set("/privacy", {
-        title: "Privacy Policy | Lens PH",
-        description: "Privacy Policy for Lens (MapaPH). Learn how user data and analytics are handled.",
-        keywords: "privacy policy lens mapaph",
+        title: "Privacy Policy & Data Protection | Lens (MapaPH)",
+        description:
+            "Privacy Policy for Lens (MapaPH). Explains client-side map processing, browser caching, Google AdSense partner disclosures, and RA 10173 compliance.",
+        keywords: "privacy policy lens mapaph, data protection mapaph, ra 10173 compliance",
         canonical: `${BASE_URL}/privacy`,
         jsonLd: [],
-        bodyHtml: `<div class="seo-fallback-content"><h1>Privacy Policy</h1><p>Privacy terms for Lens (MapaPH).</p></div>`,
+        bodyHtml: `
+            <div class="seo-fallback-content">
+                <h1>Privacy Policy — Lens (MapaPH)</h1>
+                <p>
+                    Lens is an open-source geospatial visualization utility in the mapaPH ecosystem. We do not require user accounts or transmit custom CSV uploads to backend servers. All custom spreadsheet joins and optional geolocation centering happen locally inside your browser.
+                </p>
+                <p>
+                    This policy details our client-side storage architecture (IndexedDB and localStorage caching for boundary vectors), aggregate analytics via Vercel Web Analytics, third-party advertising cookie disclosures for Google AdSense across the mapaph.com domain, and your statutory rights under the Philippine Data Privacy Act of 2012 (Republic Act No. 10173).
+                </p>
+            </div>
+        `,
     });
 
     pagesToRender.set("/terms", {
-        title: "Terms of Service | Lens PH",
-        description: "Terms of Service and data license terms for using Lens (MapaPH) GeoJSON boundaries.",
-        keywords: "terms of service lens mapaph",
+        title: "Terms of Service & Open Data Licensing | Lens (MapaPH)",
+        description:
+            "Terms of Service and open-source MIT / public-domain data licensing guidelines for using Lens (MapaPH) GeoJSON boundaries.",
+        keywords: "terms of service lens mapaph, open source gis license philippines",
         canonical: `${BASE_URL}/terms`,
         jsonLd: [],
-        bodyHtml: `<div class="seo-fallback-content"><h1>Terms of Service</h1><p>Terms of service for Lens (MapaPH).</p></div>`,
-    });
-
-    // 3. Regions
-    regions.forEach((r) => {
-        const rSlug = slugify(r.name);
-        if (!rSlug) return;
-        const route = `/region/${rSlug}`;
-        const childProvinces = provincesByRegion.get(r.psgc) || [];
-
-        const pop = formatNumber(r.pop_2024);
-        const area = formatDecimal(r.area_km2);
-        const density = formatDecimal(r.density_2024);
-
-        pagesToRender.set(route, {
-            title: `${r.name} GeoJSON Map & Geographic Data | Lens PH`,
-            description: `Explore ${r.name}, Philippines boundary map, GeoJSON download, population (${pop}), land area (${area} sq km), and density (${density} people/sq km).`,
-            keywords: `${r.name.toLowerCase()} geojson, ${r.name.toLowerCase()} map, philippine regions, psgc ${r.psgc}`,
-            canonical: `${BASE_URL}${route}`,
-            jsonLd: [
-                {
-                    "@context": "https://schema.org",
-                    "@type": "BreadcrumbList",
-                    itemListElement: [
-                        { "@type": "ListItem", position: 1, name: "Philippines", item: `${BASE_URL}/` },
-                        { "@type": "ListItem", position: 2, name: r.name, item: `${BASE_URL}${route}` },
-                    ],
-                },
-                {
-                    "@context": "https://schema.org",
-                    "@type": "AdministrativeArea",
-                    name: r.name,
-                    alternateName: `PSGC ${r.psgc}`,
-                    description: `${r.name} is an administrative region in the Philippines with a 2024 population of ${pop} and an area of ${area} sq km.`,
-                    url: `${BASE_URL}${route}`,
-                },
-                {
-                    "@context": "https://schema.org",
-                    "@type": "Dataset",
-                    name: `${r.name} GeoJSON Boundary Dataset`,
-                    description: `GeoJSON administrative boundaries and census statistics for ${r.name}, Philippines.`,
-                    url: `${BASE_URL}${route}`,
-                    spatialCoverage: { "@type": "Place", name: r.name },
-                },
-            ],
-            bodyHtml: `
-                <div class="seo-fallback-content">
-                    <nav aria-label="Breadcrumb">
-                        <a href="/">Philippines</a> &gt; <span>${escapeHtml(r.name)}</span>
-                    </nav>
-                    <h1>${escapeHtml(r.name)} — GeoJSON Map &amp; Administrative Data</h1>
-                    <p>
-                        ${escapeHtml(r.name)} is an administrative region in the Philippines (PSGC code <code>${r.psgc}</code>).
-                        It covers a total land area of <strong>${area} km²</strong> with a 2024 population of <strong>${pop}</strong> (density: <strong>${density} people/km²</strong>).
-                    </p>
-                    <h2>Provinces in ${escapeHtml(r.name)}</h2>
-                    <ul>
-                        ${childProvinces
-                            .map((p) => {
-                                const pSlug = slugify(p.name);
-                                return `<li><a href="/province/${pSlug}">${escapeHtml(p.name)} GeoJSON &amp; Boundary Map</a></li>`;
-                            })
-                            .join("\n")}
-                    </ul>
-                </div>
-            `,
-        });
-    });
-
-    // 4. Provinces
-    provinces.forEach((p) => {
-        const pSlug = slugify(p.name);
-        if (!pSlug) return;
-        const route = `/province/${pSlug}`;
-
-        const parentRegion = p.region_psgc ? regionByPsgc.get(p.region_psgc) : null;
-        const regionSlug = parentRegion ? slugify(parentRegion.name) : "";
-
-        const childMunicities = municitiesByProvince.get(p.psgc) || [];
-
-        const pop = formatNumber(p.pop_2024);
-        const area = formatDecimal(p.area_km2);
-        const density = formatDecimal(p.density_2024);
-
-        const breadcrumbs = [
-            { "@type": "ListItem", position: 1, name: "Philippines", item: `${BASE_URL}/` },
-        ];
-        if (parentRegion && regionSlug) {
-            breadcrumbs.push({ "@type": "ListItem", position: 2, name: parentRegion.name, item: `${BASE_URL}/region/${regionSlug}` });
-            breadcrumbs.push({ "@type": "ListItem", position: 3, name: p.name, item: `${BASE_URL}${route}` });
-        } else {
-            breadcrumbs.push({ "@type": "ListItem", position: 2, name: p.name, item: `${BASE_URL}${route}` });
-        }
-
-        pagesToRender.set(route, {
-            title: `${p.name} GeoJSON Map, Population & Boundaries | Lens PH`,
-            description: `Download GeoJSON boundaries and view population (${pop}), area (${area} sq km), and municipal map data for ${p.name}, ${parentRegion ? parentRegion.name : "Philippines"}.`,
-            keywords: `${p.name.toLowerCase()} geojson, ${p.name.toLowerCase()} map, ${p.name.toLowerCase()} province boundaries, psgc ${p.psgc}`,
-            canonical: `${BASE_URL}${route}`,
-            jsonLd: [
-                {
-                    "@context": "https://schema.org",
-                    "@type": "BreadcrumbList",
-                    itemListElement: breadcrumbs,
-                },
-                {
-                    "@context": "https://schema.org",
-                    "@type": "AdministrativeArea",
-                    name: p.name,
-                    alternateName: `PSGC ${p.psgc}`,
-                    description: `${p.name} is a province in ${parentRegion ? parentRegion.name : "the Philippines"} with a 2024 population of ${pop} and an area of ${area} sq km.`,
-                    url: `${BASE_URL}${route}`,
-                    containedInPlace: parentRegion
-                        ? { "@type": "AdministrativeArea", name: parentRegion.name, url: `${BASE_URL}/region/${regionSlug}` }
-                        : undefined,
-                },
-                {
-                    "@context": "https://schema.org",
-                    "@type": "Dataset",
-                    name: `${p.name} GeoJSON Boundary Dataset`,
-                    description: `GeoJSON administrative boundary vector data and municipal metrics for ${p.name}, Philippines.`,
-                    url: `${BASE_URL}${route}`,
-                    spatialCoverage: { "@type": "Place", name: p.name },
-                },
-            ],
-            bodyHtml: `
-                <div class="seo-fallback-content">
-                    <nav aria-label="Breadcrumb">
-                        <a href="/">Philippines</a>
-                        ${parentRegion && regionSlug ? `&gt; <a href="/region/${regionSlug}">${escapeHtml(parentRegion.name)}</a>` : ""}
-                        &gt; <span>${escapeHtml(p.name)}</span>
-                    </nav>
-                    <h1>${escapeHtml(p.name)} — GeoJSON Map &amp; Boundary Data</h1>
-                    <p>
-                        ${escapeHtml(p.name)} is a province located in ${parentRegion ? escapeHtml(parentRegion.name) : "the Philippines"} (PSGC code <code>${p.psgc}</code>).
-                        It covers an area of <strong>${area} km²</strong> with a population of <strong>${pop}</strong> (${density} people/km²).
-                    </p>
-                    <h2>Cities &amp; Municipalities in ${escapeHtml(p.name)}</h2>
-                    <ul>
-                        ${childMunicities
-                            .map((m) => {
-                                const mSlug = slugify(m.name);
-                                return `<li><a href="/municipality/${mSlug}">${escapeHtml(m.name)} GeoJSON &amp; Map Data</a></li>`;
-                            })
-                            .join("\n")}
-                    </ul>
-                </div>
-            `,
-        });
-    });
-
-    // 5. Municipalities
-    municities.forEach((m) => {
-        const mSlug = slugify(m.name);
-        if (!mSlug) return;
-        const route = `/municipality/${mSlug}`;
-
-        const parentProvince = m.province_psgc ? provinceByPsgc.get(m.province_psgc) : null;
-        const parentRegion = m.region_psgc ? regionByPsgc.get(m.region_psgc) : null;
-
-        const provinceSlug = parentProvince ? slugify(parentProvince.name) : "";
-        const regionSlug = parentRegion ? slugify(parentRegion.name) : "";
-
-        const siblings = parentProvince ? municitiesByProvince.get(parentProvince.psgc) || [] : [];
-
-        const pop = formatNumber(m.pop_2024);
-        const area = formatDecimal(m.area_km2);
-        const density = formatDecimal(m.density_2024);
-        const locationStr = parentProvince ? `${m.name}, ${parentProvince.name}` : m.name;
-
-        const breadcrumbs = [
-            { "@type": "ListItem", position: 1, name: "Philippines", item: `${BASE_URL}/` },
-        ];
-        if (parentRegion && regionSlug) {
-            breadcrumbs.push({ "@type": "ListItem", position: 2, name: parentRegion.name, item: `${BASE_URL}/region/${regionSlug}` });
-        }
-        if (parentProvince && provinceSlug) {
-            breadcrumbs.push({ "@type": "ListItem", position: breadcrumbs.length + 1, name: parentProvince.name, item: `${BASE_URL}/province/${provinceSlug}` });
-        }
-        breadcrumbs.push({ "@type": "ListItem", position: breadcrumbs.length + 1, name: m.name, item: `${BASE_URL}${route}` });
-
-        pagesToRender.set(route, {
-            title: `${locationStr} — Boundary Map & GeoJSON Data | Lens PH`,
-            description: `Download GeoJSON boundaries, view population density (${density}/sq km), area (${area} sq km), and barangay map data for ${locationStr}, Philippines.`,
-            keywords: `${m.name.toLowerCase()} geojson, ${m.name.toLowerCase()} boundary map, ${locationStr.toLowerCase()} map, psgc ${m.psgc}`,
-            canonical: `${BASE_URL}${route}`,
-            jsonLd: [
-                {
-                    "@context": "https://schema.org",
-                    "@type": "BreadcrumbList",
-                    itemListElement: breadcrumbs,
-                },
-                {
-                    "@context": "https://schema.org",
-                    "@type": "AdministrativeArea",
-                    name: m.name,
-                    alternateName: `PSGC ${m.psgc}`,
-                    description: `${m.name} is a ${m.geo_lvl === "City" ? "city" : "municipality"} in ${parentProvince ? parentProvince.name : "the Philippines"} with a 2024 population of ${pop} and an area of ${area} sq km.`,
-                    url: `${BASE_URL}${route}`,
-                    containedInPlace: parentProvince
-                        ? { "@type": "AdministrativeArea", name: parentProvince.name, url: `${BASE_URL}/province/${provinceSlug}` }
-                        : undefined,
-                },
-                {
-                    "@context": "https://schema.org",
-                    "@type": "Dataset",
-                    name: `${m.name} GeoJSON Boundary Dataset`,
-                    description: `GeoJSON administrative boundary vector data and barangay metrics for ${locationStr}, Philippines.`,
-                    url: `${BASE_URL}${route}`,
-                    spatialCoverage: { "@type": "Place", name: locationStr },
-                },
-            ],
-            bodyHtml: `
-                <div class="seo-fallback-content">
-                    <nav aria-label="Breadcrumb">
-                        <a href="/">Philippines</a>
-                        ${parentRegion && regionSlug ? `&gt; <a href="/region/${regionSlug}">${escapeHtml(parentRegion.name)}</a>` : ""}
-                        ${parentProvince && provinceSlug ? `&gt; <a href="/province/${provinceSlug}">${escapeHtml(parentProvince.name)}</a>` : ""}
-                        &gt; <span>${escapeHtml(m.name)}</span>
-                    </nav>
-                    <h1>${escapeHtml(m.name)}, ${parentProvince ? escapeHtml(parentProvince.name) : "Philippines"} — GeoJSON Boundary &amp; Map Data</h1>
-                    <p>
-                        ${escapeHtml(m.name)} is a ${m.geo_lvl === "City" ? "city" : "municipality"} in ${parentProvince ? escapeHtml(parentProvince.name) : "the Philippines"} (PSGC code <code>${m.psgc}</code>).
-                        It covers a land area of <strong>${area} km²</strong> with a 2024 population of <strong>${pop}</strong> (${density} residents per km²).
-                    </p>
-                    ${
-                        siblings.length > 1
-                            ? `
-                        <h2>Other Localities in ${parentProvince ? escapeHtml(parentProvince.name) : "this area"}</h2>
-                        <ul>
-                            ${siblings
-                                .filter((s) => s.psgc !== m.psgc)
-                                .slice(0, 12)
-                                .map((s) => {
-                                    const sSlug = slugify(s.name);
-                                    return `<li><a href="/municipality/${sSlug}">${escapeHtml(s.name)} GeoJSON Map</a></li>`;
-                                })
-                                .join("\n")}
-                        </ul>
-                    `
-                            : ""
-                    }
-                </div>
-            `,
-        });
+        bodyHtml: `
+            <div class="seo-fallback-content">
+                <h1>Terms of Service — Lens (MapaPH)</h1>
+                <p>
+                    Lens is an independent, community-maintained open-source project released under the MIT License and is not affiliated with the Philippine Statistics Authority (PSA), NAMRIA, COMELEC, or COA. Administrative boundary vectors are provided for thematic mapping, research, and visualization purposes and do not substitute for licensed cadastral surveys under Republic Act No. 8560.
+                </p>
+            </div>
+        `,
     });
 
     console.log(`[prerender] Total pages to generate: ${pagesToRender.size}`);
@@ -472,7 +182,6 @@ async function prerender() {
             await fs.mkdir(targetDir, { recursive: true });
         }
 
-        // Replace metadata in template
         let pageHtml = templateHtml;
 
         // Title

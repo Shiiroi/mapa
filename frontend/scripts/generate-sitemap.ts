@@ -8,71 +8,15 @@ const BASE_URL = "https://lens.mapaph.com";
 
 const LASTMOD = new Date().toISOString().slice(0, 10);
 
-function slugify(name: string) {
-    return (
-        name
-            .normalize("NFKD")
-            // remove diacritics
-            .replace(/\p{Diacritic}+/gu, "")
-            .toLowerCase()
-            // replace ampersand with and
-            .replace(/&/g, " and ")
-            // remove apostrophes
-            .replace(/[’'`]/g, "")
-            // replace non-alphanumeric with hyphens
-            .replace(/[^a-z0-9]+/g, "-")
-            // collapse multiple hyphens
-            .replace(/-+/g, "-")
-            // trim hyphens
-            .replace(/^-|-$/g, "")
-    );
-}
-
-async function readNames(jsonPath: string, nameField = "name") {
-    try {
-        const raw = await fs.readFile(jsonPath, "utf8");
-        const arr = JSON.parse(raw);
-        if (!Array.isArray(arr)) return [];
-        return arr.map((r: Record<string, unknown>) => String(r[nameField] ?? "")).filter(Boolean);
-    } catch (e) {
-        console.warn(`Could not read ${jsonPath}: ${e}`);
-        return [];
-    }
-}
-
 async function build() {
-    const regionsPath = path.resolve(__dirname, "../data-sets/geo/regions.json");
-    const provincesPath = path.resolve(__dirname, "../data-sets/geo/provinces.json");
-    const municitiesPath = path.resolve(__dirname, "../data-sets/geo/municities/meta.json");
+    const urls = [
+        `${BASE_URL}/`,
+        `${BASE_URL}/faq`,
+        `${BASE_URL}/privacy`,
+        `${BASE_URL}/terms`,
+    ];
 
-    const regions = await readNames(regionsPath);
-    const provinces = await readNames(provincesPath);
-    const municities = await readNames(municitiesPath);
-
-    const urls = new Set<string>();
-    urls.add(`${BASE_URL}/`);
-    urls.add(`${BASE_URL}/faq`);
-    urls.add(`${BASE_URL}/privacy`);
-    urls.add(`${BASE_URL}/terms`);
-
-    regions.forEach((r) => {
-        const s = slugify(r);
-        if (s) urls.add(`${BASE_URL}/region/${s}`);
-    });
-
-    provinces.forEach((p) => {
-        const s = slugify(p);
-        if (s) urls.add(`${BASE_URL}/province/${s}`);
-    });
-
-    municities.forEach((m) => {
-        const s = slugify(m);
-        if (s) urls.add(`${BASE_URL}/municipality/${s}`);
-    });
-
-    const items = Array.from(urls).sort();
-
-    const xmlEntries = items
+    const xmlEntries = urls
         .map((url) => {
             const pathName = new URL(url).pathname;
             const isHomePage = pathName === "/";
@@ -94,10 +38,18 @@ async function build() {
 
     const outPath = path.resolve(__dirname, "../public/sitemap.xml");
     await fs.writeFile(outPath, xml, "utf8");
-    console.log(`Wrote sitemap with ${items.length} URLs to ${outPath}`);
+    console.log(`Wrote sitemap with ${urls.length} URLs to ${outPath}`);
 
-    // write robots.txt
-    const robots = `User-agent: *\nAllow: /\nSitemap: ${BASE_URL}/sitemap.xml\n`;
+    const robots = [
+        "User-agent: *",
+        "Allow: /",
+        "",
+        "User-agent: Mediapartners-Google",
+        "Allow: /",
+        "",
+        `Sitemap: ${BASE_URL}/sitemap.xml`,
+        "",
+    ].join("\n");
     const robotsPath = path.resolve(__dirname, "../public/robots.txt");
     await fs.writeFile(robotsPath, robots, "utf8");
     console.log(`Wrote robots.txt to ${robotsPath}`);
