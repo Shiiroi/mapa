@@ -252,7 +252,8 @@ export default function MainPage() {
                 title: `${locationStr} — Boundary Map & GeoJSON Data | Lens PH`,
                 description: `Download GeoJSON boundaries, view population density (${densityStr}/sq km), area (${areaStr} sq km), and barangay map data for ${locationStr}, Philippines.`,
                 keywords: `${selectedMuni.name.toLowerCase()} geojson, ${selectedMuni.name.toLowerCase()} boundary map, ${locationStr.toLowerCase()} map, psgc ${selectedMuni.psgc}`,
-                canonical,
+                canonical: `${baseUrl}/`,
+                noindex: true,
                 schemas: [
                     {
                         "@context": "https://schema.org",
@@ -305,7 +306,8 @@ export default function MainPage() {
                 title: `${selectedProv.name} GeoJSON Map, Population & Boundaries | Lens PH`,
                 description: `Download GeoJSON boundaries and view population (${popStr}), area (${areaStr} sq km), and municipal map data for ${selectedProv.name}, ${reg ? reg.name : "Philippines"}.`,
                 keywords: `${selectedProv.name.toLowerCase()} geojson, ${selectedProv.name.toLowerCase()} map, ${selectedProv.name.toLowerCase()} province boundaries, psgc ${selectedProv.psgc}`,
-                canonical,
+                canonical: `${baseUrl}/`,
+                noindex: true,
                 schemas: [
                     {
                         "@context": "https://schema.org",
@@ -346,7 +348,8 @@ export default function MainPage() {
                 title: `${selectedReg.name} GeoJSON Map & Geographic Data | Lens PH`,
                 description: `Explore ${selectedReg.name}, Philippines boundary map, GeoJSON download, population (${popStr}), land area (${areaStr} sq km), and density statistics.`,
                 keywords: `${selectedReg.name.toLowerCase()} geojson, ${selectedReg.name.toLowerCase()} map, philippine regions, psgc ${selectedReg.psgc}`,
-                canonical,
+                canonical: `${baseUrl}/`,
+                noindex: true,
                 schemas: [
                     {
                         "@context": "https://schema.org",
@@ -382,6 +385,7 @@ export default function MainPage() {
             description: "Free GeoJSON administrative boundaries for every Philippine region, province, city, municipality, and barangay. Visualize population density, census metrics, GDP, and LGU data.",
             keywords: "philippines geojson, geojson philippines, ph map, philippines map, gis mapping philippines, population density map philippines, PSGC map, mapaph",
             canonical: `${baseUrl}/`,
+            noindex: false,
             schemas: [webAppSchema],
         };
     }, [download.selectedMunicityPsgc, download.selectedProvincePsgc, download.selectedRegionPsgc, municityMeta, provinces, regions]);
@@ -393,6 +397,7 @@ export default function MainPage() {
                 <meta name="title" content={pageMeta.title} />
                 <meta name="description" content={pageMeta.description} />
                 <meta name="keywords" content={pageMeta.keywords} />
+                <meta name="robots" content={pageMeta.noindex ? "noindex, follow" : "index, follow"} />
                 <link rel="canonical" href={pageMeta.canonical} />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={pageMeta.canonical} />
