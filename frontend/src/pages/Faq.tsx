@@ -78,18 +78,6 @@ export default function Faq() {
                 <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
             </Helmet>
 
-            <noscript>
-                <h1>Frequently Asked Questions &amp; Technical Methodology — Lens (MapaPH)</h1>
-                <dl>
-                    {faqs.map((faq) => (
-                        <div key={faq.question}>
-                            <dt>{faq.question}</dt>
-                            <dd>{faq.answer}</dd>
-                        </div>
-                    ))}
-                </dl>
-            </noscript>
-
             <div className="mx-auto flex min-h-full w-full max-w-4xl flex-col px-4 py-8 lg:px-8 lg:py-12">
                 <div className="mb-6 flex items-center justify-between gap-4 text-[11px] uppercase tracking-[0.24em] text-muted">
                     <Link to="/" className="text-muted transition-colors hover:text-primary">

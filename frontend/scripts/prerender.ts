@@ -211,13 +211,13 @@ async function prerender() {
             pageHtml = pageHtml.replace("</head>", `    ${jsonLdString}\n</head>`);
         }
 
-        // Body / noscript fallback content
-        const fallbackContent = `<noscript>\n${meta.bodyHtml}\n</noscript>`;
-        if (pageHtml.includes("<noscript>")) {
-            pageHtml = pageHtml.replace(/<noscript>.*?<\/noscript>/gis, fallbackContent);
-        } else {
-            pageHtml = pageHtml.replace('<div id="root"></div>', `${fallbackContent}\n    <div id="root"></div>`);
-        }
+        // Inject pre-rendered HTML directly inside #root so non-JS crawlers see visible body content
+        // and React cleanly replaces #root on client hydration.
+        pageHtml = pageHtml.replace(/<noscript>[\s\S]*?<\/noscript>\s*/gi, "");
+        pageHtml = pageHtml.replace(
+            /<div id="root">[\s\S]*?<\/div>\s*(?=<script|$)/i,
+            `<div id="root">\n${meta.bodyHtml}\n    </div>\n    `,
+        );
 
         await fs.writeFile(targetFile, pageHtml, "utf8");
         renderedCount++;
