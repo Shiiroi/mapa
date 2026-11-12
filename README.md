@@ -70,8 +70,11 @@ Create `frontend/.env` using the template in `frontend/.env.example`:
 
 ```bash
 VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
-VITE_GEO_CDN_URL=https://your-r2-bucket.r2.dev
+VITE_SUPABASE_PUBLISHABLE_KEY=your-anon-or-publishable-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+# Optional: Cloudflare R2 CDN. If omitted, Lens serves shapes directly from Supabase Storage:
+# VITE_GEO_CDN_URL=https://your-r2-bucket.r2.dev
 ```
 
 ### Database Setup
