@@ -1,79 +1,117 @@
 # Lens
 
-Lens is an interactive map and GeoJSON download tool for Philippine administrative divisions — country, region, province, city/municipality, and barangay. It overlays census, economic, and election statistics on those boundaries, supports side-by-side comparison of places, and exports standards-compliant GeoJSON.
+[![Version](https://img.shields.io/badge/version-1.1.0-1a4d2e.svg)](https://github.com/Shiiroi/mapa/releases/tag/v1.1.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-1a4d2e.svg)](https://github.com/Shiiroi/mapa/blob/main/LICENSE)
+[![Part of mapaPH](https://img.shields.io/badge/ecosystem-mapaPH-1a4d2e.svg)](https://www.mapaph.com)
 
-Live: https://lens.mapaph.com (previously https://mapa.shhiroi.me)
+Lens is an interactive choropleth map visualizer and GeoJSON boundary export tool for Philippine administrative divisions. It covers country, region, province, city/municipality, and barangay levels. Lens is part of the open-source [mapaPH](https://www.mapaph.com) ecosystem.
 
-> Lens is an independent project. It is not affiliated with or endorsed by the Philippine Statistics Authority (PSA) or any government agency.
+Live application: [lens.mapaph.com](https://lens.mapaph.com)
 
-## Table of contents
+> Lens is an independent civic project. It is not affiliated with or endorsed by the Philippine Statistics Authority (PSA) or any government agency.
+
+## Table of Contents
 
 - [Features](#features)
-- [Tech stack](#tech-stack)
-- [Getting started](#getting-started)
+- [Architecture & Tech Stack](#architecture--tech-stack)
+- [Getting Started](#getting-started)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Features
 
-- Interactive Leaflet map with level switching across country, region, province, city/municipality, and barangay.
-- GeoJSON downloads scoped to any level, in RFC 7946 / WGS 84 with PSGC-keyed feature properties.
-- Per-place statistics: population, age and sex distribution, GDP (PSA constant 2018 prices), and LGU total assets.
-- Built-in COMELEC 2022 presidential results overlay, plus custom CSV overlay uploads keyed by PSGC.
-- Side-by-side comparison of any two places.
-- Interactive Stacked Bar Chart Distribution — a compact, hoverable breakdown of any place into its immediate sub-levels with an integrated data table and floating tooltip.
-- Modular tabbed UI (Compare, Custom, Download) with extractable components (`ComparePicker`, `MetricRow`, `DatasetToggle`, etc.) for easier reuse and testing.
+- **Interactive Multi-Level Map**: Switch between country, 18 regions, 82 provinces, 1,634 cities and municipalities, and 42,000+ barangays.
+- **RFC 7946 GeoJSON Export**: Export clean vector boundaries in WGS 84 (EPSG:4326) keyed by 9-digit PSGC numeric codes.
+- **Pre-Loaded Civic Metrics**: Inspect 2010 to 2024 PSA census populations, sex ratios, age-dependency ratios, regional GDP, and COA municipal financial audit assets.
+- **2025 to 2026 Boundary Alignments**: Reflects recent statutory updates, including the Supreme Court transfer of Bonifacio Global City (BGC) and 10 EMBO barangays from Makati to Taguig City.
+- **Custom CSV Overlays**: Upload custom datasets using 9-digit PSGC codes to render instant choropleth heatmaps.
+- **Ecosystem Integration**: Directly links to the [mapaPH Tools](https://www.mapaph.com/tools) suite from the geographic navigation sidebar.
+- **Place Comparison**: Compare demographic and economic indicators between any two local government units side by side.
+- **Distribution Visualizer**: Inspect sub-level population distributions with stacked charts and interactive data tables.
 
-## Tech stack
+## Architecture & Tech Stack
 
-- Frontend: Vite, React, TypeScript, Tailwind CSS
-- Map: Leaflet / react-leaflet
-- Data fetching: TanStack Query
-- Backend: Supabase (Postgres for metadata, public Storage bucket for GeoJSON)
-- Package manager: pnpm
-- Hosting: Vercel
+Lens separates heavy geometric vector files from relational statistical data:
 
-See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for how the pieces fit together and the full project layout.
+| Component | Technology | Role |
+| :--- | :--- | :--- |
+| **Frontend** | React 19, Vite, TypeScript, Tailwind CSS | Client-side single-page application hosted on Vercel with build-time SSR HTML pre-rendering. |
+| **Map Engine** | Leaflet / react-leaflet, D3 | Interactive polygon rendering, pan/zoom handling, and statistical binning (Jenks, Quantile, Logarithmic). |
+| **Vector Storage CDN** | Cloudflare R2 | Pre-chunked TopoJSON and GeoJSON boundary files served with edge proxying, gzip compression, and $0 egress bandwidth costs. |
+| **Fallback Storage** | Supabase Storage | Automatic failover origin if direct CDN requests encounter network timeouts. |
+| **Tabular Database** | Supabase (PostgreSQL + PostgREST) | PSGC administrative hierarchy, demographic stats, financial audits, and 2022 election results queried via public read-only APIs. |
+| **Data Fetching** | TanStack Query | Client-side caching and background revalidation for map metadata and statistical series. |
 
-## Getting started
+See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for detailed pipeline schematics.
 
-**Prerequisites:** Node.js 20+, pnpm, a Supabase project. Python 3.11+ is optional, only needed for the COMELEC election scraper.
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20 or higher
+- pnpm 9 or higher
+- A Supabase project (for running the full local database)
+- Python 3.11+ (optional, required only for regenerating COMELEC scraper datasets)
+
+### Installation
+
+Clone the repository and install dependencies:
 
 ```bash
-cd frontend
+git clone https://github.com/Shiiroi/mapa.git
+cd mapa/frontend
 pnpm install
 ```
 
-Create `frontend/.env` with your Supabase credentials, apply the migrations in `supabase/migrations/`, then seed the database:
+### Environment Configuration
+
+Create `frontend/.env` using the template in `frontend/.env.example`:
 
 ```bash
-pnpm setup     # seeds from source CSVs (transparent, reproducible)
-# or
-pnpm restore   # restores from committed DB backup snapshots (faster)
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_GEO_CDN_URL=https://your-r2-bucket.r2.dev
 ```
 
-Run the app:
+### Database Setup
+
+Apply SQL migrations located in `supabase/migrations/`, then populate the database tables:
+
+```bash
+# Seed from clean source CSVs:
+pnpm setup
+
+# Or restore directly from committed database backup snapshots:
+pnpm restore
+```
+
+### Development Server
+
+Start the local development server:
 
 ```bash
 pnpm dev
 ```
 
-Full environment variables, seed command reference, and the data regeneration pipeline (including the COMELEC scraper) are in [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md).
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+Full environment configuration, seed script references, and data regeneration workflows are documented in [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md).
 
 ## Documentation
 
-- [Architecture & project structure](./docs/ARCHITECTURE.md)
-- [Development setup & data pipeline](./docs/DEVELOPMENT.md)
-- [GeoJSON format & export details](./docs/GEOJSON_FORMAT.md)
-- [Data sources, licenses & corrections](./docs/DATA_SOURCES.md)
-- [Data corrections log](./DATA_CORRECTIONS.md)
+- [Architecture & Project Structure](./docs/ARCHITECTURE.md)
+- [Development Setup & Data Pipeline](./docs/DEVELOPMENT.md)
+- [GeoJSON Format & Export Specifications](./docs/GEOJSON_FORMAT.md)
+- [Data Sources & Methodology](./docs/DATA_SOURCES.md)
+- [Boundary Corrections Changelog](./DATA_CORRECTIONS.md)
+- [mapaPH Hub Documentation](https://www.mapaph.com/docs/lens)
 
 ## Contributing
 
-Issues and data corrections are welcome, especially boundary errors, missing divisions, and PSGC mismatches. See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to report a data error, propose a code change, and the review process. Please also review our [Code of Conduct](./CODE_OF_CONDUCT.md).
+We welcome contributions, bug reports, and boundary corrections. Read [CONTRIBUTING.md](./CONTRIBUTING.md) before opening a pull request. Review our [Code of Conduct](./CODE_OF_CONDUCT.md).
 
 ## License
 
-- Source code: MIT — see [`LICENSE`](./LICENSE).
-- Boundary data: derived from MIT-licensed sources — see [`NOTICE.md`](./NOTICE.md) and [docs/DATA_SOURCES.md](./docs/DATA_SOURCES.md). Attribution is required when redistributing GeoJSON.
+- Source code: [MIT License](./LICENSE)
+- Boundary data: Derived from open public domain and open-licensed sources (PSA, NAMRIA, UN OCHA). Attribution is required when redistributing boundary files. See [`NOTICE.md`](./NOTICE.md) and [docs/DATA_SOURCES.md](./docs/DATA_SOURCES.md).
