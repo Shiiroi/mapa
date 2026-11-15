@@ -6,6 +6,7 @@ export const INLINE_CODE_CLASS = "border border-border-light bg-surface px-1.5 p
 
 const NAV_ITEMS = [
     { to: "/", label: "Map", end: true },
+    { to: "/directory", label: "Directory", end: false },
     { to: "/faq", label: "FAQ", end: false },
     { to: "/privacy", label: "Privacy", end: false },
     { to: "/terms", label: "Terms", end: false },
@@ -205,6 +206,9 @@ export function PageShell({
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-medium text-muted">
                             <Link to="/" className="transition-colors hover:text-accent">
                                 Map
+                            </Link>
+                            <Link to="/directory" className="transition-colors hover:text-accent">
+                                Directory
                             </Link>
                             <Link to="/faq" className="transition-colors hover:text-accent">
                                 FAQ

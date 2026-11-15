@@ -1,5 +1,6 @@
 // Sitemap and dashboard layout: IndexSidebar and MapDashboard.
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { cn } from "../../lib/cn";
 import type { MapLevel } from "../constants";
 import type {
@@ -93,7 +94,15 @@ export function IndexSidebar({
     return (
         <aside className="flex h-full w-full flex-col border-r border-border bg-surface select-none font-sans text-xs">
             <div className="shrink-0 border-b border-border px-4 py-3 bg-white">
-                <h2 className="text-xs font-bold uppercase tracking-wider text-primary">Geographic Index</h2>
+                <div className="flex items-center justify-between gap-2">
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-primary">Geographic Index</h2>
+                    <Link
+                        to="/directory"
+                        className="text-[10px] font-bold uppercase tracking-wider text-accent hover:text-accent-dark hover:underline"
+                    >
+                        Rankings &rarr;
+                    </Link>
+                </div>
                 <p className="text-[10px] text-muted mt-0.5">Jump directly to any administrative division.</p>
             </div>
 
