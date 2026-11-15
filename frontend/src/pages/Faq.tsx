@@ -1,5 +1,7 @@
+import { useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { PageIndex, PageSection, PageShell } from "../components/PageShell";
 
 const faqs = [
     {
@@ -49,9 +51,37 @@ const faqSchema = {
     })),
 };
 
+const INDEXED_FAQS = faqs.map((faq, idx) => ({
+    ...faq,
+    id: `faq-${String(idx + 1).padStart(2, "0")}`,
+    index: `Q${String(idx + 1).padStart(2, "0")}`,
+}));
+
 export default function Faq() {
+    const [query, setQuery] = useState("");
+
+    const filteredFaqs = useMemo(() => {
+        const normalized = query.trim().toLowerCase();
+        if (!normalized) return INDEXED_FAQS;
+        return INDEXED_FAQS.filter(
+            (faq) =>
+                faq.question.toLowerCase().includes(normalized) ||
+                faq.answer.toLowerCase().includes(normalized),
+        );
+    }, [query]);
+
+    const tocItems = useMemo(
+        () =>
+            filteredFaqs.map((faq) => ({
+                id: faq.id,
+                index: faq.index,
+                label: faq.question,
+            })),
+        [filteredFaqs],
+    );
+
     return (
-        <div className="h-full overflow-y-auto">
+        <>
             <Helmet>
                 <title>Frequently Asked Questions &amp; Technical Methodology | Lens (MapaPH)</title>
                 <meta
@@ -78,34 +108,96 @@ export default function Faq() {
                 <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
             </Helmet>
 
-            <div className="mx-auto flex min-h-full w-full max-w-4xl flex-col px-4 py-8 lg:px-8 lg:py-12">
-                <div className="mb-6 flex items-center justify-between gap-4 text-[11px] uppercase tracking-[0.24em] text-muted">
-                    <Link to="/" className="text-muted transition-colors hover:text-primary">
-                        Back to map
-                    </Link>
-                    <a href="https://www.mapaph.com/docs/lens" className="text-muted transition-colors hover:text-primary">
-                        FULL LENS DOCUMENTATION &rarr;
-                    </a>
-                </div>
+            <PageShell
+                breadcrumb="FAQ"
+                eyebrow="Technical Methodology"
+                meta="RFC 7946 · PSGC 10-Digit · POPCEN 2024"
+                title="Frequently Asked Questions & Cartographic Methodology"
+                description="Technical reference covering Philippine GeoJSON boundary exports (RFC 7946 / EPSG:4326), 10-digit PSGC hierarchy rules, PSA census and COA financial overlays, and client-side CSV choropleth mapping."
+                headerLink={{
+                    href: "https://www.mapaph.com/docs/lens",
+                    label: "Full Lens Documentation",
+                }}
+            >
+                <PageIndex
+                    title="Question Directory"
+                    items={tocItems}
+                    headerSlot={
+                        <div className="flex items-center gap-3">
+                            <span className="font-mono text-[11px] text-muted">
+                                {filteredFaqs.length} / {INDEXED_FAQS.length} topics
+                            </span>
+                            {query && (
+                                <button
+                                    type="button"
+                                    onClick={() => setQuery("")}
+                                    className="cursor-pointer font-mono text-[11px] font-bold uppercase text-accent hover:text-accent-dark"
+                                >
+                                    Clear
+                                </button>
+                            )}
+                        </div>
+                    }
+                    toolbarSlot={
+                        <input
+                            type="search"
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            placeholder="Filter questions (e.g. GeoJSON, PSGC, CSV, COA, PSA)..."
+                            aria-label="Filter frequently asked questions"
+                            className="w-full border border-border bg-white px-3 py-2 text-xs text-primary placeholder:text-muted outline-none transition-colors focus:border-accent rounded-none"
+                        />
+                    }
+                />
 
-                <header className="rounded-[1.75rem] border border-border-light bg-surface/70 p-6 shadow-soft lg:p-8">
-                    <h1 className="text-3xl font-semibold tracking-tight text-primary lg:text-4xl">
-                        Frequently Asked Questions &amp; Cartographic Methodology
-                    </h1>
-                    <p className="mt-4 max-w-2xl text-sm leading-6 text-muted lg:text-base lg:leading-7">
-                        Technical reference covering Philippine GeoJSON boundary exports (RFC 7946 / EPSG:4326), 10-digit PSGC hierarchy rules, PSA census and COA financial overlays, and client-side CSV choropleth mapping.
-                    </p>
-                </header>
+                {filteredFaqs.length > 0 ? (
+                    <div className="grid gap-4">
+                        {filteredFaqs.map((faq) => (
+                            <PageSection key={faq.question} id={faq.id} index={faq.index} title={faq.question}>
+                                <p>{faq.answer}</p>
+                            </PageSection>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="border border-border bg-white p-6 text-center rounded-none">
+                        <p className="text-sm text-muted">
+                            No FAQ entries match <span className="font-mono font-semibold text-primary">"{query}"</span>.
+                        </p>
+                        <button
+                            type="button"
+                            onClick={() => setQuery("")}
+                            className="mt-3 cursor-pointer border border-border bg-surface px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-primary transition-colors hover:bg-white rounded-none"
+                        >
+                            Reset Filter
+                        </button>
+                    </div>
+                )}
 
-                <div className="mt-6 grid gap-4">
-                    {faqs.map((faq) => (
-                        <section key={faq.question} className="rounded-2xl border border-border-light bg-white/85 p-5 shadow-soft lg:p-6">
-                            <h2 className="text-base font-semibold tracking-tight text-primary lg:text-lg">{faq.question}</h2>
-                            <p className="mt-2 text-sm leading-6 text-muted lg:text-base">{faq.answer}</p>
-                        </section>
-                    ))}
+                <div className="flex flex-wrap items-center justify-between gap-4 border border-border border-l-4 border-l-accent bg-white p-5 rounded-none">
+                    <div className="space-y-1">
+                        <h2 className="text-xs font-bold uppercase tracking-wider text-primary">
+                            Explore Philippine Boundaries &amp; Datasets
+                        </h2>
+                        <p className="text-xs leading-5 text-muted">
+                            Inspect region, province, city/municipality, and barangay vectors directly in Lens or consult the full developer guide.
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                        <Link
+                            to="/"
+                            className="bg-accent px-4 py-2 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-accent-dark rounded-none"
+                        >
+                            Open Interactive Map &rarr;
+                        </Link>
+                        <a
+                            href="https://www.mapaph.com/docs/lens"
+                            className="border border-border bg-surface px-4 py-2 text-xs font-bold uppercase tracking-wider text-primary transition-colors hover:bg-white rounded-none"
+                        >
+                            Documentation &rarr;
+                        </a>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </PageShell>
+        </>
     );
 }
