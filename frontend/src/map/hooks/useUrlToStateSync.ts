@@ -40,7 +40,7 @@ export function useUrlToStateSync({
     useEffect(() => {
         const pathname = location.pathname;
 
-        if (pathname === "/privacy" || pathname === "/terms") {
+        if (pathname === "/directory" || pathname === "/faq" || pathname === "/privacy" || pathname === "/terms") {
             return;
         }
 
