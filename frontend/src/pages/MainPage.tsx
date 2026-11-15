@@ -29,7 +29,14 @@ export default function MainPage() {
     const [activeOverlay, setActiveOverlay] = useState<CustomOverlay | null>(null);
     const [overlayView, setOverlayView] = useState<SeriesViewState>({ mode: "lead" });
     const [mapLevel, setMapLevel] = useState<MapLevel>("country");
-    const [activeTab, setActiveTab] = useState<SidebarTab>("geojson");
+    const [activeTab, setActiveTab] = useState<SidebarTab>(() => {
+        if (typeof window === "undefined") return "geojson";
+        const tabParam = new URLSearchParams(window.location.search).get("tab");
+        if (tabParam === "geojson" || tabParam === "info" || tabParam === "compare" || tabParam === "custom") {
+            return tabParam;
+        }
+        return window.location.pathname === "/" ? "geojson" : "info";
+    });
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
     const [viewportHeight, setViewportHeight] = useState(() => (typeof window !== "undefined" ? window.innerHeight : 0));
     const [isDesktopViewport, setIsDesktopViewport] = useState(() =>
@@ -105,7 +112,7 @@ export default function MainPage() {
         download.level === "barangay"
     );
 
-    const barangays = barangaysQuery.data ?? [];
+    const barangays = useMemo(() => barangaysQuery.data ?? [], [barangaysQuery.data]);
 
     // Sync URL to state on direct page load
     useUrlToStateSync({
@@ -220,6 +227,10 @@ export default function MainPage() {
             ? regions.find((r) => r.psgc === download.selectedRegionPsgc)
             : null;
 
+        const selectedBgy = download.selectedBarangayPsgc
+            ? barangays.find((b) => b.psgc === download.selectedBarangayPsgc)
+            : null;
+
         if (selectedMuni) {
             const prov = selectedMuni.province_psgc
                 ? provinces.find((p) => p.psgc === selectedMuni.province_psgc)
@@ -231,29 +242,42 @@ export default function MainPage() {
             const muniSlug = slugify(selectedMuni.name);
             const provSlug = prov ? slugify(prov.name) : "";
             const regSlug = reg ? slugify(reg.name) : "";
-            const canonical = `${baseUrl}/municipality/${muniSlug}`;
+            const regUrl = regSlug ? `${baseUrl}/${regSlug}` : `${baseUrl}/`;
+            const provUrl = regSlug && provSlug ? `${baseUrl}/${regSlug}/${provSlug}` : regUrl;
+            const canonical =
+                regSlug && provSlug
+                    ? `${baseUrl}/${regSlug}/${provSlug}/${muniSlug}`
+                    : regSlug
+                      ? `${baseUrl}/${regSlug}/${muniSlug}`
+                      : `${baseUrl}/`;
 
             const popStr = selectedMuni.pop_2024 ? Math.round(selectedMuni.pop_2024).toLocaleString("en-US") : "N/A";
             const areaStr = selectedMuni.area_km2 ? selectedMuni.area_km2.toFixed(1) : "N/A";
             const densityStr = selectedMuni.density_2024 ? Math.round(selectedMuni.density_2024).toLocaleString("en-US") : "N/A";
+            const assetsStr =
+                selectedMuni.assets_2024 != null
+                    ? `PHP ${Math.round(selectedMuni.assets_2024).toLocaleString("en-US")} COA assets, `
+                    : "";
 
             const breadcrumbs: Record<string, unknown>[] = [
                 { "@type": "ListItem", position: 1, name: "Philippines", item: `${baseUrl}/` },
             ];
             if (reg && regSlug) {
-                breadcrumbs.push({ "@type": "ListItem", position: 2, name: reg.name, item: `${baseUrl}/region/${regSlug}` });
+                breadcrumbs.push({ "@type": "ListItem", position: 2, name: reg.name, item: regUrl });
             }
             if (prov && provSlug) {
-                breadcrumbs.push({ "@type": "ListItem", position: breadcrumbs.length + 1, name: prov.name, item: `${baseUrl}/province/${provSlug}` });
+                breadcrumbs.push({ "@type": "ListItem", position: breadcrumbs.length + 1, name: prov.name, item: provUrl });
             }
             breadcrumbs.push({ "@type": "ListItem", position: breadcrumbs.length + 1, name: selectedMuni.name, item: canonical });
 
             return {
-                title: `${locationStr} — Boundary Map & GeoJSON Data | Lens PH`,
-                description: `Download GeoJSON boundaries, view population density (${densityStr}/sq km), area (${areaStr} sq km), and barangay map data for ${locationStr}, Philippines.`,
-                keywords: `${selectedMuni.name.toLowerCase()} geojson, ${selectedMuni.name.toLowerCase()} boundary map, ${locationStr.toLowerCase()} map, psgc ${selectedMuni.psgc}`,
-                canonical: `${baseUrl}/`,
-                noindex: true,
+                title: selectedBgy
+                    ? `Barangay ${selectedBgy.name}, ${locationStr} — Boundary Map & GeoJSON | Lens`
+                    : `${locationStr} Population (2024), Area, Map & GeoJSON | Lens`,
+                description: `Interactive map, 2024 census population (${popStr}), ${assetsStr}density (${densityStr}/km²), area (${areaStr} km²), barangay list, and GeoJSON boundary download for ${locationStr} (PSGC ${selectedMuni.psgc}).`,
+                keywords: `${selectedMuni.name.toLowerCase()} population 2024, ${selectedMuni.name.toLowerCase()} geojson, ${locationStr.toLowerCase()} map, barangays in ${selectedMuni.name.toLowerCase()}, psgc ${selectedMuni.psgc}`,
+                canonical,
+                noindex: Boolean(selectedBgy),
                 schemas: [
                     {
                         "@context": "https://schema.org",
@@ -264,18 +288,21 @@ export default function MainPage() {
                         "@context": "https://schema.org",
                         "@type": "AdministrativeArea",
                         name: selectedMuni.name,
-                        alternateName: `PSGC ${selectedMuni.psgc}`,
-                        description: `${selectedMuni.name} is a ${selectedMuni.geo_lvl === "City" ? "city" : "municipality"} in ${prov ? prov.name : "the Philippines"} with a 2024 population of ${popStr} and an area of ${areaStr} sq km.`,
+                        alternateName: [
+                            `PSGC ${selectedMuni.psgc}`,
+                            selectedMuni.correspondence ? `Legacy PSGC ${selectedMuni.correspondence}` : "",
+                        ].filter(Boolean),
+                        description: `${selectedMuni.name} is a ${selectedMuni.geo_lvl === "City" ? "city" : "municipality"} in ${prov ? prov.name : "the Philippines"} with a 2024 population of ${popStr} and a land area of ${areaStr} sq km.`,
                         url: canonical,
                         containedInPlace: prov
-                            ? { "@type": "AdministrativeArea", name: prov.name, url: `${baseUrl}/province/${provSlug}` }
+                            ? { "@type": "AdministrativeArea", name: prov.name, url: provUrl }
                             : undefined,
                     },
                     {
                         "@context": "https://schema.org",
                         "@type": "Dataset",
-                        name: `${selectedMuni.name} GeoJSON Boundary Dataset`,
-                        description: `GeoJSON administrative boundary vector data and barangay metrics for ${locationStr}, Philippines.`,
+                        name: `${selectedMuni.name} GeoJSON Boundary & Census Dataset`,
+                        description: `RFC 7946 GeoJSON administrative boundary vector data and barangay census metrics for ${locationStr}, Philippines.`,
                         url: canonical,
                         spatialCoverage: { "@type": "Place", name: locationStr },
                     },
@@ -289,25 +316,27 @@ export default function MainPage() {
                 : null;
             const provSlug = slugify(selectedProv.name);
             const regSlug = reg ? slugify(reg.name) : "";
-            const canonical = `${baseUrl}/province/${provSlug}`;
+            const regUrl = regSlug ? `${baseUrl}/${regSlug}` : `${baseUrl}/`;
+            const canonical = regSlug ? `${baseUrl}/${regSlug}/${provSlug}` : `${baseUrl}/${provSlug}`;
 
             const popStr = selectedProv.pop_2024 ? Math.round(selectedProv.pop_2024).toLocaleString("en-US") : "N/A";
             const areaStr = selectedProv.area_km2 ? selectedProv.area_km2.toFixed(1) : "N/A";
+            const densityStr = selectedProv.density_2024 ? Math.round(selectedProv.density_2024).toLocaleString("en-US") : "N/A";
 
             const breadcrumbs: Record<string, unknown>[] = [
                 { "@type": "ListItem", position: 1, name: "Philippines", item: `${baseUrl}/` },
             ];
             if (reg && regSlug) {
-                breadcrumbs.push({ "@type": "ListItem", position: 2, name: reg.name, item: `${baseUrl}/region/${regSlug}` });
+                breadcrumbs.push({ "@type": "ListItem", position: 2, name: reg.name, item: regUrl });
             }
             breadcrumbs.push({ "@type": "ListItem", position: breadcrumbs.length + 1, name: selectedProv.name, item: canonical });
 
             return {
-                title: `${selectedProv.name} GeoJSON Map, Population & Boundaries | Lens PH`,
-                description: `Download GeoJSON boundaries and view population (${popStr}), area (${areaStr} sq km), and municipal map data for ${selectedProv.name}, ${reg ? reg.name : "Philippines"}.`,
-                keywords: `${selectedProv.name.toLowerCase()} geojson, ${selectedProv.name.toLowerCase()} map, ${selectedProv.name.toLowerCase()} province boundaries, psgc ${selectedProv.psgc}`,
-                canonical: `${baseUrl}/`,
-                noindex: true,
+                title: `${selectedProv.name} Population (2024), Municipalities, Map & GeoJSON | Lens`,
+                description: `Explore ${selectedProv.name}, ${reg ? reg.name : "Philippines"}: 2024 population (${popStr}), density (${densityStr}/km²), area (${areaStr} km²), GDP, COA LGU assets, constituent municipalities, and GeoJSON downloads.`,
+                keywords: `${selectedProv.name.toLowerCase()} population 2024, municipalities in ${selectedProv.name.toLowerCase()}, ${selectedProv.name.toLowerCase()} geojson, ${selectedProv.name.toLowerCase()} map, psgc ${selectedProv.psgc}`,
+                canonical,
+                noindex: false,
                 schemas: [
                     {
                         "@context": "https://schema.org",
@@ -318,18 +347,21 @@ export default function MainPage() {
                         "@context": "https://schema.org",
                         "@type": "AdministrativeArea",
                         name: selectedProv.name,
-                        alternateName: `PSGC ${selectedProv.psgc}`,
-                        description: `${selectedProv.name} is a province in ${reg ? reg.name : "the Philippines"} with a 2024 population of ${popStr} and an area of ${areaStr} sq km.`,
+                        alternateName: [
+                            `PSGC ${selectedProv.psgc}`,
+                            selectedProv.correspondence ? `Legacy PSGC ${selectedProv.correspondence}` : "",
+                        ].filter(Boolean),
+                        description: `${selectedProv.name} is a province in ${reg ? reg.name : "the Philippines"} with a 2024 population of ${popStr} and a land area of ${areaStr} sq km.`,
                         url: canonical,
                         containedInPlace: reg
-                            ? { "@type": "AdministrativeArea", name: reg.name, url: `${baseUrl}/region/${regSlug}` }
+                            ? { "@type": "AdministrativeArea", name: reg.name, url: regUrl }
                             : undefined,
                     },
                     {
                         "@context": "https://schema.org",
                         "@type": "Dataset",
-                        name: `${selectedProv.name} GeoJSON Boundary Dataset`,
-                        description: `GeoJSON administrative boundary vector data and municipal metrics for ${selectedProv.name}, Philippines.`,
+                        name: `${selectedProv.name} GeoJSON Boundary & Municipal Dataset`,
+                        description: `GeoJSON administrative boundary vector data and municipal census/COA metrics for ${selectedProv.name}, Philippines.`,
                         url: canonical,
                         spatialCoverage: { "@type": "Place", name: selectedProv.name },
                     },
@@ -339,17 +371,26 @@ export default function MainPage() {
 
         if (selectedReg) {
             const regSlug = slugify(selectedReg.name);
-            const canonical = `${baseUrl}/region/${regSlug}`;
+            const canonical = `${baseUrl}/${regSlug}`;
 
             const popStr = selectedReg.pop_2024 ? Math.round(selectedReg.pop_2024).toLocaleString("en-US") : "N/A";
             const areaStr = selectedReg.area_km2 ? selectedReg.area_km2.toFixed(1) : "N/A";
+            const gdpVal = selectedReg.gdp_2024;
+            const gdpStr =
+                gdpVal != null
+                    ? gdpVal >= 1e12
+                        ? `2024 GDP PHP ${(gdpVal / 1e12).toFixed(2)}T, `
+                        : gdpVal >= 1e9
+                          ? `2024 GDP PHP ${(gdpVal / 1e9).toFixed(1)}B, `
+                          : `2024 GDP PHP ${Math.round(gdpVal).toLocaleString("en-US")}, `
+                    : "";
 
             return {
-                title: `${selectedReg.name} GeoJSON Map & Geographic Data | Lens PH`,
-                description: `Explore ${selectedReg.name}, Philippines boundary map, GeoJSON download, population (${popStr}), land area (${areaStr} sq km), and density statistics.`,
-                keywords: `${selectedReg.name.toLowerCase()} geojson, ${selectedReg.name.toLowerCase()} map, philippine regions, psgc ${selectedReg.psgc}`,
-                canonical: `${baseUrl}/`,
-                noindex: true,
+                title: `${selectedReg.name} Provinces, Population (2024), GDP & GeoJSON Map | Lens`,
+                description: `Explore ${selectedReg.name}, Philippines: 2024 population (${popStr}), ${gdpStr}area (${areaStr} km²), constituent provinces & cities, and free RFC 7946 GeoJSON boundary downloads.`,
+                keywords: `${selectedReg.name.toLowerCase()} population, ${selectedReg.name.toLowerCase()} provinces, ${selectedReg.name.toLowerCase()} geojson, ${selectedReg.name.toLowerCase()} gdp, psgc ${selectedReg.psgc}`,
+                canonical,
+                noindex: false,
                 schemas: [
                     {
                         "@context": "https://schema.org",
@@ -363,15 +404,18 @@ export default function MainPage() {
                         "@context": "https://schema.org",
                         "@type": "AdministrativeArea",
                         name: selectedReg.name,
-                        alternateName: `PSGC ${selectedReg.psgc}`,
+                        alternateName: [
+                            `PSGC ${selectedReg.psgc}`,
+                            selectedReg.correspondence ? `Legacy PSGC ${selectedReg.correspondence}` : "",
+                        ].filter(Boolean),
                         description: `${selectedReg.name} is an administrative region in the Philippines with a 2024 population of ${popStr} and an area of ${areaStr} sq km.`,
                         url: canonical,
                     },
                     {
                         "@context": "https://schema.org",
                         "@type": "Dataset",
-                        name: `${selectedReg.name} GeoJSON Boundary Dataset`,
-                        description: `GeoJSON administrative boundaries and census statistics for ${selectedReg.name}, Philippines.`,
+                        name: `${selectedReg.name} GeoJSON Boundary & Economic Dataset`,
+                        description: `GeoJSON administrative boundaries and census/GDP statistics for ${selectedReg.name}, Philippines.`,
                         url: canonical,
                         spatialCoverage: { "@type": "Place", name: selectedReg.name },
                     },
@@ -388,7 +432,7 @@ export default function MainPage() {
             noindex: false,
             schemas: [webAppSchema],
         };
-    }, [download.selectedMunicityPsgc, download.selectedProvincePsgc, download.selectedRegionPsgc, municityMeta, provinces, regions]);
+    }, [download.selectedBarangayPsgc, download.selectedMunicityPsgc, download.selectedProvincePsgc, download.selectedRegionPsgc, barangays, municityMeta, provinces, regions]);
 
     return (
         <>
