@@ -38,7 +38,9 @@ export default function MainPage() {
         return window.location.pathname === "/" ? "geojson" : "info";
     });
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
-    const [viewportHeight, setViewportHeight] = useState(() => (typeof window !== "undefined" ? window.innerHeight : 0));
+    const [viewportHeight, setViewportHeight] = useState(() =>
+        typeof window !== "undefined" ? (window.visualViewport?.height ?? window.innerHeight) : 0,
+    );
     const [isDesktopViewport, setIsDesktopViewport] = useState(() =>
         typeof window !== "undefined" ? window.matchMedia("(min-width: 1024px)").matches : true,
     );
@@ -63,13 +65,18 @@ export default function MainPage() {
 
     useEffect(() => {
         const onResize = () => {
-            setViewportHeight(window.innerHeight);
+            const nextHeight = window.visualViewport?.height ?? window.innerHeight;
+            setViewportHeight(nextHeight);
             setIsDesktopViewport(window.matchMedia("(min-width: 1024px)").matches);
         };
 
         onResize();
         window.addEventListener("resize", onResize);
-        return () => window.removeEventListener("resize", onResize);
+        window.visualViewport?.addEventListener("resize", onResize);
+        return () => {
+            window.removeEventListener("resize", onResize);
+            window.visualViewport?.removeEventListener("resize", onResize);
+        };
     }, []);
 
     // download is now initialized at the top to resolve circular dependency
@@ -175,9 +182,10 @@ export default function MainPage() {
             // On mobile: expand info tab so user sees details.
             if (activeTab === "info") {
                 setIsSidebarCollapsed(false);
+                setMobileDrawerHeightPx(mobileDrawerMaxHeightPx);
             }
         },
-        [download, activeTab, provinces, municities, municityMeta],
+        [download, activeTab, provinces, municities, municityMeta, mobileDrawerMaxHeightPx],
     );
 
     const handleLevelChange = useCallback(

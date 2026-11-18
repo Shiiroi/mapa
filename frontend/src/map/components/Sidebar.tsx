@@ -85,8 +85,9 @@ export function Sidebar(props: SidebarProps) {
         moved: boolean;
     } | null>(null);
 
-    const beginDrawerGesture = (e: React.PointerEvent<HTMLDivElement>) => {
+    const beginDrawerGesture = (e: React.PointerEvent<HTMLElement>) => {
         if (!props.onToggleCollapse || e.button !== 0) return;
+        if ((e.target as HTMLElement).closest("a, button")) return;
 
         gestureRef.current = {
             pointerId: e.pointerId,
@@ -98,7 +99,7 @@ export function Sidebar(props: SidebarProps) {
         e.currentTarget.setPointerCapture(e.pointerId);
     };
 
-    const updateDrawerGesture = (e: React.PointerEvent<HTMLDivElement>) => {
+    const updateDrawerGesture = (e: React.PointerEvent<HTMLElement>) => {
         const gesture = gestureRef.current;
         if (!gesture || gesture.pointerId !== e.pointerId) return;
 
@@ -111,7 +112,7 @@ export function Sidebar(props: SidebarProps) {
         props.onDrawerHeightChange?.(nextHeight);
     };
 
-    const endDrawerGesture = (e: React.PointerEvent<HTMLDivElement>) => {
+    const endDrawerGesture = (e: React.PointerEvent<HTMLElement>) => {
         const gesture = gestureRef.current;
         if (!gesture || gesture.pointerId !== e.pointerId) return;
 
@@ -137,7 +138,7 @@ export function Sidebar(props: SidebarProps) {
         }
     };
 
-    const cancelDrawerGesture = (e: React.PointerEvent<HTMLDivElement>) => {
+    const cancelDrawerGesture = (e: React.PointerEvent<HTMLElement>) => {
         const gesture = gestureRef.current;
         if (!gesture || gesture.pointerId !== e.pointerId) return;
 
@@ -179,20 +180,29 @@ export function Sidebar(props: SidebarProps) {
     ];
 
     return (
-        <aside className="flex h-full min-h-0 flex-col overflow-hidden border-l border-border bg-white select-none outline-none focus:outline-none focus-within:outline-none focus-within:ring-0">
+        <aside className="flex h-full min-h-0 flex-col overflow-hidden lg:border-l lg:border-border bg-white pb-[env(safe-area-inset-bottom)] lg:pb-0 select-none outline-none focus:outline-none focus-within:outline-none focus-within:ring-0">
             {props.onToggleCollapse && (
                 <div
-                    className="lg:hidden flex items-center justify-center w-full py-2 cursor-ns-resize active:bg-surface/60 transition-colors select-none outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 touch-none [-webkit-tap-highlight-color:transparent]"
+                    role="button"
+                    aria-label={isEffectivelyCollapsed ? "Expand panel" : "Collapse panel"}
+                    aria-expanded={!isEffectivelyCollapsed}
+                    className="lg:hidden flex items-center justify-center w-full py-2.5 cursor-ns-resize active:bg-surface/60 transition-colors select-none outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 touch-none [-webkit-tap-highlight-color:transparent]"
                     onPointerDown={beginDrawerGesture}
                     onPointerMove={updateDrawerGesture}
                     onPointerUp={endDrawerGesture}
                     onPointerCancel={cancelDrawerGesture}
                 >
-                    <div className="w-12 h-1 bg-muted/40 rounded-none" />
+                    <div className="w-12 h-1.5 bg-muted/50 rounded-none" />
                 </div>
             )}
 
-            <header className="shrink-0 border-b border-border-light px-4 py-2 lg:px-5 lg:py-3 bg-white">
+            <header
+                className="shrink-0 border-b border-border-light px-4 py-2 lg:px-5 lg:py-3 bg-white touch-none lg:touch-auto"
+                onPointerDown={isDesktopViewport ? undefined : beginDrawerGesture}
+                onPointerMove={isDesktopViewport ? undefined : updateDrawerGesture}
+                onPointerUp={isDesktopViewport ? undefined : endDrawerGesture}
+                onPointerCancel={isDesktopViewport ? undefined : cancelDrawerGesture}
+            >
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                         <h1 className="hidden sm:inline text-s text-muted font-normal">
