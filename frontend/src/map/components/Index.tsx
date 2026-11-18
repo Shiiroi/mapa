@@ -367,7 +367,7 @@ export function MapDashboard({
     psgcLevelsByTier,
 }: MapDashboardProps) {
     return (
-        <div className="flex h-screen w-screen flex-col overflow-hidden select-none outline-none focus:outline-none lg:grid lg:grid-cols-[240px_1fr_45%] lg:items-stretch">
+        <div className="flex h-full w-full flex-col overflow-hidden select-none outline-none focus:outline-none lg:grid lg:grid-cols-[240px_1fr_45%] lg:items-stretch">
             {/* Sitemap Sidebar — Desktop only */}
             <div className="hidden lg:block lg:h-full lg:w-full lg:min-w-0 lg:min-h-0">
                 <IndexSidebar
@@ -411,7 +411,7 @@ export function MapDashboard({
 
             {/* Details/Data Sidebar — desktop: strict grid child. Mobile: animated collapse drawer. */}
             <div
-                className="lg:h-full lg:w-full lg:min-w-0 lg:min-h-0 lg:overflow-hidden lg:border-t-0 lg:max-h-none lg:select-none lg:outline-none lg:focus:outline-none border-t border-border-light overflow-hidden select-none outline-none focus:outline-none flex-none"
+                className="lg:h-full lg:w-full lg:min-w-0 lg:min-h-0 lg:overflow-hidden lg:border-t-0 lg:max-h-none lg:shadow-none lg:select-none lg:outline-none lg:focus:outline-none border-t border-border bg-white shadow-[0_-4px_16px_rgba(0,0,0,0.08)] overflow-hidden select-none outline-none focus:outline-none flex-none"
                 style={isDesktopViewport ? undefined : { height: drawerHeightPx }}
             >
                 <Sidebar
