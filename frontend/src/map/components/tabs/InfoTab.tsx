@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { downloadJsonFile, downloadTextFile, slugifyFilename } from "../../../lib/downloadFile";
+import { slugify } from "../../../lib/slugUtils";
 import { useDivisionStats } from "../../hooks/useDivisionStats";
 import { formatGdp } from "../../utils/formatStats";
 import { broadAgeGroups } from "../../utils/ageSex";
@@ -257,10 +258,11 @@ export function InfoTab({
 
     const renderInteractiveBreadcrumbs = () => {
         if (!displayPlace) return null;
-        const breadcrumbs: { label: string; action: () => void }[] = [];
+        const breadcrumbs: { label: string; href: string; action: () => void }[] = [];
 
         breadcrumbs.push({
             label: "Philippines",
+            href: "/",
             action: () => {
                 onRegionChange(null);
                 onProvinceChange(null);
@@ -271,60 +273,68 @@ export function InfoTab({
         });
 
         const regPsgc = displayPlace.region_psgc || (displayPlace.level === "region" ? displayPlace.psgc : null);
-        if (regPsgc) {
-            const regionObj = regions.find((r) => r.psgc === regPsgc);
-            if (regionObj) {
-                breadcrumbs.push({
-                    label: regionObj.name.trim(),
-                    action: () => {
-                        onRegionChange(regPsgc);
-                        onProvinceChange(null);
-                        onMunicityChange(null);
-                        onBarangayChange?.(null);
-                        onLevelChange?.("region");
-                    },
-                });
-            }
+        const regionObj = regPsgc ? regions.find((r) => r.psgc === regPsgc) : undefined;
+        const regSlug = regionObj ? slugify(regionObj.name) : "";
+        if (regPsgc && regionObj) {
+            breadcrumbs.push({
+                label: regionObj.name.trim(),
+                href: `/${regSlug}`,
+                action: () => {
+                    onRegionChange(regPsgc);
+                    onProvinceChange(null);
+                    onMunicityChange(null);
+                    onBarangayChange?.(null);
+                    onLevelChange?.("region");
+                },
+            });
         }
 
         const provPsgc = displayPlace.province_psgc || (displayPlace.level === "province" ? displayPlace.psgc : null);
-        if (provPsgc && displayPlace.level !== "region") {
-            const provinceObj = provinces.find((p) => p.psgc === provPsgc);
-            if (provinceObj) {
-                breadcrumbs.push({
-                    label: provinceObj.name.trim(),
-                    action: () => {
-                        onRegionChange(provinceObj.region_psgc);
-                        onProvinceChange(provPsgc);
-                        onMunicityChange(null);
-                        onBarangayChange?.(null);
-                        onLevelChange?.("province");
-                    },
-                });
-            }
+        const provinceObj = provPsgc && displayPlace.level !== "region" ? provinces.find((p) => p.psgc === provPsgc) : undefined;
+        const provSlug = provinceObj ? slugify(provinceObj.name) : "";
+        if (provPsgc && provinceObj) {
+            breadcrumbs.push({
+                label: provinceObj.name.trim(),
+                href: regSlug ? `/${regSlug}/${provSlug}` : `/${provSlug}`,
+                action: () => {
+                    onRegionChange(provinceObj.region_psgc);
+                    onProvinceChange(provPsgc);
+                    onMunicityChange(null);
+                    onBarangayChange?.(null);
+                    onLevelChange?.("province");
+                },
+            });
         }
 
         const muniPsgc =
             displayPlace.level === "barangay" ? displayPlace.municity_psgc : displayPlace.level === "municipality" ? displayPlace.psgc : null;
-        if (muniPsgc && (displayPlace.level === "municipality" || displayPlace.level === "barangay")) {
-            const muniObj = municityMeta.find((m) => m.psgc === muniPsgc);
-            if (muniObj) {
-                breadcrumbs.push({
-                    label: muniObj.name.trim(),
-                    action: () => {
-                        onRegionChange(muniObj.region_psgc);
-                        onProvinceChange(muniObj.province_psgc);
-                        onMunicityChange(muniPsgc);
-                        onBarangayChange?.(null);
-                        onLevelChange?.("municipality");
-                    },
-                });
-            }
+        const muniObj =
+            muniPsgc && (displayPlace.level === "municipality" || displayPlace.level === "barangay")
+                ? municityMeta.find((m) => m.psgc === muniPsgc)
+                : undefined;
+        const muniSlug = muniObj ? slugify(muniObj.name) : "";
+        if (muniPsgc && muniObj) {
+            const muniHref = regSlug && provSlug ? `/${regSlug}/${provSlug}/${muniSlug}` : regSlug ? `/${regSlug}/${muniSlug}` : `/${muniSlug}`;
+            breadcrumbs.push({
+                label: muniObj.name.trim(),
+                href: muniHref,
+                action: () => {
+                    onRegionChange(muniObj.region_psgc);
+                    onProvinceChange(muniObj.province_psgc);
+                    onMunicityChange(muniPsgc);
+                    onBarangayChange?.(null);
+                    onLevelChange?.("municipality");
+                },
+            });
         }
 
         if (displayPlace.level === "barangay") {
+            const bgySlug = slugify(displayPlace.name);
+            const bgyHref =
+                regSlug && provSlug && muniSlug ? `/${regSlug}/${provSlug}/${muniSlug}/${bgySlug}` : "/";
             breadcrumbs.push({
                 label: displayPlace.name.trim(),
+                href: bgyHref,
                 action: () => {},
             });
         }
@@ -339,13 +349,18 @@ export function InfoTab({
                             {isLast ? (
                                 <span className="text-primary font-bold">{b.label}</span>
                             ) : (
-                                <button
-                                    type="button"
-                                    onClick={b.action}
+                                <a
+                                    href={b.href}
+                                    onClick={(e) => {
+                                        if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) {
+                                            e.preventDefault();
+                                            b.action();
+                                        }
+                                    }}
                                     className="text-accent hover:underline hover:text-accent-dark transition-colors cursor-pointer"
                                 >
                                     {b.label}
-                                </button>
+                                </a>
                             )}
                         </span>
                     );

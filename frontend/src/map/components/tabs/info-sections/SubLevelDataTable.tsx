@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-table";
 import type { MapLevel } from "../../../constants";
 import type { Region, ProvinceGeoJSON, MunicityMeta, BarangayGeoJSON } from "../../../types";
+import { slugify } from "../../../../lib/slugUtils";
 import { formatPopulation, formatAreaKm2, formatDensity, formatGdp, formatAssets } from "../../../utils/formatStats";
 
 interface SubLevelDataTableProps {
@@ -33,6 +34,7 @@ export function SubLevelDataTable({
     barangays,
     selectedRegionPsgc,
     selectedProvincePsgc,
+    selectedMunicityPsgc,
     onSelectEntity,
 }: SubLevelDataTableProps) {
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -79,6 +81,42 @@ export function SubLevelDataTable({
         return subLevels.some((row) => row.assets_2024 != null && row.assets_2024 > 0);
     }, [subLevels]);
 
+    const rowHrefs = useMemo(() => {
+        const regMap = new Map(regions.map((r) => [r.psgc, r]));
+        const provMap = new Map(provinces.map((p) => [p.psgc, p]));
+        const muniMap = new Map(municityMeta.map((m) => [m.psgc, m]));
+        const hrefs = new Map<string, string>();
+
+        for (const row of subLevels) {
+            if (subLevelType === "region") {
+                hrefs.set(row.psgc, `/${slugify(row.name)}`);
+            } else if (subLevelType === "province") {
+                const prov = row as ProvinceGeoJSON;
+                const reg = prov.region_psgc ? regMap.get(prov.region_psgc) : undefined;
+                hrefs.set(row.psgc, reg ? `/${slugify(reg.name)}/${slugify(prov.name)}` : `/${slugify(prov.name)}`);
+            } else if (subLevelType === "municipality") {
+                const muni = row as MunicityMeta;
+                const reg = muni.region_psgc ? regMap.get(muni.region_psgc) : undefined;
+                const prov = muni.province_psgc ? provMap.get(muni.province_psgc) : undefined;
+                if (reg && prov) {
+                    hrefs.set(row.psgc, `/${slugify(reg.name)}/${slugify(prov.name)}/${slugify(muni.name)}`);
+                }
+            } else if (subLevelType === "barangay") {
+                const bgy = row as BarangayGeoJSON;
+                const muni = muniMap.get(bgy.municity_psgc || selectedMunicityPsgc || "");
+                const reg = regMap.get(bgy.region_psgc || muni?.region_psgc || "");
+                const prov = provMap.get(bgy.province_psgc || muni?.province_psgc || "");
+                if (reg && prov && muni) {
+                    hrefs.set(
+                        row.psgc,
+                        `/${slugify(reg.name)}/${slugify(prov.name)}/${slugify(muni.name)}/${slugify(bgy.name)}`,
+                    );
+                }
+            }
+        }
+        return hrefs;
+    }, [subLevels, subLevelType, regions, provinces, municityMeta, selectedMunicityPsgc]);
+
     // Define TanStack Table Columns with strict type safety
     const columns = useMemo<ColumnDef<SubLevelRow, unknown>[]>(() => {
         const cols: ColumnDef<SubLevelRow, unknown>[] = [
@@ -89,14 +127,20 @@ export function SubLevelDataTable({
                 cell: (info) => {
                     const name = info.getValue() as string;
                     const psgc = info.row.original.psgc;
+                    const href = rowHrefs.get(psgc) ?? "/";
                     return (
-                        <button
-                            type="button"
-                            onClick={() => onSelectEntity(psgc, subLevelType)}
+                        <a
+                            href={href}
+                            onClick={(e) => {
+                                if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) {
+                                    e.preventDefault();
+                                    onSelectEntity(psgc, subLevelType);
+                                }
+                            }}
                             className="text-accent hover:underline text-left font-bold cursor-pointer"
                         >
                             {name.trim()}
-                        </button>
+                        </a>
                     );
                 },
             },
@@ -154,7 +198,7 @@ export function SubLevelDataTable({
         }
 
         return cols;
-    }, [subLevelType, onSelectEntity, hasGdp, hasAssets]);
+    }, [subLevelType, onSelectEntity, hasGdp, hasAssets, rowHrefs]);
 
     const table = useReactTable({
         data: subLevels,
