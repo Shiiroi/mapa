@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { downloadJsonFile, downloadTextFile, slugifyFilename } from "../../../lib/downloadFile";
+import { slugify } from "../../../lib/slugUtils";
 import { useDivisionStats } from "../../hooks/useDivisionStats";
 import { formatGdp } from "../../utils/formatStats";
 import { broadAgeGroups } from "../../utils/ageSex";
@@ -15,7 +16,35 @@ import { PopulationTrend } from "./info-sections/PopulationTrend";
 import { SexDistribution } from "./info-sections/SexDistribution";
 import { AgeStructure } from "./info-sections/AgeStructure";
 import { AgeSexPyramid } from "./info-sections/AgeSexPyramid";
-import { KeyStatsTable, CensusHistoryTable, GdpTable, SexDistributionTable, AgeStructureTable } from "./info-sections/InfoTables";
+import { KeyStatsTable, CensusHistoryTable, GdpTable, SexDistributionTable, AgeStructureTable, type MetricRank, type PlaceRanks } from "./info-sections/InfoTables";
+
+function computeEntityRank<T extends { psgc: string }>(
+    psgc: string,
+    items: T[],
+    getValue: (item: T) => number | null | undefined,
+): MetricRank | undefined {
+    const valid = items
+        .map((item) => ({ psgc: item.psgc, val: getValue(item) }))
+        .filter((x): x is { psgc: string; val: number } => typeof x.val === "number" && Number.isFinite(x.val))
+        .sort((a, b) => b.val - a.val);
+    const idx = valid.findIndex((x) => x.psgc === psgc);
+    if (idx < 0) return undefined;
+    return { rank: idx + 1, total: valid.length };
+}
+
+function buildRanksForPeers<T extends { psgc: string; pop_2024?: number | null; density_2024?: number | null; area_km2?: number | null; assets_2024?: number | null }>(
+    psgc: string,
+    peers: T[],
+    scope: string,
+): PlaceRanks {
+    return {
+        scope,
+        pop: computeEntityRank(psgc, peers, (item) => item.pop_2024),
+        density: computeEntityRank(psgc, peers, (item) => item.density_2024),
+        area: computeEntityRank(psgc, peers, (item) => item.area_km2),
+        assets: computeEntityRank(psgc, peers, (item) => item.assets_2024),
+    };
+}
 
 export interface InfoTabProps {
     place: ResolvedPlace | null;
@@ -99,6 +128,31 @@ export function InfoTab({
     };
     const statsQuery = useDivisionStats(place?.psgc ?? null);
     const displayPlace = useMemo(() => (place ? mergePlaceStats(place, statsQuery.data) : null), [place, statsQuery.data]);
+
+    const placeRanks = useMemo((): PlaceRanks | null => {
+        if (!displayPlace) return null;
+        if (displayPlace.level === "region" && regions.length > 0) {
+            return buildRanksForPeers(displayPlace.psgc, regions, "Philippines");
+        }
+        if (displayPlace.level === "province" && provinces.length > 0) {
+            return buildRanksForPeers(displayPlace.psgc, provinces, "Philippines");
+        }
+        if (displayPlace.level === "municipality" && displayPlace.province_psgc) {
+            const prov = provinces.find((p) => p.psgc === displayPlace.province_psgc);
+            const peers = municityMeta.filter((m) => m.province_psgc === displayPlace.province_psgc);
+            if (peers.length > 0) {
+                return buildRanksForPeers(displayPlace.psgc, peers, prov?.name ?? "Province");
+            }
+        }
+        if (displayPlace.level === "barangay" && barangays.length > 0) {
+            const muni = municityMeta.find((m) => m.psgc === displayPlace.municity_psgc);
+            const peers = barangays.filter((b) => b.municity_psgc === displayPlace.municity_psgc);
+            if (peers.length > 0) {
+                return buildRanksForPeers(displayPlace.psgc, peers, muni?.name ?? "Municipality");
+            }
+        }
+        return null;
+    }, [displayPlace, regions, provinces, municityMeta, barangays]);
 
     // Compute stable points for Population History chart
     const popHistoryPoints = useMemo(() => {
@@ -204,10 +258,11 @@ export function InfoTab({
 
     const renderInteractiveBreadcrumbs = () => {
         if (!displayPlace) return null;
-        const breadcrumbs: { label: string; action: () => void }[] = [];
+        const breadcrumbs: { label: string; href: string; action: () => void }[] = [];
 
         breadcrumbs.push({
             label: "Philippines",
+            href: "/",
             action: () => {
                 onRegionChange(null);
                 onProvinceChange(null);
@@ -218,60 +273,68 @@ export function InfoTab({
         });
 
         const regPsgc = displayPlace.region_psgc || (displayPlace.level === "region" ? displayPlace.psgc : null);
-        if (regPsgc) {
-            const regionObj = regions.find((r) => r.psgc === regPsgc);
-            if (regionObj) {
-                breadcrumbs.push({
-                    label: regionObj.name.trim(),
-                    action: () => {
-                        onRegionChange(regPsgc);
-                        onProvinceChange(null);
-                        onMunicityChange(null);
-                        onBarangayChange?.(null);
-                        onLevelChange?.("region");
-                    },
-                });
-            }
+        const regionObj = regPsgc ? regions.find((r) => r.psgc === regPsgc) : undefined;
+        const regSlug = regionObj ? slugify(regionObj.name) : "";
+        if (regPsgc && regionObj) {
+            breadcrumbs.push({
+                label: regionObj.name.trim(),
+                href: `/${regSlug}`,
+                action: () => {
+                    onRegionChange(regPsgc);
+                    onProvinceChange(null);
+                    onMunicityChange(null);
+                    onBarangayChange?.(null);
+                    onLevelChange?.("region");
+                },
+            });
         }
 
         const provPsgc = displayPlace.province_psgc || (displayPlace.level === "province" ? displayPlace.psgc : null);
-        if (provPsgc && displayPlace.level !== "region") {
-            const provinceObj = provinces.find((p) => p.psgc === provPsgc);
-            if (provinceObj) {
-                breadcrumbs.push({
-                    label: provinceObj.name.trim(),
-                    action: () => {
-                        onRegionChange(provinceObj.region_psgc);
-                        onProvinceChange(provPsgc);
-                        onMunicityChange(null);
-                        onBarangayChange?.(null);
-                        onLevelChange?.("province");
-                    },
-                });
-            }
+        const provinceObj = provPsgc && displayPlace.level !== "region" ? provinces.find((p) => p.psgc === provPsgc) : undefined;
+        const provSlug = provinceObj ? slugify(provinceObj.name) : "";
+        if (provPsgc && provinceObj) {
+            breadcrumbs.push({
+                label: provinceObj.name.trim(),
+                href: regSlug ? `/${regSlug}/${provSlug}` : `/${provSlug}`,
+                action: () => {
+                    onRegionChange(provinceObj.region_psgc);
+                    onProvinceChange(provPsgc);
+                    onMunicityChange(null);
+                    onBarangayChange?.(null);
+                    onLevelChange?.("province");
+                },
+            });
         }
 
         const muniPsgc =
             displayPlace.level === "barangay" ? displayPlace.municity_psgc : displayPlace.level === "municipality" ? displayPlace.psgc : null;
-        if (muniPsgc && (displayPlace.level === "municipality" || displayPlace.level === "barangay")) {
-            const muniObj = municityMeta.find((m) => m.psgc === muniPsgc);
-            if (muniObj) {
-                breadcrumbs.push({
-                    label: muniObj.name.trim(),
-                    action: () => {
-                        onRegionChange(muniObj.region_psgc);
-                        onProvinceChange(muniObj.province_psgc);
-                        onMunicityChange(muniPsgc);
-                        onBarangayChange?.(null);
-                        onLevelChange?.("municipality");
-                    },
-                });
-            }
+        const muniObj =
+            muniPsgc && (displayPlace.level === "municipality" || displayPlace.level === "barangay")
+                ? municityMeta.find((m) => m.psgc === muniPsgc)
+                : undefined;
+        const muniSlug = muniObj ? slugify(muniObj.name) : "";
+        if (muniPsgc && muniObj) {
+            const muniHref = regSlug && provSlug ? `/${regSlug}/${provSlug}/${muniSlug}` : regSlug ? `/${regSlug}/${muniSlug}` : `/${muniSlug}`;
+            breadcrumbs.push({
+                label: muniObj.name.trim(),
+                href: muniHref,
+                action: () => {
+                    onRegionChange(muniObj.region_psgc);
+                    onProvinceChange(muniObj.province_psgc);
+                    onMunicityChange(muniPsgc);
+                    onBarangayChange?.(null);
+                    onLevelChange?.("municipality");
+                },
+            });
         }
 
         if (displayPlace.level === "barangay") {
+            const bgySlug = slugify(displayPlace.name);
+            const bgyHref =
+                regSlug && provSlug && muniSlug ? `/${regSlug}/${provSlug}/${muniSlug}/${bgySlug}` : "/";
             breadcrumbs.push({
                 label: displayPlace.name.trim(),
+                href: bgyHref,
                 action: () => {},
             });
         }
@@ -286,13 +349,18 @@ export function InfoTab({
                             {isLast ? (
                                 <span className="text-primary font-bold">{b.label}</span>
                             ) : (
-                                <button
-                                    type="button"
-                                    onClick={b.action}
+                                <a
+                                    href={b.href}
+                                    onClick={(e) => {
+                                        if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) {
+                                            e.preventDefault();
+                                            b.action();
+                                        }
+                                    }}
                                     className="text-accent hover:underline hover:text-accent-dark transition-colors cursor-pointer"
                                 >
                                     {b.label}
-                                </button>
+                                </a>
                             )}
                         </span>
                     );
@@ -332,7 +400,7 @@ export function InfoTab({
             </div>
 
             {/* Key Statistics Grid Table */}
-            <KeyStatsTable displayPlace={displayPlace} />
+            <KeyStatsTable displayPlace={displayPlace} ranks={placeRanks} />
 
             {displayPlace.level === "barangay" && (
                 <div className="text-[10px] text-amber-800 bg-amber-50/50 border border-amber-300 px-3 py-2 leading-normal">

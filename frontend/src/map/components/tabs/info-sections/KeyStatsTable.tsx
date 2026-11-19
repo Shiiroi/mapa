@@ -4,8 +4,22 @@ import { cn } from "../../../../lib/cn";
 import { formatPctChange, formatPopulation, formatDensity, formatAreaKm2, formatAssets, formatGdp } from "../../../utils/formatStats";
 import type { ResolvedPlace } from "../../../utils/resolvePlace";
 
+export interface MetricRank {
+    rank: number;
+    total: number;
+}
+
+export interface PlaceRanks {
+    scope: string;
+    pop?: MetricRank;
+    density?: MetricRank;
+    area?: MetricRank;
+    assets?: MetricRank;
+}
+
 interface KeyStatsTableProps {
     displayPlace: ResolvedPlace;
+    ranks?: PlaceRanks | null;
 }
 
 interface KeyStatsRow {
@@ -29,7 +43,7 @@ function unwrapNumber(value: unknown): number | null {
     return null;
 }
 
-export function KeyStatsTable({ displayPlace }: KeyStatsTableProps) {
+export function KeyStatsTable({ displayPlace, ranks }: KeyStatsTableProps) {
     const pop2020 = unwrapNumber(displayPlace.pop_2020);
     const pop2024 = unwrapNumber(displayPlace.pop_2024);
     const areaKm2 = unwrapNumber(displayPlace.area_km2);
@@ -45,12 +59,14 @@ export function KeyStatsTable({ displayPlace }: KeyStatsTableProps) {
         return ((pop2024 - pop2020) / pop2020) * 100;
     }, [pop2020, pop2024]);
 
-    const data = useMemo(
-        (): KeyStatsRow[] => [
+    const data = useMemo((): KeyStatsRow[] => {
+        const formatRankNote = (r?: MetricRank) => (r && ranks ? `#${r.rank} of ${r.total} in ${ranks.scope}` : null);
+        return [
             {
                 metric: "POPULATION (2024)",
                 value: formatPopulation(pop2024),
                 className: "font-medium text-primary",
+                note: formatRankNote(ranks?.pop),
             },
             {
                 metric: "CHANGE (2020 → 2024)",
@@ -61,16 +77,19 @@ export function KeyStatsTable({ displayPlace }: KeyStatsTableProps) {
                 metric: "POPULATION DENSITY",
                 value: density2024 != null ? `${formatDensity(density2024)}/km²` : "—",
                 className: "font-medium text-primary",
+                note: formatRankNote(ranks?.density),
             },
             {
                 metric: "OFFICIAL LAND AREA",
                 value: areaKm2 != null ? `${formatAreaKm2(areaKm2)} km²` : "—",
                 className: "font-medium text-primary",
+                note: formatRankNote(ranks?.area),
             },
             {
                 metric: "TOTAL ASSETS (2024)",
                 value: formatAssets(assets2024),
                 className: "font-medium text-primary",
+                note: formatRankNote(ranks?.assets),
             },
             {
                 metric: "GROSS REGIONAL GDP (2024)",
@@ -78,9 +97,8 @@ export function KeyStatsTable({ displayPlace }: KeyStatsTableProps) {
                 className: "font-medium text-primary",
                 note: gdp2024 == null ? "Not published at this level" : null,
             },
-        ],
-        [areaKm2, assets2024, density2024, gdp2024, pop2024, populationChange2020To2024],
-    );
+        ];
+    }, [areaKm2, assets2024, density2024, gdp2024, pop2024, populationChange2020To2024, ranks]);
 
     return (
         <div className="w-full overflow-x-auto border border-border bg-white text-xs tabular-nums text-primary">
