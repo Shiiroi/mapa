@@ -124,7 +124,7 @@ export default function MainPage() {
 
     const barangaysQuery = useBarangays(
         download.selectedMunicityPsgc,
-        download.level === "barangay"
+        download.level === "barangay" || download.level === "municipality"
     );
 
     const barangays = useMemo(() => barangaysQuery.data ?? [], [barangaysQuery.data]);

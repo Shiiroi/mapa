@@ -15,7 +15,35 @@ import { PopulationTrend } from "./info-sections/PopulationTrend";
 import { SexDistribution } from "./info-sections/SexDistribution";
 import { AgeStructure } from "./info-sections/AgeStructure";
 import { AgeSexPyramid } from "./info-sections/AgeSexPyramid";
-import { KeyStatsTable, CensusHistoryTable, GdpTable, SexDistributionTable, AgeStructureTable } from "./info-sections/InfoTables";
+import { KeyStatsTable, CensusHistoryTable, GdpTable, SexDistributionTable, AgeStructureTable, type MetricRank, type PlaceRanks } from "./info-sections/InfoTables";
+
+function computeEntityRank<T extends { psgc: string }>(
+    psgc: string,
+    items: T[],
+    getValue: (item: T) => number | null | undefined,
+): MetricRank | undefined {
+    const valid = items
+        .map((item) => ({ psgc: item.psgc, val: getValue(item) }))
+        .filter((x): x is { psgc: string; val: number } => typeof x.val === "number" && Number.isFinite(x.val))
+        .sort((a, b) => b.val - a.val);
+    const idx = valid.findIndex((x) => x.psgc === psgc);
+    if (idx < 0) return undefined;
+    return { rank: idx + 1, total: valid.length };
+}
+
+function buildRanksForPeers<T extends { psgc: string; pop_2024?: number | null; density_2024?: number | null; area_km2?: number | null; assets_2024?: number | null }>(
+    psgc: string,
+    peers: T[],
+    scope: string,
+): PlaceRanks {
+    return {
+        scope,
+        pop: computeEntityRank(psgc, peers, (item) => item.pop_2024),
+        density: computeEntityRank(psgc, peers, (item) => item.density_2024),
+        area: computeEntityRank(psgc, peers, (item) => item.area_km2),
+        assets: computeEntityRank(psgc, peers, (item) => item.assets_2024),
+    };
+}
 
 export interface InfoTabProps {
     place: ResolvedPlace | null;
@@ -99,6 +127,31 @@ export function InfoTab({
     };
     const statsQuery = useDivisionStats(place?.psgc ?? null);
     const displayPlace = useMemo(() => (place ? mergePlaceStats(place, statsQuery.data) : null), [place, statsQuery.data]);
+
+    const placeRanks = useMemo((): PlaceRanks | null => {
+        if (!displayPlace) return null;
+        if (displayPlace.level === "region" && regions.length > 0) {
+            return buildRanksForPeers(displayPlace.psgc, regions, "Philippines");
+        }
+        if (displayPlace.level === "province" && provinces.length > 0) {
+            return buildRanksForPeers(displayPlace.psgc, provinces, "Philippines");
+        }
+        if (displayPlace.level === "municipality" && displayPlace.province_psgc) {
+            const prov = provinces.find((p) => p.psgc === displayPlace.province_psgc);
+            const peers = municityMeta.filter((m) => m.province_psgc === displayPlace.province_psgc);
+            if (peers.length > 0) {
+                return buildRanksForPeers(displayPlace.psgc, peers, prov?.name ?? "Province");
+            }
+        }
+        if (displayPlace.level === "barangay" && barangays.length > 0) {
+            const muni = municityMeta.find((m) => m.psgc === displayPlace.municity_psgc);
+            const peers = barangays.filter((b) => b.municity_psgc === displayPlace.municity_psgc);
+            if (peers.length > 0) {
+                return buildRanksForPeers(displayPlace.psgc, peers, muni?.name ?? "Municipality");
+            }
+        }
+        return null;
+    }, [displayPlace, regions, provinces, municityMeta, barangays]);
 
     // Compute stable points for Population History chart
     const popHistoryPoints = useMemo(() => {
@@ -332,7 +385,7 @@ export function InfoTab({
             </div>
 
             {/* Key Statistics Grid Table */}
-            <KeyStatsTable displayPlace={displayPlace} />
+            <KeyStatsTable displayPlace={displayPlace} ranks={placeRanks} />
 
             {displayPlace.level === "barangay" && (
                 <div className="text-[10px] text-amber-800 bg-amber-50/50 border border-amber-300 px-3 py-2 leading-normal">
