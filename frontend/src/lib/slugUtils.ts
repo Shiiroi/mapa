@@ -21,3 +21,34 @@ export function slugify(name: string): string {
             .replace(/^-|-$/g, "")
     );
 }
+
+export interface CityNameAliases {
+    displayTitle: string;
+    shortName: string;
+    aliases: string[];
+    aliasSlugs: string[];
+}
+
+export function getCityNameAliases(name: string): CityNameAliases {
+    const trimmed = name.trim();
+    const match = trimmed.match(/^City of\s+(.+)$/i);
+    if (!match) {
+        return {
+            displayTitle: trimmed,
+            shortName: trimmed,
+            aliases: [],
+            aliasSlugs: [slugify(trimmed)],
+        };
+    }
+
+    const core = match[1].trim();
+    const shortName = `${core} City`;
+    const displayTitle = `${shortName} (${trimmed})`;
+    const aliases = [shortName, core];
+    return {
+        displayTitle,
+        shortName,
+        aliases,
+        aliasSlugs: [slugify(trimmed), slugify(shortName), slugify(core)],
+    };
+}

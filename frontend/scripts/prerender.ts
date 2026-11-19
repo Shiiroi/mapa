@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import {
     computeMetricRanks,
     computeMunicityAdjacency,
+    getCityNameAliases,
     loadGeoCatalog,
     loadMunicityBarangays,
     summarizeAgeCohorts,
@@ -621,7 +622,11 @@ async function prerender() {
             const canonical = `${BASE_URL}${muni.urlPath}`;
             const reg = muni.region;
             const prov = muni.province;
+            const { displayTitle, shortName, aliases } = getCityNameAliases(muni.name);
+            const titleName = aliases.length > 0 ? shortName : muni.name;
             const locationStr = prov ? `${muni.name}, ${prov.name}` : muni.name;
+            const titleLocationStr = prov ? `${titleName}, ${prov.name}` : titleName;
+            const displayLocationStr = prov ? `${displayTitle}, ${prov.name}` : displayTitle;
             const levelLabel = muni.city_lvl ? `${muni.geo_lvl} (${muni.city_lvl})` : muni.geo_lvl === "City" ? "City" : "Municipality";
             const popStr = fmtInt(muni.pop_2024);
             const areaStr = fmtDec(muni.area_km2, 1);
@@ -663,10 +668,14 @@ async function prerender() {
             const siblings = prov ? prov.municities.filter((s) => s.psgc !== muni.psgc) : [];
             const neighbors = municityAdjacency.get(muni.psgc) ?? [];
 
+            const aliasKeywords = aliases.length > 0
+                ? `, ${aliases.map((a) => `${a.toLowerCase()} population 2024, ${a.toLowerCase()} barangays, ${a.toLowerCase()} geojson`).join(", ")}`
+                : "";
+
             pagesToRender.set(muni.urlPath, {
-                title: `${locationStr} Population (2024), Barangays, Area & GeoJSON | Lens`,
-                description: `Interactive map, 2024 census population (${popStr}), density (${densityStr}/km²), area (${areaStr} km²), ${muni.assets_2024 != null ? `COA assets (${fmtPhp(muni.assets_2024)}), ` : ""}${barangays.length > 0 ? `${barangays.length} barangays, ` : ""}and GeoJSON boundaries for ${locationStr}.`,
-                keywords: `${muni.name.toLowerCase()} population 2024, ${muni.name.toLowerCase()} barangays, ${muni.name.toLowerCase()} geojson, ${locationStr.toLowerCase()} map, barangays in ${muni.name.toLowerCase()}, psgc ${muni.psgc}`,
+                title: `${titleLocationStr} Population (2024), Barangays, Area & GeoJSON | Lens`,
+                description: `Interactive map, 2024 census population (${popStr}), density (${densityStr}/km²), area (${areaStr} km²), ${muni.assets_2024 != null ? `COA assets (${fmtPhp(muni.assets_2024)}), ` : ""}${barangays.length > 0 ? `${barangays.length} barangays, ` : ""}and GeoJSON boundaries for ${titleLocationStr}.`,
+                keywords: `${muni.name.toLowerCase()} population 2024, ${muni.name.toLowerCase()} barangays, ${muni.name.toLowerCase()} geojson, ${locationStr.toLowerCase()} map, barangays in ${muni.name.toLowerCase()}, psgc ${muni.psgc}${aliasKeywords}`,
                 canonical,
                 jsonLd: [
                     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: ldBreadcrumbs },
@@ -674,7 +683,7 @@ async function prerender() {
                         "@context": "https://schema.org",
                         "@type": "AdministrativeArea",
                         name: muni.name,
-                        alternateName: [`PSGC ${muni.psgc}`, muni.correspondence ? `Legacy PSGC ${muni.correspondence}` : ""].filter(Boolean),
+                        alternateName: [`PSGC ${muni.psgc}`, muni.correspondence ? `Legacy PSGC ${muni.correspondence}` : "", ...aliases].filter(Boolean),
                         description: `${muni.name} is a ${levelLabel.toLowerCase()} in ${prov ? prov.name : "the Philippines"} with a 2024 population of ${popStr} and a land area of ${areaStr} sq km.${bgySummary}`,
                         url: canonical,
                         containedInPlace: prov ? { "@type": "AdministrativeArea", name: prov.name, url: `${BASE_URL}${prov.urlPath}` } : undefined,
@@ -691,7 +700,7 @@ async function prerender() {
                 bodyHtml: `
                     <div class="seo-fallback-content">
                         ${renderBreadcrumbsHtml(breadcrumbs)}
-                        <h1>${escapeHtml(locationStr)} — Population (2024), Barangays, COA Assets &amp; GeoJSON Map</h1>
+                        <h1>${escapeHtml(displayLocationStr)} — Population (2024), Barangays, COA Assets &amp; GeoJSON Map</h1>
                         <p>
                             <strong>${escapeHtml(muni.name)}</strong> is a ${escapeHtml(levelLabel.toLowerCase())}${prov ? ` in <a href="${prov.urlPath}">${escapeHtml(prov.name)}</a>` : ""}${reg ? ` (${escapeHtml(reg.name)})` : ""} with PSGC code <code>${muni.psgc}</code>. It spans <strong>${areaStr} km²</strong> with a 2024 population of <strong>${popStr}</strong> (${densityStr} residents/km²).${escapeHtml(bgySummary)}
                         </p>

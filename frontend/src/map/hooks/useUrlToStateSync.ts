@@ -7,7 +7,7 @@
 import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { Region, ProvinceGeoJSON, MunicityMeta, BarangayGeoJSON } from "../types";
-import { slugify } from "../../lib/slugUtils";
+import { getCityNameAliases, slugify } from "../../lib/slugUtils";
 import type { MapLevel } from "../constants";
 
 interface UseUrlToStateSyncOptions {
@@ -119,7 +119,12 @@ export function useUrlToStateSync({
 
         // 3. Resolve Municipality
         const muniSlug = segments[2].toLowerCase();
-        const muni = municityMeta.find((m) => m.province_psgc === province.psgc && slugify(m.name) === muniSlug);
+        let muni = municityMeta.find((m) => m.province_psgc === province.psgc && slugify(m.name) === muniSlug);
+        if (!muni) {
+            muni = municityMeta.find(
+                (m) => m.province_psgc === province.psgc && getCityNameAliases(m.name).aliasSlugs.includes(muniSlug),
+            );
+        }
         if (!muni) {
             const parentPath = `/${regSlug}/${provSlug}`;
             lastSyncedPathRef.current = parentPath;
@@ -133,12 +138,17 @@ export function useUrlToStateSync({
         }
 
         if (segments.length === 3) {
-            lastSyncedPathRef.current = pathname;
+            const canonicalSlug = slugify(muni.name);
+            const canonicalPath = `/${regSlug}/${provSlug}/${canonicalSlug}`;
+            lastSyncedPathRef.current = canonicalPath;
             onSetLevel("municipality");
             onSetRegion(region.psgc);
             onSetProvince(province.psgc);
             onSetMunicity(muni.psgc);
             onSetBarangay?.(null);
+            if (canonicalSlug !== muniSlug) {
+                navigate(canonicalPath, { replace: true });
+            }
             return;
         }
 
@@ -165,7 +175,7 @@ export function useUrlToStateSync({
             onSetMunicity(muni.psgc);
             onSetBarangay?.(bgy.psgc);
         } else {
-            const parentPath = `/${regSlug}/${provSlug}/${muniSlug}`;
+            const parentPath = `/${regSlug}/${provSlug}/${slugify(muni.name)}`;
             lastSyncedPathRef.current = parentPath;
             onSetLevel("municipality");
             onSetRegion(region.psgc);
