@@ -109,24 +109,21 @@ export function summarizeAgeCohorts(bands: AgeSexBand[] | null | undefined) {
     let senior = 0;
 
     for (const band of bands) {
-        const label = band.age.trim().toLowerCase();
+        const m = band.age.match(/\d+/);
+        const lower = m ? Number(m[0]) : 0;
         const count = Number.isFinite(band.both) ? band.both : (band.male || 0) + (band.female || 0);
-        if (label.startsWith("under") || label === "0-4" || label === "5-9" || label === "10-14") {
+        if (lower < 15) {
             young += count;
-        } else if (
-            label === "65-69" ||
-            label === "70-74" ||
-            label === "75-79" ||
-            label.startsWith("80")
-        ) {
-            senior += count;
-        } else {
+        } else if (lower < 65) {
             working += count;
+        } else {
+            senior += count;
         }
     }
 
     const total = young + working + senior;
     if (total <= 0) return null;
+    const dependencyRatio = working > 0 ? ((young + senior) / working) * 100 : null;
     return {
         young,
         working,
@@ -135,6 +132,7 @@ export function summarizeAgeCohorts(bands: AgeSexBand[] | null | undefined) {
         youngPct: (young / total) * 100,
         workingPct: (working / total) * 100,
         seniorPct: (senior / total) * 100,
+        dependencyRatio,
     };
 }
 

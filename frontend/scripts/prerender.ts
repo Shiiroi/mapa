@@ -186,6 +186,7 @@ function renderDemographicsHtml(entity: RawGeoEntity): string {
             <tr><td>Young Dependents (0–14 yrs)</td><td>${fmtInt(cohorts.young)} (${cohorts.youngPct.toFixed(1)}%)</td></tr>
             <tr><td>Working-Age Population (15–64 yrs)</td><td>${fmtInt(cohorts.working)} (${cohorts.workingPct.toFixed(1)}%)</td></tr>
             <tr><td>Senior Population (65+ yrs)</td><td>${fmtInt(cohorts.senior)} (${cohorts.seniorPct.toFixed(1)}%)</td></tr>
+            ${cohorts.dependencyRatio != null ? `<tr><td>Age Dependency Ratio (2020 CPH)</td><td>${cohorts.dependencyRatio.toFixed(1)} dependents per 100 working-age</td></tr>` : ""}
         `);
     }
 
