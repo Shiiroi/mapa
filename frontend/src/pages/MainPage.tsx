@@ -29,15 +29,16 @@ export default function MainPage() {
     const [activeOverlay, setActiveOverlay] = useState<CustomOverlay | null>(null);
     const [overlayView, setOverlayView] = useState<SeriesViewState>({ mode: "lead" });
     const [mapLevel, setMapLevel] = useState<MapLevel>("country");
+    const isPlaceDeepLink = typeof window !== "undefined" && window.location.pathname !== "/";
     const [activeTab, setActiveTab] = useState<SidebarTab>(() => {
         if (typeof window === "undefined") return "geojson";
         const tabParam = new URLSearchParams(window.location.search).get("tab");
         if (tabParam === "geojson" || tabParam === "info" || tabParam === "compare" || tabParam === "custom") {
             return tabParam;
         }
-        return window.location.pathname === "/" ? "geojson" : "info";
+        return isPlaceDeepLink ? "info" : "geojson";
     });
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => !isPlaceDeepLink);
     const [viewportHeight, setViewportHeight] = useState(() =>
         typeof window !== "undefined" ? (window.visualViewport?.height ?? window.innerHeight) : 0,
     );
@@ -46,7 +47,11 @@ export default function MainPage() {
     );
     const mobileDrawerMinHeightPx = 88;
     const mobileDrawerMaxHeightPx = useMemo(() => Math.max(mobileDrawerMinHeightPx, Math.round(viewportHeight * 0.65)), [viewportHeight]);
-    const [mobileDrawerHeightPx, setMobileDrawerHeightPx] = useState(mobileDrawerMinHeightPx);
+    const [mobileDrawerHeightPx, setMobileDrawerHeightPx] = useState(() =>
+        isPlaceDeepLink
+            ? Math.max(mobileDrawerMinHeightPx, Math.round(viewportHeight * 0.45))
+            : mobileDrawerMinHeightPx,
+    );
 
     const { provinces, municities, municityMeta, regions, country, loading, municitiesLoading, error } = useMapLayers({
         loadMunicitiesGeometry: mapLevel === "municipality",
