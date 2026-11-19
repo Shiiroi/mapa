@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
 import { track } from "@vercel/analytics";
 import { MapDashboard } from "../map/components/Index";
 import type { SidebarTab } from "../map/components/Sidebar";
@@ -10,8 +11,9 @@ import { useStateToUrlSync } from "../map/hooks/useStateToUrlSync";
 import { useMapLayers } from "../map/hooks/useMapLayers";
 import type { MapLevel } from "../map/constants";
 import type { CustomOverlay, SeriesViewState } from "../map/types";
+import { formatAssets } from "../map/utils/formatStats";
 import { defaultSeriesViewState } from "../map/utils/seriesScale";
-import { slugify } from "../lib/slugUtils";
+import { getCityNameAliases, slugify } from "../lib/slugUtils";
 
 const webAppSchema = {
     "@context": "https://schema.org",
@@ -24,6 +26,7 @@ const webAppSchema = {
 };
 
 export default function MainPage() {
+    const location = useLocation();
     const download = useMapDownload();
 
     const [activeOverlay, setActiveOverlay] = useState<CustomOverlay | null>(null);
@@ -244,6 +247,10 @@ export default function MainPage() {
             ? barangays.find((b) => b.psgc === download.selectedBarangayPsgc)
             : null;
 
+        if (location.pathname !== "/" && !selectedMuni && !selectedProv && !selectedReg) {
+            return null;
+        }
+
         if (selectedMuni) {
             const prov = selectedMuni.province_psgc
                 ? provinces.find((p) => p.psgc === selectedMuni.province_psgc)
@@ -251,7 +258,10 @@ export default function MainPage() {
             const reg = selectedMuni.region_psgc
                 ? regions.find((r) => r.psgc === selectedMuni.region_psgc)
                 : null;
+            const { shortName, aliases } = getCityNameAliases(selectedMuni.name);
+            const titleName = aliases.length > 0 ? shortName : selectedMuni.name;
             const locationStr = prov ? `${selectedMuni.name}, ${prov.name}` : selectedMuni.name;
+            const titleLocationStr = prov ? `${titleName}, ${prov.name}` : titleName;
             const muniSlug = slugify(selectedMuni.name);
             const provSlug = prov ? slugify(prov.name) : "";
             const regSlug = reg ? slugify(reg.name) : "";
@@ -269,7 +279,11 @@ export default function MainPage() {
             const densityStr = selectedMuni.density_2024 ? Math.round(selectedMuni.density_2024).toLocaleString("en-US") : "N/A";
             const assetsStr =
                 selectedMuni.assets_2024 != null
-                    ? `PHP ${Math.round(selectedMuni.assets_2024).toLocaleString("en-US")} COA assets, `
+                    ? `COA assets (${formatAssets(selectedMuni.assets_2024)}), `
+                    : "";
+            const aliasKeywords =
+                aliases.length > 0
+                    ? `, ${aliases.map((a) => `${a.toLowerCase()} population 2024, ${a.toLowerCase()} barangays, ${a.toLowerCase()} geojson`).join(", ")}`
                     : "";
 
             const breadcrumbs: Record<string, unknown>[] = [
@@ -285,10 +299,10 @@ export default function MainPage() {
 
             return {
                 title: selectedBgy
-                    ? `Barangay ${selectedBgy.name}, ${locationStr} — Boundary Map & GeoJSON | Lens`
-                    : `${locationStr} Population (2024), Area, Map & GeoJSON | Lens`,
-                description: `Interactive map, 2024 census population (${popStr}), ${assetsStr}density (${densityStr}/km²), area (${areaStr} km²), barangay list, and GeoJSON boundary download for ${locationStr} (PSGC ${selectedMuni.psgc}).`,
-                keywords: `${selectedMuni.name.toLowerCase()} population 2024, ${selectedMuni.name.toLowerCase()} geojson, ${locationStr.toLowerCase()} map, barangays in ${selectedMuni.name.toLowerCase()}, psgc ${selectedMuni.psgc}`,
+                    ? `Barangay ${selectedBgy.name}, ${titleLocationStr} — Boundary Map & GeoJSON | Lens`
+                    : `${titleLocationStr} Population (2024), Barangays, Area & GeoJSON | Lens`,
+                description: `Interactive map, 2024 census population (${popStr}), density (${densityStr}/km²), area (${areaStr} km²), ${assetsStr}barangay list, and GeoJSON boundary download for ${titleLocationStr} (PSGC ${selectedMuni.psgc}).`,
+                keywords: `${selectedMuni.name.toLowerCase()} population 2024, ${selectedMuni.name.toLowerCase()} barangays, ${selectedMuni.name.toLowerCase()} geojson, ${locationStr.toLowerCase()} map, barangays in ${selectedMuni.name.toLowerCase()}, psgc ${selectedMuni.psgc}${aliasKeywords}`,
                 canonical,
                 noindex: Boolean(selectedBgy),
                 schemas: [
@@ -304,6 +318,7 @@ export default function MainPage() {
                         alternateName: [
                             `PSGC ${selectedMuni.psgc}`,
                             selectedMuni.correspondence ? `Legacy PSGC ${selectedMuni.correspondence}` : "",
+                            ...aliases,
                         ].filter(Boolean),
                         description: `${selectedMuni.name} is a ${selectedMuni.geo_lvl === "City" ? "city" : "municipality"} in ${prov ? prov.name : "the Philippines"} with a 2024 population of ${popStr} and a land area of ${areaStr} sq km.`,
                         url: canonical,
@@ -445,33 +460,35 @@ export default function MainPage() {
             noindex: false,
             schemas: [webAppSchema],
         };
-    }, [download.selectedBarangayPsgc, download.selectedMunicityPsgc, download.selectedProvincePsgc, download.selectedRegionPsgc, barangays, municityMeta, provinces, regions]);
+    }, [location.pathname, download.selectedBarangayPsgc, download.selectedMunicityPsgc, download.selectedProvincePsgc, download.selectedRegionPsgc, barangays, municityMeta, provinces, regions]);
 
     return (
         <>
-            <Helmet>
-                <title>{pageMeta.title}</title>
-                <meta name="title" content={pageMeta.title} />
-                <meta name="description" content={pageMeta.description} />
-                <meta name="keywords" content={pageMeta.keywords} />
-                <meta name="robots" content={pageMeta.noindex ? "noindex, follow" : "index, follow"} />
-                <link rel="canonical" href={pageMeta.canonical} />
-                <meta property="og:type" content="website" />
-                <meta property="og:url" content={pageMeta.canonical} />
-                <meta property="og:title" content={pageMeta.title} />
-                <meta property="og:description" content={pageMeta.description} />
-                <meta property="og:image" content="https://lens.mapaph.com/og-image.png" />
-                <meta property="twitter:card" content="summary_large_image" />
-                <meta property="twitter:url" content={pageMeta.canonical} />
-                <meta property="twitter:title" content={pageMeta.title} />
-                <meta property="twitter:description" content={pageMeta.description} />
-                <meta property="twitter:image" content="https://lens.mapaph.com/og-image.png" />
-                {pageMeta.schemas.map((s, idx) => (
-                    <script key={idx} type="application/ld+json">
-                        {JSON.stringify(s)}
-                    </script>
-                ))}
-            </Helmet>
+            {pageMeta && (
+                <Helmet>
+                    <title>{pageMeta.title}</title>
+                    <meta name="title" content={pageMeta.title} />
+                    <meta name="description" content={pageMeta.description} />
+                    <meta name="keywords" content={pageMeta.keywords} />
+                    <meta name="robots" content={pageMeta.noindex ? "noindex, follow" : "index, follow"} />
+                    <link rel="canonical" href={pageMeta.canonical} />
+                    <meta property="og:type" content="website" />
+                    <meta property="og:url" content={pageMeta.canonical} />
+                    <meta property="og:title" content={pageMeta.title} />
+                    <meta property="og:description" content={pageMeta.description} />
+                    <meta property="og:image" content="https://lens.mapaph.com/og-image.png" />
+                    <meta property="twitter:card" content="summary_large_image" />
+                    <meta property="twitter:url" content={pageMeta.canonical} />
+                    <meta property="twitter:title" content={pageMeta.title} />
+                    <meta property="twitter:description" content={pageMeta.description} />
+                    <meta property="twitter:image" content="https://lens.mapaph.com/og-image.png" />
+                    {pageMeta.schemas.map((s, idx) => (
+                        <script key={idx} type="application/ld+json">
+                            {JSON.stringify(s)}
+                        </script>
+                    ))}
+                </Helmet>
+            )}
             <MapDashboard
                 level={download.level}
                 regions={regions}
