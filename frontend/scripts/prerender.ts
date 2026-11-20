@@ -5,11 +5,18 @@ import {
     computeMetricRanks,
     computeMunicityAdjacency,
     getCityNameAliases,
+    loadCoaFinanceCatalog,
+    loadElection2022Catalog,
     loadGeoCatalog,
     loadMunicityBarangays,
+    loadPsgcExtraMeta,
     summarizeAgeCohorts,
     type BarangayRecord,
+    type CoaFinanceRecord,
+    type ElectionSummary,
+    type GeoBounds,
     type MunicityRecord,
+    type PsgcExtraMeta,
     type RankInfo,
     type RawGeoEntity,
 } from "./lib/geoCatalog";
@@ -44,10 +51,12 @@ function fmtPct(val: number | null | undefined): string {
 
 function fmtPhp(val: number | null | undefined): string {
     if (val === null || val === undefined || !Number.isFinite(val)) return "N/A";
-    if (val >= 1_000_000_000_000) return `PHP ${(val / 1_000_000_000_000).toFixed(2)}T`;
-    if (val >= 1_000_000_000) return `PHP ${(val / 1_000_000_000).toFixed(2)}B`;
-    if (val >= 1_000_000) return `PHP ${(val / 1_000_000).toFixed(1)}M`;
-    return `PHP ${Math.round(val).toLocaleString("en-US")}`;
+    const sign = val < 0 ? "-" : "";
+    const abs = Math.abs(val);
+    if (abs >= 1_000_000_000_000) return `${sign}PHP ${(abs / 1_000_000_000_000).toFixed(2)}T`;
+    if (abs >= 1_000_000_000) return `${sign}PHP ${(abs / 1_000_000_000).toFixed(2)}B`;
+    if (abs >= 1_000_000) return `${sign}PHP ${(abs / 1_000_000).toFixed(1)}M`;
+    return `${sign}PHP ${Math.round(abs).toLocaleString("en-US")}`;
 }
 
 interface PageMeta {
@@ -78,17 +87,36 @@ interface EntityRanks {
     assets?: RankInfo;
 }
 
+interface TelemetryExtra {
+    meta?: PsgcExtraMeta;
+    bounds?: GeoBounds | null;
+    urbanCount?: number;
+    ruralCount?: number;
+}
+
 function formatRank(rank: RankInfo | undefined, scope: string): string {
     return rank ? ` (#${rank.rank} of ${rank.total} in ${scope})` : "";
 }
 
-function renderTelemetryHtml(entity: RawGeoEntity, classification: string, ranks?: EntityRanks): string {
+function renderTelemetryHtml(
+    entity: RawGeoEntity,
+    classification: string,
+    ranks?: EntityRanks,
+    extra?: TelemetryExtra,
+): string {
     const scope = ranks?.scope ?? "";
+    const fullClass = extra?.meta?.isCapital ? `${classification} (Provincial Capital)` : classification;
     const rows: [string, string][] = [
-        ["Classification", classification],
+        ["Classification", fullClass],
         ["10-Digit PSGC Code", entity.psgc],
         ...(entity.correspondence && entity.correspondence !== entity.psgc
             ? [["Legacy 9-Digit Correspondence Code", entity.correspondence] as [string, string]]
+            : []),
+        ...(extra?.meta?.incomeClass
+            ? [["DOF Income Classification", `${extra.meta.incomeClass} Class`] as [string, string]]
+            : []),
+        ...(extra?.meta?.oldNames
+            ? [["Former / Historical Name", extra.meta.oldNames] as [string, string]]
             : []),
         ["2024 Census Population", `${fmtInt(entity.pop_2024)}${formatRank(ranks?.pop, scope)}`],
         ...(entity.pct_change_2020_2024 != null
@@ -98,6 +126,18 @@ function renderTelemetryHtml(entity: RawGeoEntity, classification: string, ranks
         ["Population Density (/km²)", `${fmtInt(entity.density_2024)}${formatRank(ranks?.density, scope)}`],
     ];
 
+    if (extra?.bounds) {
+        rows.push([
+            "Geographic Coordinates (WGS 84)",
+            `${extra.bounds.lat.toFixed(4)}° N, ${extra.bounds.lng.toFixed(4)}° E (Bounds: ${extra.bounds.minLat.toFixed(2)}°–${extra.bounds.maxLat.toFixed(2)}° N, ${extra.bounds.minLng.toFixed(2)}°–${extra.bounds.maxLng.toFixed(2)}° E)`,
+        ]);
+    }
+    if (extra?.urbanCount != null && extra?.ruralCount != null && extra.urbanCount + extra.ruralCount > 0) {
+        rows.push([
+            "Barangay Urbanization (2020 CPH)",
+            `${extra.urbanCount} Urban, ${extra.ruralCount} Rural (${extra.urbanCount + extra.ruralCount} total)`,
+        ]);
+    }
     if (entity.assets_2024 != null) {
         rows.push(["COA Financial Assets (2024)", `${fmtPhp(entity.assets_2024)}${formatRank(ranks?.assets, scope)}`]);
     }
@@ -114,6 +154,52 @@ function renderTelemetryHtml(entity: RawGeoEntity, classification: string, ranks
         <table>
             <tbody>${trs}</tbody>
         </table>
+    `;
+}
+
+function renderCoaFinanceHtml(entityName: string, fin: CoaFinanceRecord | undefined): string {
+    if (!fin) return "";
+    const entries: [string, number | null][] = [
+        ["Total Assets", fin.assets],
+        ["Total Liabilities", fin.liabilities],
+        ["Net Equity", fin.equity],
+        ["Annual Revenue", fin.revenue],
+        ["Annual Expenses", fin.expenses],
+        ["Net Surplus / Deficit", fin.surplus],
+    ];
+    const valid = entries.filter(([, v]) => v != null && Number.isFinite(v));
+    if (valid.length < 2) return "";
+
+    const rows = valid
+        .map(([label, val]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(fmtPhp(val))}</td></tr>`)
+        .join("\n");
+
+    return `
+        <h2>COA Financial Profile (CY 2024 Annual Financial Report)</h2>
+        <p>Commission on Audit (COA) fiscal statement summary for ${escapeHtml(entityName)}:</p>
+        <table>
+            <tbody>${rows}</tbody>
+        </table>
+    `;
+}
+
+function renderElection2022Html(entityName: string, urlPath: string, election: ElectionSummary | undefined): string {
+    if (!election || election.candidates.length === 0) return "";
+    const rows = election.candidates
+        .map(
+            (c) =>
+                `<tr><td>${escapeHtml(c.name)}</td><td>${fmtInt(c.votes)}</td><td>${c.pct.toFixed(1)}%</td></tr>`,
+        )
+        .join("\n");
+
+    return `
+        <h2>2022 Presidential Election Results (COMELEC)</h2>
+        <p>Top presidential candidates in ${escapeHtml(entityName)} out of ${fmtInt(election.totalVotes)} total votes cast:</p>
+        <table>
+            <thead><tr><th>Candidate</th><th>Votes</th><th>Share</th></tr></thead>
+            <tbody>${rows}</tbody>
+        </table>
+        <p><a href="${urlPath}?tab=custom">Visualize Election Choropleth Overlay on Interactive Map</a></p>
     `;
 }
 
@@ -237,6 +323,7 @@ function renderBarangaysTableHtml(
     municityName: string,
     barangays: BarangayRecord[],
     totalMunicityPop: number | null,
+    psgcMeta: Map<string, PsgcExtraMeta>,
 ): string {
     if (barangays.length === 0) return "";
     const sorted = [...barangays].sort((a, b) => (b.pop_2024 ?? -1) - (a.pop_2024 ?? -1));
@@ -246,12 +333,17 @@ function renderBarangaysTableHtml(
                 b.pop_2024 != null && totalMunicityPop != null && totalMunicityPop > 0
                     ? `${((b.pop_2024 / totalMunicityPop) * 100).toFixed(1)}%`
                     : "—";
+            const ur = psgcMeta.get(b.psgc)?.urbanRural;
+            const urLabel = ur === "U" ? "Urban" : ur === "R" ? "Rural" : "—";
+            const changeStr = b.pct_change_2020_2024 != null ? fmtPct(b.pct_change_2020_2024) : "—";
             return `
             <tr>
                 <td>${escapeHtml(b.name)}</td>
                 <td><code>${escapeHtml(b.psgc)}</code></td>
+                <td>${urLabel}</td>
                 <td>${fmtInt(b.pop_2024)}</td>
                 <td>${share}</td>
+                <td>${escapeHtml(changeStr)}</td>
                 <td>${fmtDec(b.area_km2, 2)}</td>
                 <td>${fmtInt(b.density_2024)}</td>
             </tr>
@@ -266,8 +358,10 @@ function renderBarangaysTableHtml(
                 <tr>
                     <th>Barangay</th>
                     <th>PSGC Code</th>
+                    <th>Classification</th>
                     <th>2024 Population</th>
                     <th>Share</th>
+                    <th>2020–24 Change</th>
                     <th>Area (km²)</th>
                     <th>Density (/km²)</th>
                 </tr>
@@ -275,6 +369,87 @@ function renderBarangaysTableHtml(
             <tbody>${rows}</tbody>
         </table>
     `;
+}
+
+function buildPlaceFaqSchemaAndHtml(opts: {
+    placeName: string;
+    locationName: string;
+    levelLabel: string;
+    urlPath: string;
+    popStr: string;
+    areaStr: string;
+    densityStr: string;
+    incomeClass: string | null;
+    bounds: GeoBounds | null;
+    subdivisionLabel: string;
+    subdivisionCount: number;
+    topSubdivisions: string[];
+}): { faqJsonLd: Record<string, unknown>; faqHtml: string } {
+    const {
+        placeName,
+        locationName,
+        levelLabel,
+        urlPath,
+        popStr,
+        areaStr,
+        densityStr,
+        incomeClass,
+        bounds,
+        subdivisionLabel,
+        subdivisionCount,
+        topSubdivisions,
+    } = opts;
+
+    const topText = topSubdivisions.length > 0 ? `, with the most populous being ${topSubdivisions.join(", ")}` : "";
+    const incomeText = incomeClass ? ` It is classified as a ${incomeClass} income-class ${levelLabel.toLowerCase()}.` : "";
+    const coordText = bounds
+        ? ` Its geographic center in WGS 84 coordinates is ${bounds.lat.toFixed(4)}° N, ${bounds.lng.toFixed(4)}° E.`
+        : "";
+
+    const qa: { q: string; a: string }[] = [
+        {
+            q: `What is the population of ${locationName} in 2024?`,
+            a: `According to the 2024 PSA census, ${locationName} has a population of ${popStr} and a population density of ${densityStr} residents per square kilometer.`,
+        },
+        {
+            q: `How many ${subdivisionLabel} are in ${locationName}?`,
+            a: `${placeName} comprises ${subdivisionCount} ${subdivisionLabel}${topText}.`,
+        },
+        {
+            q: `What is the land area, income classification, and coordinates of ${locationName}?`,
+            a: `${locationName} covers a land area of ${areaStr} km².${incomeText}${coordText}`,
+        },
+        {
+            q: `How can I view the interactive map or download GeoJSON boundaries for ${locationName}?`,
+            a: `You can explore the interactive choropleth map and export standards-compliant RFC 7946 GeoJSON polygons (WGS 84) directly from Lens at ${BASE_URL}${urlPath}?tab=geojson.`,
+        },
+    ];
+
+    const faqJsonLd: Record<string, unknown> = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: qa.map((item) => ({
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: {
+                "@type": "Answer",
+                text: item.a,
+            },
+        })),
+    };
+
+    const faqItems = qa
+        .map((item) => `<dt><strong>${escapeHtml(item.q)}</strong></dt><dd>${escapeHtml(item.a)}</dd>`)
+        .join("\n");
+
+    const faqHtml = `
+        <h2>Quick Facts &amp; Frequently Asked Questions about ${escapeHtml(placeName)}</h2>
+        <dl>
+            ${faqItems}
+        </dl>
+    `;
+
+    return { faqJsonLd, faqHtml };
 }
 
 function renderAdjacentMunicitiesHtml(municityName: string, neighbors: MunicityRecord[]): string {
@@ -318,7 +493,12 @@ async function prerender() {
         process.exit(1);
     }
 
-    const catalog = await loadGeoCatalog();
+    const [catalog, psgcMeta, coaFinance, elections2022] = await Promise.all([
+        loadGeoCatalog(),
+        loadPsgcExtraMeta(),
+        loadCoaFinanceCatalog(),
+        loadElection2022Catalog(),
+    ]);
     const municityAdjacency = await computeMunicityAdjacency(catalog.municities);
 
     const provincePopRanks = computeMetricRanks(catalog.provinces, (p) => p.pop_2024);
@@ -495,9 +675,10 @@ async function prerender() {
         const popStr = fmtInt(region.pop_2024);
         const areaStr = fmtDec(region.area_km2, 1);
         const gdpStr = region.gdp_2024 != null ? `2024 GDP ${fmtPhp(region.gdp_2024)}, ` : "";
+        const regMeta = psgcMeta.get(region.psgc);
 
         pagesToRender.set(region.urlPath, {
-            title: `${region.name} Provinces, Population (2024), GDP & GeoJSON Map | Lens`,
+            title: `${region.name} Profile: 2024 Population, Provinces, GDP & GeoJSON Map | Lens`,
             description: `Explore ${region.name}, Philippines: 2024 population (${popStr}), ${gdpStr}area (${areaStr} km²), ${region.provinces.length} constituent provinces/metro units, ${region.municitiesCount} cities & municipalities, and free GeoJSON boundaries.`,
             keywords: `${region.name.toLowerCase()} population, ${region.name.toLowerCase()} provinces, ${region.name.toLowerCase()} geojson, ${region.name.toLowerCase()} gdp, psgc ${region.psgc}`,
             canonical,
@@ -517,6 +698,9 @@ async function prerender() {
                     alternateName: [`PSGC ${region.psgc}`, region.correspondence ? `Legacy PSGC ${region.correspondence}` : ""].filter(Boolean),
                     description: `${region.name} is an administrative region in the Philippines with a 2024 population of ${popStr} and a land area of ${areaStr} sq km.`,
                     url: canonical,
+                    geo: region.bounds
+                        ? { "@type": "GeoCoordinates", latitude: region.bounds.lat, longitude: region.bounds.lng }
+                        : undefined,
                 },
                 {
                     "@context": "https://schema.org",
@@ -534,10 +718,11 @@ async function prerender() {
                     <p>
                         <strong>${escapeHtml(region.name)}</strong> (PSGC <code>${region.psgc}</code>) has a 2024 census population of <strong>${popStr}</strong> across <strong>${areaStr} km²</strong> (${fmtInt(region.density_2024)} residents/km²), encompassing ${region.provinces.length} provincial-level divisions and ${region.municitiesCount} cities and municipalities.
                     </p>
-                    ${renderTelemetryHtml(region, "Region")}
+                    ${renderTelemetryHtml(region, "Region", undefined, { meta: regMeta, bounds: region.bounds })}
                     ${renderCensusHistoryHtml(region)}
                     ${renderGdpHistoryHtml(region)}
                     ${renderDemographicsHtml(region)}
+                    ${renderElection2022Html(region.name, region.urlPath, elections2022.get(region.psgc))}
                     ${renderSubdivisionsTableHtml(`Provinces & Subdivisions in ${region.name}`, region.provinces)}
                     ${buildGeoJsonFooterLinks(region.urlPath)}
                 </div>
@@ -552,6 +737,27 @@ async function prerender() {
         const popStr = fmtInt(province.pop_2024);
         const areaStr = fmtDec(province.area_km2, 1);
         const densityStr = fmtInt(province.density_2024);
+        const provMeta = psgcMeta.get(province.psgc);
+        const provCoa = coaFinance.get(province.psgc);
+        const provElection = elections2022.get(province.psgc);
+        const topSubdivisions = [...province.municities]
+            .sort((a, b) => (b.pop_2024 ?? -1) - (a.pop_2024 ?? -1))
+            .slice(0, 3)
+            .map((m) => m.name);
+        const { faqJsonLd, faqHtml } = buildPlaceFaqSchemaAndHtml({
+            placeName: province.name,
+            locationName: reg ? `${province.name}, ${reg.name}` : province.name,
+            levelLabel: "Province",
+            urlPath: province.urlPath,
+            popStr,
+            areaStr,
+            densityStr,
+            incomeClass: provMeta?.incomeClass ?? null,
+            bounds: province.bounds,
+            subdivisionLabel: "cities and municipalities",
+            subdivisionCount: province.municities.length,
+            topSubdivisions,
+        });
 
         const breadcrumbs: { label: string; href?: string }[] = [{ label: "Philippines", href: "/" }];
         const ldBreadcrumbs: Record<string, unknown>[] = [{ "@type": "ListItem", position: 1, name: "Philippines", item: `${BASE_URL}/` }];
@@ -563,7 +769,7 @@ async function prerender() {
         ldBreadcrumbs.push({ "@type": "ListItem", position: ldBreadcrumbs.length + 1, name: province.name, item: canonical });
 
         pagesToRender.set(province.urlPath, {
-            title: `${province.name} Population (2024), Municipalities, Map & GeoJSON | Lens`,
+            title: `${province.name} Profile: 2024 Population, Municipalities, Map & GeoJSON | Lens`,
             description: `Explore ${province.name}, ${reg ? reg.name : "Philippines"}: 2024 census population (${popStr}), density (${densityStr}/km²), area (${areaStr} km²), ${province.municities.length} cities & municipalities, COA assets, and free GeoJSON boundaries.`,
             keywords: `${province.name.toLowerCase()} population 2024, municipalities in ${province.name.toLowerCase()}, ${province.name.toLowerCase()} geojson, ${province.name.toLowerCase()} map, psgc ${province.psgc}`,
             canonical,
@@ -576,6 +782,9 @@ async function prerender() {
                     alternateName: [`PSGC ${province.psgc}`, province.correspondence ? `Legacy PSGC ${province.correspondence}` : ""].filter(Boolean),
                     description: `${province.name} is in ${reg ? reg.name : "the Philippines"} with a 2024 population of ${popStr} and a land area of ${areaStr} sq km.`,
                     url: canonical,
+                    geo: province.bounds
+                        ? { "@type": "GeoCoordinates", latitude: province.bounds.lat, longitude: province.bounds.lng }
+                        : undefined,
                     containedInPlace: reg ? { "@type": "AdministrativeArea", name: reg.name, url: `${BASE_URL}${reg.urlPath}` } : undefined,
                 },
                 {
@@ -586,6 +795,7 @@ async function prerender() {
                     url: canonical,
                     spatialCoverage: { "@type": "Place", name: province.name },
                 },
+                faqJsonLd,
             ],
             bodyHtml: `
                 <div class="seo-fallback-content">
@@ -594,17 +804,25 @@ async function prerender() {
                     <p>
                         <strong>${escapeHtml(province.name)}</strong>${reg ? ` in <a href="${reg.urlPath}">${escapeHtml(reg.name)}</a>` : ""} (PSGC <code>${province.psgc}</code>) recorded a 2024 census population of <strong>${popStr}</strong> across <strong>${areaStr} km²</strong> (${densityStr} residents/km²), comprising ${province.municities.length} constituent cities and municipalities.
                     </p>
-                    ${renderTelemetryHtml(province, "Province / Metro Division", {
-                        scope: "Philippines",
-                        pop: provincePopRanks.get(province.psgc),
-                        density: provinceDensityRanks.get(province.psgc),
-                        area: provinceAreaRanks.get(province.psgc),
-                        assets: provinceAssetRanks.get(province.psgc),
-                    })}
+                    ${renderTelemetryHtml(
+                        province,
+                        "Province / Metro Division",
+                        {
+                            scope: "Philippines",
+                            pop: provincePopRanks.get(province.psgc),
+                            density: provinceDensityRanks.get(province.psgc),
+                            area: provinceAreaRanks.get(province.psgc),
+                            assets: provinceAssetRanks.get(province.psgc),
+                        },
+                        { meta: provMeta, bounds: province.bounds },
+                    )}
                     ${renderCensusHistoryHtml(province)}
                     ${renderGdpHistoryHtml(province)}
+                    ${renderCoaFinanceHtml(province.name, provCoa)}
                     ${renderDemographicsHtml(province)}
+                    ${renderElection2022Html(province.name, province.urlPath, provElection)}
                     ${renderSubdivisionsTableHtml(`Cities & Municipalities in ${province.name}`, province.municities)}
+                    ${faqHtml}
                     ${buildGeoJsonFooterLinks(province.urlPath)}
                 </div>
             `,
@@ -631,6 +849,17 @@ async function prerender() {
             const popStr = fmtInt(muni.pop_2024);
             const areaStr = fmtDec(muni.area_km2, 1);
             const densityStr = fmtInt(muni.density_2024);
+            const muniMetaExtra = psgcMeta.get(muni.psgc);
+            const muniCoa = coaFinance.get(muni.psgc);
+            const muniElection = elections2022.get(muni.psgc);
+
+            let urbanCount = 0;
+            let ruralCount = 0;
+            for (const b of barangays) {
+                const ur = psgcMeta.get(b.psgc)?.urbanRural;
+                if (ur === "U") urbanCount += 1;
+                else if (ur === "R") ruralCount += 1;
+            }
 
             const provRanks = prov ? muniRanksByProv.get(prov.psgc) : undefined;
             const muniRanks: EntityRanks | undefined = prov && provRanks
@@ -651,6 +880,21 @@ async function prerender() {
                 barangays.length > 0
                     ? ` Comprises ${barangays.length} barangays${topBarangays.length > 0 ? `, led by ${topBarangays.join(", ")}` : ""}.`
                     : "";
+
+            const { faqJsonLd, faqHtml } = buildPlaceFaqSchemaAndHtml({
+                placeName: titleName,
+                locationName: titleLocationStr,
+                levelLabel: muni.geo_lvl === "City" ? "City" : "Municipality",
+                urlPath: muni.urlPath,
+                popStr,
+                areaStr,
+                densityStr,
+                incomeClass: muniMetaExtra?.incomeClass ?? null,
+                bounds: muni.bounds,
+                subdivisionLabel: "barangays",
+                subdivisionCount: barangays.length,
+                topSubdivisions: topBarangays,
+            });
 
             const breadcrumbs: { label: string; href?: string }[] = [{ label: "Philippines", href: "/" }];
             const ldBreadcrumbs: Record<string, unknown>[] = [{ "@type": "ListItem", position: 1, name: "Philippines", item: `${BASE_URL}/` }];
@@ -673,8 +917,8 @@ async function prerender() {
                 : "";
 
             pagesToRender.set(muni.urlPath, {
-                title: `${titleLocationStr} Population (2024), Barangays, Area & GeoJSON | Lens`,
-                description: `Interactive map, 2024 census population (${popStr}), density (${densityStr}/km²), area (${areaStr} km²), ${muni.assets_2024 != null ? `COA assets (${fmtPhp(muni.assets_2024)}), ` : ""}${barangays.length > 0 ? `${barangays.length} barangays, ` : ""}and GeoJSON boundaries for ${titleLocationStr}.`,
+                title: `${titleLocationStr} Profile: 2024 Population, Barangays, Map & GeoJSON | Lens`,
+                description: `Interactive map, 2024 census population (${popStr}), density (${densityStr}/km²), area (${areaStr} km²), ${muniMetaExtra?.incomeClass ? `${muniMetaExtra.incomeClass} income class, ` : ""}${muni.assets_2024 != null ? `COA assets (${fmtPhp(muni.assets_2024)}), ` : ""}${barangays.length > 0 ? `${barangays.length} barangays, ` : ""}and GeoJSON boundaries for ${titleLocationStr}.`,
                 keywords: `${muni.name.toLowerCase()} population 2024, ${muni.name.toLowerCase()} barangays, ${muni.name.toLowerCase()} geojson, ${locationStr.toLowerCase()} map, barangays in ${muni.name.toLowerCase()}, psgc ${muni.psgc}${aliasKeywords}`,
                 canonical,
                 jsonLd: [
@@ -686,6 +930,9 @@ async function prerender() {
                         alternateName: [`PSGC ${muni.psgc}`, muni.correspondence ? `Legacy PSGC ${muni.correspondence}` : "", ...aliases].filter(Boolean),
                         description: `${muni.name} is a ${levelLabel.toLowerCase()} in ${prov ? prov.name : "the Philippines"} with a 2024 population of ${popStr} and a land area of ${areaStr} sq km.${bgySummary}`,
                         url: canonical,
+                        geo: muni.bounds
+                            ? { "@type": "GeoCoordinates", latitude: muni.bounds.lat, longitude: muni.bounds.lng }
+                            : undefined,
                         containedInPlace: prov ? { "@type": "AdministrativeArea", name: prov.name, url: `${BASE_URL}${prov.urlPath}` } : undefined,
                     },
                     {
@@ -696,21 +943,30 @@ async function prerender() {
                         url: canonical,
                         spatialCoverage: { "@type": "Place", name: locationStr },
                     },
+                    faqJsonLd,
                 ],
                 bodyHtml: `
                     <div class="seo-fallback-content">
                         ${renderBreadcrumbsHtml(breadcrumbs)}
                         <h1>${escapeHtml(displayLocationStr)} — Population (2024), Barangays, COA Assets &amp; GeoJSON Map</h1>
                         <p>
-                            <strong>${escapeHtml(muni.name)}</strong> is a ${escapeHtml(levelLabel.toLowerCase())}${prov ? ` in <a href="${prov.urlPath}">${escapeHtml(prov.name)}</a>` : ""}${reg ? ` (${escapeHtml(reg.name)})` : ""} with PSGC code <code>${muni.psgc}</code>. It spans <strong>${areaStr} km²</strong> with a 2024 population of <strong>${popStr}</strong> (${densityStr} residents/km²).${escapeHtml(bgySummary)}
+                            <strong>${escapeHtml(muni.name)}</strong> is a ${muniMetaExtra?.incomeClass ? `${escapeHtml(muniMetaExtra.incomeClass)} income class ` : ""}${escapeHtml(levelLabel.toLowerCase())}${muniMetaExtra?.isCapital ? " and provincial capital" : ""}${prov ? ` in <a href="${prov.urlPath}">${escapeHtml(prov.name)}</a>` : ""}${reg ? ` (${escapeHtml(reg.name)})` : ""} with PSGC code <code>${muni.psgc}</code>. It spans <strong>${areaStr} km²</strong> with a 2024 population of <strong>${popStr}</strong> (${densityStr} residents/km²).${escapeHtml(bgySummary)}
                         </p>
-                        ${renderTelemetryHtml(muni, levelLabel, muniRanks)}
+                        ${renderTelemetryHtml(muni, levelLabel, muniRanks, {
+                            meta: muniMetaExtra,
+                            bounds: muni.bounds,
+                            urbanCount,
+                            ruralCount,
+                        })}
                         ${renderCensusHistoryHtml(muni)}
                         ${renderGdpHistoryHtml(muni)}
+                        ${renderCoaFinanceHtml(muni.name, muniCoa)}
                         ${renderDemographicsHtml(muni)}
-                        ${renderBarangaysTableHtml(muni.name, barangays, muni.pop_2024)}
+                        ${renderElection2022Html(muni.name, muni.urlPath, muniElection)}
+                        ${renderBarangaysTableHtml(muni.name, barangays, muni.pop_2024, psgcMeta)}
                         ${renderAdjacentMunicitiesHtml(muni.name, neighbors)}
                         ${renderSubdivisionsTableHtml(`Other Cities & Municipalities in ${prov ? prov.name : "Province"}`, siblings)}
+                        ${faqHtml}
                         ${buildGeoJsonFooterLinks(muni.urlPath)}
                     </div>
                 `,

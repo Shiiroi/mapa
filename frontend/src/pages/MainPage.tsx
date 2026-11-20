@@ -300,7 +300,7 @@ export default function MainPage() {
             return {
                 title: selectedBgy
                     ? `Barangay ${selectedBgy.name}, ${titleLocationStr} — Boundary Map & GeoJSON | Lens`
-                    : `${titleLocationStr} Population (2024), Barangays, Area & GeoJSON | Lens`,
+                    : `${titleLocationStr} Profile: 2024 Population, Barangays, Map & GeoJSON | Lens`,
                 description: `Interactive map, 2024 census population (${popStr}), density (${densityStr}/km²), area (${areaStr} km²), ${assetsStr}barangay list, and GeoJSON boundary download for ${titleLocationStr} (PSGC ${selectedMuni.psgc}).`,
                 keywords: `${selectedMuni.name.toLowerCase()} population 2024, ${selectedMuni.name.toLowerCase()} barangays, ${selectedMuni.name.toLowerCase()} geojson, ${locationStr.toLowerCase()} map, barangays in ${selectedMuni.name.toLowerCase()}, psgc ${selectedMuni.psgc}${aliasKeywords}`,
                 canonical,
@@ -360,7 +360,7 @@ export default function MainPage() {
             breadcrumbs.push({ "@type": "ListItem", position: breadcrumbs.length + 1, name: selectedProv.name, item: canonical });
 
             return {
-                title: `${selectedProv.name} Population (2024), Municipalities, Map & GeoJSON | Lens`,
+                title: `${selectedProv.name} Profile: 2024 Population, Municipalities, Map & GeoJSON | Lens`,
                 description: `Explore ${selectedProv.name}, ${reg ? reg.name : "Philippines"}: 2024 population (${popStr}), density (${densityStr}/km²), area (${areaStr} km²), GDP, COA LGU assets, constituent municipalities, and GeoJSON downloads.`,
                 keywords: `${selectedProv.name.toLowerCase()} population 2024, municipalities in ${selectedProv.name.toLowerCase()}, ${selectedProv.name.toLowerCase()} geojson, ${selectedProv.name.toLowerCase()} map, psgc ${selectedProv.psgc}`,
                 canonical,
@@ -414,7 +414,7 @@ export default function MainPage() {
                     : "";
 
             return {
-                title: `${selectedReg.name} Provinces, Population (2024), GDP & GeoJSON Map | Lens`,
+                title: `${selectedReg.name} Profile: 2024 Population, Provinces, GDP & GeoJSON Map | Lens`,
                 description: `Explore ${selectedReg.name}, Philippines: 2024 population (${popStr}), ${gdpStr}area (${areaStr} km²), constituent provinces & cities, and free RFC 7946 GeoJSON boundary downloads.`,
                 keywords: `${selectedReg.name.toLowerCase()} population, ${selectedReg.name.toLowerCase()} provinces, ${selectedReg.name.toLowerCase()} geojson, ${selectedReg.name.toLowerCase()} gdp, psgc ${selectedReg.psgc}`,
                 canonical,
