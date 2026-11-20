@@ -174,40 +174,439 @@ function votesFromResult(
     return Object.keys(out).length ? out : null;
 }
 
-// ---------- barangay PSGC index from psgc.csv ----------
+// ---------- barangay PSGC index & tiered matcher from psgc.csv ----------
 
 // City of Manila: its barangays are stored under SubMun district codes
 // (1380601000…1380614000), not directly under the city, so they need rolling up.
 const MANILA_CITY_PSGC = "1380600000";
 
-// Indexes psgc.csv barangays as municityPsgc → (normalized name → barangay PSGC).
-function loadBarangayIndex(): Map<string, Map<string, string>> {
-    const raw = fs.readFileSync(path.join(DATASETS_DIR, "data/raw/psgc.csv"), "latin1");
+interface BarangayRec {
+    psgc: string;
+    name: string;
+    oldNames: string;
+}
+
+interface PendingBarangay {
+    region: string;
+    province: string;
+    parentName: string;
+    muni: string | null;
+    name: string;
+    votes: Record<string, number>;
+}
+
+const ROMAN_TO_ARABIC: Record<string, string> = {
+    I: "1",
+    II: "2",
+    III: "3",
+    IV: "4",
+    V: "5",
+    VI: "6",
+    VII: "7",
+    VIII: "8",
+    IX: "9",
+    X: "10",
+    XI: "11",
+    XII: "12",
+    XIII: "13",
+    XIV: "14",
+    XV: "15",
+    XVI: "16",
+    XVII: "17",
+    XVIII: "18",
+    XIX: "19",
+    XX: "20",
+};
+
+function stripParens(s: string): string {
+    return s.replace(/\s*\([^)]*\)/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function canonicalBgy(s: string): string {
+    let x = s
+        .replace(/\u00a0/g, " ")
+        .normalize("NFD")
+        .replace(/\p{M}/gu, "")
+        .toUpperCase();
+    x = x.replace(/\s*\([^)]*\)/g, " ");
+    x = x.replace(/\bPOB\.?\b/g, " ");
+    x = x.replace(/\bPOBLACION\b/g, " POBLACION ");
+    x = x.replace(/\b(BARANGAY|BRGY\.?|BGY\.?)\s*(NO\.?\s*)?/g, "BGY ");
+    x = x.replace(/\bSTO\.?\b/g, "SANTO");
+    x = x.replace(/\bSTA\.?\b/g, "SANTA");
+    x = x.replace(/\bST\.?\b/g, "SAINT");
+    x = x.replace(/\b(GEN|HEN)\.?\b/g, "GENERAL");
+    x = x.replace(/\bPRES\.?\b/g, "PRESIDENT");
+    x = x.replace(/\bDR\.?\b/g, "DOCTOR");
+    x = x.replace(/\bMT\.?\b/g, "MOUNT");
+    x = x.replace(/\bBLVD\.?\b/g, "BOULEVARD");
+    x = x.replace(/\bNSTRA\.?\s*SRA\.?\b/g, "NUESTRA SENORA");
+    x = x.replace(/\bSR\.?\b/g, "SR");
+    x = x.replace(/\bJR\.?\b/g, "JR");
+    x = x.replace(/\bDIST\.?\b/g, "DISTRICT");
+    x = x.replace(/\bWESTE\b/g, "WEST");
+    x = x.replace(/\bESTE\b/g, "EAST");
+    x = x.replace(/&/g, " AND ");
+    x = x.replace(/\b0+(\d+)\b/g, "$1");
+    x = x.replace(
+        /\b(XX|XIX|XVIII|XVII|XVI|XV|XIV|XIII|XII|XI|IX|VIII|VII|VI|IV|V|III|II|I)\b/g,
+        (m) => ROMAN_TO_ARABIC[m] ?? m,
+    );
+    x = x.replace(/[^A-Z0-9]+/g, " ").replace(/\s+/g, " ").trim();
+    return x;
+}
+
+function compactKey(s: string): string {
+    return s.replace(/[^A-Z0-9]/g, "");
+}
+
+function levenshtein(a: string, b: string): number {
+    const m = a.length;
+    const n = b.length;
+    const dp = Array.from({ length: m + 1 }, () => new Int32Array(n + 1));
+    for (let i = 0; i <= m; i++) dp[i][0] = i;
+    for (let j = 0; j <= n; j++) dp[0][j] = j;
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+            dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
+        }
+    }
+    return dp[m][n];
+}
+
+// Explicit barangay overrides for post-2022 legal boundary changes, mergers, and
+// verified spelling/renaming gaps. Keyed by `${muniPsgc}|${canonicalBgy(name)}`.
+// When `merge: true`, multiple 2022 COMELEC barangays are summed into the target 2024 PSGC.
+const BARANGAY_OVERRIDES: Record<string, { psgc: string; label?: string; merge?: boolean }> = {
+    // --- 2023 SC ruling: 10 EMBO barangays moved from Makati (1380300000) to Taguig (1381500000) ---
+    "1380300000|CEMBO": { psgc: "1381500029", label: "Cembo" },
+    "1380300000|COMEMBO": { psgc: "1381500030", label: "Comembo" },
+    "1380300000|EAST REMBO": { psgc: "1381500031", label: "East Rembo" },
+    "1380300000|PEMBO": { psgc: "1381500032", label: "Pembo" },
+    "1380300000|PITOGO": { psgc: "1381500033", label: "Pitogo" },
+    "1380300000|POST PROPER NORTHSIDE": { psgc: "1381500034", label: "Post Proper Northside" },
+    "1380300000|POST PROPER SOUTHSIDE": { psgc: "1381500035", label: "Post Proper Southside" },
+    "1380300000|RIZAL": { psgc: "1381500036", label: "Rizal" },
+    "1380300000|SOUTH CEMBO": { psgc: "1381500037", label: "South Cembo" },
+    "1380300000|WEST REMBO": { psgc: "1381500038", label: "West Rembo" },
+
+    // --- City of Bacoor (0402103000): City Ordinance No. 275-2023 (July 29, 2023 plebiscite, 73 -> 47) ---
+    "0402103000|ALIMA": { psgc: "0402103089", label: "Sinbanali", merge: true },
+    "0402103000|BANALO": { psgc: "0402103089", label: "Sinbanali", merge: true },
+    "0402103000|SINEGUELASAN": { psgc: "0402103089", label: "Sinbanali", merge: true },
+    "0402103000|KAINGIN": { psgc: "0402103078", label: "Kaingin Digman", merge: true },
+    "0402103000|DIGMAN": { psgc: "0402103078", label: "Kaingin Digman", merge: true },
+    "0402103000|CAMPO SANTO": { psgc: "0402103086", label: "Poblacion", merge: true },
+    "0402103000|DAANG BUKID": { psgc: "0402103086", label: "Poblacion", merge: true },
+    "0402103000|TABING DAGAT": { psgc: "0402103086", label: "Poblacion", merge: true },
+    "0402103000|ANIBAN 1": { psgc: "0402103076", label: "Aniban 1", merge: true },
+    "0402103000|ANIBAN 3": { psgc: "0402103076", label: "Aniban 1", merge: true },
+    "0402103000|ANIBAN 5": { psgc: "0402103076", label: "Aniban 1", merge: true },
+    "0402103000|ANIBAN 2": { psgc: "0402103077", label: "Aniban 2", merge: true },
+    "0402103000|ANIBAN 4": { psgc: "0402103077", label: "Aniban 2", merge: true },
+    "0402103000|LIGAS 1": { psgc: "0402103079", label: "Ligas 1", merge: true },
+    "0402103000|LIGAS 2": { psgc: "0402103079", label: "Ligas 1", merge: true },
+    "0402103000|LIGAS 3": { psgc: "0402103036", label: "Ligas 2", merge: true },
+    "0402103000|MABOLO 1": { psgc: "0402103080", label: "Mabolo", merge: true },
+    "0402103000|MABOLO 2": { psgc: "0402103080", label: "Mabolo", merge: true },
+    "0402103000|MABOLO 3": { psgc: "0402103080", label: "Mabolo", merge: true },
+    "0402103000|MALIKSI 1": { psgc: "0402103012", label: "Maliksi 1", merge: true },
+    "0402103000|MALIKSI 2": { psgc: "0402103081", label: "Maliksi 2", merge: true },
+    "0402103000|MALIKSI 3": { psgc: "0402103081", label: "Maliksi 2", merge: true },
+    "0402103000|MAMBOG 1": { psgc: "0402103013", label: "Mambog 1", merge: true },
+    "0402103000|MAMBOG 2": { psgc: "0402103082", label: "Mambog 2", merge: true },
+    "0402103000|MAMBOG 5": { psgc: "0402103082", label: "Mambog 2", merge: true },
+    "0402103000|MAMBOG 3": { psgc: "0402103042", label: "Mambog 3", merge: true },
+    "0402103000|MAMBOG 4": { psgc: "0402103043", label: "Mambog 4", merge: true },
+    "0402103000|NIOG 1": { psgc: "0402103083", label: "Niog", merge: true },
+    "0402103000|NIOG 2": { psgc: "0402103083", label: "Niog", merge: true },
+    "0402103000|NIOG 3": { psgc: "0402103083", label: "Niog", merge: true },
+    "0402103000|P F ESPIRITU 1": { psgc: "0402103018", label: "P.F. Espiritu 1", merge: true },
+    "0402103000|P F ESPIRITU 2": { psgc: "0402103084", label: "P.F. Espiritu 2", merge: true },
+    "0402103000|P F ESPIRITU 3": { psgc: "0402103084", label: "P.F. Espiritu 2", merge: true },
+    "0402103000|P F ESPIRITU 4": { psgc: "0402103055", label: "P.F. Espiritu 3", merge: true },
+    "0402103000|P F ESPIRITU 5": { psgc: "0402103085", label: "P.F. Espiritu 4", merge: true },
+    "0402103000|P F ESPIRITU 6": { psgc: "0402103085", label: "P.F. Espiritu 4", merge: true },
+    "0402103000|P F ESPIRITU 7": { psgc: "0402103058", label: "P.F. Espiritu 5", merge: true },
+    "0402103000|P F ESPIRITU 8": { psgc: "0402103059", label: "P.F. Espiritu 6", merge: true },
+    "0402103000|REAL 1": { psgc: "0402103087", label: "Real", merge: true },
+    "0402103000|REAL 2": { psgc: "0402103087", label: "Real", merge: true },
+    "0402103000|SALINAS 1": { psgc: "0402103020", label: "Salinas I", merge: true },
+    "0402103000|SALINAS 2": { psgc: "0402103088", label: "Salinas 2", merge: true },
+    "0402103000|SALINAS 3": { psgc: "0402103088", label: "Salinas 2", merge: true },
+    "0402103000|SALINAS 4": { psgc: "0402103088", label: "Salinas 2", merge: true },
+    "0402103000|TALABA 1": { psgc: "0402103090", label: "Talaba 1", merge: true },
+    "0402103000|TALABA 3": { psgc: "0402103090", label: "Talaba 1", merge: true },
+    "0402103000|TALABA 7": { psgc: "0402103090", label: "Talaba 1", merge: true },
+    "0402103000|TALABA 2": { psgc: "0402103066", label: "Talaba 2", merge: true },
+    "0402103000|TALABA 4": { psgc: "0402103091", label: "Talaba 3", merge: true },
+    "0402103000|TALABA 5": { psgc: "0402103091", label: "Talaba 3", merge: true },
+    "0402103000|TALABA 6": { psgc: "0402103091", label: "Talaba 3", merge: true },
+    "0402103000|ZAPOTE 1": { psgc: "0402103092", label: "Zapote 1", merge: true },
+    "0402103000|ZAPOTE 2": { psgc: "0402103092", label: "Zapote 1", merge: true },
+    "0402103000|ZAPOTE 3": { psgc: "0402103093", label: "Zapote 2", merge: true },
+    "0402103000|ZAPOTE 4": { psgc: "0402103093", label: "Zapote 2", merge: true },
+    "0402103000|ZAPOTE 5": { psgc: "0402103075", label: "Zapote 3", merge: true },
+
+    // --- Ormoc City (0803738000): Ordinance No. 052 (Oct 8, 2022 plebiscite, Bgy 1-28 -> East/South/West) ---
+    ...[1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 15, 17, 23, 27].reduce<
+        Record<string, { psgc: string; label: string; merge: boolean }>
+    >((acc, n) => {
+        acc[`0803738000|BGY ${n}`] = { psgc: "0803738116", label: "Barangay South", merge: true };
+        return acc;
+    }, {}),
+    ...[9, 10, 11, 16, 18, 25, 28].reduce<
+        Record<string, { psgc: string; label: string; merge: boolean }>
+    >((acc, n) => {
+        acc[`0803738000|BGY ${n}`] = { psgc: "0803738115", label: "Barangay East", merge: true };
+        return acc;
+    }, {}),
+    ...[14, 19, 20, 21, 22, 24, 26].reduce<
+        Record<string, { psgc: string; label: string; merge: boolean }>
+    >((acc, n) => {
+        acc[`0803738000|BGY ${n}`] = { psgc: "0803738117", label: "Barangay West", merge: true };
+        return acc;
+    }, {}),
+
+    // --- Verified single-barangay boundary / renaming overrides ---
+    "0908311000|GUINTOLAN": { psgc: "0908304019", label: "Guintolan" }, // Payao -> Imelda, Zamboanga Sibugay
+};
+
+// Indexes psgc.csv barangays as municityPsgc → BarangayRec[].
+function loadBarangayIndex(): Map<string, BarangayRec[]> {
+    // psgc.csv uses MacRoman byte 0x96 for 'ñ' (472 occurrences); decode cleanly to UTF-8.
+    const rawBuf = fs.readFileSync(path.join(DATASETS_DIR, "data/raw/psgc.csv"));
+    const bytes: number[] = [];
+    for (const b of rawBuf) {
+        if (b === 0x96) bytes.push(0xc3, 0xb1);
+        else bytes.push(b);
+    }
+    const raw = Buffer.from(bytes).toString("utf8");
     const rows = parseCsv(raw, {
         columns: true,
         skip_empty_lines: true,
         relax_column_count: true,
     }) as Record<string, string>[];
-    const byMuni = new Map<string, Map<string, string>>();
-    const add = (muni: string, norm: string, psgc: string) => {
-        if (!byMuni.has(muni)) byMuni.set(muni, new Map());
-        byMuni.get(muni)!.set(norm, psgc);
+    const byMuni = new Map<string, BarangayRec[]>();
+    const add = (muni: string, rec: BarangayRec) => {
+        if (!byMuni.has(muni)) byMuni.set(muni, []);
+        byMuni.get(muni)!.push(rec);
     };
     for (const row of rows) {
         if (row["Geographic Level"]?.trim() !== "Bgy") continue;
         const psgc = row["10-digit PSGC"]?.trim().padStart(10, "0");
         if (!psgc) continue;
         const muni = `${psgc.slice(0, 7)}000`;
-        const norm = normalizePsgcName(row.Name ?? "");
-        add(muni, norm, psgc);
+        const rec: BarangayRec = {
+            psgc,
+            name: (row.Name ?? "").trim(),
+            oldNames: (row["Old names"] ?? "").trim(),
+        };
+        add(muni, rec);
         // COMELEC nests Manila as NCR - MANILA → SubMun → barangay, and we resolve
         // the parent to the City of Manila. Index Manila barangays under the city
         // code too so that lookup succeeds (barangay numbers are unique citywide).
         if (psgc.startsWith("13806") && muni !== MANILA_CITY_PSGC) {
-            add(MANILA_CITY_PSGC, norm, psgc);
+            add(MANILA_CITY_PSGC, rec);
         }
     }
     return byMuni;
+}
+
+// Resolves collected COMELEC barangay nodes per municipality using tiered matching
+// and explicit merger vote-summing.
+function resolveBarangays(
+    pendingAll: PendingBarangay[],
+    bgyIdx: Map<string, BarangayRec[]>,
+    unmatched: { tier: string; region: string; province: string; name: string }[],
+): SeriesRow[] {
+    const byMuni = new Map<string, PendingBarangay[]>();
+    for (const item of pendingAll) {
+        if (!item.muni) {
+            unmatched.push({ tier: "barangay", region: item.region, province: item.province, name: item.name });
+            continue;
+        }
+        if (!byMuni.has(item.muni)) byMuni.set(item.muni, []);
+        byMuni.get(item.muni)!.push(item);
+    }
+
+    const mergedBuckets = new Map<string, SeriesRow>();
+    const normalRows: SeriesRow[] = [];
+
+    const addMerged = (psgc: string, label: string, votes: Record<string, number>) => {
+        const existing = mergedBuckets.get(psgc);
+        if (!existing) {
+            mergedBuckets.set(psgc, { psgc, label, votes: { ...votes } });
+        } else {
+            for (const [k, v] of Object.entries(votes)) {
+                existing.votes[k] = (existing.votes[k] ?? 0) + v;
+            }
+        }
+    };
+
+    for (const [muni, items] of byMuni) {
+        const recs = bgyIdx.get(muni) ?? [];
+        const usedPsgc = new Set<string>();
+        const fuzzyPending: PendingBarangay[] = [];
+
+        for (const item of items) {
+            const c3 = canonicalBgy(item.name);
+            const ov = BARANGAY_OVERRIDES[`${muni}|${c3}`];
+            if (ov) {
+                usedPsgc.add(ov.psgc);
+                if (ov.merge) addMerged(ov.psgc, ov.label ?? item.name, item.votes);
+                else normalRows.push({ psgc: ov.psgc, label: ov.label ?? item.name, votes: item.votes });
+                continue;
+            }
+
+            // Stage 1: Exact normalizePsgcName (now with ñ decoded cleanly)
+            const n1 = normalizePsgcName(item.name);
+            const h1 = recs.find((r) => normalizePsgcName(r.name) === n1);
+            if (h1) {
+                usedPsgc.add(h1.psgc);
+                normalRows.push({ psgc: h1.psgc, label: item.name, votes: item.votes });
+                continue;
+            }
+
+            // Stage 2: Strip (POB.) / parentheticals on both sides (must be unique)
+            const n2 = normalizePsgcName(stripParens(item.name));
+            const h2 = recs.filter((r) => normalizePsgcName(stripParens(r.name)) === n2);
+            if (h2.length === 1) {
+                usedPsgc.add(h2[0].psgc);
+                normalRows.push({ psgc: h2[0].psgc, label: item.name, votes: item.votes });
+                continue;
+            }
+
+            // Stage 3: Canonical key (Roman↔Arabic, BGY/BRGY, STO/STA/ST/HEN/BLVD, &↔AND, punct)
+            const c3c = compactKey(c3);
+            const h3 = recs.filter(
+                (r) => canonicalBgy(r.name) === c3 || compactKey(canonicalBgy(r.name)) === c3c,
+            );
+            if (h3.length === 1) {
+                usedPsgc.add(h3[0].psgc);
+                normalRows.push({ psgc: h3[0].psgc, label: item.name, votes: item.votes });
+                continue;
+            }
+            const c3nb = compactKey(c3.replace(/^BGY\s+/, ""));
+            const h3nb = recs.filter(
+                (r) => compactKey(canonicalBgy(r.name).replace(/^BGY\s+/, "")) === c3nb,
+            );
+            if (h3nb.length === 1) {
+                usedPsgc.add(h3nb[0].psgc);
+                normalRows.push({ psgc: h3nb[0].psgc, label: item.name, votes: item.votes });
+                continue;
+            }
+
+            // Stage 4: Unique Old names match or parenthetical inner alias
+            const h4 = recs.filter(
+                (r) =>
+                    r.oldNames &&
+                    (canonicalBgy(r.oldNames) === c3 || compactKey(canonicalBgy(r.oldNames)) === c3c),
+            );
+            if (h4.length === 1) {
+                usedPsgc.add(h4[0].psgc);
+                normalRows.push({ psgc: h4[0].psgc, label: item.name, votes: item.votes });
+                continue;
+            }
+
+            const mParen = item.name.match(/\(([^)]+)\)/);
+            if (mParen) {
+                const inner = canonicalBgy(mParen[1]);
+                if (inner && inner !== "POBLACION") {
+                    const hP = recs.filter(
+                        (r) =>
+                            canonicalBgy(r.name) === inner ||
+                            compactKey(canonicalBgy(r.name)) === compactKey(inner),
+                    );
+                    if (hP.length === 1) {
+                        usedPsgc.add(hP[0].psgc);
+                        normalRows.push({ psgc: hP[0].psgc, label: item.name, votes: item.votes });
+                        continue;
+                    }
+                }
+            }
+            const hP2 = recs.filter((r) => {
+                const mp = r.name.match(/\(([^)]+)\)/);
+                if (!mp) return false;
+                const inner = canonicalBgy(mp[1]);
+                return inner && inner !== "POBLACION" && (inner === c3 || compactKey(inner) === c3c);
+            });
+            if (hP2.length === 1) {
+                usedPsgc.add(hP2[0].psgc);
+                normalRows.push({ psgc: hP2[0].psgc, label: item.name, votes: item.votes });
+                continue;
+            }
+
+            fuzzyPending.push(item);
+        }
+
+        // Stage 5: Safe intra-municipality fallback among ONLY remaining unmatched PSGC barangays.
+        // Guards: trailing digits must match (if both have digits), unique best match, tight edit distance.
+        const remPsgc = recs.filter((r) => !usedPsgc.has(r.psgc));
+        for (const item of fuzzyPending) {
+            const c3 = canonicalBgy(item.name);
+            const c3c = compactKey(c3);
+            const cDigits = c3.match(/\d+/g)?.join("-") ?? "";
+
+            const eligible = remPsgc.filter((r) => {
+                if (usedPsgc.has(r.psgc)) return false;
+                const rDigits = canonicalBgy(r.name).match(/\d+/g)?.join("-") ?? "";
+                // If both carry digits, they must agree (prevents Zone 1 matching Zone 2)
+                if (cDigits && rDigits && cDigits !== rDigits) return false;
+                return true;
+            });
+
+            // 5a: Exact prefix/suffix token containment on remaining unmatched (e.g. "ACMAC" -> "Acmac-Mariano Badelles Sr.", "BARANGAY NG MGA MANGINGISDA" -> "Mangingisda", "CONCORDIA" -> "Concordia Norte")
+            const tokHits = eligible.filter((r) => {
+                const rc = canonicalBgy(r.name);
+                return (
+                    (c3.length >= 5 && (rc.startsWith(`${c3} `) || rc.endsWith(` ${c3}`))) ||
+                    (rc.length >= 5 && (c3.startsWith(`${rc} `) || c3.endsWith(` ${rc}`)))
+                );
+            });
+            if (tokHits.length === 1) {
+                usedPsgc.add(tokHits[0].psgc);
+                normalRows.push({ psgc: tokHits[0].psgc, label: item.name, votes: item.votes });
+                continue;
+            }
+
+            // 5b: Tight Levenshtein edit distance (<= 2 for len >= 7, <= 1 for len >= 4, or <= 3 if sole remaining PSGC in muni with >= 60% similarity)
+            const scored = eligible
+                .map((r) => ({ r, d: levenshtein(c3c, compactKey(canonicalBgy(r.name))) }))
+                .sort((a, b) => a.d - b.d);
+            const maxD = c3c.length >= 7 ? 2 : c3c.length >= 4 ? 1 : 0;
+            const soleClose =
+                eligible.length === 1 &&
+                scored[0].d <= 3 &&
+                scored[0].d / Math.max(c3c.length, compactKey(canonicalBgy(scored[0].r.name)).length, 1) <= 0.4;
+
+            if (
+                scored.length > 0 &&
+                ((scored[0].d <= maxD && (scored.length === 1 || scored[1].d > scored[0].d)) || soleClose)
+            ) {
+                usedPsgc.add(scored[0].r.psgc);
+                normalRows.push({ psgc: scored[0].r.psgc, label: item.name, votes: item.votes });
+                continue;
+            }
+
+            // 5c: Transposition / 3-edit match on long names (>= 10 chars) like GIMENARAT EAST -> Gimiranat East
+            if (
+                c3c.length >= 10 &&
+                scored.length > 0 &&
+                scored[0].d === 3 &&
+                (scored.length === 1 || scored[1].d > 4)
+            ) {
+                usedPsgc.add(scored[0].r.psgc);
+                normalRows.push({ psgc: scored[0].r.psgc, label: item.name, votes: item.votes });
+                continue;
+            }
+
+            unmatched.push({ tier: "barangay", region: item.region, province: item.province, name: item.name });
+        }
+    }
+
+    return [...normalRows, ...mergedBuckets.values()];
 }
 
 // ---------- tree walk ----------
@@ -264,17 +663,20 @@ const unmatchedMunicipalVotes: Record<string, number>[] = [];
 let inspected = 0;
 
 // Recursively walks the scraped result tree, collecting per-city/municipality and
-// barangay presidential vote rows into the `tiers` accumulator.
+// barangay presidential vote rows into the `tiers` / `pendingBarangays` accumulators.
 function walk(
     nodeDir: string,
     ctx: Ctx,
     idx: PsgcIndexes,
-    bgyIdx: Map<string, Map<string, string>>,
+    pendingBarangays: PendingBarangay[],
+    visitedDirs: Set<string>,
     pres: PresidentContest,
     voteKeyRef: { key: string | null },
     unmatched: { tier: string; region: string; province: string; name: string }[],
 ) {
     const absDir = path.join(RESULTS_DIR, nodeDir);
+    if (visitedDirs.has(absDir)) return;
+    visitedDirs.add(absDir);
     const info = readJson<NodeInfo>(path.join(absDir, "info.json"));
     if (!info) return;
     const can = (info.can ?? "").trim();
@@ -307,9 +709,14 @@ function walk(
             // a barangay's parent city/municipality is its parent directory name.
             const parentName = path.basename(path.dirname(absDir));
             const muni = nextCtx.municityPsgc ?? matchCityMun(nextCtx.region, nextCtx.province, parentName, idx);
-            const bgyPsgc = muni ? bgyIdx.get(muni)?.get(normalizePsgcName(name)) : undefined;
-            if (bgyPsgc) tiers.barangay.push({ psgc: bgyPsgc, label: name, votes: merged });
-            else unmatched.push({ tier: "barangay", region: nextCtx.region, province: nextCtx.province, name });
+            pendingBarangays.push({
+                region: nextCtx.region,
+                province: nextCtx.province,
+                parentName,
+                muni,
+                name,
+                votes: merged,
+            });
         }
         return;
     }
@@ -360,7 +767,7 @@ function walk(
 
     for (const child of Object.values(info.srs ?? {})) {
         const childDir = path.join(nodeDir, child.rn.replace(/\//g, "_"));
-        walk(childDir, nextCtx, idx, bgyIdx, pres, voteKeyRef, unmatched);
+        walk(childDir, nextCtx, idx, pendingBarangays, visitedDirs, pres, voteKeyRef, unmatched);
     }
 }
 
@@ -532,14 +939,18 @@ function main() {
     const bgyIdx = loadBarangayIndex();
     const voteKeyRef = { key: null as string | null };
     const unmatched: { tier: string; region: string; province: string; name: string }[] = [];
+    const pendingBarangays: PendingBarangay[] = [];
+    const visitedDirs = new Set<string>();
 
-    walk("", { region: "", province: "" }, idx, bgyIdx, pres, voteKeyRef, unmatched);
+    walk("", { region: "", province: "" }, idx, pendingBarangays, visitedDirs, pres, voteKeyRef, unmatched);
 
     if (INSPECT) {
         console.log(`\nDetected vote field: "${voteKeyRef.key}"`);
         console.log("Sample president boToDisplay:", [...pres.boToDisplay.entries()].slice(0, 12));
         return;
     }
+
+    tiers.barangay = resolveBarangays(pendingBarangays, bgyIdx, unmatched);
 
     for (const [tier, rows] of Object.entries(tiers)) {
         if (tier === "citymun" || tier === "barangay") {
