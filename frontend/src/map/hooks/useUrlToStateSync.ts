@@ -68,6 +68,58 @@ export function useUrlToStateSync({
             return;
         }
 
+        // Legacy flat routes from pre-Nov sitemaps (/region/<slug>, /province/<slug>, /municipality/<slug>)
+        if (segments.length === 2) {
+            const prefix = segments[0].toLowerCase();
+            const targetSlug = segments[1].toLowerCase();
+
+            if (prefix === "region") {
+                const reg = regions.find((r) => slugify(r.name) === targetSlug);
+                if (reg) {
+                    const canonicalPath = `/${slugify(reg.name)}`;
+                    lastSyncedPathRef.current = canonicalPath;
+                    onSetLevel("region");
+                    onSetRegion(reg.psgc);
+                    onSetProvince(null);
+                    onSetMunicity(null);
+                    onSetBarangay?.(null);
+                    navigate(canonicalPath, { replace: true });
+                    return;
+                }
+            } else if (prefix === "province") {
+                const prov = provinces.find((p) => slugify(p.name) === targetSlug);
+                const reg = prov ? regions.find((r) => r.psgc === prov.region_psgc) : undefined;
+                if (prov && reg) {
+                    const canonicalPath = `/${slugify(reg.name)}/${slugify(prov.name)}`;
+                    lastSyncedPathRef.current = canonicalPath;
+                    onSetLevel("province");
+                    onSetRegion(reg.psgc);
+                    onSetProvince(prov.psgc);
+                    onSetMunicity(null);
+                    onSetBarangay?.(null);
+                    navigate(canonicalPath, { replace: true });
+                    return;
+                }
+            } else if (prefix === "municipality") {
+                const muni =
+                    municityMeta.find((m) => slugify(m.name) === targetSlug) ??
+                    municityMeta.find((m) => getCityNameAliases(m.name).aliasSlugs.includes(targetSlug));
+                const prov = muni ? provinces.find((p) => p.psgc === muni.province_psgc) : undefined;
+                const reg = muni ? regions.find((r) => r.psgc === (muni.region_psgc || prov?.region_psgc)) : undefined;
+                if (muni && prov && reg) {
+                    const canonicalPath = `/${slugify(reg.name)}/${slugify(prov.name)}/${slugify(muni.name)}`;
+                    lastSyncedPathRef.current = canonicalPath;
+                    onSetLevel("municipality");
+                    onSetRegion(reg.psgc);
+                    onSetProvince(prov.psgc);
+                    onSetMunicity(muni.psgc);
+                    onSetBarangay?.(null);
+                    navigate(canonicalPath, { replace: true });
+                    return;
+                }
+            }
+        }
+
         // 1. Resolve Region
         const regSlug = segments[0].toLowerCase();
         const region = regions.find((r) => slugify(r.name) === regSlug);
