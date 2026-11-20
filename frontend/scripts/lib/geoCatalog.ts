@@ -1,9 +1,11 @@
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+import { parse as parseCsv } from "csv-parse/sync";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const GEO_DIR = path.resolve(__dirname, "../../data-sets/geo");
+const DATASETS_DIR = path.resolve(__dirname, "../../data-sets");
+const GEO_DIR = path.resolve(DATASETS_DIR, "geo");
 
 export interface AgeSexBand {
     age: string;
@@ -80,11 +82,49 @@ export function getCityNameAliases(name: string): CityNameAliases {
     };
 }
 
+export interface GeoBounds {
+    lat: number;
+    lng: number;
+    minLat: number;
+    maxLat: number;
+    minLng: number;
+    maxLng: number;
+}
+
+export interface PsgcExtraMeta {
+    oldNames: string | null;
+    cityClass: string | null;
+    incomeClass: string | null;
+    urbanRural: "U" | "R" | null;
+    isCapital: boolean;
+}
+
+export interface CoaFinanceRecord {
+    assets: number | null;
+    liabilities: number | null;
+    equity: number | null;
+    revenue: number | null;
+    expenses: number | null;
+    surplus: number | null;
+}
+
+export interface ElectionCandidateResult {
+    name: string;
+    votes: number;
+    pct: number;
+}
+
+export interface ElectionSummary {
+    totalVotes: number;
+    candidates: ElectionCandidateResult[];
+}
+
 export interface RegionRecord extends RawGeoEntity {
     slug: string;
     urlPath: string;
     provinces: ProvinceRecord[];
     municitiesCount: number;
+    bounds: GeoBounds | null;
 }
 
 export interface ProvinceRecord extends RawGeoEntity {
@@ -92,6 +132,7 @@ export interface ProvinceRecord extends RawGeoEntity {
     urlPath: string;
     region: RegionRecord | null;
     municities: MunicityRecord[];
+    bounds: GeoBounds | null;
 }
 
 export interface MunicityRecord extends RawGeoEntity {
@@ -99,6 +140,7 @@ export interface MunicityRecord extends RawGeoEntity {
     urlPath: string;
     region: RegionRecord | null;
     province: ProvinceRecord | null;
+    bounds: GeoBounds | null;
 }
 
 export interface GeoCatalog {
@@ -183,6 +225,7 @@ export async function loadGeoCatalog(): Promise<GeoCatalog> {
             urlPath: `/${slug}`,
             provinces: [],
             municitiesCount: 0,
+            bounds: computeGeometryBounds((r as unknown as { geometry?: RawGeometry }).geometry),
         };
         regionMap.set(r.psgc, rec);
         return rec;
@@ -198,6 +241,7 @@ export async function loadGeoCatalog(): Promise<GeoCatalog> {
             urlPath: reg ? `${reg.urlPath}/${slug}` : `/${slug}`,
             region: reg,
             municities: [],
+            bounds: computeGeometryBounds((p as unknown as { geometry?: RawGeometry }).geometry),
         };
         provinceMap.set(p.psgc, rec);
         if (reg) reg.provinces.push(rec);
@@ -215,6 +259,7 @@ export async function loadGeoCatalog(): Promise<GeoCatalog> {
             urlPath,
             region: reg,
             province: prov,
+            bounds: null,
         };
         if (prov) prov.municities.push(rec);
         if (reg) reg.municitiesCount += 1;
@@ -270,13 +315,62 @@ interface RawGeometry {
     coordinates?: unknown;
 }
 
-function collectRingVertices(ring: unknown, psgc: string, vertexIndex: Map<string, Set<string>>) {
+function forEachRingPoint(ring: unknown, onPoint: (lng: number, lat: number) => void) {
     if (!Array.isArray(ring)) return;
     for (const pt of ring) {
         if (!Array.isArray(pt) || pt.length < 2) continue;
         const lng = Number(pt[0]);
         const lat = Number(pt[1]);
-        if (!Number.isFinite(lng) || !Number.isFinite(lat)) continue;
+        if (Number.isFinite(lng) && Number.isFinite(lat)) {
+            onPoint(lng, lat);
+        }
+    }
+}
+
+function forEachGeometryPoint(geom: RawGeometry | null | undefined, onPoint: (lng: number, lat: number) => void) {
+    if (!geom || !Array.isArray(geom.coordinates)) return;
+    if (geom.type === "Polygon") {
+        for (const ring of geom.coordinates) {
+            forEachRingPoint(ring, onPoint);
+        }
+    } else if (geom.type === "MultiPolygon") {
+        for (const poly of geom.coordinates) {
+            if (!Array.isArray(poly)) continue;
+            for (const ring of poly) {
+                forEachRingPoint(ring, onPoint);
+            }
+        }
+    }
+}
+
+export function computeGeometryBounds(geom: RawGeometry | null | undefined): GeoBounds | null {
+    let minLng = Infinity;
+    let maxLng = -Infinity;
+    let minLat = Infinity;
+    let maxLat = -Infinity;
+    let hasPoint = false;
+
+    forEachGeometryPoint(geom, (lng, lat) => {
+        hasPoint = true;
+        if (lng < minLng) minLng = lng;
+        if (lng > maxLng) maxLng = lng;
+        if (lat < minLat) minLat = lat;
+        if (lat > maxLat) maxLat = lat;
+    });
+
+    if (!hasPoint) return null;
+    return {
+        lat: Number(((minLat + maxLat) / 2).toFixed(4)),
+        lng: Number(((minLng + maxLng) / 2).toFixed(4)),
+        minLat: Number(minLat.toFixed(4)),
+        maxLat: Number(maxLat.toFixed(4)),
+        minLng: Number(minLng.toFixed(4)),
+        maxLng: Number(maxLng.toFixed(4)),
+    };
+}
+
+function indexGeometryVertices(geom: RawGeometry | null | undefined, psgc: string, vertexIndex: Map<string, Set<string>>) {
+    forEachGeometryPoint(geom, (lng, lat) => {
         // ~11m grid cell captures shared NAMRIA/PSA polygon boundary vertices across adjacent LGUs
         const key = `${Math.round(lng * 10000)},${Math.round(lat * 10000)}`;
         let set = vertexIndex.get(key);
@@ -285,23 +379,104 @@ function collectRingVertices(ring: unknown, psgc: string, vertexIndex: Map<strin
             vertexIndex.set(key, set);
         }
         set.add(psgc);
-    }
+    });
 }
 
-function indexGeometryVertices(geom: RawGeometry | null | undefined, psgc: string, vertexIndex: Map<string, Set<string>>) {
-    if (!geom || !Array.isArray(geom.coordinates)) return;
-    if (geom.type === "Polygon") {
-        for (const ring of geom.coordinates) {
-            collectRingVertices(ring, psgc, vertexIndex);
-        }
-    } else if (geom.type === "MultiPolygon") {
-        for (const poly of geom.coordinates) {
-            if (!Array.isArray(poly)) continue;
-            for (const ring of poly) {
-                collectRingVertices(ring, psgc, vertexIndex);
-            }
-        }
+export async function loadPsgcExtraMeta(): Promise<Map<string, PsgcExtraMeta>> {
+    const raw = await fs.readFile(path.join(DATASETS_DIR, "data/raw/psgc.csv"), "latin1");
+    const rows = parseCsv(raw, {
+        skip_empty_lines: true,
+        relax_column_count: true,
+    }) as string[][];
+
+    const map = new Map<string, PsgcExtraMeta>();
+    for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        const rawPsgc = (row[0] ?? "").trim();
+        if (!rawPsgc) continue;
+        const psgc = rawPsgc.padStart(10, "0");
+        if (!/^\d{10}$/.test(psgc)) continue;
+
+        const oldNames = (row[4] ?? "").trim() || null;
+        const cityClass = (row[5] ?? "").trim() || null;
+        const incomeRaw = (row[6] ?? "").trim();
+        const incomeClass = incomeRaw && incomeRaw !== "-" ? incomeRaw : null;
+        const urRaw = (row[7] ?? "").trim().toUpperCase();
+        const urbanRural = urRaw === "U" || urRaw === "R" ? urRaw : null;
+        const isCapital = (row[10] ?? "").trim().toLowerCase() === "capital";
+
+        map.set(psgc, { oldNames, cityClass, incomeClass, urbanRural, isCapital });
     }
+    return map;
+}
+
+export async function loadCoaFinanceCatalog(): Promise<Map<string, CoaFinanceRecord>> {
+    const raw = await fs.readFile(path.join(DATASETS_DIR, "data/clean/lgu_finance_2024.csv"), "utf8");
+    const rows = parseCsv(raw, {
+        columns: true,
+        skip_empty_lines: true,
+        trim: true,
+    }) as Record<string, string>[];
+
+    const toPhp = (v: string | undefined): number | null => {
+        if (!v) return null;
+        const n = Number(v);
+        return Number.isFinite(n) ? n * 1000 : null;
+    };
+
+    const map = new Map<string, CoaFinanceRecord>();
+    for (const row of rows) {
+        const psgc = (row.psgc ?? "").trim().padStart(10, "0");
+        if (!/^\d{10}$/.test(psgc)) continue;
+        map.set(psgc, {
+            assets: toPhp(row.assets),
+            liabilities: toPhp(row.liabilities),
+            equity: toPhp(row.equity),
+            revenue: toPhp(row.revenue),
+            expenses: toPhp(row.expenses),
+            surplus: toPhp(row.surplus_deficit),
+        });
+    }
+    return map;
+}
+
+export async function loadElection2022Catalog(): Promise<Map<string, ElectionSummary>> {
+    const raw = await fs.readFile(path.join(DATASETS_DIR, "data/clean/elections_2022_president_all.csv"), "utf8");
+    const rows = parseCsv(raw, {
+        columns: true,
+        comment: "#",
+        skip_empty_lines: true,
+        trim: true,
+    }) as Record<string, string>[];
+
+    const map = new Map<string, ElectionSummary>();
+    for (const row of rows) {
+        const psgc = (row.psgc ?? "").trim().padStart(10, "0");
+        if (!/^\d{10}$/.test(psgc)) continue;
+
+        const candidates: { name: string; votes: number }[] = [];
+        let totalVotes = 0;
+
+        for (const [key, val] of Object.entries(row)) {
+            if (key === "psgc" || key === "label") continue;
+            const votes = Number(val);
+            if (!Number.isFinite(votes) || votes <= 0) continue;
+            totalVotes += votes;
+            candidates.push({ name: key, votes });
+        }
+
+        if (totalVotes <= 0) continue;
+        candidates.sort((a, b) => b.votes - a.votes);
+        map.set(psgc, {
+            totalVotes,
+            candidates: candidates.slice(0, 5).map((c) => ({
+                name: c.name,
+                votes: c.votes,
+                pct: (c.votes / totalVotes) * 100,
+            })),
+        });
+    }
+    return map;
 }
 
 export async function computeMunicityAdjacency(
@@ -322,8 +497,15 @@ export async function computeMunicityAdjacency(
                 const list = JSON.parse(raw);
                 if (!Array.isArray(list)) return;
                 for (const item of list) {
-                    if (item && typeof item.psgc === "string" && muniByPsgc.has(item.psgc)) {
-                        indexGeometryVertices(item.geometry as RawGeometry, item.psgc, vertexIndex);
+                    if (item && typeof item.psgc === "string") {
+                        const muniRec = muniByPsgc.get(item.psgc);
+                        if (muniRec) {
+                            const geom = item.geometry as RawGeometry;
+                            indexGeometryVertices(geom, item.psgc, vertexIndex);
+                            if (!muniRec.bounds) {
+                                muniRec.bounds = computeGeometryBounds(geom);
+                            }
+                        }
                     }
                 }
             }),
