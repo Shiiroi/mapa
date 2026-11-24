@@ -31,7 +31,7 @@ export default function MainPage() {
 
     const [activeOverlay, setActiveOverlay] = useState<CustomOverlay | null>(null);
     const [overlayView, setOverlayView] = useState<SeriesViewState>({ mode: "lead" });
-    const [mapLevel, setMapLevel] = useState<MapLevel>("country");
+    const [mapLevel, setMapLevel] = useState<MapLevel>(() => download.level);
     const isPlaceDeepLink = typeof window !== "undefined" && window.location.pathname !== "/";
     const [activeTab, setActiveTab] = useState<SidebarTab>(() => {
         if (typeof window === "undefined") return "geojson";
@@ -58,6 +58,7 @@ export default function MainPage() {
 
     const { provinces, municities, municityMeta, regions, country, loading, municitiesLoading, error } = useMapLayers({
         loadMunicitiesGeometry: mapLevel === "municipality",
+        loadCountryGeometry: mapLevel === "country",
         selectedRegionPsgc: download.selectedRegionPsgc,
         selectedProvincePsgc: download.selectedProvincePsgc,
     });

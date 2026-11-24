@@ -35,6 +35,7 @@ interface ResolvePlaceInput {
     selectedProvincePsgc: string | null;
     selectedMunicityPsgc: string | null;
     selectedBarangayPsgc: string | null;
+    initialPlace?: ResolvedPlace | null;
 }
 
 // Picks just the stats fields off a geo row, normalizing missing values to null
@@ -100,6 +101,7 @@ export function resolveSelectedPlace(input: ResolvePlaceInput): ResolvedPlace | 
         selectedProvincePsgc,
         selectedMunicityPsgc,
         selectedBarangayPsgc,
+        initialPlace,
     } = input;
 
     if (level === "country") {
@@ -117,7 +119,9 @@ export function resolveSelectedPlace(input: ResolvePlaceInput): ResolvedPlace | 
     if (level === "region") {
         if (!selectedRegionPsgc) return null;
         const region = regions.find((r) => r.psgc === selectedRegionPsgc);
-        if (!region) return null;
+        if (!region) {
+            return initialPlace?.level === "region" && initialPlace.psgc === selectedRegionPsgc ? initialPlace : null;
+        }
         return {
             psgc: region.psgc,
             name: region.name.trim(),
@@ -132,7 +136,9 @@ export function resolveSelectedPlace(input: ResolvePlaceInput): ResolvedPlace | 
     if (level === "province") {
         if (!selectedProvincePsgc) return null;
         const province = provinces.find((p) => p.psgc === selectedProvincePsgc);
-        if (!province) return null;
+        if (!province) {
+            return initialPlace?.level === "province" && initialPlace.psgc === selectedProvincePsgc ? initialPlace : null;
+        }
         return {
             psgc: province.psgc,
             name: province.name.trim(),
@@ -148,7 +154,11 @@ export function resolveSelectedPlace(input: ResolvePlaceInput): ResolvedPlace | 
     if (level === "municipality") {
         if (!selectedMunicityPsgc) return null;
         const muni = findMunicity(selectedMunicityPsgc, municities, municityMeta);
-        if (!muni) return null;
+        if (!muni) {
+            return initialPlace?.level === "municipality" && initialPlace.psgc === selectedMunicityPsgc
+                ? initialPlace
+                : null;
+        }
         return {
             psgc: muni.psgc,
             name: muni.name.trim(),
