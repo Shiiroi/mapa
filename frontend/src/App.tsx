@@ -1,6 +1,6 @@
 // Client-side router; code-splits map workspace and reference/legal routes.
 
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { normalizeRoutePath } from "./lib/initialPlaceSeed";
 
@@ -20,17 +20,20 @@ function RouteFallback() {
 
 function LayoutShell() {
     const location = useLocation();
-    const dossierEl = typeof document !== "undefined" ? document.getElementById("lens-place-dossier") : null;
-    const dossierRoute = dossierEl?.getAttribute("data-route-path") || "";
+    const [dossierRoute] = useState<string>(() => {
+        if (typeof document === "undefined") return "";
+        return document.getElementById("lens-place-dossier")?.getAttribute("data-route-path") || "";
+    });
     const hasMatchingDossier = Boolean(
-        dossierEl && dossierRoute && normalizeRoutePath(dossierRoute) === normalizeRoutePath(location.pathname),
+        dossierRoute && normalizeRoutePath(dossierRoute) === normalizeRoutePath(location.pathname),
     );
 
     useEffect(() => {
-        if (dossierEl) {
-            dossierEl.hidden = !hasMatchingDossier;
+        const el = document.getElementById("lens-place-dossier");
+        if (el) {
+            el.hidden = !hasMatchingDossier;
         }
-    }, [dossierEl, hasMatchingDossier]);
+    }, [hasMatchingDossier]);
 
     return (
         <main
