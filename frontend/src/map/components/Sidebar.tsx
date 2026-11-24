@@ -2,6 +2,7 @@
 import { useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { cn } from "../../lib/cn";
+import { getActiveInitialPlace } from "../../lib/initialPlaceSeed";
 import type { MapLevel } from "../constants";
 import type { ExportKind } from "../hooks/useMapDownload";
 import type { BarangayGeoJSON, CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
@@ -160,6 +161,7 @@ export function Sidebar(props: SidebarProps) {
         selectedProvincePsgc: props.selectedProvincePsgc,
         selectedMunicityPsgc: props.selectedMunicityPsgc,
         selectedBarangayPsgc: props.selectedBarangayPsgc,
+        initialPlace: getActiveInitialPlace(),
     });
 
     const currentSelection: CompareSelection | null = selectedPlace

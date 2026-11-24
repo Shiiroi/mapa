@@ -14,6 +14,14 @@
             "destination": "https://pub-f9d925e99cc844ad9fac924a16e8f3a3.r2.dev/:path*"
         },
         {
+            "source": "/province/:slug",
+            "destination": "/api/legacy-redirect?type=province&slug=:slug"
+        },
+        {
+            "source": "/municipality/:slug",
+            "destination": "/api/legacy-redirect?type=municipality&slug=:slug"
+        },
+        {
             "source": "/(.*)",
             "destination": "/index.html"
         }

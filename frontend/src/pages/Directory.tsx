@@ -281,8 +281,11 @@ export default function Directory() {
                         <div className="mt-1 font-mono text-lg font-bold text-primary">{regions.length || 18}</div>
                     </div>
                     <div className="bg-white p-4">
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-muted">Provinces / NCR</div>
-                        <div className="mt-1 font-mono text-lg font-bold text-primary">{provinces.length || 84}</div>
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-muted">Provinces + NCR + SGA</div>
+                        <div className="mt-1 font-mono text-lg font-bold text-primary">
+                            {provinces.length || 84}{" "}
+                            <span className="text-xs font-normal text-muted">(82 provinces)</span>
+                        </div>
                     </div>
                     <div className="bg-white p-4">
                         <div className="text-[10px] font-bold uppercase tracking-wider text-muted">Cities &amp; Munis</div>

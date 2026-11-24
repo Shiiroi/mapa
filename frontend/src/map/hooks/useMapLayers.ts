@@ -8,6 +8,7 @@ import type { CountryGeoJSON, ProvinceGeoJSON, MunicityGeoJSON, MunicityMeta, Re
 interface UseMapLayersOptions {
     // When true, loads municipality geometries
     loadMunicitiesGeometry?: boolean;
+    loadCountryGeometry?: boolean;
     selectedRegionPsgc?: string | null;
     selectedProvincePsgc?: string | null;
 }
@@ -30,6 +31,7 @@ interface UseMapLayersReturn {
 export function useMapLayers(options: UseMapLayersOptions = {}): UseMapLayersReturn {
     const {
         loadMunicitiesGeometry = false,
+        loadCountryGeometry = true,
         selectedRegionPsgc = null,
         selectedProvincePsgc = null,
     } = options;
@@ -79,13 +81,14 @@ export function useMapLayers(options: UseMapLayersOptions = {}): UseMapLayersRet
         queryKey: ["country"],
         queryFn: fetchCountry,
         staleTime: Infinity,
+        enabled: loadCountryGeometry,
     });
 
     const loading =
         provincesQuery.isLoading ||
         municityMetaQuery.isLoading ||
         regionsQuery.isLoading ||
-        countryQuery.isLoading;
+        (loadCountryGeometry && countryQuery.isLoading);
     const municitiesLoading = loadMunicitiesGeometry && municitiesGeometryQuery.isLoading;
     const error =
         provincesQuery.error ??

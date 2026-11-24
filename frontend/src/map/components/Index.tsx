@@ -100,7 +100,7 @@ export function IndexSidebar({
                         to="/directory"
                         className="text-[10px] font-bold uppercase tracking-wider text-accent hover:text-accent-dark hover:underline"
                     >
-                        Rankings &rarr;
+                        Directory &rarr;
                     </Link>
                 </div>
                 <p className="text-[10px] text-muted mt-0.5">Jump directly to any administrative division.</p>

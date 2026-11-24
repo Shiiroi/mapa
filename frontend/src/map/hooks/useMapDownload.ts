@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { downloadJsonFile } from "../../lib/downloadFile";
+import { getActiveInitialPlace } from "../../lib/initialPlaceSeed";
 import type { MapLevel } from "../constants";
 import { buildDownloadGeoJson, type DownloadScope } from "../utils/buildDownloadGeoJson";
 import type { CountryGeoJSON, MunicityGeoJSON, MunicityMeta, ProvinceGeoJSON, Region } from "../types";
@@ -26,13 +27,24 @@ interface DownloadGeoData {
 
 // Manages the download panel's selection state and runs the scoped GeoJSON export.
 export function useMapDownload() {
-    const [level, setLevelState] = useState<MapLevel>("country");
-    const [selectedRegionPsgc, setSelectedRegionPsgc] = useState<string | null>(null);
-    const [selectedProvincePsgc, setSelectedProvincePsgc] = useState<string | null>(null);
-    const [selectedMunicityPsgc, setSelectedMunicityPsgcState] = useState<string | null>(null);
+    const initialPlace = getActiveInitialPlace();
+    const [level, setLevelState] = useState<MapLevel>(() => initialPlace?.level ?? "country");
+    const [selectedRegionPsgc, setSelectedRegionPsgc] = useState<string | null>(() =>
+        initialPlace ? (initialPlace.region_psgc ?? (initialPlace.level === "region" ? initialPlace.psgc : null)) : null,
+    );
+    const [selectedProvincePsgc, setSelectedProvincePsgc] = useState<string | null>(() =>
+        initialPlace ? (initialPlace.province_psgc ?? (initialPlace.level === "province" ? initialPlace.psgc : null)) : null,
+    );
+    const [selectedMunicityPsgc, setSelectedMunicityPsgcState] = useState<string | null>(() =>
+        initialPlace ? (initialPlace.municity_psgc ?? (initialPlace.level === "municipality" ? initialPlace.psgc : null)) : null,
+    );
     const [selectedBarangayPsgc, setSelectedBarangayPsgc] = useState<string | null>(null);
-    const [regionFilterPsgc, setRegionFilterPsgc] = useState<string | null>(null);
-    const [provinceFilterPsgc, setProvinceFilterPsgc] = useState<string | null>(null);
+    const [regionFilterPsgc, setRegionFilterPsgc] = useState<string | null>(() =>
+        initialPlace ? (initialPlace.region_psgc ?? (initialPlace.level === "region" ? initialPlace.psgc : null)) : null,
+    );
+    const [provinceFilterPsgc, setProvinceFilterPsgc] = useState<string | null>(() =>
+        initialPlace ? (initialPlace.province_psgc ?? (initialPlace.level === "province" ? initialPlace.psgc : null)) : null,
+    );
     const [exportKind, setExportKind] = useState<ExportKind>("self");
     const [downloading, setDownloading] = useState(false);
     const [error, setError] = useState<string | null>(null);
