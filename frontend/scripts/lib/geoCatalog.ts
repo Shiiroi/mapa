@@ -119,6 +119,19 @@ export interface ElectionSummary {
     candidates: ElectionCandidateResult[];
 }
 
+export interface ZipOfficeEntry {
+    zip: string;
+    name: string;
+    location: string;
+}
+
+export interface PlaceZipInfo {
+    primaryZip: string;
+    zipRange: string;
+    uniqueZips: string[];
+    entries: ZipOfficeEntry[];
+}
+
 export interface RegionRecord extends RawGeoEntity {
     slug: string;
     urlPath: string;
@@ -476,6 +489,157 @@ export async function loadElection2022Catalog(): Promise<Map<string, ElectionSum
             })),
         });
     }
+    return map;
+}
+
+interface RawZipFileEntry {
+    zip?: unknown;
+    name?: unknown;
+    location?: unknown;
+    region?: unknown;
+}
+
+function normZipName(input: string): string {
+    return input
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\([^)]*\)/g, " ")
+        .replace(/\bsta\.?\s+/g, "santa ")
+        .replace(/\bsto\.?\s+/g, "santo ")
+        .replace(/\bgen\.?\s+/g, "general ")
+        .replace(/\bsen\.?\s+/g, "senator ")
+        .replace(/\bpres\.?\s+/g, "president ")
+        .replace(/\bdr\.?\s+/g, "doctor ")
+        .replace(/\bscience city of\b/g, " ")
+        .replace(/\bcity of\b/g, " ")
+        .replace(/\bmunicipality of\b/g, " ")
+        .replace(/\b(city|province|cpo|po|poblacion|capitol|area|north|south)\b/g, " ")
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+}
+
+function buildPlaceZipInfo(entries: ZipOfficeEntry[]): PlaceZipInfo | null {
+    if (entries.length === 0) return null;
+    const dedupedMap = new Map<string, ZipOfficeEntry>();
+    for (const e of entries) {
+        const key = `${e.zip}|${e.name}`;
+        if (!dedupedMap.has(key)) dedupedMap.set(key, e);
+    }
+    const deduped = Array.from(dedupedMap.values()).sort(
+        (a, b) => a.zip.localeCompare(b.zip) || a.name.localeCompare(b.name),
+    );
+    const uniqueZips = Array.from(new Set(deduped.map((e) => e.zip))).sort();
+    const minZip = uniqueZips[0];
+    const maxZip = uniqueZips[uniqueZips.length - 1];
+    const primaryEntry =
+        deduped.find((e) => /\b(cpo|capitol|poblacion)\b/i.test(e.name)) ?? deduped[0];
+    return {
+        primaryZip: primaryEntry.zip,
+        zipRange: minZip === maxZip ? minZip : `${minZip}–${maxZip}`,
+        uniqueZips,
+        entries: deduped,
+    };
+}
+
+export async function loadZipCodeCatalog(
+    provinces: ProvinceRecord[],
+    municities: MunicityRecord[],
+    psgcMeta: Map<string, PsgcExtraMeta>,
+): Promise<Map<string, PlaceZipInfo>> {
+    const raw = await fs.readFile(path.join(DATASETS_DIR, "data/clean/philippine-zip-codes.json"), "utf8");
+    const parsed = JSON.parse(raw) as { entries?: RawZipFileEntry[] };
+    const rawEntries = Array.isArray(parsed.entries) ? parsed.entries : [];
+
+    const validEntries: (ZipOfficeEntry & { region: string; locNorm: string; nameNorm: string; parenNorms: string[] })[] = [];
+    for (const item of rawEntries) {
+        const zip = String(item.zip ?? "").trim();
+        const name = String(item.name ?? "").trim();
+        const location = String(item.location ?? "").trim();
+        const region = String(item.region ?? "").trim();
+        if (!zip || !name || !location || location === "Companies/Institutions") continue;
+        const parenNorms = [...name.matchAll(/\(([^)]+)\)/g)].map((m) => normZipName(m[1])).filter(Boolean);
+        validEntries.push({
+            zip,
+            name,
+            location,
+            region,
+            locNorm: normZipName(location),
+            nameNorm: normZipName(name),
+            parenNorms,
+        });
+    }
+
+    const PROV_ALIASES: Record<string, string[]> = {
+        cotabato: ["north cotabato", "cotabato"],
+        "davao de oro": ["davao de oro", "compostela valley"],
+        samar: ["samar", "western samar"],
+        "maguindanao del norte": ["maguindanao"],
+        "maguindanao del sur": ["maguindanao"],
+    };
+
+    const LGU_ALIASES: Record<string, string[]> = {
+        ozamiz: ["ozamis"],
+        "general mariano alvarez": ["gma", "g m a"],
+        pinamungajan: ["pinamungahan"],
+        "datu odin sinsuat": ["dinaig"],
+    };
+
+    const map = new Map<string, PlaceZipInfo>();
+
+    // Index Provinces (and Metro Manila)
+    for (const prov of provinces) {
+        const pNorm = normZipName(prov.name);
+        const isMetroManila = prov.psgc === "1300000000";
+        const allowedLocs = new Set([pNorm, ...(PROV_ALIASES[pNorm] ?? [])]);
+        const matched = validEntries.filter((e) =>
+            isMetroManila ? e.region === "NCR" : allowedLocs.has(e.locNorm),
+        );
+        const info = buildPlaceZipInfo(matched.map(({ zip, name, location }) => ({ zip, name, location })));
+        if (info) map.set(prov.psgc, info);
+    }
+
+    // Index Cities & Municipalities
+    const provByPsgc = new Map(provinces.map((p) => [p.psgc, p]));
+    for (const muni of municities) {
+        const mNorm = normZipName(muni.name);
+        if (!mNorm) continue;
+        const mNorms = new Set([mNorm, ...(LGU_ALIASES[mNorm] ?? [])]);
+        const oldNames = psgcMeta.get(muni.psgc)?.oldNames;
+        if (oldNames) {
+            for (const part of oldNames.split(/[;/,]/)) {
+                const n = normZipName(part);
+                if (n && n.length >= 3) mNorms.add(n);
+            }
+        }
+
+        const isNcr = muni.region_psgc === "1300000000";
+        let matched: typeof validEntries;
+        if (isNcr) {
+            matched = validEntries.filter((e) => e.region === "NCR" && mNorms.has(e.locNorm));
+        } else {
+            const prov = muni.province_psgc ? provByPsgc.get(muni.province_psgc) : undefined;
+            const pNorm = prov ? normZipName(prov.name) : "";
+            const allowedLocs = new Set([pNorm, ...(PROV_ALIASES[pNorm] ?? [])]);
+            matched = validEntries.filter((e) => {
+                if (!allowedLocs.has(e.locNorm)) return false;
+                for (const candidate of mNorms) {
+                    if (
+                        e.nameNorm === candidate ||
+                        e.nameNorm.startsWith(`${candidate} `) ||
+                        e.parenNorms.includes(candidate)
+                    ) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+        }
+
+        const info = buildPlaceZipInfo(matched.map(({ zip, name, location }) => ({ zip, name, location })));
+        if (info) map.set(muni.psgc, info);
+    }
+
     return map;
 }
 
